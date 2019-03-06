@@ -1,0 +1,30 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_boost (0.0.1):
+    - Flutter
+    - xservice_kit
+  - xservice_kit (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - flutter_boost (from `/Users/jidong/Documents/FlutterBoost/ios`)
+  - xservice_kit (from `/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.26/ios`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Flutter
+
+EXTERNAL SOURCES:
+  flutter_boost:
+    :path: "/Users/jidong/Documents/FlutterBoost/ios"
+  xservice_kit:
+    :path: "/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.26/ios"
+
+SPEC CHECKSUMS:
+  Flutter: fa617360ba1995d522016bfa59d68df27ac12e02
+  flutter_boost: 24249d12d924d858cf445a84949484bc08bca000
+  xservice_kit: a86c64372b3e41e7d8e9b1a0b9139866680f525c
+
+PODFILE CHECKSUM: 2a757a7bdc03b37a2814666652fdff1cf694243f
+
+COCOAPODS: 1.5.3
