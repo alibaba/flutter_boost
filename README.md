@@ -19,17 +19,8 @@ You need to add Flutter to your project before moving on.
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-Before release 1.0
-
 ```java
-flutter_boost: 0.0.34
-```
-
-
-After Release 1.0
-
-```java
-flutter_boost: 0.0.39
+flutter_boost: ^0.0.400
 ```
 
 
