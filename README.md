@@ -29,7 +29,7 @@ flutter_boost: 0.0.34
 After Release 1.0
 
 ```java
-flutter_boost: ^0.0.39
+flutter_boost: 0.0.39
 ```
 
 
