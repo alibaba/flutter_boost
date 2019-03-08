@@ -26,7 +26,7 @@ flutter_boost：0.0.34
 1.0之后版本
 
 ```
-flutter_boost：^ 0.0.39
+flutter_boost：0.0.39
 ```
 
 ## Dart代码的集成
