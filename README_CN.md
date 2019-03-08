@@ -18,15 +18,8 @@
 
 Release 1.0 之前的版本
 
-```JSON
-flutter_boost：0.0.34
-```
-
-
-1.0之后版本
-
-```
-flutter_boost：0.0.39
+```json
+flutter_boost: ^0.0.400
 ```
 
 ## Dart代码的集成
