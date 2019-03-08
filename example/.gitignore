@@ -6,5 +6,5 @@
 .idea
 
 build/
-
+pubspec.lock
 .flutter-plugins
