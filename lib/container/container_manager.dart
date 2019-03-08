@@ -201,7 +201,6 @@ class ContainerManagerState extends State<BoostContainerManager> {
     final int index = _offstage.indexWhere((BoostContainer container) =>
         container.settings.uniqueId == settings.uniqueId);
     if (index > -1) {
-      final BoostContainerState old = _stateOf(_onstage);
       _offstage.add(_onstage);
       _onstage = _offstage.removeAt(index);
 
@@ -244,7 +243,6 @@ class ContainerManagerState extends State<BoostContainerManager> {
     assert(_offstage.every((BoostContainer container) =>
         container.settings.uniqueId != settings.uniqueId));
 
-    final BoostContainerState old = _stateOf(_onstage);
     _offstage.add(_onstage);
     _onstage = BoostContainer.obtain(widget.initNavigator, settings);
 
@@ -261,14 +259,14 @@ class ContainerManagerState extends State<BoostContainerManager> {
   void pop() {
     assert(canPop());
 
-    final BoostContainerState old = _stateOf(_onstage);
+    final BoostContainer old = _onstage;
     _onstage = _offstage.removeLast();
     setState(() {});
 
     for (BoostContainerObserver observer in FlutterBoost
         .singleton.observersHolder
         .observersOf<BoostContainerObserver>()) {
-      observer(ContainerOperation.Pop, _onstage.settings);
+      observer(ContainerOperation.Pop, old.settings);
     }
 
     Logger.log('ContainerObserver didPop');
@@ -289,7 +287,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
         for (BoostContainerObserver observer in FlutterBoost
             .singleton.observersHolder
             .observersOf<BoostContainerObserver>()) {
-          observer(ContainerOperation.Remove, _onstage.settings);
+          observer(ContainerOperation.Remove, container.settings);
         }
 
         Logger.log('ContainerObserver didRemove');

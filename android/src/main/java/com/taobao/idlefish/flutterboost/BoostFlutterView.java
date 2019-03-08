@@ -79,6 +79,7 @@ public class BoostFlutterView extends FlutterView {
     @Override
     public void onPostResume() {
         //do nothing...
+        requestFocus();
     }
 
     @Override

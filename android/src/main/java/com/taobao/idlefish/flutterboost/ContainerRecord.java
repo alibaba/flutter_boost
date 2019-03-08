@@ -79,6 +79,14 @@ public class ContainerRecord implements IContainerRecord {
     public void onDisappear() {
         mProxy.disappear();
         mState = STATE_DISAPPEAR;
+
+        /**
+         * Bug workaround:
+         * If current container is finishing, we should call destroy flutter page early.
+         */
+        if(mContainer.isFinishing()) {
+            mProxy.destroy();
+        }
     }
 
     @Override
