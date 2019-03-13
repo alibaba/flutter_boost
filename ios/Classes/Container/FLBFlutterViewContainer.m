@@ -261,6 +261,9 @@ static NSUInteger kInstanceCounter = 0;
     }
     
     [self clearCurrentScreenShotImage];
+    
+    //Remove obsolete screenshot.
+    [FLBStackCache.sharedInstance remove:self.uniqueIDString];
 }
 
 #pragma mark - Life circle methods
