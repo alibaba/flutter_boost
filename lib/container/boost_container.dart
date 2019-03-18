@@ -149,13 +149,13 @@ class BoostContainerState extends NavigatorState {
   @override
   void didUpdateWidget(Navigator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    findContainerNavigatorObserver(oldWidget).removeBoostNavigatorObserver(
+    findContainerNavigatorObserver(oldWidget)?.removeBoostNavigatorObserver(
         FlutterBoost.containerManager.navigatorObserver);
   }
 
   @override
   void dispose() {
-    findContainerNavigatorObserver(widget).removeBoostNavigatorObserver(
+    findContainerNavigatorObserver(widget)?.removeBoostNavigatorObserver(
         FlutterBoost.containerManager.navigatorObserver);
     super.dispose();
   }
