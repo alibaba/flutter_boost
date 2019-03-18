@@ -91,6 +91,10 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
     assert(widget.initNavigator != null);
     _onstage = BoostContainer.copy(widget.initNavigator);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {});
+    });
   }
 
   void updateFocuse() {
