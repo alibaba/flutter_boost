@@ -25,19 +25,16 @@ package com.taobao.idlefish.flutterboost;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.KeyEvent;
 import android.view.SurfaceHolder;
-import android.view.View;
+import android.view.WindowInsets;
 
 import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
 
-import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import io.flutter.view.FlutterNativeView;
@@ -47,6 +44,7 @@ public class BoostFlutterView extends FlutterView {
 
     private boolean mFirstFrameCalled = false;
     private boolean mResumed = false;
+    private WindowInsets mCurrentWindowInsets;
 
     private BoostCallback mBoostCallback;
 
@@ -194,5 +192,17 @@ public class BoostFlutterView extends FlutterView {
     protected void onAttachedToWindow() {
         //Debuger.log("flutterView onAttachedToWindow");
         super.onAttachedToWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final WindowInsets windowInsets = getRootWindowInsets();
+            if(windowInsets != null) {
+                if(mCurrentWindowInsets == null ||
+                        !TextUtils.equals(windowInsets.toString(),mCurrentWindowInsets.toString())) {
+                    Debuger.log("setWindowInsets "+windowInsets.toString());
+
+                    mCurrentWindowInsets = windowInsets;
+                    super.onApplyWindowInsets(mCurrentWindowInsets);
+                }
+            }
+        }
     }
 }
