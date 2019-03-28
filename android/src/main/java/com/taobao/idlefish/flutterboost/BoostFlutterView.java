@@ -193,19 +193,20 @@ public class BoostFlutterView extends FlutterView {
     protected void onAttachedToWindow() {
         //Debuger.log("flutterView onAttachedToWindow");
         super.onAttachedToWindow();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            final WindowInsets windowInsets = getRootWindowInsets();
-            if(windowInsets != null) {
-                if(mCurrentWindowInsets == null ||
-                        !TextUtils.equals(windowInsets.toString(),mCurrentWindowInsets.toString())) {
-                    Debuger.log("setWindowInsets "+windowInsets.toString());
-
-                    mCurrentWindowInsets = windowInsets;
-                    super.onApplyWindowInsets(mCurrentWindowInsets);
-                }
-            }
-        }else {
-            ViewCompat.requestApplyInsets(this);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            final WindowInsets windowInsets = getRootWindowInsets();
+//            if(windowInsets != null) {
+//                if(mCurrentWindowInsets == null ||
+//                        !TextUtils.equals(windowInsets.toString(),mCurrentWindowInsets.toString())) {
+//                    Debuger.log("setWindowInsets "+windowInsets.toString());
+//
+//                    mCurrentWindowInsets = windowInsets;
+//                    super.onApplyWindowInsets(mCurrentWindowInsets);
+//                }
+//            }
+//        }else {
+//            ViewCompat.requestApplyInsets(this);
+//        }
+        ViewCompat.requestApplyInsets(this);
     }
 }
