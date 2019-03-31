@@ -60,6 +60,10 @@ class TabRouteWidget extends StatelessWidget {
 }
 
 class FlutterRouteWidget extends StatelessWidget {
+  final String message;
+
+  FlutterRouteWidget({this.message});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +76,7 @@ class FlutterRouteWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 80.0),
             child: Text(
-              "This is a flutter activity",
+              message ?? "This is a flutter activity",
               style: TextStyle(fontSize: 28.0, color: Colors.blue),
             ),
             alignment: AlignmentDirectional.center,
@@ -87,8 +91,13 @@ class FlutterRouteWidget extends StatelessWidget {
                   'open native page',
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
+
+            ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
+            ///例如：sample://nativePage?aaa=bbb
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://nativePage", {}),
+                FlutterBoost.singleton.openPage("sample://nativePage", {
+                  "query": {"aaa": "bbb"}
+                }),
           ),
           InkWell(
             child: Container(
@@ -99,8 +108,27 @@ class FlutterRouteWidget extends StatelessWidget {
                   'open flutter page',
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
+
+            ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
+            ///例如：sample://nativePage?aaa=bbb
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://flutterPage", {}),
+                FlutterBoost.singleton.openPage("sample://flutterPage", {
+                  "query": {"aaa": "bbb"}
+                }),
+          ),
+          InkWell(
+            child: Container(
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(8.0),
+                color: Colors.yellow,
+                child: Text(
+                  'push flutter widget',
+                  style: TextStyle(fontSize: 22.0, color: Colors.black),
+                )),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => PushWidget()));
+            },
           ),
           InkWell(
             child: Container(
@@ -189,6 +217,51 @@ class FragmentRouteWidget extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class PushWidget extends StatefulWidget {
+  @override
+  _PushWidgetState createState() => _PushWidgetState();
+}
+
+class _PushWidgetState extends State<PushWidget> {
+  VoidCallback _backPressedListenerUnsub;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+
+    if (_backPressedListenerUnsub == null) {
+      _backPressedListenerUnsub =
+          BoostContainer.of(context).addBackPressedListener(() {
+        if (BoostContainer.of(context).onstage &&
+            ModalRoute.of(context).isCurrent) {
+          Navigator.pop(context);
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _backPressedListenerUnsub?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterRouteWidget(
+      message: "pushed Widget",
     );
   }
 }

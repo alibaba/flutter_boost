@@ -20,8 +20,15 @@ class _MyAppState extends State<MyApp> {
       'first': (pageName, params, _) => FirstRouteWidget(),
       'second': (pageName, params, _) => SecondRouteWidget(),
       'tab': (pageName, params, _) => TabRouteWidget(),
-      'flutterPage': (pageName, params, _) => FlutterRouteWidget(),
       'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
+
+      ///可以在native层通过 getContainerParams 来传递参数
+      'flutterPage': (pageName, params, _){
+
+        print("flutterPage params:$params");
+
+        return FlutterRouteWidget();
+      },
     });
 
     FlutterBoost.handleOnStartPage();
