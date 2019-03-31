@@ -16,13 +16,13 @@ public class PageRouter {
 
     public static boolean openPageByUrl(Context context, String url, int requestCode) {
         try {
-            if (TextUtils.equals(url, FLUTTER_PAGE_URL)) {
+            if (url.startsWith(FLUTTER_PAGE_URL)) {
                 context.startActivity(new Intent(context, FlutterPageActivity.class));
                 return true;
-            } else if (TextUtils.equals(url, FLUTTER_FRAGMENT_PAGE_URL)) {
+            } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
                 context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
                 return true;
-            } else if (TextUtils.equals(url, NATIVE_PAGE_URL)) {
+            } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));
                 return true;
             } else {
