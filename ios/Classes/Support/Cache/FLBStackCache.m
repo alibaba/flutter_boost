@@ -84,7 +84,7 @@
         return;
     }
     
-    if(!_inMemoryObjectsMap[key]){
+    if(![_keyStack containsObject:key]){
         [_keyStack addObject:key];
     }else{
         //return;
@@ -134,6 +134,23 @@
     [self preloadIfNeeded];
     
     return ob;
+}
+
+- (void)invalidate:(NSString *)key
+{
+    if(!key || [self empty]) return;
+    
+    if(![_keyStack containsObject:key]) return;
+    
+    id<FLBStackCacheObject> ob = _inMemoryObjectsMap[key];
+    [ob removeCachedFileWithKey:key
+                          queue:_queueIO
+                          cache:self
+                     completion:^(NSError *err, NSString *k) {
+    }];
+    [_inMemoryObjectsMap removeObjectForKey:key];
+    
+    [self preloadIfNeeded];
 }
 
 - (void)preloadIfNeeded

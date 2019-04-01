@@ -91,4 +91,26 @@
     return YES;
 }
 
+- (BOOL)removeCachedFileWithKey:(NSString *)key
+                          queue:(dispatch_queue_t)queue
+                          cache:(FLBStackCache *)cache
+                     completion:(void (^)(NSError *, NSString *))completion
+{
+    if(!key){
+        return NO;
+    }
+    
+    dispatch_async(queue, ^{
+        NSString *filePath = [FLBStackCacheObjectImg filePathByKey:key dirPath:cache.cacheDir];
+        NSError *err = nil;
+        [NSFileManager.defaultManager removeItemAtPath:filePath error:&err];
+        if (completion) {
+            completion(err,key);
+        }
+    });
+    
+    return YES;
+}
+
+
 @end

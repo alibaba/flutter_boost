@@ -41,6 +41,12 @@
                      cache:(FLBStackCache *)cache
                  completion:(void (^)(NSError *err ,id<FLBStackCacheObject>))completion;
 
+- (BOOL)removeCachedFileWithKey:(NSString *)key
+                          queue:(dispatch_queue_t)queue
+                          cache:(FLBStackCache *)cache
+                     completion:(void (^)(NSError *, NSString *))completion;
+
+
 @end
 
 
@@ -56,6 +62,7 @@
 #pragma mark - basic operations.
 - (void)pushObject:(id<FLBStackCacheObject>)obj key:(NSString *)key;
 - (id<FLBStackCacheObject>)remove:(NSString *)key;
+- (void)invalidate:(NSString *)key;
 - (BOOL)empty;
 - (void)clear;
 - (id<FLBStackCacheObject>)objectForKey:(NSString *)key;

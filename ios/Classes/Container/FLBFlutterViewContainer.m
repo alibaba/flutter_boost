@@ -39,6 +39,7 @@
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,strong) UIImageView *screenShotView;
 @property (nonatomic,assign) long long identifier;
+@property (nonatomic,assign) BOOL interactiveGestureActive;
 @end
 
 @implementation FLBFlutterViewContainer
@@ -241,6 +242,8 @@ static NSUInteger kInstanceCounter = 0;
             [self.view insertSubview:FLUTTER_VIEW
                              atIndex:0];
         }
+    }else{
+        
     }
     
     return self.screenShotView.image != nil;
@@ -262,8 +265,8 @@ static NSUInteger kInstanceCounter = 0;
     
     [self clearCurrentScreenShotImage];
     
-    //Remove obsolete screenshot.
-    [FLBStackCache.sharedInstance remove:self.uniqueIDString];
+    //Invalidate obsolete screenshot.
+    [FLBStackCache.sharedInstance invalidate:self.uniqueIDString];
 }
 
 #pragma mark - Life circle methods
@@ -276,6 +279,10 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    if(self.navigationController.interactivePopGestureRecognizer.state == UIGestureRecognizerStateBegan){
+        self.interactiveGestureActive = true;
+    }
+    
     [[FLBFlutterApplication sharedApplication] resume];
     //For new page we should attach flutter view in view will appear
     //for better performance.
@@ -319,17 +326,25 @@ static NSUInteger kInstanceCounter = 0;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
                                  (int64_t)(2 * NSEC_PER_SEC)),
                    dispatch_get_main_queue(),^{
-                       [weakSelf showFlutterView];
+                       if (weakSelf.isViewLoaded && weakSelf.view.window) {
+                           // viewController is visible
+                            [weakSelf showFlutterView];
+                       }
                    });
+    
+    self.interactiveGestureActive = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     //is top.
     if([FLUTTER_APP isTop:self.uniqueIDString]
-       && self.navigationController.interactivePopGestureRecognizer.state != UIGestureRecognizerStateBegan){
+       && self.navigationController.interactivePopGestureRecognizer.state != UIGestureRecognizerStateBegan
+       && !self.interactiveGestureActive){
         [self saveScreenShot];
     }
+    
+    self.interactiveGestureActive = NO;
    
     self.screenShotView.image = [self getSavedScreenShot];
     if(self.screenShotView.image){
@@ -355,6 +370,7 @@ static NSUInteger kInstanceCounter = 0;
     [super viewDidDisappear:animated];
 
     [FLUTTER_APP inactive];
+    self.interactiveGestureActive = NO;
 }
 
 #pragma mark - FLBViewControllerResultHandler
