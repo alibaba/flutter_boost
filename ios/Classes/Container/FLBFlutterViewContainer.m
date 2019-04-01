@@ -233,9 +233,6 @@ static NSUInteger kInstanceCounter = 0;
 
 - (BOOL)showSnapShotVew
 {
-    // 实际运行时 screenShotView的frame与flutterview的frame不统一 导致页面抖动 在这里同步二者的frame
-    self.screenShotView.frame = [self.screenShotView.superview convertRect:FLUTTER_VIEW.frame toView:FLUTTER_VIEW.superview];
-
     self.screenShotView.image = [self getSavedScreenShot];
    
     if([self isFlutterViewAttatched]){
