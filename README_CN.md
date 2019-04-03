@@ -58,6 +58,8 @@ class _MyAppState extends State<MyApp> {
 
 ## iOS代码集成。
 
+注意：需要将libc++ 加入 "Linked Frameworks and Libraries" 中。
+
 使用FLBFlutterAppDelegate作为AppDelegate的超类
 
 ```objectivec
