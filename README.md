@@ -61,6 +61,8 @@ class _MyAppState extends State<MyApp> {
 
 ## Integration with iOS code.
 
+Note: You need to add libc++ into "Linked Frameworks and Libraries" 
+
 Use FLBFlutterAppDelegate as the superclass of your AppDelegate
 
 ```objc
