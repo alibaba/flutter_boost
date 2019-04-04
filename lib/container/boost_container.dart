@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
 import 'package:flutter_boost/container/container_manager.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/router/boost_page_route.dart';
@@ -124,6 +125,8 @@ class BoostContainerState extends NavigatorState {
 
   String get name => widget.settings.name;
 
+  Map get params => widget.settings.params;
+
   BoostContainerSettings get settings => widget.settings;
 
   bool get onstage =>
@@ -164,8 +167,7 @@ class BoostContainerState extends NavigatorState {
     Logger.log('performBackPressed');
 
     if (_backPressedListeners.isEmpty) {
-      FlutterBoost.singleton
-          .closePage(name, uniqueId, settings.params, animated: false);
+      pop();
     } else {
       for (VoidCallback cb in _backPressedListeners) {
         cb();
@@ -190,13 +192,28 @@ class BoostContainerState extends NavigatorState {
     if (canPop()) {
       return super.pop(result);
     } else {
-      if (BoostContainerManager.of(context).canPop()) {
-        BoostContainerManager.of(context).pop();
-        return true;
-      }
+      FlutterBoost.singleton.closePage(name, uniqueId, params);
     }
 
     return false;
+  }
+
+  @override
+  Future<T> push<T extends Object>(Route<T> route) {
+    Route<T> newRoute;
+    if (FlutterBoost.containerManager.prePushRoute != null) {
+      newRoute = FlutterBoost.containerManager
+          .prePushRoute(name, uniqueId, params, route);
+    }
+
+    Future<T> future = super.push<T>(newRoute ?? route);
+
+    if (FlutterBoost.containerManager.postPushRoute != null) {
+      FlutterBoost.containerManager
+          .postPushRoute(name, uniqueId, params, newRoute ?? route, future);
+    }
+
+    return future;
   }
 
   VoidCallback addBackPressedListener(VoidCallback listener) {

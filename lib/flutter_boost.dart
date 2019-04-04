@@ -40,6 +40,12 @@ export 'container/container_manager.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
+typedef Route PrePushRoute(
+    String pageName, String uniqueId, Map params, Route route);
+
+typedef void PostPushRoute(
+    String pageName, String uniqueId, Map params, Route route, Future result);
+
 class FlutterBoost {
   static final FlutterBoost _instance = FlutterBoost();
   final GlobalKey<ContainerManagerState> containerManagerKey =
@@ -58,14 +64,20 @@ class FlutterBoost {
   static ContainerManagerState get containerManager =>
       _instance.containerManagerKey.currentState;
 
-  static TransitionBuilder init([TransitionBuilder builder]) {
+  static TransitionBuilder init(
+      {TransitionBuilder builder,
+      PrePushRoute prePush,
+      PostPushRoute postPush}) {
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
       //Logger.log('Running flutter boost opt!');
 
       final BoostContainerManager manager = BoostContainerManager(
-          key: _instance.containerManagerKey, initNavigator: child);
+          key: _instance.containerManagerKey,
+          initNavigator: child,
+          prePushRoute: prePush,
+          postPushRoute: postPush);
 
       if (builder != null) {
         return builder(context, manager);

@@ -37,7 +37,11 @@ typedef BoostContainerObserver = void Function(
 @immutable
 class BoostContainerManager extends StatefulWidget {
   final Navigator initNavigator;
-  const BoostContainerManager({Key key, this.initNavigator}) : super(key: key);
+  final PrePushRoute prePushRoute;
+  final PostPushRoute postPushRoute;
+  const BoostContainerManager(
+      {Key key, this.initNavigator, this.prePushRoute, this.postPushRoute})
+      : super(key: key);
 
   @override
   ContainerManagerState createState() => ContainerManagerState();
@@ -68,6 +72,10 @@ class ContainerManagerState extends State<BoostContainerManager> {
   bool _foreground = true;
 
   String _lastShownContainer;
+
+  PrePushRoute get prePushRoute => widget.prePushRoute;
+
+  PostPushRoute get postPushRoute => widget.postPushRoute;
 
   bool get foreground => _foreground;
 

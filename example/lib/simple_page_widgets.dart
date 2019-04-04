@@ -240,15 +240,15 @@ class _PushWidgetState extends State<PushWidget> {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
-    if (_backPressedListenerUnsub == null) {
-      _backPressedListenerUnsub =
-          BoostContainer.of(context).addBackPressedListener(() {
-        if (BoostContainer.of(context).onstage &&
-            ModalRoute.of(context).isCurrent) {
-          Navigator.pop(context);
-        }
-      });
-    }
+//    if (_backPressedListenerUnsub == null) {
+//      _backPressedListenerUnsub =
+//          BoostContainer.of(context).addBackPressedListener(() {
+//        if (BoostContainer.of(context).onstage &&
+//            ModalRoute.of(context).isCurrent) {
+//          Navigator.pop(context);
+//        }
+//      });
+//    }
   }
 
   @override
@@ -260,8 +260,6 @@ class _PushWidgetState extends State<PushWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterRouteWidget(
-      message: "pushed Widget",
-    );
+    return FlutterRouteWidget(message:"Pushed Widget");
   }
 }
