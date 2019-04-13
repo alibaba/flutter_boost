@@ -23,6 +23,15 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost: ^0.0.400
 ```
 
+or you could rely directly on a Github project tag, for example(recommended)
+```java
+flutter_boost:
+        git:
+            url: 'https://github.com/alibaba/flutter_boost.git'
+            ref: '0.0.408'
+```
+
+
 
 ## Integration with Flutter code.
 Add init code to you App
