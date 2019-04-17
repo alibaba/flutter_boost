@@ -52,10 +52,9 @@
         [Service_NavigationService didInitPageContainer:^(NSNumber *r) {}
                                                pageName:name
                                                  params:params
-                                               uniqueId:toString(_identifier)];
+                                               uniqueId:self.uniqueIDString];
     }
 }
-
 
 static long long kInstanceCounter = 0;
 
@@ -111,7 +110,7 @@ NSString * toString(long long idf)
 - (void)flutterViewDidShow:(NSNotification *)notification
 {
      __weak typeof(self) weakSelf = self;
-    if([notification.object isEqual: toString(_identifier)]){
+    if([notification.object isEqual: self.uniqueIDString]){
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf showFlutterView];
         });
@@ -195,7 +194,7 @@ NSString * toString(long long idf)
     UIImage *snapImage = [self takeScreenShot];
     if(snapImage){
         FLBStackCacheObjectImg *cImg = [[FLBStackCacheObjectImg alloc] initWithImage:snapImage];
-        [[FLBStackCache sharedInstance] pushObject:cImg key:toString(_identifier)];
+        [[FLBStackCache sharedInstance] pushObject:cImg key:self.uniqueIDString];
     }
 }
 
@@ -206,7 +205,7 @@ NSString * toString(long long idf)
 
 - (UIImage *)getSavedScreenShot
 {
-    FLBStackCacheObjectImg *cImg = [[FLBStackCache sharedInstance] objectForKey:toString(_identifier)];
+    FLBStackCacheObjectImg *cImg = [[FLBStackCache sharedInstance] objectForKey:self.uniqueIDString];
     return [cImg image];
 }
 
@@ -264,14 +263,14 @@ NSString * toString(long long idf)
         self.screenShotView.backgroundColor = UIColor.clearColor;
         if(sIdx > fIdx){
             [self.view insertSubview:self.screenShotView belowSubview:FLUTTER_VIEW];
-            [self flutterViewDidAppear:@{@"uid":toString(_identifier)?:@""}];
+            [self flutterViewDidAppear:@{@"uid":self.uniqueIDString?:@""}];
         }
     }
     
     [self clearCurrentScreenShotImage];
     
     //Invalidate obsolete screenshot.
-    [FLBStackCache.sharedInstance invalidate:toString(_identifier)];
+    [FLBStackCache.sharedInstance invalidate:self.uniqueIDString];
 }
 
 #pragma mark - Life circle methods
@@ -300,11 +299,11 @@ NSString * toString(long long idf)
     [Service_NavigationService willShowPageContainer:^(NSNumber *result) {}
                                             pageName:_name
                                               params:_params
-                                            uniqueId:toString(_identifier)];
+                                            uniqueId:self.uniqueIDString];
     //Save some first time page info.
     if(![FlutterBoostConfig sharedInstance].fPagename){
         [FlutterBoostConfig sharedInstance].fPagename = _name;
-        [FlutterBoostConfig sharedInstance].fPageId = toString(_identifier);
+        [FlutterBoostConfig sharedInstance].fPageId = self.uniqueIDString;
         [FlutterBoostConfig sharedInstance].fParams = _params;
     }
     
@@ -321,7 +320,7 @@ NSString * toString(long long idf)
     [Service_NavigationService didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
-                                           uniqueId:toString(_identifier)];
+                                           uniqueId:self.uniqueIDString];
     
     [[FLBFlutterApplication sharedApplication] addUniqueViewController:self];
     
@@ -343,7 +342,7 @@ NSString * toString(long long idf)
 - (void)viewWillDisappear:(BOOL)animated
 {
     //is top.
-    if([FLUTTER_APP isTop:toString(_identifier)]
+    if([FLUTTER_APP isTop:self.uniqueIDString]
        && self.navigationController.interactivePopGestureRecognizer.state != UIGestureRecognizerStateBegan
        && !self.interactiveGestureActive){
         [self saveScreenShot];
@@ -359,7 +358,7 @@ NSString * toString(long long idf)
     [Service_NavigationService willDisappearPageContainer:^(NSNumber *result) {}
                                                  pageName:_name
                                                    params:_params
-                                                 uniqueId:toString(_identifier)];
+                                                 uniqueId:self.uniqueIDString];
     [super viewWillDisappear:animated];
 }
 
@@ -369,7 +368,7 @@ NSString * toString(long long idf)
     [Service_NavigationService didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
-                                                uniqueId:toString(_identifier)];
+                                                uniqueId:self.uniqueIDString];
     
     [self clearCurrentScreenShotImage];
     [super viewDidDisappear:animated];
@@ -382,7 +381,7 @@ NSString * toString(long long idf)
 - (void)onRecievedResult:(NSDictionary *)resultData forKey:(NSString *)key
 {
     [Service_NavigationService onNativePageResult:^(NSNumber *finished) {}
-                                         uniqueId:toString(_identifier)
+                                         uniqueId:self.uniqueIDString
                                               key:key
                                        resultData:resultData
                                            params:@{}];
