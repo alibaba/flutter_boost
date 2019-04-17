@@ -31,7 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic,copy,readonly) NSString *name;
 @property (nonatomic,strong,readonly) NSDictionary *params;
-@property (nonatomic,copy,readonly) NSString *uniqueIDString;
+
+- (NSString *)uniqueIDString;
 
 /*
  You must call this one time to set flutter page name
