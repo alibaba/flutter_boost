@@ -164,14 +164,16 @@
                                      queue:_queueIO
                                      cache:self
                                 completion:^(NSError *err ,id<FLBStackCacheObject> ob){
-                                    [self.loadinMap removeObjectForKey:key];
-                                    if (ob && !err) {
-                                        if(self.typesMap[key]){
-                                            self.inMemoryObjectsMap[key] = ob;
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        [self.loadinMap removeObjectForKey:key];
+                                        if (ob && !err) {
+                                            if(self.typesMap[key]){
+                                                self.inMemoryObjectsMap[key] = ob;
+                                            }
+                                        }else{
+                                            NSLog(@"preload object from file failed!");
                                         }
-                                    }else{
-                                        NSLog(@"preload object from file failed!");
-                                    }
+                                    });
                                 }];
         }
 
