@@ -139,6 +139,7 @@ static NSUInteger kInstanceCounter = 0;
     
     self.screenShotView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     self.screenShotView.backgroundColor = [UIColor whiteColor];
+    self.screenShotView.contentMode = UIViewContentModeTop;
     
     [self.view addSubview:self.screenShotView];
 }
