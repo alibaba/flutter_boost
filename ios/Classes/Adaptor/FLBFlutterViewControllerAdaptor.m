@@ -30,14 +30,6 @@
 
 @implementation FLBFlutterViewControllerAdaptor
 
-- (instancetype)init
-{
-    if (self = [super init]) {
-
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
