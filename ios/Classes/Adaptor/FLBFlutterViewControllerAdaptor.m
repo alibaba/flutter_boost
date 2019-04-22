@@ -109,12 +109,5 @@
     }
 }
 
-//- (void)onAccessibilityStatusChanged:(NSNotification*)notification {
-////    if(self.accessibilityEnable){
-////        [self fixed_onAccessibilityStatusChanged:notification];
-////    }
-//}
-
-
 
 @end
