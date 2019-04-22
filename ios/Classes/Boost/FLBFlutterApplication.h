@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic,strong) id<FLBPlatform> platform;
 
 #pragma mark - Getters
+- (void)setAccessibilityEnable:(BOOL)enable;
 + (FLBFlutterApplication *)sharedApplication;
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterViewController *))callback;

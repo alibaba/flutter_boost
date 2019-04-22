@@ -23,6 +23,7 @@
  */
 
 #import "FLBFlutterViewControllerAdaptor.h"
+#import <objc/runtime.h>
 
 @interface FLBFlutterViewControllerAdaptor ()
 @end
@@ -32,6 +33,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    Class class = [self class];
+    
+    SEL originalSelector = @selector(onAccessibilityStatusChanged:);
+    SEL swizzledSelector = @selector(fixed_onAccessibilityStatusChanged:);
+    
+    Method originalMethod = class_getInstanceMethod(class, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+    method_exchangeImplementations(originalMethod, swizzledMethod);
+
     self.view.backgroundColor = [UIColor whiteColor];
     
     // Do any additional setup after loading the view.
@@ -95,5 +105,12 @@
 - (void)installSplashScreenViewIfNecessary {
   //Override this to avoid unnecessary splash Screen.
 }
+
+- (void)fixed_onAccessibilityStatusChanged:(NSNotification*)notification {
+    if(self.accessibilityEnable){
+        [self fixed_onAccessibilityStatusChanged:notification];
+    }
+}
+
 
 @end
