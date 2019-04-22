@@ -29,21 +29,23 @@
 @end
 
 @implementation FLBFlutterViewControllerAdaptor
+    
+- (instancetype)init
+{
+    if (self = [super init]) {
+        Class class = [self class];
+        SEL originalSelector = @selector(onAccessibilityStatusChanged:);
+        SEL swizzledSelector = @selector(fixed_onAccessibilityStatusChanged:);
+        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    Class class = [self class];
-    
-    SEL originalSelector = @selector(onAccessibilityStatusChanged:);
-    SEL swizzledSelector = @selector(fixed_onAccessibilityStatusChanged:);
-    
-    Method originalMethod = class_getInstanceMethod(class, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-    method_exchangeImplementations(originalMethod, swizzledMethod);
-
     self.view.backgroundColor = [UIColor whiteColor];
-    
     // Do any additional setup after loading the view.
 }
 
