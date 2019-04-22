@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol FLBFlutterViewProvider <NSObject>
 
 @required
+- (void)setAccessibilityEnable:(BOOL)enable;
 - (FlutterViewController *)viewController;
 - (void)pause;
 - (void)resume;

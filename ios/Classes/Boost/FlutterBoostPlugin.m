@@ -101,4 +101,9 @@
     [_resultMediator removeHandlerForKey:vcid];
 }
 
+- (void)setAccessibilityEnable:(BOOL)enable
+{
+    [[FLBFlutterApplication sharedApplication] setAccessibilityEnable:enable];
+}
+
 @end
