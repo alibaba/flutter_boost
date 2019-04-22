@@ -24,10 +24,13 @@
 
 #import <Foundation/Foundation.h>
 #import "FLBFlutterViewProvider.h"
+#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLBFlutterEngineOld : NSObject<FLBFlutterViewProvider>
+
+- (instancetype)initWithPlatform:(id<FLBPlatform>)platform;
 
 @end
 

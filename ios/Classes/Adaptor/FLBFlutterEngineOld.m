@@ -24,6 +24,7 @@
 
 #import "FLBFlutterEngineOld.h"
 #import "FLBFlutterViewControllerAdaptor.h"
+#import <objc/runtime.h>
 
 @interface FLBFlutterEngineOld()
 @property (nonatomic,strong) FLBFlutterViewControllerAdaptor *viewController;
@@ -31,13 +32,22 @@
 
 @implementation FLBFlutterEngineOld
 
-- (instancetype)init
+- (instancetype)initWithPlatform:(id<FLBPlatform>)platform
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     
     if (self = [super init]) {
+
+        Class class = [FLBFlutterViewControllerAdaptor class];
+        SEL originalSelector = @selector(onAccessibilityStatusChanged:);
+        SEL swizzledSelector = @selector(fixed_onAccessibilityStatusChanged:);
+        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+        
         _viewController = [FLBFlutterViewControllerAdaptor new];
+        _viewController.accessibilityEnable = [platform accessibilityEnable];
         [_viewController view];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {

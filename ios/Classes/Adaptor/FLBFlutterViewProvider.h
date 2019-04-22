@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @required
 - (void)setAccessibilityEnable:(BOOL)enable;
+- (BOOL)accessibilityEnable;
 - (FlutterViewController *)viewController;
 - (void)pause;
 - (void)resume;

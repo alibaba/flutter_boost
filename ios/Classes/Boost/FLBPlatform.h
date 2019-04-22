@@ -27,7 +27,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol FLBPlatform <NSObject>
+
 @required
+
+- (BOOL)accessibilityEnable;
+
 - (void)openPage:(NSString *)name
           params:(NSDictionary *)params
         animated:(BOOL)animated

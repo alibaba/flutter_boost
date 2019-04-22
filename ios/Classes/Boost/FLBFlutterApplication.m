@@ -61,7 +61,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBViewProviderFactory new] createViewProvider];
+        self.viewProvider = [[FLBViewProviderFactory new] createViewProviderWithPlatform:platform];
         [self.viewProvider resume];
         self.isRendering = YES;
         self.isRunning = YES;
@@ -108,8 +108,6 @@
 {
     return [_manager remove:vc];
 }
-
-
 
 
 - (BOOL)isTop:(NSString *)pageId
