@@ -25,6 +25,8 @@ A new Flutter plugin make flutter better to use!
   s.dependency 'Flutter'
   s.dependency 'xservice_kit'
 
+  s.libraries = 'c++'
+
   s.ios.deployment_target = '8.0'
 end
 
