@@ -86,15 +86,31 @@ static NSUInteger kInstanceCounter = 0;
     return @(_identifier).stringValue;
 }
 
+- (void)_setup
+{
+    static long long sCounter = 0;
+    _identifier = sCounter++;
+    [self.class instanceCounterIncrease];
+    
+    SEL sel = @selector(flutterViewDidShow:);
+    NSString *notiName = @"flutter_boost_container_showed";
+    [NSNotificationCenter.defaultCenter addObserver:self
+                                           selector:sel
+                                               name:notiName
+                                             object:nil];
+}
+
 - (instancetype)init
 {
     if(self = [super init]){
-        static long long sCounter = 0;
-        _identifier = sCounter++;
-        [self.class instanceCounterIncrease];
-        [NSNotificationCenter.defaultCenter addObserver:self
-                                               selector:@selector(flutterViewDidShow:) name:@"flutter_boost_container_showed"
-                                                 object:nil];
+        [self _setup];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super initWithCoder: aDecoder]) {
+        [self _setup];
     }
     return self;
 }
