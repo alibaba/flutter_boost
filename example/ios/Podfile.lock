@@ -7,21 +7,20 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - flutter_boost (from `/Users/jidong/Documents/FlutterBoost/ios`)
-  - xservice_kit (from `/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.26/ios`)
-
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - Flutter
+  - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_boost (from `/Users/jidong/Documents/opensource/flutter_boost/ios`)
+  - xservice_kit (from `/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.27/ios`)
 
 EXTERNAL SOURCES:
+  Flutter:
+    :path: ".symlinks/flutter/ios"
   flutter_boost:
-    :path: "/Users/jidong/Documents/FlutterBoost/ios"
+    :path: "/Users/jidong/Documents/opensource/flutter_boost/ios"
   xservice_kit:
-    :path: "/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.26/ios"
+    :path: "/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.27/ios"
 
 SPEC CHECKSUMS:
-  Flutter: fa617360ba1995d522016bfa59d68df27ac12e02
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
   flutter_boost: 24249d12d924d858cf445a84949484bc08bca000
   xservice_kit: a86c64372b3e41e7d8e9b1a0b9139866680f525c
 

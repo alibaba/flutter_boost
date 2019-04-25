@@ -50,12 +50,12 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
-    //miss super call intentionally.
+    //Avoid super call intentionally.
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    //Miss super call intentionally.
+    //Avoid super call intentionally.
      [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
