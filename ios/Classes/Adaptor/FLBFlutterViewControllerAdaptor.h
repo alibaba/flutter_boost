@@ -31,6 +31,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)boost_viewDidAppear:(BOOL)animated;
 - (void)boost_viewWillDisappear:(BOOL)animated;
 - (void)boost_viewDidDisappear:(BOOL)animated;
+
+@property (nonatomic,assign) BOOL accessibilityEnable;
+
 @end
 
 NS_ASSUME_NONNULL_END

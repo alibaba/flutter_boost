@@ -8,3 +8,4 @@
 build/
 pubspec.lock
 .flutter-plugins
+flutter

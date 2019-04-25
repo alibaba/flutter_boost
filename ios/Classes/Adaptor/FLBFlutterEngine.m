@@ -84,6 +84,10 @@
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
 }
 
+- (void)setAccessibilityEnable:(BOOL)enable
+{
+    self.viewController.accessibilityEnable = enable;
+}
 @end
 
 #endif

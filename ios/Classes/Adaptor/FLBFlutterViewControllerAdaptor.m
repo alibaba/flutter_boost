@@ -23,6 +23,7 @@
  */
 
 #import "FLBFlutterViewControllerAdaptor.h"
+#import <objc/runtime.h>
 
 @interface FLBFlutterViewControllerAdaptor ()
 @end
@@ -31,9 +32,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.view.backgroundColor = [UIColor whiteColor];
-    
     // Do any additional setup after loading the view.
 }
 
@@ -51,12 +50,12 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[UIApplication sharedApplication] sendAction:@selector(resignFirstResponder) to:nil from:nil forEvent:nil];
-    //miss super call intentionally.
+    //Avoid super call intentionally.
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    //Miss super call intentionally.
+    //Avoid super call intentionally.
      [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
@@ -95,5 +94,12 @@
 - (void)installSplashScreenViewIfNecessary {
   //Override this to avoid unnecessary splash Screen.
 }
+
+- (void)fixed_onAccessibilityStatusChanged:(NSNotification*)notification {
+    if(self.accessibilityEnable){
+        [self fixed_onAccessibilityStatusChanged:notification];
+    }
+}
+
 
 @end

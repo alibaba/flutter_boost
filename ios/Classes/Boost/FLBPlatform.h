@@ -27,6 +27,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @protocol FLBPlatform <NSObject>
+
+@optional
+//Whether to enable accessibility support. Default value is Yes.
+- (BOOL)accessibilityEnable;
+
 @required
 - (void)openPage:(NSString *)name
           params:(NSDictionary *)params

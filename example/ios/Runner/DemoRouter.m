@@ -37,6 +37,10 @@
     }
 }
 
+- (BOOL)accessibilityEnable
+{
+    return YES;
+}
 
 
 - (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion

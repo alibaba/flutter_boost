@@ -31,6 +31,8 @@ typedef FLBFlutterViewContainer * (^FLBPageBuilder)(NSString *name,NSDictionary 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 #pragma mark - Initializer
 
+- (void)setAccessibilityEnable:(BOOL)enable;
+
 + (instancetype)sharedInstance;
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform onStart:(void (^)(FlutterViewController *))callback;

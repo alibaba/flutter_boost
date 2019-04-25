@@ -61,7 +61,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBViewProviderFactory new] createViewProvider];
+        self.viewProvider = [[FLBViewProviderFactory new] createViewProviderWithPlatform:platform];
         [self.viewProvider resume];
         self.isRendering = YES;
         self.isRunning = YES;
@@ -110,8 +110,6 @@
 }
 
 
-
-
 - (BOOL)isTop:(NSString *)pageId
 {
     return [_manager.peak isEqual:pageId];
@@ -142,6 +140,10 @@
     [self.viewProvider inactive];
 }
 
+- (void)setAccessibilityEnable:(BOOL)enable
+{
+    [self.viewProvider setAccessibilityEnable:enable];
+}
 
 
 @end

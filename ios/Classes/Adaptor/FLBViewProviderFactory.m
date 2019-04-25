@@ -25,10 +25,19 @@
 #import "FLBViewProviderFactory.h"
 #import "FLBFlutterEngine.h"
 #import "FLBFlutterEngineOld.h"
-
+#import "FLBPlatform.h"
 
 
 @implementation FLBViewProviderFactory
+
+- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
+{
+#if RELEASE_1_0
+    return [FLBFlutterEngine new];
+#else
+    return [[FLBFlutterEngineOld alloc] initWithPlatform:platform];
+#endif
+}
 
 - (id<FLBFlutterViewProvider>)createViewProvider
 {
