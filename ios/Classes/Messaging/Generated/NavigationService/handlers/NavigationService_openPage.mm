@@ -34,21 +34,6 @@
  
  - (void)onCall:(void (^)(BOOL))result pageName:(NSString *)pageName params:(NSDictionary *)params animated:(NSNumber *)animated 
  {
-     NSString *url = pageName;
-     if(pageName == nil){
-         pageName = params[@"url"];
-     }
-     
-     if([self needResult:params]){
-         [FlutterBoostPlugin.sharedInstance setResultHandler:^(NSString *key , NSDictionary *resultData) {
-             [Service_NavigationService onNativePageResult:^(NSNumber *) {}
-                                                  uniqueId:@"no use"
-                                                       key:url
-                                                resultData:resultData
-                                                    params:@{}];
-         } forKey:url];
-     }
-     
      [[FLBFlutterApplication sharedApplication].platform openPage:pageName
                                                            params:params
                                                          animated:animated.boolValue
@@ -57,16 +42,6 @@
                                                        }];
  }
 
-- (BOOL)needResult:(NSDictionary *)params
-{
-    NSString *const key = @"needResult";
-    NSNumber *val = params[key];
-    if (val && [val isKindOfClass:NSNumber.class]) {
-        return val.boolValue;
-    }
-    return NO;
-}
- 
  #pragma mark - Do not edit these method.
  - (void)__flutter_p_handler_openPage:(NSDictionary *)args result:(void (^)(BOOL))result {
      [self onCall:result pageName:args[@"pageName"] params:args[@"params"] animated:args[@"animated"]];

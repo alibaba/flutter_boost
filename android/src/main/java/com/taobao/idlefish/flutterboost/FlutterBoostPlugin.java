@@ -187,13 +187,13 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         return false;
     }
 
-    public static void onPageResult(String key , Map resultData){
+    public static void onPageResult(String key , Map resultData, Map params){
 
         if (sInstance == null) {
             throw new RuntimeException("FlutterBoostPlugin not init yet!");
         }
 
-        sInstance.mMediator.onPageResult(key,resultData);
+        sInstance.mMediator.onPageResult(key,resultData,params);
     }
 
     public  static void setHandler(String key, PageResultHandler handler){

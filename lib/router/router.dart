@@ -31,6 +31,8 @@ import 'package:flutter_boost/support/logger.dart';
 
 class Router {
   MessageProxy _msgProxy = MessageProxyImp();
+  PageResultMediator resultMediator = null;
+
 
   void setMessageProxy(MessageProxy prx) {
     if (prx != null) {
@@ -38,11 +40,13 @@ class Router {
     }
   }
 
+
   Future<bool> openPage(String url, Map params,
       {bool animated = true, PageResultHandler resultHandler}) {
     if (resultHandler != null) {
-      params["needResult"] = true;
-      FlutterBoost.singleton.setPageResultHandler(url,
+      String rid = resultMediator.createResultId();
+      params["result_id"] = rid;
+      FlutterBoost.singleton.setPageResultHandler(rid,
           (String key, Map<dynamic, dynamic> result) {
         Logger.log("Recieved result $result for from page key $key");
         if (resultHandler != null) {

@@ -51,11 +51,12 @@ class FlutterBoost {
   final GlobalKey<ContainerManagerState> containerManagerKey =
       GlobalKey<ContainerManagerState>();
 
-  final Router _router = Router();
   final ObserversHolder _observersHolder = ObserversHolder();
   final PageResultMediator _resultMediator = PageResultMediator();
+  final Router _router = Router();
 
   FlutterBoost() {
+    _router.resultMediator = _resultMediator;
     ServiceLoader.load();
   }
 
@@ -140,10 +141,16 @@ class FlutterBoost {
     }
   }
 
-  bool onPageResult(String key, Map<String, dynamic> resultData) {
-    containerManager?.containerStateOf(key)?.performOnResult(resultData);
-    _resultMediator.onPageResult(key, resultData);
+
+  bool onPageResult(String key, Map resultData, Map params) {
+
+    if(_resultMediator.isResultId(key)){
+      _resultMediator.onPageResult(key, resultData,params);
+    }else{
+      containerManager?.containerStateOf(key)?.performOnResult(resultData);
+    }
     return true;
+
   }
 
   VoidCallback setPageResultHandler(String key, PageResultHandler handler) {
