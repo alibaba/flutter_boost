@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 Alibaba Group
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -115,8 +115,8 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         mMediator = new PageResultMediator();
     }
 
-    public IFlutterViewContainer findContainerById(String id){
-        return  mManager.findContainerById(id);
+    public IFlutterViewContainer findContainerById(String id) {
+        return mManager.findContainerById(id);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         }
 
         //Handling page result.
-        if (sInstance.needResult(params)){
+        if (sInstance.needResult(params)) {
             sInstance.mMediator.setHandler(url, new PageResultHandler() {
                 @Override
                 public void onResult(String key, Map resultData) {
@@ -166,7 +166,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
                         public void notImplemented() {
                             //Doing nothing now.
                         }
-                    },"no use",key,resultData,params);
+                    }, "no use", key, resultData, params);
                 }
             });
         }
@@ -174,37 +174,37 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         sInstance.mPlatform.startActivity(ctx, concatUrl(url, params), requestCode);
     }
 
-    private Boolean needResult(Map params){
+    private Boolean needResult(Map params) {
 
-        if(params == null) return false;
+        if (params == null) return false;
 
         final String key = "needResult";
-        if(params.containsKey(key)){
-            if(params.get(key) instanceof Boolean){
+        if (params.containsKey(key)) {
+            if (params.get(key) instanceof Boolean) {
                 return (Boolean) params.get(key);
             }
         }
         return false;
     }
 
-    public static void onPageResult(String key , Map resultData){
+    public static void onPageResult(String key, Map resultData) {
 
         if (sInstance == null) {
             throw new RuntimeException("FlutterBoostPlugin not init yet!");
         }
 
-        sInstance.mMediator.onPageResult(key,resultData);
+        sInstance.mMediator.onPageResult(key, resultData);
     }
 
-    public  static void setHandler(String key, PageResultHandler handler){
+    public static void setHandler(String key, PageResultHandler handler) {
         if (sInstance == null) {
             throw new RuntimeException("FlutterBoostPlugin not init yet!");
         }
 
-        sInstance.mMediator.setHandler(key,handler);
+        sInstance.mMediator.setHandler(key, handler);
     }
 
-    public  static void removeHandler(String key){
+    public static void removeHandler(String key) {
         if (sInstance == null) {
             throw new RuntimeException("FlutterBoostPlugin not init yet!");
         }
@@ -246,9 +246,11 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         if (mCurrentActiveActivity == null) {
             Debuger.log("Application entry foreground");
 
-            Map<String, String> map = new HashMap<>();
-            map.put("type", "foreground");
-            NavigationService.getService().emitEvent(map);
+            if (mViewProvider.tryGetFlutterView() != null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("type", "foreground");
+                NavigationService.getService().emitEvent(map);
+            }
         }
         mCurrentActiveActivity = activity;
     }
@@ -268,9 +270,11 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         if (mCurrentActiveActivity == activity) {
             Debuger.log("Application entry background");
 
-            Map<String, String> map = new HashMap<>();
-            map.put("type", "background");
-            NavigationService.getService().emitEvent(map);
+            if (mViewProvider.tryGetFlutterView() != null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("type", "background");
+                NavigationService.getService().emitEvent(map);
+            }
             mCurrentActiveActivity = null;
         }
     }
@@ -285,29 +289,31 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         if (mCurrentActiveActivity == activity) {
             Debuger.log("Application entry background");
 
-            Map<String, String> map = new HashMap<>();
-            map.put("type", "background");
-            NavigationService.getService().emitEvent(map);
+            if (mViewProvider.tryGetFlutterView() != null) {
+                Map<String, String> map = new HashMap<>();
+                map.put("type", "background");
+                NavigationService.getService().emitEvent(map);
+            }
             mCurrentActiveActivity = null;
         }
     }
 
-    public static void setBoostResult(Activity activity, HashMap result){
+    public static void setBoostResult(Activity activity, HashMap result) {
         Intent intent = new Intent();
-        if(result != null) {
+        if (result != null) {
             intent.putExtra(IFlutterViewContainer.RESULT_KEY, result);
         }
-        activity.setResult(Activity.RESULT_OK,intent);
+        activity.setResult(Activity.RESULT_OK, intent);
     }
 
-    public static void onBoostResult(IFlutterViewContainer container, int requestCode,int resultCode,Intent intent){
+    public static void onBoostResult(IFlutterViewContainer container, int requestCode, int resultCode, Intent intent) {
         Map map = new HashMap();
-        if(intent != null) {
-            map.put("result",intent.getSerializableExtra(IFlutterViewContainer.RESULT_KEY));
+        if (intent != null) {
+            map.put("result", intent.getSerializableExtra(IFlutterViewContainer.RESULT_KEY));
         }
-        map.put("requestCode",requestCode);
-        map.put("responseCode",resultCode);
-        containerManager().onContainerResult(container,map);
+        map.put("requestCode", requestCode);
+        map.put("responseCode", resultCode);
+        containerManager().onContainerResult(container, map);
     }
 }
 
