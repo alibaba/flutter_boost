@@ -54,6 +54,7 @@ import io.flutter.plugin.common.PluginRegistry;
 public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Application.ActivityLifecycleCallbacks {
 
     private static FlutterBoostPlugin sInstance = null;
+    private  static int kRid = 0;
 
     public static synchronized void init(IPlatform platform) {
         if (sInstance == null) {
@@ -146,46 +147,28 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             ctx = sInstance.mPlatform.getApplication();
         }
 
-        //Handling page result.
-        if (sInstance.needResult(params)){
-            sInstance.mMediator.setHandler(url, new PageResultHandler() {
-                @Override
-                public void onResult(String key, Map resultData) {
-                    NavigationService.onNativePageResult(new MessageResult<Boolean>() {
-                        @Override
-                        public void success(Boolean var1) {
-                            //Doing nothing now.
-                        }
-
-                        @Override
-                        public void error(String var1, String var2, Object var3) {
-                            //Doing nothing now.
-                        }
-
-                        @Override
-                        public void notImplemented() {
-                            //Doing nothing now.
-                        }
-                    },"no use",key,resultData,params);
-                }
-            });
-        }
-
         sInstance.mPlatform.startActivity(ctx, concatUrl(url, params), requestCode);
+
+        onPageResult("result_id_100",new HashMap(),new HashMap());
     }
 
-    private Boolean needResult(Map params){
+    public static void openPage(Context context, String url, final Map params, int requestCode,PageResultHandler handler) {
 
-        if(params == null) return false;
-
-        final String key = "needResult";
-        if(params.containsKey(key)){
-            if(params.get(key) instanceof Boolean){
-                return (Boolean) params.get(key);
-            }
+        if(handler != null){
+            String rid = createResultId();
+            sInstance.mMediator.setHandler(rid,handler);
+            params.put("result_id",rid);
         }
-        return false;
+
+        openPage(context,url,params,requestCode);
     }
+
+    private static String createResultId(){
+        kRid += 2;
+        return "result_id_" + kRid;
+    }
+
+
 
     public static void onPageResult(String key , Map resultData, Map params){
 
