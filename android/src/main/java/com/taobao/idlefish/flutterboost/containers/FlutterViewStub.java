@@ -144,12 +144,11 @@ abstract public class FlutterViewStub extends FrameLayout {
 
         if (flutterView == null) return;
 
-        Debuger.log("detachFlutterView");
-
         if (mSnapshot.getParent() == null) {
             mBitmap = flutterView.getBitmap();
             if (mBitmap != null && !mBitmap.isRecycled()) {
                 mSnapshot.setImageBitmap(mBitmap);
+                Debuger.log("snapshot view");
                 addView(mSnapshot);
             }
         }
@@ -160,11 +159,12 @@ abstract public class FlutterViewStub extends FrameLayout {
             @Override
             public void run() {
                 if (flutterView.getParent() != null && flutterView.getParent() == mStub) {
+                    Debuger.log("detachFlutterView");
                     mStub.removeView(flutterView);
                 }
             }
         };
-        sHandler.sendMessage(msg);
+        sHandler.sendMessageDelayed(msg,18);
     }
 
     public void destroy() {
