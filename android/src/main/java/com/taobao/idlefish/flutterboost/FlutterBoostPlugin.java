@@ -28,6 +28,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.alibaba.fastjson.JSON;
@@ -49,6 +50,7 @@ import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.view.FlutterView;
 
 
 public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Application.ActivityLifecycleCallbacks {
@@ -296,6 +298,19 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             }
             mCurrentActiveActivity = null;
         }
+
+
+        //reset view provider when single instance context is destroyed
+//        final FlutterView flutterView = mViewProvider.tryGetFlutterView();
+//        if(flutterView != null) {
+//            Activity ctxActivity = (Activity)flutterView.getContext();
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//                if((ctxActivity.isDestroyed() || ctxActivity == activity) &&
+//                        mManager.getLastRecord() == null) {
+//                    mViewProvider.reset();
+//                }
+//            }
+//        }
     }
 
     public static void setBoostResult(Activity activity, HashMap result) {
