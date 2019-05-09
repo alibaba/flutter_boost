@@ -38,20 +38,10 @@
  
  
      private boolean onCall(MessageResult<Boolean> result,String pageName,Map params,Boolean animated){
-         Map pageParams = null;
-         int requestCode = 0;
-
-         if(params != null && params.get("query") != null) {
-             pageParams = (Map)params.get("query");
+         FlutterBoostPlugin.openPage(null,pageName,params,0);
+         if(result != null){
+             result.success(true);
          }
-
-         if(params != null && params.get("requestCode") != null) {
-             requestCode = (int)params.get("requestCode");
-         }
-
-         FlutterBoostPlugin.openPage(null,pageName,pageParams,requestCode);
-
-         result.success(true);
          return true;
       }
  
