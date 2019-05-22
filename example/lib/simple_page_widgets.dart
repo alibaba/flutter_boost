@@ -12,7 +12,11 @@ class FirstRouteWidget extends StatelessWidget {
         child: RaisedButton(
           child: Text('Open second route'),
           onPressed: () {
-            FlutterBoost.singleton.openPage("second", {}, animated: true);
+
+            FlutterBoost.singleton.openPage("second", {}, animated: true, resultHandler:(String key , Map<dynamic,dynamic> result){
+              print("did recieve second route result $key $result");
+            });
+
           },
         ),
       ),
@@ -31,6 +35,13 @@ class SecondRouteWidget extends StatelessWidget {
         child: RaisedButton(
           onPressed: () {
             // Navigate back to first route when tapped.
+            
+            BoostContainerSettings settings = BoostContainer.of(context).settings;
+            if(settings.params.containsKey("result_id")){
+              String rid = settings.params["result_id"];
+              FlutterBoost.singleton.onPageResult(rid, {"data":"works"},{});
+            }
+
             FlutterBoost.singleton.closePageForContext(context);
           },
           child: Text('Go back!'),

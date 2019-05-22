@@ -86,9 +86,21 @@
     return [[FLBFlutterApplication sharedApplication] flutterViewController];
 }
 
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData
+- (void)openPage:(NSString *)name
+          params:(NSDictionary *)params animated:(BOOL)animated
+      completion:(void (^)(BOOL))completion
+   resultHandler:(void (^)(NSString *, NSDictionary *))resultHandler
 {
-    [_resultMediator onResultForKey:vcId resultData:resultData];
+    static int kRid = 0;
+    NSString *resultId = [NSString stringWithFormat:@"result_id_%d",kRid++];
+    [_resultMediator setResultHandler:^(NSString * _Nonnull resultId, NSDictionary * _Nonnull resultData) {
+        if(resultHandler) resultHandler(resultId,resultData);
+    } forKey:resultId];
+}
+
+- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData params:(NSDictionary *)params
+{
+    [_resultMediator onResultForKey:vcId resultData:resultData params:params];
 }
 
 - (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler forKey:(NSString *)vcid

@@ -23,6 +23,7 @@
  */
 
 #import "FLBResultMediator.h"
+#import "Service_NavigationService.h"
 
 @interface FLBResultMediator()
 @property (nonatomic,strong) NSMutableDictionary *handlers;
@@ -38,16 +39,46 @@
     return self;
 }
 
-- (void)onResultForKey:(NSString *)vcId
+- (void)onResultForKey:(NSString *)rid
             resultData:(NSDictionary *)resultData
+                params:(nonnull NSDictionary *)params
 {
-    if(!vcId) return;
+    if(!rid) return;
     
-    NSString *key = vcId;
+    NSString *key = rid;
     if(_handlers[key]){
         FLBPageResultHandler handler = _handlers[key];
         handler(key,resultData);
         [_handlers removeObjectForKey: key];
+    }else{
+        //Cannot find handler here. Try to forward message to flutter.
+        //Use forward to avoid circle.
+        if(!params || !params[@"forward"]){
+            
+            NSMutableDictionary *tmp = params.mutableCopy;
+            if(!tmp){
+                tmp = NSMutableDictionary.new;
+            }
+            
+            tmp[@"forward"] = @(1);
+            params = tmp;
+            [Service_NavigationService onNativePageResult:^(NSNumber *r) {}
+                                                 uniqueId:rid
+                                                      key:rid
+                                               resultData:resultData
+                                                   params:params];
+        }else{
+            NSMutableDictionary *tmp = params.mutableCopy;
+            tmp[@"forward"] = @([params[@"forward"] intValue] + 1);
+            params = tmp;
+            if([params[@"forward"] intValue] <= 2){
+                [Service_NavigationService onNativePageResult:^(NSNumber *r) {}
+                                                     uniqueId:rid
+                                                          key:rid
+                                                   resultData:resultData
+                                                       params:params];
+            }
+        }
     }
 }
 
