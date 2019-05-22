@@ -24,7 +24,7 @@
 import 'package:flutter_boost/support/logger.dart';
 import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
 
-typedef void PageResultHandler(String key , Map<dynamic,dynamic> result);
+typedef void PageResultHandler(String key , Map<String,dynamic> result);
 typedef VoidCallback = void Function();
 
 class PageResultMediator{
@@ -42,7 +42,7 @@ class PageResultMediator{
   }
 
   Map<String,PageResultHandler> _handlers = Map();
-  void onPageResult(String key , Map<dynamic,dynamic> resultData, Map params){
+  void onPageResult(String key , Map<String,dynamic> resultData, Map params){
 
     if(key == null) return;
 
