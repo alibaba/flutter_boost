@@ -31,7 +31,11 @@ public class MyApplication extends FlutterApplication {
              */
             @Override
             public Activity getMainActivity() {
-                return MainActivity.sRef.get();
+                if (MainActivity.sRef != null) {
+                    return MainActivity.sRef.get();
+                }
+
+                return null;
             }
 
             @Override

@@ -23,6 +23,8 @@
  */
 package com.taobao.idlefish.flutterboost;
 
+import android.os.Handler;
+
 import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
@@ -36,6 +38,7 @@ public class ContainerRecord implements IContainerRecord {
     private final IContainerManager mManager;
     private final IFlutterViewContainer mContainer;
     private final String mUniqueId;
+    private final Handler mHandler = new Handler();
 
     private int mState = STATE_UNKNOW;
     private MethodChannelProxy mProxy = new MethodChannelProxy();
@@ -85,7 +88,12 @@ public class ContainerRecord implements IContainerRecord {
          * If current container is finishing, we should call destroy flutter page early.
          */
         if(mContainer.isFinishing()) {
-            mProxy.destroy();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mProxy.destroy();
+                }
+            });
         }
     }
 
