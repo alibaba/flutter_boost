@@ -83,7 +83,11 @@ class Router {
       animated = params["animated"] as bool;
     }
 
+    Map resultMap = new Map();
+    resultMap.addAll(settings.params);
+    resultMap.addAll(params);
+    
     return _msgProxy.closePage(
-        settings.uniqueId, settings.name, settings.params, animated);
+        settings.uniqueId, settings.name, resultMap, animated);
   }
 }
