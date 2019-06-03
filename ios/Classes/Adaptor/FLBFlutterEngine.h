@@ -27,11 +27,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#if RELEASE_1_0
-
 @interface FLBFlutterEngine : NSObject<FLBFlutterProvider>
 @end
-
-#endif
 
 NS_ASSUME_NONNULL_END

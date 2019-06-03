@@ -24,9 +24,6 @@
 
 #import "FLBFlutterViewContainer.h"
 #import "FLBFlutterApplication.h"
-#import "FLBStackCache.h"
-#import "FLBStackCacheObjectImg.h"
-#import "FLBMemoryInspector.h"
 #import "Service_NavigationService.h"
 #import "FlutterBoostConfig.h"
 #import "FLBFlutterViewContainerManager.h"
@@ -42,6 +39,25 @@
 @end
 
 @implementation FLBFlutterViewContainer
+
+- (instancetype)init
+{
+    [FLUTTER_APP.flutterProvider prepareEngineIfNeeded];
+    if(self = [super initWithEngine:FLUTTER_APP.flutterProvider.engine
+                            nibName:nil
+                             bundle:nil]){
+        [self _setup];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder{
+    if (self = [super initWithCoder: aDecoder]) {
+        NSAssert(NO, @"unsupported init method!");
+        [self _setup];
+    }
+    return self;
+}
 
 - (void)setName:(NSString *)name params:(NSDictionary *)params
 {
@@ -67,7 +83,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter++;
     if(kInstanceCounter == 1){
-        [FLUTTER_APP resume];
+//        [FLUTTER_APP resume];
     }
 }
 
@@ -75,7 +91,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
-        [[FLBFlutterApplication sharedApplication] pause];
+//        [[FLBFlutterApplication sharedApplication] pause];
     }
 }
 
@@ -89,41 +105,6 @@ static NSUInteger kInstanceCounter = 0;
     static long long sCounter = 0;
     _identifier = sCounter++;
     [self.class instanceCounterIncrease];
-    
-    SEL sel = @selector(flutterViewDidShow:);
-    NSString *notiName = @"flutter_boost_container_showed";
-    [NSNotificationCenter.defaultCenter addObserver:self
-                                           selector:sel
-                                               name:notiName
-                                             object:nil];
-}
-
-- (instancetype)init
-{
-    [FLUTTER_APP.flutterProvider prepareEngineIfNeeded];
-    if(self = [super initWithEngine:FLUTTER_APP.flutterProvider.engine
-                            nibName:nil
-                             bundle:nil]){
-        [self _setup];
-    }
-    return self;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder{
-    if (self = [super initWithCoder: aDecoder]) {
-        [self _setup];
-    }
-    return self;
-}
-
-- (void)flutterViewDidAppear:(NSDictionary *)params
-{
-    //Notify flutter view appeared.
-}
-
-- (void)flutterViewDidShow:(NSNotification *)notification
-{
-   
 }
 
 - (void)dealloc
@@ -138,17 +119,15 @@ static NSUInteger kInstanceCounter = 0;
                                                pageName:_name params:_params
                                                uniqueId:[self uniqueIDString]];
 
-    [[FLBStackCache sharedInstance] remove:self.uniqueIDString];
     [[FLBFlutterApplication sharedApplication] removeViewController:self];
     
     [self.class instanceCounterDecrease];
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    self.view.backgroundColor = UIColor.whiteColor;
-    
-}
+//- (void)viewDidLoad {
+//    [super viewDidLoad];
+//    self.view.backgroundColor = UIColor.whiteColor;
+//}
 
 #pragma mark - ScreenShots
 - (BOOL)isFlutterViewAttatched
@@ -164,7 +143,6 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)detatchFlutterEngine
 {
-//    [FLUTTER_APP.flutterProvider prepareEngineIfNeeded];
     [FLUTTER_APP.flutterProvider detach];
 }
 

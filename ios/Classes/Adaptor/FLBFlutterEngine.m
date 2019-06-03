@@ -26,7 +26,6 @@
 #import <Flutter/Flutter.h>
 #import "FLBFlutterViewContainer.h"
 
-#if RELEASE_1_0
 
 @interface FLBFlutterEngine()
 @property (nonatomic,strong) FlutterEngine *engine;
@@ -102,4 +101,3 @@
 
 @end
 
-#endif
