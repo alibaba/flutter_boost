@@ -26,17 +26,19 @@
 #import <Flutter/Flutter.h>
 #import "FLBPlatform.h"
 #import "FlutterBoost.h"
+#import "FLBFlutterProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterApplication : NSObject
 
 @property (nonatomic,strong) id<FLBPlatform> platform;
 
+- (id<FLBFlutterProvider>)flutterProvider;
+
 #pragma mark - Getters
-- (void)setAccessibilityEnable:(BOOL)enable;
 + (FLBFlutterApplication *)sharedApplication;
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterViewController *))callback;
+                         onStart:(void (^)(FlutterEngine * _Nonnull))callback;
 - (FlutterViewController *)flutterViewController;
 
 #pragma mark - Container Management

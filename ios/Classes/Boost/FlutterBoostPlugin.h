@@ -35,7 +35,7 @@ typedef FLBFlutterViewContainer * (^FLBPageBuilder)(NSString *name,NSDictionary 
 
 + (instancetype)sharedInstance;
 
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform onStart:(void (^)(FlutterViewController *))callback;
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform onStart:(void (^)(FlutterEngine *))callback;
 
 #pragma mark - Some properties.
 - (BOOL)isRunning;

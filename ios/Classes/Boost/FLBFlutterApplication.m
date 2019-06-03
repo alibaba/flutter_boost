@@ -25,15 +25,14 @@
 #import "FLBFlutterApplication.h"
 #import "FlutterBoost.h"
 #import "FLBFlutterViewContainerManager.h"
-#import "FLBViewProviderFactory.h"
+#import "FLBFlutterProviderFactory.h"
 
 @interface FLBFlutterApplication()
 @property (nonatomic,strong) FLBFlutterViewContainerManager *manager;
-@property (nonatomic,strong) id<FLBFlutterViewProvider> viewProvider;
+@property (nonatomic,strong) id<FLBFlutterProvider> viewProvider;
 
 @property (nonatomic,strong) NSMutableDictionary *pageBuilders;
 @property (nonatomic,copy) FLBPageBuilder defaultPageBuilder;
-@property (nonatomic,assign) BOOL isRendering;
 @property (nonatomic,assign) BOOL isRunning;
 @end
 
@@ -55,17 +54,20 @@
     return _isRunning;
 }
 
+- (id)flutterProvider
+{
+    return _viewProvider;
+}
+
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterViewController * _Nonnull))callback
+                         onStart:(void (^)(FlutterEngine * _Nonnull))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBViewProviderFactory new] createViewProviderWithPlatform:platform];
-        [self.viewProvider resume];
-        self.isRendering = YES;
+        self.viewProvider = [[FLBFlutterProviderFactory new] createViewProviderWithPlatform:platform];
         self.isRunning = YES;
-        if(callback) callback(self.viewProvider.viewController);
+        if(callback) callback(self.viewProvider.engine);
     });
 }
 
@@ -86,11 +88,6 @@
 - (UIView *)flutterView
 {
     return [self flutterViewController].view;
-}
-
-- (FlutterViewController *)flutterViewController
-{
-    return self.viewProvider.viewController;
 }
 
 
@@ -117,22 +114,12 @@
 
 - (void)pause
 {
-    if(!_isRendering) return;
-    
     [self.viewProvider pause];
-    
-    _isRendering = NO;
-    
 }
 
 - (void)resume
 {
-    if(_isRendering) return;
-    
     [self.viewProvider resume];
-    
-    _isRendering = YES;
-    
 }
 
 - (void)inactive
@@ -140,10 +127,9 @@
     [self.viewProvider inactive];
 }
 
-- (void)setAccessibilityEnable:(BOOL)enable
+- (FlutterViewController *)flutterViewController
 {
-    [self.viewProvider setAccessibilityEnable:enable];
+    return self.flutterProvider.engine.viewController;
 }
-
 
 @end

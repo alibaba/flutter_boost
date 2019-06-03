@@ -22,30 +22,21 @@
  * THE SOFTWARE.
  */
 
-#import "FLBViewProviderFactory.h"
+#import "FLBFlutterProviderFactory.h"
 #import "FLBFlutterEngine.h"
-#import "FLBFlutterEngineOld.h"
 #import "FLBPlatform.h"
 
 
-@implementation FLBViewProviderFactory
+@implementation FLBFlutterProviderFactory
 
-- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
+- (id<FLBFlutterProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
 {
-#if RELEASE_1_0
     return [FLBFlutterEngine new];
-#else
-    return [[FLBFlutterEngineOld alloc] initWithPlatform:platform];
-#endif
 }
 
-- (id<FLBFlutterViewProvider>)createViewProvider
+- (id<FLBFlutterProvider>)createViewProvider
 {
-#if RELEASE_1_0
     return [FLBFlutterEngine new];
-#else
-    return [FLBFlutterEngineOld new];
-#endif
 }
 
 @end

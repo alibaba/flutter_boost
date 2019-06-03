@@ -24,13 +24,13 @@
 
 #import "FLBFlutterEngine.h"
 #import <Flutter/Flutter.h>
-#import "FLBFlutterViewControllerAdaptor.h"
+#import "FLBFlutterViewContainer.h"
 
 #if RELEASE_1_0
 
 @interface FLBFlutterEngine()
-@property (nonatomic,strong) FLBFlutterViewControllerAdaptor *viewController;
 @property (nonatomic,strong) FlutterEngine *engine;
+@property (nonatomic,strong)  FLBFlutterViewContainer *dummy;
 @end
 
 @implementation FLBFlutterEngine
@@ -43,15 +43,14 @@
     if (self = [super init]) {
         _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
         [_engine runWithEntrypoint:nil];
-        _viewController = [[FLBFlutterViewControllerAdaptor alloc] initWithEngine:_engine
-                                                                          nibName:nil
-                                                                           bundle:nil];
-        [_viewController view];
+        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
+                                                       nibName:nil
+                                                        bundle:nil];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {
             if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
                 [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
-                            withObject:_viewController];
+                            withObject:_engine];
             }
         }
     }
@@ -60,23 +59,14 @@
 #pragma clang diagnostic pop
 }
 
-- (FlutterViewController *)viewController
-{
-    return _viewController;
-}
-
 - (void)pause
 {
-    //TODO: [[_engine.get() lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
-    [self.viewController boost_viewWillDisappear:NO];
-    [self.viewController boost_viewDidDisappear:NO];
+    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.pause"];
 }
 
 - (void)resume
 {
-    //TODO:   [[_engine.get() lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
-    [self.viewController boost_viewWillAppear:NO];
-    [self.viewController boost_viewDidAppear:NO];
+    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resume"];
 }
 
 - (void)inactive
@@ -84,10 +74,32 @@
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
 }
 
-- (void)setAccessibilityEnable:(BOOL)enable
+
+- (FlutterEngine *)engine
 {
-    self.viewController.accessibilityEnable = enable;
+    return _engine;
 }
+
+- (void)atacheToViewController:(FlutterViewController *)vc
+{
+    if(_engine.viewController != vc){
+        _engine.viewController = vc;
+    }
+}
+
+- (void)detach
+{
+    if(_engine.viewController != _dummy){
+        _engine.viewController = _dummy;
+    }
+}
+
+- (void)prepareEngineIfNeeded
+{
+    [self detach];
+    [_dummy surfaceUpdated:YES];
+}
+
 @end
 
 #endif

@@ -22,18 +22,26 @@
  * THE SOFTWARE.
  */
 
-#import <Flutter/Flutter.h>
+#import <Foundation/Foundation.h>
+
+@class FlutterViewController;
+@class FlutterEngine;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewControllerAdaptor : FlutterViewController
-- (void)boost_viewWillAppear:(BOOL)animated;
-- (void)boost_viewDidAppear:(BOOL)animated;
-- (void)boost_viewWillDisappear:(BOOL)animated;
-- (void)boost_viewDidDisappear:(BOOL)animated;
+#define RELEASE_1_0 1
 
-@property (nonatomic,assign) BOOL accessibilityEnable;
+@protocol FLBFlutterProvider <NSObject>
 
+@required
+- (FlutterEngine *)engine;
+- (void)atacheToViewController:(FlutterViewController *)vc;
+- (void)detach;
+- (void)pause;
+- (void)resume;
+- (void)inactive;
+
+- (void)prepareEngineIfNeeded;
 @end
 
 NS_ASSUME_NONNULL_END

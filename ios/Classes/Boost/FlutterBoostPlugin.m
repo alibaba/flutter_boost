@@ -70,7 +70,7 @@
 
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterViewController *))callback;
+                         onStart:(void (^)(FlutterEngine *))callback;
 {
     [FLBFlutterApplication.sharedApplication startFlutterWithPlatform:platform
                                                               onStart:callback];
@@ -99,11 +99,6 @@
 - (void)removeHandlerForKey:(NSString *)vcid
 {
     [_resultMediator removeHandlerForKey:vcid];
-}
-
-- (void)setAccessibilityEnable:(BOOL)enable
-{
-    [[FLBFlutterApplication sharedApplication] setAccessibilityEnable:enable];
 }
 
 @end

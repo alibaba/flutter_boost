@@ -24,21 +24,15 @@
 
 #import <Foundation/Foundation.h>
 
-@class FlutterViewController;
+#import "FLBFlutterProvider.h"
+#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define RELEASE_1_0 0
+@interface FLBFlutterProviderFactory : NSObject
 
-@protocol FLBFlutterViewProvider <NSObject>
-
-@required
-- (void)setAccessibilityEnable:(BOOL)enable;
-- (BOOL)accessibilityEnable;
-- (FlutterViewController *)viewController;
-- (void)pause;
-- (void)resume;
-- (void)inactive;
+- (id<FLBFlutterProvider>)createViewProvider;
+- (id<FLBFlutterProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform;
 
 @end
 

@@ -24,10 +24,11 @@
 
 #import <UIKit/UIKit.h>
 #import "FLBViewControllerResultHandler.h"
+#import <Flutter/Flutter.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBViewControllerResultHandler>
+@interface FLBFlutterViewContainer  : FlutterViewController<FLBViewControllerResultHandler>
 
 @property (nonatomic,copy,readonly) NSString *name;
 @property (nonatomic,strong,readonly) NSDictionary *params;
@@ -40,6 +41,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setName:(NSString *)name params:(NSDictionary *)params;
     
 - (void)flutterViewDidAppear:(NSDictionary *)params;
+
+- (void)surfaceUpdated:(BOOL)appeared;
 
 @end
 
