@@ -149,7 +149,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             ctx = sInstance.mPlatform.getApplication();
         }
       
-        sInstance.mPlatform.startActivity(ctx, concatUrl(url, params), requestCode);
+        sInstance.mPlatform.startActivity(ctx, url ,params, requestCode);
     }
 
     public static void openPage(Context context, String url, final Map params, int requestCode,PageResultHandler handler) {
@@ -193,29 +193,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         sInstance.mMediator.removeHandler(key);
     }
 
-    private static String concatUrl(String url, Map params) {
-        if (params == null || params.isEmpty()) return url;
 
-        Uri uri = Uri.parse(url);
-        Uri.Builder builder = uri.buildUpon();
-        for (Object key : params.keySet()) {
-            Object value = params.get(key);
-            if (value != null) {
-                String str;
-                if (value instanceof Map || value instanceof List) {
-                    try {
-                        str = URLEncoder.encode(JSON.toJSONString(value), "utf-8");
-                    } catch (UnsupportedEncodingException e) {
-                        str = value.toString();
-                    }
-                } else {
-                    str = value.toString();
-                }
-                builder.appendQueryParameter(String.valueOf(key), str);
-            }
-        }
-        return builder.build().toString();
-    }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

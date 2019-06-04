@@ -59,7 +59,7 @@ public interface IPlatform {
      * @param requestCode
      * @return
      */
-    boolean startActivity(Context context,String url,int requestCode);
+    boolean startActivity(Context context,String url,Map params,int requestCode);
 
 
     /**
