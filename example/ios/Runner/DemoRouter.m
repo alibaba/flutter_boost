@@ -29,11 +29,14 @@
     if([params[@"present"] boolValue]){
         FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
-        [self.navigationController presentViewController:vc animated:animated completion:^{}];
+        [self.navigationController presentViewController:vc animated:animated completion:^{
+            if(completion) completion(YES);
+        }];
     }else{
         FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
         [self.navigationController pushViewController:vc animated:animated];
+        if(completion) completion(YES);
     }
 }
 

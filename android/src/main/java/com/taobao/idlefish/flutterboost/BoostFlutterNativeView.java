@@ -32,9 +32,12 @@ public class BoostFlutterNativeView extends FlutterNativeView {
     public BoostFlutterNativeView(Context context) {
         super(context);
     }
-
-    @Override
+    
     public void detachFromFlutterView() {
+        //do nothing...
+    }
+
+    public void detach() {
         //do nothing...
     }
 

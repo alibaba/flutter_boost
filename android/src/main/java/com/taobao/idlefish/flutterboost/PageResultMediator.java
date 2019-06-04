@@ -23,19 +23,69 @@
  */
 package com.taobao.idlefish.flutterboost;
 
+import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 
 class PageResultMediator {
 
     private Map<String,PageResultHandler> _handlers = new HashMap<>();
 
-    void onPageResult(String key , Map resultData){
+    void onPageResult(String key , Map resultData,Map params){
         if(key == null) return;
 
         if(_handlers.containsKey(key)){
             _handlers.get(key).onResult(key,resultData);
             _handlers.remove(key);
+        }else{
+
+            if(params == null || !params.containsKey("forward")){
+                if(params == null){
+                    params = new HashMap();
+                }
+
+                params.put("forward",1);
+                NavigationService.onNativePageResult(new MessageResult<Boolean>() {
+                    @Override
+                    public void success(Boolean var1) {
+
+                    }
+
+                    @Override
+                    public void error(String var1, String var2, Object var3) {
+
+                    }
+
+                    @Override
+                    public void notImplemented() {
+
+                    }
+                },key,key,resultData,params);
+            }else{
+                int forward = (Integer) params.get("forward");
+                params.put("forward",++forward);
+                if(forward <= 2){
+                    NavigationService.onNativePageResult(new MessageResult<Boolean>() {
+                        @Override
+                        public void success(Boolean var1) {
+
+                        }
+
+                        @Override
+                        public void error(String var1, String var2, Object var3) {
+
+                        }
+
+                        @Override
+                        public void notImplemented() {
+
+                        }
+                    },key,key,resultData,params);
+                }
+            }
         }
     }
 
