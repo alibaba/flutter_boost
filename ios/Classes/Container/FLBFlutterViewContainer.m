@@ -124,10 +124,10 @@ static NSUInteger kInstanceCounter = 0;
     [self.class instanceCounterDecrease];
 }
 
-//- (void)viewDidLoad {
-//    [super viewDidLoad];
-//    self.view.backgroundColor = UIColor.whiteColor;
-//}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
+}
 
 #pragma mark - ScreenShots
 - (BOOL)isFlutterViewAttatched
@@ -226,6 +226,15 @@ static NSUInteger kInstanceCounter = 0;
                                               key:key
                                        resultData:resultData
                                            params:@{}];
+}
+
+- (void)installSplashScreenViewIfNecessary {
+    //Do nothing.
+}
+
+- (BOOL)loadDefaultSplashScreenView
+{
+    return NO;
 }
 
 
