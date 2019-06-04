@@ -56,10 +56,10 @@ public class MyApplication extends FlutterApplication {
              * @return
              */
             @Override
-            public boolean startActivity(Context context, String url, int requestCode) {
+            public boolean startActivity(Context context, String url, Map params, int requestCode) {
                 Debuger.log("startActivity url="+url);
 
-                return PageRouter.openPageByUrl(context,url,requestCode);
+                return PageRouter.openPageByUrl(context,url,params,requestCode);
             }
 
             @Override
