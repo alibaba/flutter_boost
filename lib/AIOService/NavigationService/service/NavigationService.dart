@@ -93,4 +93,10 @@
        return BOOL(value);
      });
  }
+ /// 通知原生模块flutter是否可以pop
+ static void flutterCanPop(bool canPop) {
+   Map<String,dynamic> properties = new Map<String,dynamic>();
+   properties["canPop"]=canPop;
+   _service.methodChannel().invokeMethod('flutterCanPop',properties);
+ }
  }

@@ -136,6 +136,14 @@
          }
      }];
  }
- 
+
++ (void)canPopPageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId{
+    NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
+    if(pageName) tmp[@"pageName"] = pageName;
+    if(params) tmp[@"params"] = params;
+    if(uniqueId) tmp[@"uniqueId"] = uniqueId;
+    [self.service invoke:@"canPop" args:tmp result:^(id tTesult) {
+    }];
+}
  
  @end
