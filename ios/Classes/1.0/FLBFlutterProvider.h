@@ -34,9 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol FLBFlutterProvider <NSObject>
 
 @required
-- (FlutterEngine *)engine;
-- (void)atacheToViewController:(FlutterViewController *)vc;
-- (void)detach;
+
 - (void)pause;
 - (void)resume;
 - (void)inactive;

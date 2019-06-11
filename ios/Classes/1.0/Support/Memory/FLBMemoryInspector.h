@@ -22,22 +22,26 @@
  * THE SOFTWARE.
  */
 
-#import "FLBViewProviderFactory.h"
-#import "FLBFlutterEngine.h"
-#import "FLBFlutterEngineOld.h"
-#import "FLBPlatform.h"
+#import <Foundation/Foundation.h>
 
+#define kFLBMemoryInspectorChangedNotification @"__FlutterMemoryInspectorChangedNotification__"
+#define kFLBMemoryInspectorKeyCondition @"condition"
 
-@implementation FLBViewProviderFactory
+typedef NS_ENUM(NSUInteger,FLBMemoryCondition) {
+    FLBMemoryConditionUnknown,
+    FLBMemoryConditionNormal,
+    FLBMemoryConditionLowMemory,
+    FLBMemoryConditionExtremelyLow,
+    FLBMemoryConditionAboutToDie
+};
 
-- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
-{
-    return [[FLBFlutterEngineOld alloc] initWithPlatform:platform];
-}
+@interface FLBMemoryInspector : NSObject
 
-- (id<FLBFlutterViewProvider>)createViewProvider
-{
-    return [FLBFlutterEngineOld new];
-}
++ (instancetype)sharedInstance;
+
+- (FLBMemoryCondition)currentCondition;
+- (int64_t)currentFootPrint;
+- (int64_t)deviceMemory;
+- (BOOL)smallMemoryDevice;
 
 @end

@@ -23,15 +23,15 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FLBFlutterViewProvider.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import "FLBStackCache.h"
 
-#if RELEASE_1_0
+@interface FLBStackCacheObjectImg : NSObject<FLBStackCacheObject>
 
-@interface FLBFlutterEngine : NSObject<FLBFlutterViewProvider>
+@property (nonatomic,copy) NSString *key;
+
+- (instancetype)initWithImage:(UIImage *)image;
+
+- (UIImage *)image;
+
 @end
-
-#endif
-
-NS_ASSUME_NONNULL_END

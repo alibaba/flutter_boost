@@ -100,9 +100,5 @@
     [self.viewController sendOnChannel:channel message:data];
 }
 
-- (void)setAccessibilityEnable:(BOOL)enable
-{
-    self.viewController.accessibilityEnable = enable;
-}
 
 @end
