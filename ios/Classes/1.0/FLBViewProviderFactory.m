@@ -22,14 +22,30 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import "FLBViewProviderFactory.h"
+#import "FLBFlutterEngine.h"
+#import "FLBFlutterEngineOld.h"
+#import "FLBPlatform.h"
 
-#import "FLBFlutterContainer.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation FLBViewProviderFactory
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBFlutterContainer>
+- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
+{
+#if RELEASE_1_0
+    return [FLBFlutterEngine new];
+#else
+    return [[FLBFlutterEngineOld alloc] initWithPlatform:platform];
+#endif
+}
+
+- (id<FLBFlutterViewProvider>)createViewProvider
+{
+#if RELEASE_1_0
+    return [FLBFlutterEngine new];
+#else
+    return [FLBFlutterEngineOld new];
+#endif
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

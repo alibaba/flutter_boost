@@ -22,13 +22,17 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-#import "FLBFlutterContainer.h"
+#import "FLBFlutterViewProvider.h"
+#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBFlutterContainer>
+@interface FLBViewProviderFactory : NSObject
+
+- (id<FLBFlutterViewProvider>)createViewProvider;
+- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform;
 
 @end
 

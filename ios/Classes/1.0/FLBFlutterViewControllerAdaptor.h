@@ -22,13 +22,17 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
-
-#import "FLBFlutterContainer.h"
+#import <Flutter/Flutter.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBFlutterContainer>
+@interface FLBFlutterViewControllerAdaptor : FlutterViewController
+- (void)boost_viewWillAppear:(BOOL)animated;
+- (void)boost_viewDidAppear:(BOOL)animated;
+- (void)boost_viewWillDisappear:(BOOL)animated;
+- (void)boost_viewDidDisappear:(BOOL)animated;
+
+@property (nonatomic,assign) BOOL accessibilityEnable;
 
 @end
 

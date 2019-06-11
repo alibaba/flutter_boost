@@ -23,11 +23,15 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FLBFlutterProvider.h"
+#import "FLBFlutterViewProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterEngine : NSObject<FLBFlutterProvider>
+#if RELEASE_1_0
+
+@interface FLBFlutterEngine : NSObject<FLBFlutterViewProvider>
 @end
+
+#endif
 
 NS_ASSUME_NONNULL_END

@@ -23,47 +23,36 @@
  */
 
 #import "FLBFlutterApplication.h"
+#import "FlutterBoost.h"
 #import "FLBFlutterContainerManager.h"
-#import "FLBFlutterEngine.h"
+#import "FLBViewProviderFactory.h"
 
 @interface FLBFlutterApplication()
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
-@property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
+@property (nonatomic,strong) id<FLBFlutterViewProvider> viewProvider;
+
+@property (nonatomic,assign) BOOL isRendering;
 @property (nonatomic,assign) BOOL isRunning;
 @end
 
 
 @implementation FLBFlutterApplication
 
-+ (FLBFlutterApplication *)sharedApplication
-{
-    static FLBFlutterApplication *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [self new];
-    });
-    return instance;
-}
-
 - (BOOL)isRunning
 {
     return _isRunning;
 }
 
-- (id)flutterProvider
-{
-    return _viewProvider;
-}
-
-- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBFlutterEngine alloc] init];
-        _isRunning = YES;
-        if(callback) callback(self.viewProvider.engine);
+        self.viewProvider = [[FLBViewProviderFactory new] createViewProviderWithPlatform:platform];
+        [self.viewProvider resume];
+        self.isRendering = YES;
+        self.isRunning = YES;
+        if(callback) callback(self.viewProvider.viewController);
     });
 }
 
@@ -85,18 +74,23 @@
     return [self flutterViewController].view;
 }
 
+- (FlutterViewController *)flutterViewController
+{
+    return self.viewProvider.viewController;
+}
 
-- (BOOL)contains:(FLBFlutterViewContainer  *)vc
+
+- (BOOL)contains:(id<FLBFlutterContainer>)vc
 {
     return [_manager contains:vc];
 }
 
-- (void)addUniqueViewController:(FLBFlutterViewContainer  *)vc
+- (void)addUniqueViewController:(id<FLBFlutterContainer>)vc
 {
     return [_manager addUnique:vc];
 }
 
-- (void)removeViewController:(FLBFlutterViewContainer  *)vc
+- (void)removeViewController:(id<FLBFlutterContainer>)vc
 {
     return [_manager remove:vc];
 }
@@ -109,12 +103,22 @@
 
 - (void)pause
 {
+    if(!_isRendering) return;
+    
     [self.viewProvider pause];
+    
+    _isRendering = NO;
+    
 }
 
 - (void)resume
 {
+    if(_isRendering) return;
+    
     [self.viewProvider resume];
+    
+    _isRendering = YES;
+    
 }
 
 - (void)inactive
@@ -122,9 +126,10 @@
     [self.viewProvider inactive];
 }
 
-- (FlutterViewController *)flutterViewController
+- (void)setAccessibilityEnable:(BOOL)enable
 {
-    return self.flutterProvider.engine.viewController;
+    [self.viewProvider setAccessibilityEnable:enable];
 }
+
 
 @end

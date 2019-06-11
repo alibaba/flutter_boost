@@ -23,17 +23,19 @@
  */
 
 #import "FLBFactory.h"
+#import "FLBFlutterViewContainer.h"
+#import "FLBFlutterApplication.h"
 
 @implementation FLBFactory
 
 - (id<FLBFlutterApplicationInterface>)createApplication:(id<FLB2Platform>)platform
 {
-    
+    return FLBFlutterApplication.new;
 }
 
-- (id<FLB2FlutterProvider>)createFlutterProvider:(id<FLB2Platform>)platform
+- (id<FLBFlutterContainer>)createFlutterContainer
 {
-    
+    return FLBFlutterViewContainer.new;
 }
 
 @end

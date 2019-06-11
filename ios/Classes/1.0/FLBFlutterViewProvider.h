@@ -22,13 +22,23 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
-#import "FLBFlutterContainer.h"
+@class FlutterViewController;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBFlutterContainer>
+#define RELEASE_1_0 0
+
+@protocol FLBFlutterViewProvider <NSObject>
+
+@required
+- (void)setAccessibilityEnable:(BOOL)enable;
+- (BOOL)accessibilityEnable;
+- (FlutterViewController *)viewController;
+- (void)pause;
+- (void)resume;
+- (void)inactive;
 
 @end
 

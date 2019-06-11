@@ -23,12 +23,13 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
+
 
 #import "FLBFlutterApplicationInterface.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterApplication : NSObject<FLBFlutterApplicationInterface>
+
 
 @end
 

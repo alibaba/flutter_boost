@@ -33,10 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol FLBAbstractFactory <NSObject>
 
+@required
 - (id<FLBFlutterApplicationInterface>)createApplication:(id<FLB2Platform>)platform;
-
-- (id<FLB2FlutterProvider>)createFlutterProvider:(id<FLB2Platform>)platform;
-
 - (id<FLBFlutterContainer>)createFlutterContainer;
 
 @end

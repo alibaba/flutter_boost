@@ -22,30 +22,37 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterEngine.h"
-#import <Flutter/Flutter.h>
+#import "FLBFlutterEngineOld.h"
 #import "FLBFlutterViewControllerAdaptor.h"
+#import <objc/runtime.h>
 
-#if RELEASE_1_0
-
-@interface FLBFlutterEngine()
+@interface FLBFlutterEngineOld()
 @property (nonatomic,strong) FLBFlutterViewControllerAdaptor *viewController;
-@property (nonatomic,strong) FlutterEngine *engine;
 @end
 
-@implementation FLBFlutterEngine
+@implementation FLBFlutterEngineOld
 
-- (instancetype)init
+- (instancetype)initWithPlatform:(id<FLBPlatform>)platform
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     
     if (self = [super init]) {
-        _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
-        [_engine runWithEntrypoint:nil];
-        _viewController = [[FLBFlutterViewControllerAdaptor alloc] initWithEngine:_engine
-                                                                          nibName:nil
-                                                                           bundle:nil];
+
+        Class class = [FLBFlutterViewControllerAdaptor class];
+        SEL originalSelector = @selector(onAccessibilityStatusChanged:);
+        SEL swizzledSelector = @selector(fixed_onAccessibilityStatusChanged:);
+        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+        method_exchangeImplementations(originalMethod, swizzledMethod);
+        
+        _viewController = [FLBFlutterViewControllerAdaptor new];
+        if([platform respondsToSelector:@selector(accessibilityEnable)]){
+            _viewController.accessibilityEnable = [platform accessibilityEnable];
+        }else{
+            _viewController.accessibilityEnable = YES;
+        }
+     
         [_viewController view];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {
@@ -67,27 +74,35 @@
 
 - (void)pause
 {
-    //TODO: [[_engine.get() lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
     [self.viewController boost_viewWillDisappear:NO];
     [self.viewController boost_viewDidDisappear:NO];
 }
 
 - (void)resume
 {
-    //TODO:   [[_engine.get() lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
     [self.viewController boost_viewWillAppear:NO];
     [self.viewController boost_viewDidAppear:NO];
 }
 
 - (void)inactive
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
+    NSString *channel = @"flutter/lifecycle";
+    NSString *message = @"AppLifecycleState.inactive";
+    NSData *data = [[FlutterStringCodec sharedInstance] encode:message];
+    [self.viewController sendOnChannel:channel message:data];
+}
+
+- (void)resumeFlutterOnly
+{
+    NSString *channel = @"flutter/lifecycle";
+    NSString *message = @"AppLifecycleState.resumed";
+    NSData *data = [[FlutterStringCodec sharedInstance] encode:message];
+    [self.viewController sendOnChannel:channel message:data];
 }
 
 - (void)setAccessibilityEnable:(BOOL)enable
 {
     self.viewController.accessibilityEnable = enable;
 }
-@end
 
-#endif
+@end

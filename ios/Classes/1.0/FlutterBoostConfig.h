@@ -22,14 +22,19 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
-
-#import "FLBFlutterContainer.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainer  : UIViewController<FLBFlutterContainer>
-
+@interface FlutterBoostConfig : NSObject
+#pragma mark - Store first open page
+//There are some cases first page messages could be lost.
+//So we store the first page info for later usage.
++ (instancetype)sharedInstance;
+@property (nonatomic,copy) NSString *fPagename;
+@property (nonatomic,copy) NSString *fPageId;
+@property (nonatomic,strong) NSDictionary *fParams;
+- (BOOL)firstView;
 @end
+
+
 
 NS_ASSUME_NONNULL_END
