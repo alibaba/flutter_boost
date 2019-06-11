@@ -25,6 +25,8 @@
 #import "FlutterBoostPlugin.h"
 #import "FLBResultMediator.h"
 #import "FlutterBoostPlugin_private.h"
+#import "FLBFactory.h"
+#import "FLB2Factory.h"
 
 @implementation FlutterBoostPlugin
 
@@ -70,9 +72,18 @@
                                              FlutterTextureRegistry,
                                            FlutterPluginRegistry> engine))callback;
 {
-    //TODO:
-    [self.application startFlutterWithPlatform:platform
-                                        onStart:callback];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        
+        if([platform respondsToSelector:@selector(userBoost2)] && platform.userBoost2){
+            _factory = FLB2Factory.new;
+        }else{
+            _factory = FLBFactory.new;
+        }
+        
+        _application = [_factory createApplication:platform];
+        [_application startFlutterWithPlatform:platform onStart:callback];
+    });
 }
 
 - (BOOL)isRunning

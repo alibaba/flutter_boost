@@ -23,7 +23,6 @@
  */
 
 #import "FLBViewProviderFactory.h"
-#import "FLBFlutterEngine.h"
 #import "FLBFlutterEngineOld.h"
 #import "FLBPlatform.h"
 

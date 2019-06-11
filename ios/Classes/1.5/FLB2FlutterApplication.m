@@ -30,7 +30,6 @@
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
 @property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
 
-@property (nonatomic,strong) NSMutableDictionary *pageBuilders;
 @property (nonatomic,assign) BOOL isRunning;
 @end
 
@@ -58,7 +57,7 @@
 }
 
 - (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
-                         onStart:(void (^)(FlutterEngine * _Nonnull))callback
+                         onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -73,7 +72,6 @@
 {
     if (self = [super init]) {
         _manager = [FLBFlutterContainerManager new];
-        _pageBuilders = [NSMutableDictionary new];
     }
     return self;
 }
@@ -89,17 +87,17 @@
 }
 
 
-- (BOOL)contains:(FLB2FlutterViewContainer  *)vc
+- (BOOL)contains:(id<FLBFlutterContainer>)vc
 {
     return [_manager contains:vc];
 }
 
-- (void)addUniqueViewController:(FLB2FlutterViewContainer  *)vc
+- (void)addUniqueViewController:(id<FLBFlutterContainer>)vc
 {
     return [_manager addUnique:vc];
 }
 
-- (void)removeViewController:(FLB2FlutterViewContainer  *)vc
+- (void)removeViewController:(id<FLBFlutterContainer>)vc
 {
     return [_manager remove:vc];
 }

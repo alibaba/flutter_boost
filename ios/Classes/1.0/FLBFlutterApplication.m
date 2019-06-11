@@ -126,10 +126,5 @@
     [self.viewProvider inactive];
 }
 
-- (void)setAccessibilityEnable:(BOOL)enable
-{
-    [self.viewProvider setAccessibilityEnable:enable];
-}
-
 
 @end

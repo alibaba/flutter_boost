@@ -95,11 +95,5 @@
   //Override this to avoid unnecessary splash Screen.
 }
 
-- (void)fixed_onAccessibilityStatusChanged:(NSNotification*)notification {
-    if(self.accessibilityEnable){
-        [self fixed_onAccessibilityStatusChanged:notification];
-    }
-}
-
 
 @end

@@ -23,10 +23,11 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FLBAbstractFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLB2Factory : NSObject
+@interface FLB2Factory : NSObject<FLBAbstractFactory>
 
 @end
 

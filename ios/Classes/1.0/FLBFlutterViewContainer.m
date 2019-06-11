@@ -29,10 +29,12 @@
 #import "FLBMemoryInspector.h"
 #import "Service_NavigationService.h"
 #import "FlutterBoostConfig.h"
+#import "FlutterBoostPlugin_private.h"
 
-#define FLUTTER_VIEW [FLBFlutterApplication sharedApplication].flutterViewController.view
-#define FLUTTER_VC [FLBFlutterApplication sharedApplication].flutterViewController
-#define FLUTTER_APP [FLBFlutterApplication sharedApplication]
+#define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
+#define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
+#define FLUTTER_VC FLUTTER_APP.flutterViewController
+
 
 @interface FLBFlutterViewContainer  ()
 @property (nonatomic,copy,readwrite) NSString *name;
@@ -77,7 +79,7 @@ static NSUInteger kInstanceCounter = 0;
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
         [[FLBStackCache sharedInstance] clear];
-        [[FLBFlutterApplication sharedApplication] pause];
+        [FLUTTER_APP pause];
     }
 }
 
@@ -143,7 +145,7 @@ static NSUInteger kInstanceCounter = 0;
                                                uniqueId:[self uniqueIDString]];
 
     [[FLBStackCache sharedInstance] remove:self.uniqueIDString];
-    [[FLBFlutterApplication sharedApplication] removeViewController:self];
+    [FLUTTER_APP removeViewController:self];
     
     [self.class instanceCounterDecrease];
 }
@@ -290,7 +292,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [[FLBFlutterApplication sharedApplication] resume];
+    [FLUTTER_APP resume];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -299,10 +301,10 @@ static NSUInteger kInstanceCounter = 0;
         self.interactiveGestureActive = true;
     }
     
-    [[FLBFlutterApplication sharedApplication] resume];
+    [FLUTTER_APP resume];
     //For new page we should attach flutter view in view will appear
     //for better performance.
-    if(![[FLBFlutterApplication sharedApplication] contains:self]){
+    if(![FLUTTER_APP contains:self]){
          [self attatchFlutterView];
     }
     
@@ -313,10 +315,10 @@ static NSUInteger kInstanceCounter = 0;
                                               params:_params
                                             uniqueId:self.uniqueIDString];
     //Save some first time page info.
-    if(![FlutterBoostConfig sharedInstance].fPagename){
-        [FlutterBoostConfig sharedInstance].fPagename = _name;
-        [FlutterBoostConfig sharedInstance].fPageId = self.uniqueIDString;
-        [FlutterBoostConfig sharedInstance].fParams = _params;
+    if(![FlutterBoostPlugin sharedInstance].fPagename){
+        [FlutterBoostPlugin sharedInstance].fPagename = _name;
+        [FlutterBoostPlugin sharedInstance].fPageId = self.uniqueIDString;
+        [FlutterBoostPlugin sharedInstance].fParams = _params;
     }
     
     [super viewWillAppear:animated];
@@ -324,7 +326,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [[FLBFlutterApplication sharedApplication] resume];
+    [FLUTTER_APP resume];
    
     //Ensure flutter view is attached.
     [self attatchFlutterView];
@@ -334,7 +336,7 @@ static NSUInteger kInstanceCounter = 0;
                                              params:_params
                                            uniqueId:self.uniqueIDString];
     
-    [[FLBFlutterApplication sharedApplication] addUniqueViewController:self];
+    [FLUTTER_APP addUniqueViewController:self];
     
     [super viewDidAppear:animated];
  

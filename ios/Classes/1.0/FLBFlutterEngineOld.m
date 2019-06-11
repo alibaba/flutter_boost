@@ -47,12 +47,7 @@
         method_exchangeImplementations(originalMethod, swizzledMethod);
         
         _viewController = [FLBFlutterViewControllerAdaptor new];
-        if([platform respondsToSelector:@selector(accessibilityEnable)]){
-            _viewController.accessibilityEnable = [platform accessibilityEnable];
-        }else{
-            _viewController.accessibilityEnable = YES;
-        }
-     
+    
         [_viewController view];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {

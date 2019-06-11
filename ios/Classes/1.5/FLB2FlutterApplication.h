@@ -32,27 +32,6 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface FLB2FlutterApplication : NSObject<FLBFlutterApplicationInterface>
 
-@property (nonatomic,strong) id<FLB2Platform> platform;
-
-- (id<FLB2FlutterProvider>)flutterProvider;
-
-#pragma mark - Getters
-+ (FLB2FlutterApplication *)sharedApplication;
-- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
-                         onStart:(void (^)(FlutterEngine * _Nonnull))callback;
-- (FlutterViewController *)flutterViewController;
-
-#pragma mark - Container Management
-- (BOOL)contains:(FLB2FlutterViewContainer  *)vc;
-- (void)addUniqueViewController:(FLB2FlutterViewContainer  *)vc;
-- (void)removeViewController:(FLB2FlutterViewContainer  *)vc;
-- (BOOL)isTop:(NSString *)pageId;
-
-#pragma mark - App Control
-- (void)pause;
-- (void)resume;
-- (void)inactive;
-- (BOOL)isRunning;
 @end
 
 NS_ASSUME_NONNULL_END

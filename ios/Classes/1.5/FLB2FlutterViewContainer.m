@@ -28,9 +28,9 @@
 #import "FLBFlutterContainerManager.h"
 #import "FlutterBoostPlugin_private.h"
 
-#define FLUTTER_VIEW [FLB2FlutterApplication sharedApplication].flutterViewController.view
-#define FLUTTER_VC [FLB2FlutterApplication sharedApplication].flutterViewController
-#define FLUTTER_APP [FLB2FlutterApplication sharedApplication]
+#define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
+#define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
+#define FLUTTER_VC FLUTTER_APP.flutterViewController
 
 @interface FLB2FlutterViewContainer  ()
 @property (nonatomic,copy,readwrite) NSString *name;
@@ -91,7 +91,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
-//        [[FLBFlutterApplication sharedApplication] pause];
+//        [FLUTTER_APP pause];
     }
 }
 
@@ -119,7 +119,7 @@ static NSUInteger kInstanceCounter = 0;
                                                pageName:_name params:_params
                                                uniqueId:[self uniqueIDString]];
 
-    [[FLB2FlutterApplication sharedApplication] removeViewController:self];
+    [FLUTTER_APP removeViewController:self];
     
     [self.class instanceCounterDecrease];
 }
@@ -152,7 +152,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [[FLB2FlutterApplication sharedApplication] resume];
+    [FLUTTER_APP resume];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -163,7 +163,7 @@ static NSUInteger kInstanceCounter = 0;
         [self attatchFlutterEngine];
     }
   
-    [[FLB2FlutterApplication sharedApplication] resume];
+    [FLUTTER_APP resume];
     
     [self surfaceUpdated:YES];
     //For new page we should attach flutter view in view will appear

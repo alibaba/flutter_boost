@@ -27,12 +27,15 @@
 #import "FLBResultMediator.h"
 #import "FLBAbstractFactory.h"
 
-@interface FlutterBoostPlugin()
+@interface FlutterBoostPlugin(){
+    id<FLBFlutterApplicationInterface> _application;
+    FLBResultMediator *_resultMediator;
+    id<FLBAbstractFactory> _factory;
+}
 
 - (id<FLBFlutterApplicationInterface>)application;
-
-@property (nonatomic,strong) FLBResultMediator *resultMediator;
-@property (nonatomic,strong) id<FLBAbstractFactory> factory;
+- (FLBResultMediator *)resultMediator;
+- (id<FLBAbstractFactory>)factory;
 
 @property (nonatomic,copy) NSString *fPageId;
 @property (nonatomic,copy) NSString *fPagename;

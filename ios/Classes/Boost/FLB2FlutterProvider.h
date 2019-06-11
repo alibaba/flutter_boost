@@ -23,7 +23,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FLBFlutterProvider.h"
+#import "FLBFlutterViewProvider.h"
 
 @class FlutterViewController;
 @class FlutterEngine;
@@ -32,16 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define RELEASE_1_0 1
 
-@protocol FLB2FlutterProvider <FLBFlutterProvider>
+@protocol FLB2FlutterProvider <FLBFlutterViewProvider>
 
 @required
 - (FlutterEngine *)engine;
 - (void)atacheToViewController:(FlutterViewController *)vc;
 - (void)detach;
-- (void)pause;
-- (void)resume;
-- (void)inactive;
-
 - (void)prepareEngineIfNeeded;
 @end
 
