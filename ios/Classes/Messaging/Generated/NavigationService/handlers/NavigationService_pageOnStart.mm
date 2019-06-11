@@ -26,17 +26,16 @@
  
  #import "ServiceGateway.h"
  #import "NavigationService_pageOnStart.h"
- #import "FLBFlutterApplication.h"
-#import "FlutterBoostConfig.h"
+#import "FlutterBoostPlugin_private.h"
 
  @implementation NavigationService_pageOnStart
 
  - (void)onCall:(void (^)(NSDictionary *))result params:(NSDictionary *)params 
  {
      NSMutableDictionary *pageInfo = [NSMutableDictionary new];
-     pageInfo[@"name"] =[FlutterBoostConfig sharedInstance].fPagename;
-     pageInfo[@"params"] = [FlutterBoostConfig sharedInstance].fParams;
-     pageInfo[@"uniqueId"] = [FlutterBoostConfig sharedInstance].fPageId;
+     pageInfo[@"name"] =[FlutterBoostPlugin sharedInstance].fPagename;
+     pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
+     pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
      if(result) result(pageInfo);
  }
  

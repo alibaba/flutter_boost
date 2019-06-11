@@ -23,19 +23,16 @@
  */
 #import <Flutter/Flutter.h>
 
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
-
-typedef FLBFlutterViewContainer * (^FLBPageBuilder)(NSString *name,NSDictionary *params);
+#import "FLB2Platform.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
+
+
 #pragma mark - Initializer
-
-- (void)setAccessibilityEnable:(BOOL)enable;
-
 + (instancetype)sharedInstance;
 
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform onStart:(void (^)(FlutterEngine *))callback;
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+                         onStart:(void (^)(id<FlutterBinaryMessenger, FlutterTextureRegistry, FlutterPluginRegistry> engine))callback;
 
 #pragma mark - Some properties.
 - (BOOL)isRunning;

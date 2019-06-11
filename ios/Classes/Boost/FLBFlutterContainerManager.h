@@ -23,16 +23,16 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FLBFlutterViewContainer.h"
+#import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFlutterViewContainerManager : NSObject
+@interface FLBFlutterContainerManager : NSObject
 
 - (NSString *)peak;
-- (void)addUnique:(FLBFlutterViewContainer  *)vc;
-- (void)remove:(FLBFlutterViewContainer  *)vc;
-- (BOOL)contains:(FLBFlutterViewContainer  *)vc;
+- (void)addUnique:(id<FLBFlutterContainer>)vc;
+- (void)remove:(id<FLBFlutterContainer>)vc;
+- (BOOL)contains:(id<FLBFlutterContainer>)vc;
 
 @end
 

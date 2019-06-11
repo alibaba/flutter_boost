@@ -24,24 +24,24 @@
 
 #import <Foundation/Foundation.h>
 
-@class FlutterViewController;
-@class FlutterEngine;
-
 NS_ASSUME_NONNULL_BEGIN
 
-#define RELEASE_1_0 1
+@protocol FLB2Platform <NSObject>
 
-@protocol FLBFlutterProvider <NSObject>
+@optional
+//Whether to enable accessibility support. Default value is Yes.
+- (BOOL)accessibilityEnable;
 
 @required
-- (FlutterEngine *)engine;
-- (void)atacheToViewController:(FlutterViewController *)vc;
-- (void)detach;
-- (void)pause;
-- (void)resume;
-- (void)inactive;
+- (void)openPage:(NSString *)name
+          params:(NSDictionary *)params
+        animated:(BOOL)animated
+      completion:(void (^)(BOOL finished))completion;
 
-- (void)prepareEngineIfNeeded;
+- (void)closePage:(NSString *)uid
+         animated:(BOOL)animated
+           params:(NSDictionary *)params
+       completion:(void (^)(BOOL finished))completion;
 @end
 
 NS_ASSUME_NONNULL_END

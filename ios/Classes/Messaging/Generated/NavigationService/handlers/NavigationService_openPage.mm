@@ -26,7 +26,7 @@
  
  #import "ServiceGateway.h"
  #import "NavigationService_openPage.h"
- #import "FLBFlutterApplication.h"
+ #import "FLB2FlutterApplication.h"
 #import "FlutterBoost.h"
 #import "Service_NavigationService.h"
  
@@ -34,7 +34,7 @@
  
  - (void)onCall:(void (^)(BOOL))result pageName:(NSString *)pageName params:(NSDictionary *)params animated:(NSNumber *)animated 
  {
-     [[FLBFlutterApplication sharedApplication].platform openPage:pageName
+     [[FLB2FlutterApplication sharedApplication].platform openPage:pageName
                                                            params:params
                                                          animated:animated.boolValue
                                                        completion:^(BOOL finished) {

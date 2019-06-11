@@ -23,25 +23,36 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "FLB2Platform.h"
+#import "FlutterBoost.h"
+#import "FLB2FlutterProvider.h"
+#import "FLBFlutterApplicationInterface.h"
 
 NS_ASSUME_NONNULL_BEGIN
+@interface FLB2FlutterApplication : NSObject<FLBFlutterApplicationInterface>
 
-@protocol FLBPlatform <NSObject>
+@property (nonatomic,strong) id<FLB2Platform> platform;
 
-@optional
-//Whether to enable accessibility support. Default value is Yes.
-- (BOOL)accessibilityEnable;
+- (id<FLB2FlutterProvider>)flutterProvider;
 
-@required
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL finished))completion;
+#pragma mark - Getters
++ (FLB2FlutterApplication *)sharedApplication;
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+                         onStart:(void (^)(FlutterEngine * _Nonnull))callback;
+- (FlutterViewController *)flutterViewController;
 
-- (void)closePage:(NSString *)uid
-         animated:(BOOL)animated
-           params:(NSDictionary *)params
-       completion:(void (^)(BOOL finished))completion;
+#pragma mark - Container Management
+- (BOOL)contains:(FLB2FlutterViewContainer  *)vc;
+- (void)addUniqueViewController:(FLB2FlutterViewContainer  *)vc;
+- (void)removeViewController:(FLB2FlutterViewContainer  *)vc;
+- (BOOL)isTop:(NSString *)pageId;
+
+#pragma mark - App Control
+- (void)pause;
+- (void)resume;
+- (void)inactive;
+- (BOOL)isRunning;
 @end
 
 NS_ASSUME_NONNULL_END

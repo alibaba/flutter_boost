@@ -23,12 +23,11 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FLB2FlutterProvider.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol FLBViewControllerResultHandler <NSObject>
-@required
-- (void)onRecievedResult:(NSDictionary *)resultData forKey:(NSString *)key;
+@interface FLB2FlutterEngine : NSObject<FLB2FlutterProvider>
 @end
 
 NS_ASSUME_NONNULL_END

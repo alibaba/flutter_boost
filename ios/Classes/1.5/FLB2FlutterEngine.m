@@ -22,17 +22,17 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterEngine.h"
+#import "FLB2FlutterEngine.h"
 #import <Flutter/Flutter.h>
-#import "FLBFlutterViewContainer.h"
+#import "FLB2FlutterViewContainer.h"
 
 
-@interface FLBFlutterEngine()
+@interface FLB2FlutterEngine()
 @property (nonatomic,strong) FlutterEngine *engine;
-@property (nonatomic,strong)  FLBFlutterViewContainer *dummy;
+@property (nonatomic,strong)  FLB2FlutterViewContainer *dummy;
 @end
 
-@implementation FLBFlutterEngine
+@implementation FLB2FlutterEngine
 
 - (instancetype)init
 {
@@ -42,7 +42,7 @@
     if (self = [super init]) {
         _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
         [_engine runWithEntrypoint:nil];
-        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
+        _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
                                                        nibName:nil
                                                         bundle:nil];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");

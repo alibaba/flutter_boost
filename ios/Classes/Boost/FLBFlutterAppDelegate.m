@@ -23,13 +23,13 @@
  */
 
 #import "FLBFlutterAppDelegate.h"
-#import "FLBFlutterApplication.h"
+#import "FLB2FlutterApplication.h"
 
 @implementation FLBFlutterAppDelegate
 // Returns the key window's rootViewController, if it's a FlutterViewController.
 // Otherwise, returns nil.
 - (FlutterViewController*)rootFlutterViewController {
-    return FLBFlutterApplication.sharedApplication.flutterViewController;
+    return FLB2FlutterApplication.sharedApplication.flutterViewController;
 }
 
 @end

@@ -22,19 +22,55 @@
  * THE SOFTWARE.
  */
 
-NS_ASSUME_NONNULL_BEGIN
+#import "FLBFlutterContainerManager.h"
 
-@interface FlutterBoostConfig : NSObject
-#pragma mark - Store first open page
-//There are some cases first page messages could be lost.
-//So we store the first page info for later usage.
-+ (instancetype)sharedInstance;
-@property (nonatomic,copy) NSString *fPagename;
-@property (nonatomic,copy) NSString *fPageId;
-@property (nonatomic,strong) NSDictionary *fParams;
-- (BOOL)firstView;
+@interface FLBFlutterContainerManager()
+@property (nonatomic,strong) NSMutableArray *idStk;
+@property (nonatomic,strong) NSMutableDictionary *existedID;
 @end
 
+@implementation FLBFlutterContainerManager
 
+- (instancetype)init
+{
+    if (self = [super init]) {
+        _idStk= [NSMutableArray new];
+        _existedID = [NSMutableDictionary dictionary];
+    }
+    
+    return self;
+}
 
-NS_ASSUME_NONNULL_END
+- (BOOL)contains:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        return _existedID[vc.uniqueIDString]?YES:NO;
+    }
+    
+    return NO;
+}
+
+- (void)addUnique:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        if(!_existedID[vc.uniqueIDString]){
+            [_idStk addObject:vc.uniqueIDString];
+        }
+        _existedID[vc.uniqueIDString] = vc.uniqueIDString;
+    }
+}
+
+- (void)remove:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        [_existedID removeObjectForKey:vc.uniqueIDString];
+        [_idStk removeObject:vc.uniqueIDString];
+    }
+}
+
+- (NSString *)peak
+{
+    return _idStk.lastObject;
+}
+
+@end

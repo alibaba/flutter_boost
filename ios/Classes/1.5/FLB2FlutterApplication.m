@@ -22,26 +22,24 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterApplication.h"
+#import "FLB2FlutterApplication.h"
 #import "FlutterBoost.h"
-#import "FLBFlutterViewContainerManager.h"
-#import "FLBFlutterProviderFactory.h"
+#import "FLBFlutterContainerManager.h"
 
-@interface FLBFlutterApplication()
-@property (nonatomic,strong) FLBFlutterViewContainerManager *manager;
-@property (nonatomic,strong) id<FLBFlutterProvider> viewProvider;
+@interface FLB2FlutterApplication()
+@property (nonatomic,strong) FLBFlutterContainerManager *manager;
+@property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
 
 @property (nonatomic,strong) NSMutableDictionary *pageBuilders;
-@property (nonatomic,copy) FLBPageBuilder defaultPageBuilder;
 @property (nonatomic,assign) BOOL isRunning;
 @end
 
 
-@implementation FLBFlutterApplication
+@implementation FLB2FlutterApplication
 
-+ (FLBFlutterApplication *)sharedApplication
++ (FLB2FlutterApplication *)sharedApplication
 {
-    static FLBFlutterApplication *instance = nil;
+    static FLB2FlutterApplication *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [self new];
@@ -59,13 +57,13 @@
     return _viewProvider;
 }
 
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
                          onStart:(void (^)(FlutterEngine * _Nonnull))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBFlutterProviderFactory new] createViewProviderWithPlatform:platform];
+        self.viewProvider;
         self.isRunning = YES;
         if(callback) callback(self.viewProvider.engine);
     });
@@ -74,7 +72,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _manager = [FLBFlutterViewContainerManager new];
+        _manager = [FLBFlutterContainerManager new];
         _pageBuilders = [NSMutableDictionary new];
     }
     return self;
@@ -91,17 +89,17 @@
 }
 
 
-- (BOOL)contains:(FLBFlutterViewContainer  *)vc
+- (BOOL)contains:(FLB2FlutterViewContainer  *)vc
 {
     return [_manager contains:vc];
 }
 
-- (void)addUniqueViewController:(FLBFlutterViewContainer  *)vc
+- (void)addUniqueViewController:(FLB2FlutterViewContainer  *)vc
 {
     return [_manager addUnique:vc];
 }
 
-- (void)removeViewController:(FLBFlutterViewContainer  *)vc
+- (void)removeViewController:(FLB2FlutterViewContainer  *)vc
 {
     return [_manager remove:vc];
 }

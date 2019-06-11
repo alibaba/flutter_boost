@@ -23,12 +23,9 @@
  */
 
 #import "FlutterBoostPlugin.h"
-#import "FLBFlutterApplication.h"
+#import "FLB2FlutterApplication.h"
 #import "FLBResultMediator.h"
-
-@interface FlutterBoostPlugin()
-@property (nonatomic,strong) FLBResultMediator *resultMediator;
-@end
+#import "FlutterBoostPlugin_private.h"
 
 @implementation FlutterBoostPlugin
 
@@ -69,21 +66,24 @@
 }
 
 
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterEngine *))callback;
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                             FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
 {
-    [FLBFlutterApplication.sharedApplication startFlutterWithPlatform:platform
+    //TODO:
+    [FLB2FlutterApplication.sharedApplication startFlutterWithPlatform:platform
                                                               onStart:callback];
 }
 
 - (BOOL)isRunning
 {
-    return [FLBFlutterApplication.sharedApplication isRunning];
+    return [FLB2FlutterApplication.sharedApplication isRunning];
 }
 
 - (FlutterViewController *)currentViewController
 {
-    return [[FLBFlutterApplication sharedApplication] flutterViewController];
+    return [[FLB2FlutterApplication sharedApplication] flutterViewController];
 }
 
 - (void)openPage:(NSString *)name

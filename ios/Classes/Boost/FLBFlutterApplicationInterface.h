@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 Alibaba Group
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,17 +23,40 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "FLB2Platform.h"
+#import "FlutterBoost.h"
+#import "FLB2FlutterProvider.h"
+#import "FLBFlutterContainer.h"
 
-#import "FLBFlutterProvider.h"
-#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
+@protocol FLBFlutterApplicationInterface <NSObject>
 
-@interface FLBFlutterProviderFactory : NSObject
+@property (nonatomic,strong) id<FLB2Platform> platform;
 
-- (id<FLBFlutterProvider>)createViewProvider;
-- (id<FLBFlutterProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform;
+- (id<FLB2FlutterProvider>)flutterProvider;
 
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                           FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
+
+- (FlutterViewController *)flutterViewController;
+
+#pragma mark - Container Management
+- (BOOL)contains:(id<FLBFlutterContainer>)vc;
+- (void)addUniqueViewController:(id<FLBFlutterContainer>)vc;
+- (void)removeViewController:(id<FLBFlutterContainer>)vc;
+- (BOOL)isTop:(NSString *)pageId;
+
+#pragma mark - App Control
+- (void)pause;
+- (void)resume;
+- (void)inactive;
+- (BOOL)isRunning;
 @end
 
 NS_ASSUME_NONNULL_END
+
+

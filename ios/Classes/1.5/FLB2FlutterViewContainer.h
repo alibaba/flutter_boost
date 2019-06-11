@@ -22,36 +22,16 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <Flutter/Flutter.h>
-#import "FLBPlatform.h"
-#import "FlutterBoost.h"
-#import "FLBFlutterProvider.h"
+#import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLBFlutterApplication : NSObject
 
-@property (nonatomic,strong) id<FLBPlatform> platform;
+@interface FLB2FlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
 
-- (id<FLBFlutterProvider>)flutterProvider;
+- (void)surfaceUpdated:(BOOL)appeared;
 
-#pragma mark - Getters
-+ (FLBFlutterApplication *)sharedApplication;
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterEngine * _Nonnull))callback;
-- (FlutterViewController *)flutterViewController;
-
-#pragma mark - Container Management
-- (BOOL)contains:(FLBFlutterViewContainer  *)vc;
-- (void)addUniqueViewController:(FLBFlutterViewContainer  *)vc;
-- (void)removeViewController:(FLBFlutterViewContainer  *)vc;
-- (BOOL)isTop:(NSString *)pageId;
-
-#pragma mark - App Control
-- (void)pause;
-- (void)resume;
-- (void)inactive;
-- (BOOL)isRunning;
 @end
 
 NS_ASSUME_NONNULL_END

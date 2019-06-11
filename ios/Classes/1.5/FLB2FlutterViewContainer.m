@@ -22,23 +22,23 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterViewContainer.h"
-#import "FLBFlutterApplication.h"
+#import "FLB2FlutterViewContainer.h"
+#import "FLB2FlutterApplication.h"
 #import "Service_NavigationService.h"
-#import "FlutterBoostConfig.h"
-#import "FLBFlutterViewContainerManager.h"
+#import "FLBFlutterContainerManager.h"
+#import "FlutterBoostPlugin_private.h"
 
-#define FLUTTER_VIEW [FLBFlutterApplication sharedApplication].flutterViewController.view
-#define FLUTTER_VC [FLBFlutterApplication sharedApplication].flutterViewController
-#define FLUTTER_APP [FLBFlutterApplication sharedApplication]
+#define FLUTTER_VIEW [FLB2FlutterApplication sharedApplication].flutterViewController.view
+#define FLUTTER_VC [FLB2FlutterApplication sharedApplication].flutterViewController
+#define FLUTTER_APP [FLB2FlutterApplication sharedApplication]
 
-@interface FLBFlutterViewContainer  ()
+@interface FLB2FlutterViewContainer  ()
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
 @end
 
-@implementation FLBFlutterViewContainer
+@implementation FLB2FlutterViewContainer
 
 - (instancetype)init
 {
@@ -119,7 +119,7 @@ static NSUInteger kInstanceCounter = 0;
                                                pageName:_name params:_params
                                                uniqueId:[self uniqueIDString]];
 
-    [[FLBFlutterApplication sharedApplication] removeViewController:self];
+    [[FLB2FlutterApplication sharedApplication] removeViewController:self];
     
     [self.class instanceCounterDecrease];
 }
@@ -152,7 +152,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [[FLBFlutterApplication sharedApplication] resume];
+    [[FLB2FlutterApplication sharedApplication] resume];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -163,7 +163,7 @@ static NSUInteger kInstanceCounter = 0;
         [self attatchFlutterEngine];
     }
   
-    [[FLBFlutterApplication sharedApplication] resume];
+    [[FLB2FlutterApplication sharedApplication] resume];
     
     [self surfaceUpdated:YES];
     //For new page we should attach flutter view in view will appear
@@ -174,10 +174,10 @@ static NSUInteger kInstanceCounter = 0;
                                               params:_params
                                             uniqueId:self.uniqueIDString];
     //Save some first time page info.
-    if(![FlutterBoostConfig sharedInstance].fPagename){
-        [FlutterBoostConfig sharedInstance].fPagename = _name;
-        [FlutterBoostConfig sharedInstance].fPageId = self.uniqueIDString;
-        [FlutterBoostConfig sharedInstance].fParams = _params;
+    if(![FlutterBoostPlugin sharedInstance].fPagename){
+        [FlutterBoostPlugin sharedInstance].fPagename = _name;
+        [FlutterBoostPlugin sharedInstance].fPageId = self.uniqueIDString;
+        [FlutterBoostPlugin sharedInstance].fParams = _params;
     }
     
     [super viewWillAppear:animated];
@@ -216,16 +216,6 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
-}
-
-#pragma mark - FLBViewControllerResultHandler
-- (void)onRecievedResult:(NSDictionary *)resultData forKey:(NSString *)key
-{
-    [Service_NavigationService onNativePageResult:^(NSNumber *finished) {}
-                                         uniqueId:self.uniqueIDString
-                                              key:key
-                                       resultData:resultData
-                                           params:@{}];
 }
 
 - (void)installSplashScreenViewIfNecessary {

@@ -22,21 +22,26 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterProviderFactory.h"
-#import "FLBFlutterEngine.h"
-#import "FLBPlatform.h"
+#import <Foundation/Foundation.h>
 
+@class FlutterViewController;
+@class FlutterEngine;
 
-@implementation FLBFlutterProviderFactory
+NS_ASSUME_NONNULL_BEGIN
 
-- (id<FLBFlutterProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
-{
-    return [FLBFlutterEngine new];
-}
+#define RELEASE_1_0 1
 
-- (id<FLBFlutterProvider>)createViewProvider
-{
-    return [FLBFlutterEngine new];
-}
+@protocol FLB2FlutterProvider <NSObject>
 
+@required
+- (FlutterEngine *)engine;
+- (void)atacheToViewController:(FlutterViewController *)vc;
+- (void)detach;
+- (void)pause;
+- (void)resume;
+- (void)inactive;
+
+- (void)prepareEngineIfNeeded;
 @end
+
+NS_ASSUME_NONNULL_END

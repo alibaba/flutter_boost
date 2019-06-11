@@ -26,7 +26,7 @@
  
  #import "ServiceGateway.h"
  #import "NavigationService_closePage.h"
- #import "FLBFlutterApplication.h"
+ #import "FLB2FlutterApplication.h"
  
  @implementation NavigationService_closePage
  
@@ -37,7 +37,7 @@
        animated:(NSNumber *)animated
  {
      //Add your handler code here!
-     [[FLBFlutterApplication sharedApplication].platform closePage:uniqueId
+     [[FLB2FlutterApplication sharedApplication].platform closePage:uniqueId
                                                           animated:animated.boolValue
                                                             params:params
                                                         completion:^(BOOL finished) {
