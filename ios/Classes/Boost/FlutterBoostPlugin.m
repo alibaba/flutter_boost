@@ -23,7 +23,6 @@
  */
 
 #import "FlutterBoostPlugin.h"
-#import "FLB2FlutterApplication.h"
 #import "FLBResultMediator.h"
 #import "FlutterBoostPlugin_private.h"
 
@@ -72,18 +71,18 @@
                                            FlutterPluginRegistry> engine))callback;
 {
     //TODO:
-    [FLB2FlutterApplication.sharedApplication startFlutterWithPlatform:platform
-                                                              onStart:callback];
+    [self.application startFlutterWithPlatform:platform
+                                        onStart:callback];
 }
 
 - (BOOL)isRunning
 {
-    return [FLB2FlutterApplication.sharedApplication isRunning];
+    return [self.application isRunning];
 }
 
 - (FlutterViewController *)currentViewController
 {
-    return [[FLB2FlutterApplication sharedApplication] flutterViewController];
+    return [self.application flutterViewController];
 }
 
 - (void)openPage:(NSString *)name

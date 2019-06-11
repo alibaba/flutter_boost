@@ -22,15 +22,26 @@
  * THE SOFTWARE.
  */
 
-#ifndef FlutterBoost_h
-#define FlutterBoost_h
+#import <Foundation/Foundation.h>
 
-#import "FlutterBoostPlugin.h"
-#import "FLBFlutterAppDelegate.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
+@class FlutterViewController;
+@class FlutterEngine;
 
-#import "FLB2FlutterViewContainer.h"
-#import "FLB2Platform.h"
+NS_ASSUME_NONNULL_BEGIN
 
-#endif /* FlutterBoost_h */
+#define RELEASE_1_0 1
+
+@protocol FLBFlutterProvider <NSObject>
+
+@required
+- (FlutterEngine *)engine;
+- (void)atacheToViewController:(FlutterViewController *)vc;
+- (void)detach;
+- (void)pause;
+- (void)resume;
+- (void)inactive;
+
+- (void)prepareEngineIfNeeded;
+@end
+
+NS_ASSUME_NONNULL_END

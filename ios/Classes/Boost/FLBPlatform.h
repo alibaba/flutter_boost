@@ -22,15 +22,26 @@
  * THE SOFTWARE.
  */
 
-#ifndef FlutterBoost_h
-#define FlutterBoost_h
+#import <Foundation/Foundation.h>
 
-#import "FlutterBoostPlugin.h"
-#import "FLBFlutterAppDelegate.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
+NS_ASSUME_NONNULL_BEGIN
 
-#import "FLB2FlutterViewContainer.h"
-#import "FLB2Platform.h"
+@protocol FLBPlatform <NSObject>
 
-#endif /* FlutterBoost_h */
+@optional
+//Whether to enable accessibility support. Default value is Yes.
+- (BOOL)accessibilityEnable;
+
+@required
+- (void)openPage:(NSString *)name
+          params:(NSDictionary *)params
+        animated:(BOOL)animated
+      completion:(void (^)(BOOL finished))completion;
+
+- (void)closePage:(NSString *)uid
+         animated:(BOOL)animated
+           params:(NSDictionary *)params
+       completion:(void (^)(BOOL finished))completion;
+@end
+
+NS_ASSUME_NONNULL_END

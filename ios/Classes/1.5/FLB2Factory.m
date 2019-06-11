@@ -5,8 +5,8 @@
 //  Created by Jidong Chen on 2019/6/11.
 //
 
-#import "FLBFactory.h"
+#import "FLB2Factory.h"
 
-@implementation FLBFactory
+@implementation FLB2Factory
 
 @end

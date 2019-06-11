@@ -26,7 +26,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FLBFactory : NSObject
+@interface FLB2Factory : NSObject
 
 @end
 

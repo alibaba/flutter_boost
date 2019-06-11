@@ -22,15 +22,27 @@
  * THE SOFTWARE.
  */
 
-#ifndef FlutterBoost_h
-#define FlutterBoost_h
+#import <UIKit/UIKit.h>
+#import <Flutter/Flutter.h>
+#import "FLBFlutterContainer.h"
 
-#import "FlutterBoostPlugin.h"
-#import "FLBFlutterAppDelegate.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
+NS_ASSUME_NONNULL_BEGIN
 
-#import "FLB2FlutterViewContainer.h"
-#import "FLB2Platform.h"
+@interface FLBFlutterViewContainer  : FlutterViewController
 
-#endif /* FlutterBoost_h */
+@property (nonatomic,copy,readonly) NSString *name;
+@property (nonatomic,strong,readonly) NSDictionary *params;
+@property (nonatomic,copy,readonly) NSString *uniqueIDString;
+
+/*
+ You must call this one time to set flutter page name
+ and params.
+ */
+- (void)setName:(NSString *)name params:(NSDictionary *)params;
+
+
+- (void)surfaceUpdated:(BOOL)appeared;
+
+@end
+
+NS_ASSUME_NONNULL_END

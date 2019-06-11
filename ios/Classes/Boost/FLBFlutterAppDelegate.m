@@ -23,13 +23,13 @@
  */
 
 #import "FLBFlutterAppDelegate.h"
-#import "FLB2FlutterApplication.h"
+#import "FlutterBoostPlugin_private.h"
 
 @implementation FLBFlutterAppDelegate
 // Returns the key window's rootViewController, if it's a FlutterViewController.
 // Otherwise, returns nil.
 - (FlutterViewController*)rootFlutterViewController {
-    return FLB2FlutterApplication.sharedApplication.flutterViewController;
+    return FlutterBoostPlugin.sharedInstance.application.flutterViewController;
 }
 
 @end

@@ -23,6 +23,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FLBFlutterProvider.h"
 
 @class FlutterViewController;
 @class FlutterEngine;
@@ -31,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #define RELEASE_1_0 1
 
-@protocol FLB2FlutterProvider <NSObject>
+@protocol FLB2FlutterProvider <FLBFlutterProvider>
 
 @required
 - (FlutterEngine *)engine;

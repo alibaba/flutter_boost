@@ -22,15 +22,12 @@
  * THE SOFTWARE.
  */
 
-#ifndef FlutterBoost_h
-#define FlutterBoost_h
+#import <Foundation/Foundation.h>
+#import "FLBFlutterProvider.h"
 
-#import "FlutterBoostPlugin.h"
-#import "FLBFlutterAppDelegate.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
+NS_ASSUME_NONNULL_BEGIN
 
-#import "FLB2FlutterViewContainer.h"
-#import "FLB2Platform.h"
+@interface FLBFlutterEngine : NSObject<FLBFlutterProvider>
+@end
 
-#endif /* FlutterBoost_h */
+NS_ASSUME_NONNULL_END
