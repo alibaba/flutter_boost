@@ -33,6 +33,7 @@
           NavigationService_pageOnStart.register();
           NavigationService_openPage.register();
           NavigationService_closePage.register();
+          NavigationService_flutterCanPop.register();
       }
  
  }

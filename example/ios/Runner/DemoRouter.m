@@ -52,4 +52,9 @@
         [self.navigationController popViewControllerAnimated:animated];
     }
 }
+
+- (void)flutterCanPop:(BOOL)canpop {
+    self.navigationController.interactivePopGestureRecognizer.enabled = !canpop;
+}
+
 @end

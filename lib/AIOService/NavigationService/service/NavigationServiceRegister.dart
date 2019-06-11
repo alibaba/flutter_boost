@@ -30,6 +30,7 @@
  import '../handlers/NavigationService_didDisappearPageContainer.dart';
  import '../handlers/NavigationService_didInitPageContainer.dart';
  import '../handlers/NavigationService_willDeallocPageContainer.dart';
+ import '../handlers/NavigationService_canPop.dart';
  
  class NavigationServiceRegister{
  
@@ -43,6 +44,7 @@
      NavigationService_didDisappearPageContainer.regsiter();
      NavigationService_didInitPageContainer.regsiter();
      NavigationService_willDeallocPageContainer.regsiter();
+     NavigationService_canPop.regsiter();
    }
  
  }
