@@ -25,6 +25,7 @@
 #import "FLB2FlutterApplication.h"
 #import "FlutterBoost.h"
 #import "FLBFlutterContainerManager.h"
+#import "FLB2FlutterEngine.h"
 
 @interface FLB2FlutterApplication()
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
@@ -62,7 +63,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider;
+        self.viewProvider = FLB2FlutterEngine.new;
         self.isRunning = YES;
         if(callback) callback(self.viewProvider.engine);
     });
