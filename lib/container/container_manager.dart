@@ -28,7 +28,6 @@ import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/support/logger.dart';
-import 'package:flutter_boost/container/navigator_observer.dart';
 
 enum ContainerOperation { Push, Onstage, Pop, Remove }
 
