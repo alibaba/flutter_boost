@@ -23,138 +23,120 @@
  */
 package com.taobao.idlefish.flutterboost.containers;
 
-import android.content.Context;
-import android.graphics.Color;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import com.taobao.idlefish.flutterboost.BoostFlutterView;
-import com.taobao.idlefish.flutterboost.Debuger;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.util.HashMap;
 
-import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.embedding.android.FlutterView;
 
 abstract public class BoostFlutterFragment extends Fragment implements IFlutterViewContainer {
 
-    FlutterContent mContent;
-    PluginRegistry mRegistry;
+    private BoostFlutterView mFlutterView;
+    private IOperateSyncer mSyncer;
 
-    boolean resumed = false;
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(getContextActivity());
+        mFlutterView = builder.renderMode(FlutterView.RenderMode.texture)
+                .transparencyMode(FlutterView.TransparencyMode.opaque)
+                .build();
 
-        mRegistry = FlutterBoostPlugin.containerManager().onContainerCreate(this);
-        onRegisterPlugins(mRegistry);
-    }
+        mSyncer = FlutterBoostPlugin.containerManager().generateSyncer(this);
+        mSyncer.onCreate();
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        mContent = new FlutterContent(getActivity());
-        return mContent;
+        return mFlutterView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (!resumed) {
-            resumed = true;
-            FlutterBoostPlugin.containerManager().onContainerAppear(this);
-            mContent.attachFlutterView(getBoostFlutterView());
-            Log.e("FlutterBoost", "FlutterMenuFragment resume");
-        }
+        mSyncer.onAppear();
     }
 
     @Override
     public void onPause() {
+        mSyncer.onDisappear();
         super.onPause();
-        if (resumed) {
-            resumed = false;
-            mContent.snapshot();
-            FlutterBoostPlugin.containerManager().onContainerDisappear(this);
-            Log.e("FlutterBoost", "FlutterMenuFragment stop");
-        }
     }
 
     @Override
     public void onDestroy() {
+        mSyncer.onDestroy();
         super.onDestroy();
-        if (mContent != null) {
-            mContent.destroy();
-        }
-        FlutterBoostPlugin.containerManager().onContainerDestroy(this);
+    }
+
+    public void onBackPressed() {
+        mSyncer.onBackPressed();
+    }
+
+    public void onNewIntent(Intent intent) {
+        mSyncer.onNewIntent(intent);
     }
 
     @Override
-    public void onContainerShown() {
-        mContent.onContainerShown();
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mSyncer.onActivityResult(requestCode,resultCode,data);
     }
 
     @Override
-    public void onContainerHidden() {
-        mContent.onContainerHidden();
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mSyncer.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void onTrimMemory(int level) {
+        mSyncer.onTrimMemory(level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mSyncer.onLowMemory();
+    }
+
+    public void onUserLeaveHint() {
+        mSyncer.onUserLeaveHint();
+    }
+
+    @Override
+    public Activity getContextActivity() {
+        return getActivity();
     }
 
     @Override
     public BoostFlutterView getBoostFlutterView() {
-        return FlutterBoostPlugin.viewProvider().createFlutterView(this);
+        return mFlutterView;
     }
 
     @Override
-    public boolean isFinishing() {
-        return getActivity().isFinishing();
+    public void finishContainer() {
+        getActivity().finish();
     }
 
-    protected View createSplashScreenView() {
-        FrameLayout layout = new FrameLayout(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        layout.addView(new ProgressBar(getContext()),params);
-        return layout;
-    }
+    @Override
+    public void onContainerShown() {}
 
-    protected View createFlutterInitCoverView() {
-        View initCover = new View(getActivity());
-        initCover.setBackgroundColor(Color.WHITE);
-        return initCover;
-    }
+    @Override
+    public void onContainerHidden() {}
 
     @Override
     public void setBoostResult(HashMap result) {
-    }
-
-    class FlutterContent extends FlutterViewStub {
-
-        public FlutterContent(Context context) {
-            super(context);
-        }
-
-        @Override
-        public View createFlutterInitCoverView() {
-            return BoostFlutterFragment.this.createFlutterInitCoverView();
-        }
-
-        @Override
-        public BoostFlutterView getBoostFlutterView() {
-            return BoostFlutterFragment.this.getBoostFlutterView();
-        }
-
-        @Override
-        public View createSplashScreenView() {
-            return BoostFlutterFragment.this.createSplashScreenView();
-        }
+        Intent data = new Intent();
+        data.putExtra(RESULT_KEY,result);
+        getActivity().setResult(Activity.RESULT_OK,data);
     }
 }

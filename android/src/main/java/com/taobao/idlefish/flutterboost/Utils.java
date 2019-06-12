@@ -25,8 +25,15 @@ package com.taobao.idlefish.flutterboost;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Looper;
 
 public class Utils {
+
+    public static void assertCallOnMainThread() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            Debuger.exception("must call method on main thread");
+        }
+    }
 
     public static boolean checkImageValid(final Bitmap bitmap) {
         if (null == bitmap) {

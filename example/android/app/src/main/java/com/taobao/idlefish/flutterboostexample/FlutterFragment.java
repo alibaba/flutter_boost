@@ -29,11 +29,6 @@ public class FlutterFragment extends BoostFlutterFragment {
     }
 
     @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
-
-    @Override
     public String getContainerName() {
         return "flutterFragment";
     }
@@ -43,11 +38,6 @@ public class FlutterFragment extends BoostFlutterFragment {
         Map<String,String> params = new HashMap<>();
         params.put("tag",getArguments().getString("tag"));
         return params;
-    }
-
-    @Override
-    public void destroyContainer() {
-
     }
 
     public static FlutterFragment instance(String tag){

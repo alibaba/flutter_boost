@@ -23,212 +23,89 @@
  */
 package com.taobao.idlefish.flutterboost;
 
-import android.app.Activity;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.TextUtils;
 
-import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.view.FlutterMain;
-import io.flutter.view.FlutterRunArguments;
+import java.util.Stack;
 
 public class FlutterViewContainerManager implements IContainerManager {
 
-    private final Map<IFlutterViewContainer, IContainerRecord> mRecords = new LinkedHashMap<>();
-    private final Instrument mInstrument;
-    private final Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Map<IFlutterViewContainer, IContainerRecord> mRecordMap = new LinkedHashMap<>();
     private final Set<ContainerRef> mRefs = new HashSet<>();
+    private final Stack<IContainerRecord> mRecordStack = new Stack<>();
 
-    private IContainerRecord mCurrentTopRecord;
+    FlutterViewContainerManager() {}
 
-    FlutterViewContainerManager() {
-        mInstrument = new Instrument(this);
-    }
 
     @Override
-    public PluginRegistry onContainerCreate(IFlutterViewContainer container) {
-        assertCallOnMainThread();
+    public IOperateSyncer generateSyncer(IFlutterViewContainer container) {
+        Utils.assertCallOnMainThread();
+
+        BoostEngineProvider.sInstance.createEngine(container.getContextActivity());
 
         ContainerRecord record = new ContainerRecord(this, container);
-        if (mRecords.put(container, record) != null) {
+        if (mRecordMap.put(container, record) != null) {
             Debuger.exception("container:" + container.getContainerName() + " already exists!");
-            return new PluginRegistryImpl(container.getActivity(), container.getBoostFlutterView());
         }
 
         mRefs.add(new ContainerRef(record.uniqueId(),container));
 
-        FlutterMain.ensureInitializationComplete(container.getActivity().getApplicationContext(), null);
-        BoostFlutterView flutterView = FlutterBoostPlugin.viewProvider().createFlutterView(container);
-        if (!flutterView.getFlutterNativeView().isApplicationRunning()) {
-            String appBundlePath = FlutterMain.findAppBundlePath(container.getActivity().getApplicationContext());
-            if (appBundlePath != null) {
-                FlutterRunArguments arguments = new FlutterRunArguments();
-                arguments.bundlePath = appBundlePath;
-                arguments.entrypoint = "main";
-                flutterView.runFromBundle(arguments);
-            }
-        }
-        mInstrument.performCreate(record);
+        return record;
+    }
 
-        return new PluginRegistryImpl(container.getActivity(), container.getBoostFlutterView());
+    public void pushRecord(IContainerRecord record) {
+        if(!mRecordMap.containsValue(record)) {
+            Debuger.exception("invalid record!");
+        }
+
+        mRecordStack.push(record);
+    }
+
+    public void popRecord(IContainerRecord record) {
+        if(mRecordStack.peek() == record) {
+            mRecordStack.pop();
+        }
+    }
+
+    public void removeRecord(IContainerRecord record) {
+        mRecordStack.remove(record);
+        mRecordMap.remove(record.getContainer());
     }
 
     @Override
-    public void onContainerAppear(IFlutterViewContainer container) {
-        assertCallOnMainThread();
-
-        final IContainerRecord record = mRecords.get(container);
-        if (record == null) {
-            Debuger.exception("container:" + container.getContainerName() + " not exists yet!");
-            return;
-        }
-
-        mInstrument.performAppear(record);
-        mCurrentTopRecord = record;
-    }
-
-    @Override
-    public void onContainerDisappear(IFlutterViewContainer container) {
-        assertCallOnMainThread();
-
-        final IContainerRecord record = mRecords.get(container);
-        if (record == null) {
-            Debuger.exception("container:" + container.getContainerName() + " not exists yet!");
-            return;
-        }
-        mInstrument.performDisappear(record);
-
-        if (!container.isFinishing()) {
-            checkIfFlutterViewNeedStopLater();
-        }
-    }
-
-    @Override
-    public void onContainerDestroy(IFlutterViewContainer container) {
-        assertCallOnMainThread();
-
-        if (mCurrentTopRecord != null
-                && mCurrentTopRecord.getContainer() == container) {
-            mCurrentTopRecord = null;
-        }
-
-        final IContainerRecord record = mRecords.remove(container);
-        if (record == null) {
-            Debuger.exception("container:" + container.getContainerName() + " not exists yet!");
-            return;
-        }
-
-        mInstrument.performDestroy(record);
-
-        checkIfFlutterViewNeedStopLater();
-    }
-
-    private void checkIfFlutterViewNeedStopLater() {
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!hasContainerAppear()) {
-                    FlutterBoostPlugin.viewProvider().stopFlutterView();
-                }
-            }
-        }, 250);
-    }
-
-    @Override
-    public void onBackPressed(IFlutterViewContainer container) {
-        assertCallOnMainThread();
-
-        final IContainerRecord record = mRecords.get(container);
-        if (record == null) {
-            Debuger.exception("container:" + container.getContainerName() + " not exists yet!");
-            return;
-        }
-
-        Map<String, String> map = new HashMap<>();
-        map.put("type", "backPressedCallback");
-        map.put("name", container.getContainerName());
-        map.put("uniqueId", record.uniqueId());
-        NavigationService.getService().emitEvent(map);
-    }
-
-    @Override
-    public void destroyContainerRecord(String name, String uniqueId) {
-        assertCallOnMainThread();
-
-        boolean done = false;
-        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecords.entrySet()) {
+    public IFlutterViewContainer closeContainer(String uniqueId, Map<String, Object> result) {
+        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecordMap.entrySet()) {
             if (TextUtils.equals(uniqueId, entry.getValue().uniqueId())) {
-                entry.getKey().destroyContainer();
-                done = true;
-                break;
+                entry.getKey().finishContainer();
+                return entry.getKey();
             }
         }
 
-        if (!done) {
-            Debuger.exception("destroyContainerRecord can not find name:" + name + " uniqueId:" + uniqueId);
-        }
-    }
+        Debuger.exception("closeContainer can not find uniqueId:" + uniqueId);
 
-    @Override
-    public void onContainerResult(IFlutterViewContainer container, Map result) {
-        final IContainerRecord record = mRecords.get(container);
-        if (record == null) {
-            Debuger.exception("container:" + container.getContainerName() + " not exists yet!");
-            return;
-        }
-
-        record.onResult(result);
-    }
-
-    @Override
-    public void setContainerResult(String uniqueId, Map result) {
-        if (result == null) {
-            Debuger.exception("setContainerResult result is null");
-            return;
-        }
-
-        if (!(result instanceof HashMap)) {
-            result = new HashMap();
-            result.putAll(result);
-        }
-
-        boolean done = false;
-        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecords.entrySet()) {
-            if (TextUtils.equals(uniqueId, entry.getValue().uniqueId())) {
-                entry.getKey().setBoostResult((HashMap) result);
-                done = true;
-                break;
-            }
-        }
-
-        if (!done) {
-            Debuger.exception("setContainerResult can not find uniqueId:" + uniqueId);
-        }
+        return null;
     }
 
     @Override
     public IContainerRecord getCurrentTopRecord() {
-        return mCurrentTopRecord;
+        if(mRecordStack.isEmpty()) return null;
+        return mRecordStack.peek();
     }
 
     @Override
-    public IContainerRecord getLastRecord() {
-        final Collection<IContainerRecord> values = mRecords.values();
+    public IContainerRecord getLastGenerateRecord() {
+        final Collection<IContainerRecord> values = mRecordMap.values();
         if(!values.isEmpty()) {
             final ArrayList<IContainerRecord> array = new ArrayList<>(values);
             return array.get(array.size()-1);
@@ -239,7 +116,7 @@ public class FlutterViewContainerManager implements IContainerManager {
     @Override
     public IFlutterViewContainer findContainerById(String uniqueId) {
         IFlutterViewContainer target = null;
-        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecords.entrySet()) {
+        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecordMap.entrySet()) {
             if (TextUtils.equals(uniqueId, entry.getValue().uniqueId())) {
                 target = entry.getKey();
                 break;
@@ -259,12 +136,12 @@ public class FlutterViewContainerManager implements IContainerManager {
 
     @Override
     public void onShownContainerChanged(String old, String now) {
-        assertCallOnMainThread();
+        Utils.assertCallOnMainThread();
 
         IFlutterViewContainer oldContainer = null;
         IFlutterViewContainer nowContainer = null;
 
-        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecords.entrySet()) {
+        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecordMap.entrySet()) {
             if (TextUtils.equals(old, entry.getValue().uniqueId())) {
                 oldContainer = entry.getKey();
             }
@@ -289,9 +166,7 @@ public class FlutterViewContainerManager implements IContainerManager {
 
     @Override
     public boolean hasContainerAppear() {
-        assertCallOnMainThread();
-
-        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecords.entrySet()) {
+        for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecordMap.entrySet()) {
             if (entry.getValue().getState() == IContainerRecord.STATE_APPEAR) {
                 return true;
             }
@@ -300,15 +175,6 @@ public class FlutterViewContainerManager implements IContainerManager {
         return false;
     }
 
-    @Override
-    public void reset() {
-    }
-
-    private void assertCallOnMainThread() {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            Debuger.exception("must call method on main thread");
-        }
-    }
 
     public static class ContainerRef {
         public final String uniqueId;
@@ -317,30 +183,6 @@ public class FlutterViewContainerManager implements IContainerManager {
         ContainerRef(String id, IFlutterViewContainer container) {
             this.uniqueId = id;
             this.container = new WeakReference<>(container);
-        }
-    }
-
-    public static class PluginRegistryImpl implements PluginRegistry {
-
-        final BoostFlutterView mBoostFlutterView;
-
-        PluginRegistryImpl(Activity activity, BoostFlutterView flutterView) {
-            mBoostFlutterView = flutterView;
-        }
-
-        @Override
-        public Registrar registrarFor(String pluginKey) {
-            return mBoostFlutterView.getPluginRegistry().registrarFor(pluginKey);
-        }
-
-        @Override
-        public boolean hasPlugin(String key) {
-            return mBoostFlutterView.getPluginRegistry().hasPlugin(key);
-        }
-
-        @Override
-        public <T> T valuePublishedByPlugin(String pluginKey) {
-            return mBoostFlutterView.getPluginRegistry().valuePublishedByPlugin(pluginKey);
         }
     }
 }
