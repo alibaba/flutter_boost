@@ -22,14 +22,27 @@
  * THE SOFTWARE.
  */
 import 'package:flutter_boost/support/logger.dart';
+import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
 
-typedef void PageResultHandler(String key , Map<dynamic,dynamic> result);
+typedef void PageResultHandler(String key , Map<String,dynamic> result);
 typedef VoidCallback = void Function();
 
 class PageResultMediator{
 
+  static int _resultId = 0;
+
+  String createResultId(){
+    _resultId++;
+    return "result_id_$_resultId";
+  }
+
+  bool isResultId(String rid){
+    if(rid == null) return false;
+    return rid.contains("result_id");
+  }
+
   Map<String,PageResultHandler> _handlers = Map();
-  void onPageResult(String key , Map<dynamic,dynamic> resultData){
+  void onPageResult(String key , Map<String,dynamic> resultData, Map params){
 
     if(key == null) return;
 
@@ -38,6 +51,22 @@ class PageResultMediator{
     if(_handlers.containsKey(key)){
       _handlers[key](key,resultData);
       _handlers.remove(key);
+    }else{
+      //Cannot find handler consider forward to native.
+      //Use forward to avoid circle.
+      if(params == null || !params.containsKey("forward")){
+        if(params == null){
+          params = new Map();
+        }
+        params["forward"] = 1;
+        NavigationService.onFlutterPageResult(key, key , resultData, params);
+      }else{
+        params["forward"] = params["forward"]+1;
+        if(params["forward"] <= 2){
+          NavigationService.onFlutterPageResult(key, key , resultData, params);
+        }
+      }
+
     }
   }
 

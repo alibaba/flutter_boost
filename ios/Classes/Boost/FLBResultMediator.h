@@ -30,7 +30,7 @@ typedef void (^FLBPageResultHandler)(NSString *, NSDictionary *);
 
 @interface FLBResultMediator : NSObject
 
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData;
+- (void)onResultForKey:(NSString *)resultId resultData:(NSDictionary *)resultData params:(NSDictionary *)params;
 - (void)setResultHandler:(FLBPageResultHandler)handler forKey:(NSString *)vcid;
 - (void)removeHandlerForKey:(NSString *)vcid;
 

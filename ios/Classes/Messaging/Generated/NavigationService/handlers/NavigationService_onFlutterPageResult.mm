@@ -34,7 +34,8 @@
  {
     //Add your handler code here!
      [FlutterBoostPlugin.sharedInstance onResultForKey:key
-                                            resultData:resultData];
+                                            resultData:resultData
+                                                params:params];
  }
  
  #pragma mark - Do not edit these method.

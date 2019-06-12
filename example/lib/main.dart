@@ -31,6 +31,7 @@ class _MyAppState extends State<MyApp> {
     });
 
     FlutterBoost.handleOnStartPage();
+
   }
 
   Map<String, WidgetBuilder> routes = {
