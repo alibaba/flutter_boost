@@ -126,5 +126,9 @@
     [self.viewProvider inactive];
 }
 
+- (id<FLB2FlutterProvider>)flutterProvider
+{
+    return _viewProvider;
+}
 
 @end

@@ -29,7 +29,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterApplication : NSObject<FLBFlutterApplicationInterface>
-
+@property (nonatomic,strong) id<FLB2Platform> platform;
 
 @end
 

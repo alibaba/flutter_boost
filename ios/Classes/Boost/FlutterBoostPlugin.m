@@ -50,6 +50,21 @@
     return self;
 }
 
+- (id<FLBFlutterApplicationInterface>)application
+{
+    return _application;
+}
+
+- (FLBResultMediator *)resultMediator
+{
+    return _resultMediator;
+}
+
+- (id<FLBAbstractFactory>)factory
+{
+    return _factory;
+}
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   FlutterMethodChannel* channel = [FlutterMethodChannel
       methodChannelWithName:@"flutter_boost"
@@ -90,6 +105,7 @@
 {
     return [self.application isRunning];
 }
+
 
 - (FlutterViewController *)currentViewController
 {

@@ -18,9 +18,11 @@ A new Flutter plugin make flutter better to use!
     'Classes/Boost/FlutterBoost.h',
     'Classes/Boost/FlutterBoostPlugin.h',
     'Classes/Boost/FLBPlatform.h',
+    'Classes/Boost/FLB2Platform.h',
+    'Classes/Boost/FLBFlutterContainer.h',
     'Classes/Boost/FLBFlutterAppDelegate.h',
-    'Classes/Container/FLBFlutterViewContainer.h',
-    'Classes/Container/FLBViewControllerResultHandler.h'
+    'Classes/1.0/FLBFlutterViewContainer.h',
+    'Classes/1.5/FLB2FlutterViewContainer.h'
 
   s.dependency 'Flutter'
   s.dependency 'xservice_kit'
