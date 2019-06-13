@@ -37,7 +37,7 @@ import io.flutter.plugin.common.PluginRegistry;
 public interface IFlutterViewContainer {
     String RESULT_KEY = "_flutter_result_";
 
-    Activity getActivity();
+    Activity getContextActivity();
 
     /**
      * provide a flutter view
@@ -48,7 +48,7 @@ public interface IFlutterViewContainer {
     /**
      * call to destroy the container
      */
-    void destroyContainer();
+    void finishContainer();
 
     /**
      * container name
@@ -73,20 +73,8 @@ public interface IFlutterViewContainer {
     void onContainerHidden();
 
     /**
-     * is container finishing
-     * @return
-     */
-    boolean isFinishing();
-
-    /**
      * call by flutter side to set result
      * @param result
      */
     void setBoostResult(HashMap result);
-
-    /**
-     * register flutter plugins
-     * @param registry
-     */
-    void onRegisterPlugins(PluginRegistry registry);
 }

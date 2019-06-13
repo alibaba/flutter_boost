@@ -1,0 +1,28 @@
+package com.taobao.idlefish.flutterboost.interfaces;
+
+import android.content.Intent;
+
+public interface IOperateSyncer {
+
+    void onCreate();
+
+    void onAppear();
+
+    void onDisappear();
+
+    void onDestroy();
+
+    void onBackPressed();
+
+    void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
+
+    void onNewIntent(Intent intent);
+
+    void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onUserLeaveHint();
+
+    void onTrimMemory(int level);
+
+    void onLowMemory();
+}

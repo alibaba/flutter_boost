@@ -1,10 +1,7 @@
 package com.taobao.idlefish.flutterboostexample;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.text.TextUtils;
 
 import com.taobao.idlefish.flutterboost.Debuger;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
@@ -13,6 +10,8 @@ import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
 import java.util.Map;
 
 import io.flutter.app.FlutterApplication;
+import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MyApplication extends FlutterApplication {
     @Override
@@ -25,17 +24,9 @@ public class MyApplication extends FlutterApplication {
                 return MyApplication.this;
             }
 
-            /**
-             * 获取应用入口的Activity,这个Activity在应用交互期间应该是一直在栈底的
-             * @return
-             */
             @Override
-            public Activity getMainActivity() {
-                if (MainActivity.sRef != null) {
-                    return MainActivity.sRef.get();
-                }
-
-                return null;
+            public void onRegisterPlugins(PluginRegistry registry) {
+                GeneratedPluginRegistrant.registerWith(registry);
             }
 
             @Override

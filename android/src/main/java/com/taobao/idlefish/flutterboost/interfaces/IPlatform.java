@@ -29,6 +29,8 @@ import android.content.Context;
 
 import java.util.Map;
 
+import io.flutter.plugin.common.PluginRegistry;
+
 /**
  * APIs that platform(Android App) must provide
  */
@@ -41,10 +43,10 @@ public interface IPlatform {
     Application getApplication();
 
     /**
-     * get main activity, which must always exist at the bottom of task stack.
+     * register plugins
      * @return
      */
-    Activity getMainActivity();
+    void onRegisterPlugins(PluginRegistry registry);
 
     /**
      * debug or not

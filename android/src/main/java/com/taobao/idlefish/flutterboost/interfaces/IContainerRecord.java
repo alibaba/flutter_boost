@@ -23,12 +23,10 @@
  */
 package com.taobao.idlefish.flutterboost.interfaces;
 
-import java.util.Map;
-
 /**
  * a container record, which use map a flutter page
  */
-public interface IContainerRecord {
+public interface IContainerRecord extends IOperateSyncer{
     int STATE_UNKNOW    = 0;
     int STATE_CREATED   = 1;
     int STATE_APPEAR    = 2;
@@ -38,9 +36,4 @@ public interface IContainerRecord {
     String uniqueId();
     IFlutterViewContainer getContainer();
     int getState();
-    void onCreate();
-    void onAppear();
-    void onDisappear();
-    void onDestroy();
-    void onResult(Map Result);
 }

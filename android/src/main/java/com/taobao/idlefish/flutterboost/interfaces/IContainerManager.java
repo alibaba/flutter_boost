@@ -23,106 +23,21 @@
  */
 package com.taobao.idlefish.flutterboost.interfaces;
 
-import android.app.Activity;
-
 import java.util.Map;
-
-import io.flutter.plugin.common.PluginRegistry;
 
 public interface IContainerManager {
 
-    /**
-     * call by native side when container create
-     * @param container
-     * @return
-     */
-    PluginRegistry onContainerCreate(IFlutterViewContainer container);
+    IOperateSyncer generateSyncer(IFlutterViewContainer container);
 
-    /**
-     * call by native side when container appear
-     * @param container
-     * @return
-     */
-    void onContainerAppear(IFlutterViewContainer container);
+    IFlutterViewContainer closeContainer(String uniqueId,Map<String,Object> result);
 
-
-    /**
-     * call by native side when container disappear
-     * @param container
-     * @return
-     */
-    void onContainerDisappear(IFlutterViewContainer container);
-
-    /**
-     * call by native side when container destroy
-     * @param container
-     * @return
-     */
-    void onContainerDestroy(IFlutterViewContainer container);
-
-    /**
-     * call by native side when back key pressed
-     * @param container
-     * @return
-     */
-    void onBackPressed(IFlutterViewContainer container);
-
-
-    /**
-     * call by flutter side when need destroy container
-     * @param name
-     * @param uq
-     */
-    void destroyContainerRecord(String name,String uq);
-
-    /**
-     * call by native side when container handle a result (onActivityResult)
-     * @param container
-     * @param result
-     */
-    void onContainerResult(IFlutterViewContainer container,Map result);
-
-    /**
-     * call by flutter side when flutter want set a result for request (setResult)
-     * @param uniqueId
-     * @param result
-     */
-    void setContainerResult(String uniqueId,Map result);
-
-    /**
-     * get current interactive container
-     * @return
-     */
     IContainerRecord getCurrentTopRecord();
 
-    /**
-     * get last created container
-     * @return
-     */
-    IContainerRecord getLastRecord();
+    IContainerRecord getLastGenerateRecord();
 
-    /**
-     * find a container
-     * @param uniqueId
-     * @return
-     */
     IFlutterViewContainer findContainerById(String uniqueId);
 
-    /**
-     * call by flutter side when a container shown or hidden
-     * @param old
-     * @param now
-     */
-    void onShownContainerChanged(String old,String now);
+    void onShownContainerChanged(String oldUniqueId,String nowUniqueId);
 
-    /**
-     * is any container appear now
-     * @return
-     */
     boolean hasContainerAppear();
-
-    /**
-     * no use
-     */
-    void reset();
 }

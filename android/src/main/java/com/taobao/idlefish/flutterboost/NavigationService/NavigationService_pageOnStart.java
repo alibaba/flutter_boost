@@ -27,6 +27,7 @@
  import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
  import com.taobao.idlefish.flutterboost.FlutterViewContainerManager;
  import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
+ import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
  import java.util.ArrayList;
  import java.util.HashMap;
@@ -47,7 +48,7 @@
                         .containerManager().getCurrentTopRecord();
 
                 if(record == null) {
-                    record = FlutterBoostPlugin.containerManager().getLastRecord();
+                    record = FlutterBoostPlugin.containerManager().getLastGenerateRecord();
                 }
 
                 pageInfo.put("name",record.getContainer().getContainerName());
