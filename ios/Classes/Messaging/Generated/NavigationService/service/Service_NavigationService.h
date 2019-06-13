@@ -34,4 +34,6 @@
  + (void)didDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  + (void)didInitPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  + (void)willDeallocPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
+ // 获取flutter的canPop
+ + (void)canPopPageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  @end

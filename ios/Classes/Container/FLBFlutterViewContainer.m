@@ -283,6 +283,8 @@ static NSUInteger kInstanceCounter = 0;
     
     //Invalidate obsolete screenshot.
     [FLBStackCache.sharedInstance invalidate:self.uniqueIDString];
+    [Service_NavigationService canPopPageName:_name params:_params
+     uniqueId:[self uniqueIDString]];
 }
 
 #pragma mark - Life circle methods

@@ -12,7 +12,8 @@ class FirstRouteWidget extends StatelessWidget {
         child: RaisedButton(
           child: Text('Open second route'),
           onPressed: () {
-            FlutterBoost.singleton.openPage("second", {}, animated: true);
+            Navigator.pushNamed(context, "second");
+//            FlutterBoost.singleton.openPage("second", {}, animated: true);
           },
         ),
       ),
@@ -31,7 +32,8 @@ class SecondRouteWidget extends StatelessWidget {
         child: RaisedButton(
           onPressed: () {
             // Navigate back to first route when tapped.
-            FlutterBoost.singleton.closePageForContext(context);
+            Navigator.pop(context);
+//            FlutterBoost.singleton.closePageForContext(context);
           },
           child: Text('Go back!'),
         ),
