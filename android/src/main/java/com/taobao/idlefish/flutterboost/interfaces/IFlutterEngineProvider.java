@@ -21,32 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.taobao.idlefish.flutterboost.interfaces;
 
 import android.content.Context;
 
-import io.flutter.view.FlutterNativeView;
+import com.taobao.idlefish.flutterboost.BoostFlutterView;
 
-public class BoostFlutterNativeView extends FlutterNativeView {
+import io.flutter.embedding.engine.FlutterEngine;
+/**
+ * a flutter engine provider
+ */
+public interface IFlutterEngineProvider {
 
-    public BoostFlutterNativeView(Context context) {
-        super(context);
-    }
-    
-    public void detachFromFlutterView() {
-        //do nothing...
-    }
+    /**
+     * create flutter engine, we just hold a single instance now
+     * @param context
+     * @return
+     */
+    FlutterEngine createEngine(Context context);
 
-    public void detach() {
-        //do nothing...
-    }
-
-    @Override
-    public void destroy() {
-        //do nothing...
-    }
-
-    public void boostDestroy() {
-        super.destroy();
-    }
+    /**
+     * may return null
+     * @return
+     */
+    FlutterEngine tryGetEngine();
 }

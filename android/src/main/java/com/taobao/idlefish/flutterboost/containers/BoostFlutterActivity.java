@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 Alibaba Group
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,161 +24,123 @@
 package com.taobao.idlefish.flutterboost.containers;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
 import com.taobao.idlefish.flutterboost.BoostFlutterView;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.util.HashMap;
-import java.util.Map;
 
-import io.flutter.app.FlutterActivity;
-import io.flutter.view.FlutterNativeView;
-import io.flutter.view.FlutterView;
+import io.flutter.embedding.android.FlutterView;
 
-abstract public class BoostFlutterActivity extends FlutterActivity implements IFlutterViewContainer {
+public abstract class BoostFlutterActivity extends Activity implements IFlutterViewContainer {
 
-    private FlutterContent mFlutterContent;
+    private BoostFlutterView mFlutterView;
+    private IOperateSyncer mSyncer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
-        mFlutterContent = new FlutterContent(this);
+        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
+        mFlutterView = builder.renderMode(FlutterView.RenderMode.texture)
+                .transparencyMode(FlutterView.TransparencyMode.opaque)
+                .build();
 
-        setContentView(mFlutterContent);
+        setContentView(mFlutterView);
 
-        FlutterBoostPlugin.containerManager().onContainerCreate(this);
-        onRegisterPlugins(this);
+        mSyncer = FlutterBoostPlugin.containerManager().generateSyncer(this);
+        mSyncer.onCreate();
     }
 
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        FlutterBoostPlugin.containerManager().onContainerAppear(BoostFlutterActivity.this);
-        mFlutterContent.attachFlutterView(getBoostFlutterView());
+    protected void onResume() {
+        super.onResume();
+        mSyncer.onAppear();
     }
 
     @Override
     protected void onPause() {
-        mFlutterContent.detachFlutterView();
-        FlutterBoostPlugin.containerManager().onContainerDisappear(this);
+        mSyncer.onDisappear();
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
-        FlutterBoostPlugin.containerManager().onContainerDestroy(this);
-        mFlutterContent.destroy();
+        mSyncer.onDestroy();
         super.onDestroy();
-    }
-
-    public FlutterView createFlutterView(Context context) {
-        return FlutterBoostPlugin.viewProvider().createFlutterView(this);
-    }
-
-    @Override
-    public FlutterNativeView createFlutterNativeView() {
-        return FlutterBoostPlugin.viewProvider().createFlutterNativeView(this);
-    }
-
-    @Override
-    public boolean retainFlutterNativeView() {
-        return true;
-    }
-
-    protected View createSplashScreenView() {
-        FrameLayout frameLayout = new FrameLayout(this);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER;
-        frameLayout.addView(new ProgressBar(this), params);
-        return frameLayout;
-    }
-
-    protected View createFlutterInitCoverView() {
-        View initCover = new View(this);
-        initCover.setBackgroundColor(Color.WHITE);
-        return initCover;
-    }
-
-    @Override
-    public void onContainerShown() {
-        mFlutterContent.onContainerShown();
-    }
-
-    @Override
-    public void onContainerHidden() {
-        mFlutterContent.onContainerHidden();
     }
 
     @Override
     public void onBackPressed() {
-        FlutterBoostPlugin.containerManager().onBackPressed(this);
+        super.onBackPressed();
+        mSyncer.onBackPressed();
     }
 
     @Override
-    public Activity getActivity() {
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        mSyncer.onNewIntent(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mSyncer.onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mSyncer.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        mSyncer.onTrimMemory(level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mSyncer.onLowMemory();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        mSyncer.onUserLeaveHint();
+    }
+
+    @Override
+    public Activity getContextActivity() {
         return this;
     }
 
     @Override
     public BoostFlutterView getBoostFlutterView() {
-        return (BoostFlutterView) getFlutterView();
+        return mFlutterView;
     }
 
     @Override
-    public void destroyContainer() {
+    public void finishContainer() {
         finish();
     }
 
     @Override
-    public abstract String getContainerName();
+    public void onContainerShown() {}
 
     @Override
-    public abstract Map getContainerParams();
-
+    public void onContainerHidden() {}
 
     @Override
     public void setBoostResult(HashMap result) {
-        FlutterBoostPlugin.setBoostResult(this, result);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        FlutterBoostPlugin.onBoostResult(this,requestCode,resultCode,data);
-    }
-
-    class FlutterContent extends FlutterViewStub {
-
-        public FlutterContent(Context context) {
-            super(context);
-        }
-
-        @Override
-        public View createFlutterInitCoverView() {
-            return BoostFlutterActivity.this.createFlutterInitCoverView();
-        }
-
-        @Override
-        public BoostFlutterView getBoostFlutterView() {
-            return BoostFlutterActivity.this.getBoostFlutterView();
-        }
-
-        @Override
-        public View createSplashScreenView() {
-            return BoostFlutterActivity.this.createSplashScreenView();
-        }
+        Intent data = new Intent();
+        data.putExtra(RESULT_KEY,result);
+        setResult(RESULT_OK,data);
     }
 }

@@ -23,27 +23,26 @@
  */
 package com.taobao.idlefish.flutterboost;
 
-import android.os.Handler;
+import android.content.Intent;
 
 import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
-import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 
 public class ContainerRecord implements IContainerRecord {
-    private final IContainerManager mManager;
+    private final FlutterViewContainerManager mManager;
     private final IFlutterViewContainer mContainer;
     private final String mUniqueId;
-    private final Handler mHandler = new Handler();
 
     private int mState = STATE_UNKNOW;
     private MethodChannelProxy mProxy = new MethodChannelProxy();
 
-    public ContainerRecord(IContainerManager manager, IFlutterViewContainer container) {
+    ContainerRecord(FlutterViewContainerManager manager, IFlutterViewContainer container) {
         mUniqueId = System.currentTimeMillis() + "-" + hashCode();
         mManager = manager;
         mContainer = container;
@@ -66,53 +65,118 @@ public class ContainerRecord implements IContainerRecord {
 
     @Override
     public void onCreate() {
+        Utils.assertCallOnMainThread();
+
+        if(mState != STATE_UNKNOW) {
+            Debuger.exception("state error");
+        }
+
         mState = STATE_CREATED;
-        mContainer.getBoostFlutterView().boostResume();
+        mContainer.getBoostFlutterView().onResume();
         mProxy.create();
     }
 
     @Override
     public void onAppear() {
+        Utils.assertCallOnMainThread();
+
+        if(mState != STATE_CREATED && mState != STATE_DISAPPEAR) {
+            Debuger.exception("state error");
+        }
+
         mState = STATE_APPEAR;
-        mContainer.getBoostFlutterView().boostResume();
+
+        mManager.pushRecord(this);
+
+        mContainer.getBoostFlutterView().onAttach();
+
         mProxy.appear();
     }
 
     @Override
     public void onDisappear() {
-        mProxy.disappear();
+        Utils.assertCallOnMainThread();
+
+        if(mState != STATE_APPEAR) {
+            Debuger.exception("state error");
+        }
+
         mState = STATE_DISAPPEAR;
 
-        /**
-         * Bug workaround:
-         * If current container is finishing, we should call destroy flutter page early.
-         */
-        if(mContainer.isFinishing()) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mProxy.destroy();
-                }
-            });
-        }
+        mProxy.disappear();
+
+        mContainer.getBoostFlutterView().onDetach();
+
+        mManager.popRecord(this);
     }
 
     @Override
     public void onDestroy() {
-        mProxy.destroy();
+        Utils.assertCallOnMainThread();
+
+        if(mState != STATE_DISAPPEAR) {
+            Debuger.exception("state error");
+        }
+
         mState = STATE_DESTROYED;
+
+        mProxy.destroy();
+
+        mManager.removeRecord(this);
+
+        if(!mManager.hasContainerAppear()) {
+            mContainer.getBoostFlutterView().onPause();
+            mContainer.getBoostFlutterView().onStop();
+        }
     }
 
     @Override
-    public void onResult(Map Result) {
-        NavigationService.onNativePageResult(
-                genResult("onNativePageResult"),
-                mUniqueId,
-                mUniqueId,
-                Result,
-                mContainer.getContainerParams()
-        );
+    public void onBackPressed() {
+        Utils.assertCallOnMainThread();
+
+        if(mState == STATE_UNKNOW || mState == STATE_DESTROYED) {
+            Debuger.exception("state error");
+        }
+
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "backPressedCallback");
+        map.put("name", mContainer.getContainerName());
+        map.put("uniqueId", mUniqueId);
+        NavigationService.getService().emitEvent(map);
+
+        mContainer.getBoostFlutterView().onBackPressed();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        mContainer.getBoostFlutterView().onRequestPermissionsResult(requestCode,permissions,grantResults);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        mContainer.getBoostFlutterView().onNewIntent(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mContainer.getBoostFlutterView().onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        mContainer.getBoostFlutterView().onUserLeaveHint();
+    }
+
+    @Override
+    public void onTrimMemory(int level) {
+        mContainer.getBoostFlutterView().onTrimMemory(level);
+    }
+
+    @Override
+    public void onLowMemory() {
+        mContainer.getBoostFlutterView().onLowMemory();
+    }
+
 
     private class MethodChannelProxy {
         private int mState = STATE_UNKNOW;

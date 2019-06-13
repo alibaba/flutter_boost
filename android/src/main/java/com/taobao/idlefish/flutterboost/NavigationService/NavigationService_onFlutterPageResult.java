@@ -38,8 +38,8 @@
  
  
         private boolean onCall(MessageResult<Boolean> result,String uniqueId,String key,Map resultData,Map params){
-            FlutterBoostPlugin.containerManager().setContainerResult(uniqueId,resultData);
-            result.success(true);
+//            FlutterBoostPlugin.containerManager().setContainerResult(uniqueId,resultData);
+//            result.success(true);
            return true;
       }
  

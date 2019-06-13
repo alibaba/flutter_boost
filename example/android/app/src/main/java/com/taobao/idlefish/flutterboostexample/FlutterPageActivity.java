@@ -10,11 +10,6 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class FlutterPageActivity extends BoostFlutterActivity {
 
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
-
     /**
      * 该方法返回当前Activity在Flutter层对应的name，
      * 混合栈将会在flutter层根据这个名字，在注册的Route表中查找对应的Widget
