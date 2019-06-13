@@ -42,12 +42,17 @@
 {
      NSDictionary *args = msg.params;
      [self onCall:result newName:args[@"newName"] oldName:args[@"oldName"] params:args[@"params"]];
+    return YES;
  }
 
  - (NSString *)returnType
  {
    return @"BOOL";
  }
+- (NSArray *)handledMessageNames
+{
+    return @[@"onShownContainerChanged"];
+}
 
  
  @end

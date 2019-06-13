@@ -24,6 +24,7 @@
 #import <Flutter/Flutter.h>
 
 #import "FLB2Platform.h"
+#import "FLBBroadcastor.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 
@@ -37,6 +38,14 @@
 #pragma mark - Some properties.
 - (BOOL)isRunning;
 - (FlutterViewController *)currentViewController;
+
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments
+           result:(FlutterResult)result;
+
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name;
 
 #pragma mark - handing vc result.
 - (void)openPage:(NSString *)name

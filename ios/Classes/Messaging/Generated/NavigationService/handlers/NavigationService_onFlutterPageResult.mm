@@ -43,7 +43,13 @@
 {
     NSDictionary *args = msg.params;
      [self onCall:result uniqueId:args[@"uniqueId"] key:args[@"key"] resultData:args[@"resultData"] params:args[@"params"]];
+    return YES;
  }
+
+- (NSArray *)handledMessageNames
+{
+    return @[@"onFlutterPageResult"];
+}
 
  - (NSString *)returnType
  {

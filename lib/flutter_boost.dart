@@ -39,6 +39,7 @@ import 'messaging/handlers/on_native_page_result_handler.dart';
 import 'messaging/handlers/will_dealloc_page_container_handler.dart';
 import 'messaging/handlers/will_show_page_container_handler.dart';
 import 'messaging/handlers/will_disappear_page_container_handler.dart';
+import 'messaging/base/broadcastor.dart';
 import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
@@ -64,6 +65,7 @@ class FlutterBoost {
 
   final MethodChannel _methodChannel = MethodChannel('flutter_boost');
   final MessageDispatcher _dispatcher = MessageDispatcher();
+  final Broadcastor _broadcastor = Broadcastor(_methodChannel);
 
   FlutterBoost() {
     _router.resultMediator = _resultMediator;
@@ -78,7 +80,12 @@ class FlutterBoost {
     _dispatcher.registerHandler(WillShowPageContainerHandler());
     _dispatcher.registerHandler(WillDisappearPageContainerHandler());
     _methodChannel.setMethodCallHandler((MethodCall call){
-      _dispatcher.dispatch(call);
+      if(call.method == "__event__"){
+        //Handler broadcast event.
+        return _broadcastor.handleCall(call);
+      }else{
+        return _dispatcher.dispatch(call);
+      }
     });
 
   }

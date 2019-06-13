@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 #import "FLBMessageHandlerImp.h"
+#import "FLBMessageImp.h"
 
 typedef void (^SendResult)(NSObject *result);
 
@@ -76,21 +77,28 @@ typedef void (^SendResult)(NSObject *result);
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     SEL method = @selector(call:result:);
-    if (_callHandlers[NSStringFromSelector(method)]) {
-        return;
+   
+    
+    for(NSString *name in self.handledMessageNames){
+        if (_callHandlers[name]) {
+            continue;
+        }
+        __weak typeof(self) weakSelf = self;
+        _callHandlers[name] = ^(NSDictionary *args,SendResult result){
+            id resultBlock = [weakSelf getHandlerBlockForType:weakSelf.returnType result:result];
+            if (resultBlock && result) {
+                FLBMessageImp *msg = FLBMessageImp.new;
+                msg.name = name;
+                msg.params = args;
+                [weakSelf performSelector:method withObject:msg withObject:resultBlock];
+            }else{
+#if DEBUG
+                [NSException raise:@"invalid call" format:@"missing handler and result!"];
+#endif
+            }
+        };
     }
     
-    __weak typeof(self) weakSelf = self;
-    _callHandlers[NSStringFromSelector(method)] = ^(NSDictionary *args,SendResult result){
-        id resultBlock = [weakSelf getHandlerBlockForType:weakSelf.returnType result:result];
-        if (resultBlock && result) {
-            [weakSelf performSelector:method withObject:args withObject:resultBlock];
-        }else{
-#if DEBUG
-            [NSException raise:@"invalid call" format:@"missing handler and result!"];
-#endif
-        }
-    };
 #pragma clang diagnostic pop
 }
 

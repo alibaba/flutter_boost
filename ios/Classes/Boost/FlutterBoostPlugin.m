@@ -47,14 +47,18 @@
                                      methodChannelWithName:@"flutter_boost"
                                      binaryMessenger:[registrar messenger]];
     FlutterBoostPlugin* instance = [self.class sharedInstance];
+    [instance registerHandlers];
     instance.methodChannel = channel;
+    instance.broadcastor = [[FLBBroadcastor alloc] initWithMethodChannel:channel];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"getPlatformVersion" isEqualToString:call.method]) {
         result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-    } else {
+    } else if([@"__event__" isEqual: call.method]){
+        [_broadcastor handleMethodCall:call result:result];
+    }else{
         FLBMessageImp *msg = FLBMessageImp.new;
         msg.name = call.method;
         msg.params = call.arguments;
@@ -94,7 +98,7 @@
 {
     if (self = [super init]) {
         _resultMediator = [FLBResultMediator new];
-        [self registerHandlers];
+        _dispatcher = FLBMessageDispather.new;
     }
     
     return self;
@@ -170,6 +174,23 @@
 - (void)removeHandlerForKey:(NSString *)vcid
 {
     [_resultMediator removeHandlerForKey:vcid];
+}
+
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments
+           result:(FlutterResult)result
+{
+    [_broadcastor sendEvent:eventName
+                  arguments:arguments
+                     result:result];
+}
+
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name
+{
+    [_broadcastor addEventListener:listner
+                           forName:name];
 }
 
 @end

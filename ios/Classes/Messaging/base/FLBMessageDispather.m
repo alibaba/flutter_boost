@@ -44,7 +44,8 @@
 {
     if (msg) {
         id<FLBMessageHandler> handler = _handlerMap[msg.name];
-        return [handler handle:msg result:result];
+        [handler handle:msg result:result];
+        return handler != nil;
     }else{
         return NO;
     }

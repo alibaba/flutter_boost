@@ -55,11 +55,18 @@
          pageName:args[@"pageName"]
            params:args[@"params"]
          animated:args[@"animated"]];
+    return YES;
  }
 
  - (NSString *)returnType
  {
    return @"BOOL";
  }
+
+- (NSArray *)handledMessageNames
+{
+    return @[@"closePage"];
+}
+
 
  @end

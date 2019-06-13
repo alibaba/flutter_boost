@@ -45,11 +45,17 @@
 {
     NSDictionary *args = msg.params;
     [self onCall:result params:args[@"params"]];
+    return YES;
 }
 
  - (NSString *)returnType
  {
    return @"NSDictionary *";
  }
+
+- (NSArray *)handledMessageNames
+{
+    return @[@"pageOnStart"];
+}
 
  @end
