@@ -21,28 +21,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import 'dart:async';
 
- import 'NavigationService.dart';
- import '../handlers/NavigationService_onNativePageResult.dart';
- import '../handlers/NavigationService_didShowPageContainer.dart';
- import '../handlers/NavigationService_willShowPageContainer.dart';
- import '../handlers/NavigationService_willDisappearPageContainer.dart';
- import '../handlers/NavigationService_didDisappearPageContainer.dart';
- import '../handlers/NavigationService_didInitPageContainer.dart';
- import '../handlers/NavigationService_willDeallocPageContainer.dart';
- 
- class NavigationServiceRegister{
- 
-  static register(){
-     NavigationService.regsiter();
- 
-     NavigationService_onNativePageResult.regsiter();
-     NavigationService_didShowPageContainer.regsiter();
-     NavigationService_willShowPageContainer.regsiter();
-     NavigationService_willDisappearPageContainer.regsiter();
-     NavigationService_didDisappearPageContainer.regsiter();
-     NavigationService_didInitPageContainer.regsiter();
-     NavigationService_willDeallocPageContainer.regsiter();
-   }
- 
- }
+import 'package:flutter/services.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
+import 'package:flutter_boost/messaging/base/message_handler.dart';
+
+class DidDisappearPageContainerHandler implements MessageHandler {
+
+  @override
+  String name() {
+    return "didDisappearPageContainer";
+  }
+
+
+  @override
+  Future<bool> onMethodCall(MethodCall call) {
+    return onCall(call.arguments["pageName"], call.arguments["params"],
+        call.arguments["uniqueId"]);
+  }
+
+//==============================================Do not edit code above!
+
+  Future<bool> onCall(String pageName, Map params, String uniqueId) async {
+    return ContainerCoordinator.singleton
+        .nativeContainerDidDisappear(pageName, params, uniqueId);
+  }
+}

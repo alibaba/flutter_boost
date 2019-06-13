@@ -22,34 +22,30 @@
  * THE SOFTWARE.
  */
 
- import 'dart:async';
- import 'package:xservice_kit/foundation_ext/foundation_ext.dart';
- import 'package:xservice_kit/ServiceTemplate.dart';
- import 'package:xservice_kit/ServiceGateway.dart';
- 
- class NavigationService {
- 
- static final ServiceTemplate _service  =
- new ServiceTemplate("NavigationService");
- 
- static void regsiter() {
-   ServiceGateway.sharedInstance().registerService(_service);
- }
+import 'dart:async';
+import 'package:flutter/services.dart';
+
+
+class NavigationService {
+
+  static MethodChannel methodChannel;
+
  //List event from event channel.
  static int listenEvent(void onData(dynamic event)) {
-     return _service.listenEvent(onData);
+//     return _service.listenEvent(onData);
  }
  //Cancel event for subscription with ID.
  static void cancelEventForSubscription(int subID) {
-      _service.cancelEventForSubscription(subID);
+//      _service.cancelEventForSubscription(subID);
  }
+
  static Future<bool> onShownContainerChanged(String newName,String oldName,Map params) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
      properties["newName"]=newName;
      properties["oldName"]=oldName;
      properties["params"]=params;
-   return _service.methodChannel().invokeMethod('onShownContainerChanged',properties).then<bool>((value){
-       return BOOL(value);
+   return methodChannel.invokeMethod('onShownContainerChanged',properties).then<bool>((value){
+       return (value);
      });
  }
  static Future<bool> onFlutterPageResult(String uniqueId,String key,Map resultData,Map params) {
@@ -58,15 +54,15 @@
      properties["key"]=key;
      properties["resultData"]=resultData;
      properties["params"]=params;
-   return _service.methodChannel().invokeMethod('onFlutterPageResult',properties).then<bool>((value){
-       return BOOL(value);
+   return methodChannel.invokeMethod('onFlutterPageResult',properties).then<bool>((value){
+       return (value);
      });
  }
  static Future<Map> pageOnStart(Map params) async {
    Map<String,dynamic> properties = new Map<String,dynamic>();
    properties["params"]=params;
    try {
-     return await _service.methodChannel().invokeMethod('pageOnStart',properties).then<Map>((value){
+     return await methodChannel.invokeMethod('pageOnStart',properties).then<Map>((value){
        return value as Map;
      });
    } catch (e) {
@@ -79,8 +75,8 @@
      properties["pageName"]=pageName;
      properties["params"]=params;
      properties["animated"]=animated;
-   return _service.methodChannel().invokeMethod('openPage',properties).then<bool>((value){
-       return BOOL(value);
+   return methodChannel.invokeMethod('openPage',properties).then<bool>((value){
+       return (value);
      });
  }
  static Future<bool> closePage(String uniqueId,String pageName,Map params,bool animated) {
@@ -89,8 +85,8 @@
      properties["pageName"]=pageName;
      properties["params"]=params;
      properties["animated"]=animated;
-   return _service.methodChannel().invokeMethod('closePage',properties).then<bool>((value){
-       return BOOL(value);
+   return methodChannel.invokeMethod('closePage',properties).then<bool>((value){
+     return value;
      });
  }
  }

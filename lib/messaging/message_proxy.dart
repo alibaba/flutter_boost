@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'dart:async';
 
 abstract class MessageProxy{

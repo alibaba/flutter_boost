@@ -21,13 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import 'dart:async';
 
- import '../NavigationService/service/NavigationServiceRegister.dart';
- 
- class ServiceLoader{
- 
-  static load(){
-     NavigationServiceRegister.register();
-   }
- 
- }
+import 'package:flutter/services.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
+
+import 'package:flutter_boost/messaging/base/message_handler.dart';
+
+class DidInitPageContainerHandler implements MessageHandler {
+  static void regsiter() {
+//    ServiceGateway.sharedInstance()
+//        .registerHandler(new NavigationService_didInitPageContainer());
+  }
+
+  @override
+  String name() {
+    return "didInitPageContainer";
+  }
+
+
+  @override
+  Future<bool> onMethodCall(MethodCall call) {
+    return onCall(call.arguments["pageName"], call.arguments["params"],
+        call.arguments["uniqueId"]);
+  }
+
+//==============================================Do not edit code above!
+
+  Future<bool> onCall(String pageName, Map params, String uniqueId) async {
+    return ContainerCoordinator.singleton
+        .nativeContainerDidInit(pageName, params, uniqueId);
+  }
+}

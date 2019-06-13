@@ -24,33 +24,26 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:xservice_kit/ServiceCallHandler.dart';
-import 'package:xservice_kit/ServiceGateway.dart';
-import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
+import 'package:flutter_boost/messaging/base/message_handler.dart';
 
-class NavigationService_onNativePageResult extends ServiceCallHandler {
-
-  static void regsiter() {
-    ServiceGateway.sharedInstance().registerHandler(new NavigationService_onNativePageResult());
-  }
+class WillDisappearPageContainerHandler implements MessageHandler {
 
   @override
   String name() {
-    return "onNativePageResult";
-  }
-
-  @override
-  String service() {
-    return "NavigationService";
+    return "willDisappearPageContainer";
   }
 
   @override
   Future<bool> onMethodCall(MethodCall call) {
-    return onCall(call.arguments["uniqueId"],call.arguments["key"],call.arguments["resultData"],call.arguments["params"]);
+    return onCall(call.arguments["pageName"], call.arguments["params"],
+        call.arguments["uniqueId"]);
   }
 
 //==============================================Do not edit code above!
-  Future<bool> onCall(String uniqueId,String key,Map resultData,Map params) async{
-    return FlutterBoost.singleton.onPageResult(key, resultData, params);
+
+  Future<bool> onCall(String pageName, Map params, String uniqueId) async {
+    return ContainerCoordinator.singleton
+        .nativeContainerWillDisappear(pageName, params, uniqueId);
   }
 }

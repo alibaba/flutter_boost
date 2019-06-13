@@ -24,7 +24,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/messaging/native_page_container_event_handler.dart';
@@ -88,7 +88,7 @@ class ContainerCoordinator implements NativePageContainerEventHandler {
 
   void onChannelEvent(dynamic event) {
     if (event is Map) {
-      Map map = event as Map;
+      Map map = event;
       final String type = map['type'];
 
       switch (type) {
@@ -177,7 +177,7 @@ class ContainerCoordinator implements NativePageContainerEventHandler {
     FlutterBoost.containerManager?.remove(pageId);
 
     Logger.log(
-        'native containner dealloc, \nmanager dump:\n${FlutterBoost.containerManager?.dump()}');
+        'native containner dealloc, \n manager dump:\n${FlutterBoost.containerManager?.dump()}');
 
     return true;
   }

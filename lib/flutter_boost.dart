@@ -24,19 +24,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_manager.dart';
 import 'package:flutter_boost/messaging/page_result_mediator.dart';
 import 'package:flutter_boost/router/router.dart';
 
-import 'AIOService/loader/ServiceLoader.dart';
 import 'container/container_coordinator.dart';
+import 'messaging/base/message_dispatcher.dart';
+import 'messaging/handlers/did_disappear_page_container_handler.dart';
+import 'messaging/handlers/did_show_page_container_handler.dart';
+import 'messaging/handlers/did_init_page_container_handler.dart';
+import 'messaging/handlers/on_native_page_result_handler.dart';
+import 'messaging/handlers/will_dealloc_page_container_handler.dart';
+import 'messaging/handlers/will_show_page_container_handler.dart';
+import 'messaging/handlers/will_disappear_page_container_handler.dart';
 import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
 export 'container/container_manager.dart';
+import 'package:flutter/services.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
@@ -55,9 +62,25 @@ class FlutterBoost {
   final PageResultMediator _resultMediator = PageResultMediator();
   final Router _router = Router();
 
+  final MethodChannel _methodChannel = MethodChannel('flutter_boost');
+  final MessageDispatcher _dispatcher = MessageDispatcher();
+
   FlutterBoost() {
     _router.resultMediator = _resultMediator;
-    ServiceLoader.load();
+
+    //Config message handlers
+    NavigationService.methodChannel = _methodChannel;
+    _dispatcher.registerHandler(DidDisappearPageContainerHandler());
+    _dispatcher.registerHandler(DidInitPageContainerHandler());
+    _dispatcher.registerHandler(DidShowPageContainerHandler());
+    _dispatcher.registerHandler(OnNativePageResultHandler());
+    _dispatcher.registerHandler(WillDeallocPageContainerHandler());
+    _dispatcher.registerHandler(WillShowPageContainerHandler());
+    _dispatcher.registerHandler(WillDisappearPageContainerHandler());
+    _methodChannel.setMethodCallHandler((MethodCall call){
+      _dispatcher.dispatch(call);
+    });
+
   }
 
   static FlutterBoost get singleton => _instance;

@@ -24,36 +24,24 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_boost/container/container_coordinator.dart';
-import 'package:xservice_kit/ServiceCallHandler.dart';
-import 'package:xservice_kit/ServiceGateway.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
-class NavigationService_willDeallocPageContainer extends ServiceCallHandler {
-  static void regsiter() {
-    ServiceGateway.sharedInstance()
-        .registerHandler(new NavigationService_willDeallocPageContainer());
-  }
+import 'package:flutter_boost/messaging/base/message_handler.dart';
+
+class OnNativePageResultHandler implements MessageHandler {
 
   @override
   String name() {
-    return "willDeallocPageContainer";
-  }
-
-  @override
-  String service() {
-    return "NavigationService";
+    return "onNativePageResult";
   }
 
   @override
   Future<bool> onMethodCall(MethodCall call) {
-    return onCall(call.arguments["pageName"], call.arguments["params"],
-        call.arguments["uniqueId"]);
+    return onCall(call.arguments["uniqueId"],call.arguments["key"],call.arguments["resultData"],call.arguments["params"]);
   }
 
 //==============================================Do not edit code above!
-
-  Future<bool> onCall(String pageName, Map params, String uniqueId) async {
-    return ContainerCoordinator.singleton
-        .nativeContainerWillDealloc(pageName, params, uniqueId);
+  Future<bool> onCall(String uniqueId,String key,Map resultData,Map params) async{
+    return FlutterBoost.singleton.onPageResult(key, resultData, params);
   }
 }

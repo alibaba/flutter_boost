@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 import 'package:flutter_boost/support/logger.dart';
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 
 typedef void PageResultHandler(String key , Map<String,dynamic> result);
 typedef VoidCallback = void Function();

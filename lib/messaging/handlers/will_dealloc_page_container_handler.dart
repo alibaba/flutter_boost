@@ -25,23 +25,12 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
-import 'package:xservice_kit/ServiceCallHandler.dart';
-import 'package:xservice_kit/ServiceGateway.dart';
+import 'package:flutter_boost/messaging/base/message_handler.dart';
 
-class NavigationService_willShowPageContainer extends ServiceCallHandler {
-  static void regsiter() {
-    ServiceGateway.sharedInstance()
-        .registerHandler(new NavigationService_willShowPageContainer());
-  }
-
+class WillDeallocPageContainerHandler implements MessageHandler {
   @override
   String name() {
-    return "willShowPageContainer";
-  }
-
-  @override
-  String service() {
-    return "NavigationService";
+    return "willDeallocPageContainer";
   }
 
   @override
@@ -54,6 +43,6 @@ class NavigationService_willShowPageContainer extends ServiceCallHandler {
 
   Future<bool> onCall(String pageName, Map params, String uniqueId) async {
     return ContainerCoordinator.singleton
-        .nativeContainerWillShow(pageName, params, uniqueId);
+        .nativeContainerWillDealloc(pageName, params, uniqueId);
   }
 }

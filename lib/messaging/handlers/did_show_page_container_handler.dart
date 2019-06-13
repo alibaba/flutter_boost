@@ -25,23 +25,13 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
-import 'package:xservice_kit/ServiceCallHandler.dart';
-import 'package:xservice_kit/ServiceGateway.dart';
+import 'package:flutter_boost/messaging/base/message_handler.dart';
 
-class NavigationService_didDisappearPageContainer extends ServiceCallHandler {
-  static void regsiter() {
-    ServiceGateway.sharedInstance()
-        .registerHandler(new NavigationService_didDisappearPageContainer());
-  }
+class DidShowPageContainerHandler implements MessageHandler {
 
   @override
   String name() {
-    return "didDisappearPageContainer";
-  }
-
-  @override
-  String service() {
-    return "NavigationService";
+    return "didShowPageContainer";
   }
 
   @override
@@ -54,6 +44,6 @@ class NavigationService_didDisappearPageContainer extends ServiceCallHandler {
 
   Future<bool> onCall(String pageName, Map params, String uniqueId) async {
     return ContainerCoordinator.singleton
-        .nativeContainerDidDisappear(pageName, params, uniqueId);
+        .nativeContainerDidShow(pageName, params, uniqueId);
   }
 }
