@@ -25,8 +25,6 @@ A new Flutter plugin make flutter better to use!
     'Classes/1.5/FLB2FlutterViewContainer.h'
 
   s.dependency 'Flutter'
-  s.dependency 'xservice_kit'
-
   s.libraries = 'c++'
 
   s.ios.deployment_target = '8.0'

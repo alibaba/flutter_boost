@@ -37,9 +37,8 @@
 - (FLBResultMediator *)resultMediator;
 - (id<FLBAbstractFactory>)factory;
 
+@property (nonatomic,strong) FlutterMethodChannel *methodChannel;
 @property (nonatomic,copy) NSString *fPageId;
 @property (nonatomic,copy) NSString *fPagename;
 @property (nonatomic,strong) NSDictionary *fParams;
-
-
 @end

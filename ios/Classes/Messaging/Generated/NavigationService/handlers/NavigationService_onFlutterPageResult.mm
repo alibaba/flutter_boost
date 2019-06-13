@@ -39,19 +39,15 @@
  }
  
  #pragma mark - Do not edit these method.
- - (void)__flutter_p_handler_onFlutterPageResult:(NSDictionary *)args result:(void (^)(BOOL))result {
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))result
+{
+    NSDictionary *args = msg.params;
      [self onCall:result uniqueId:args[@"uniqueId"] key:args[@"key"] resultData:args[@"resultData"] params:args[@"params"]];
  }
- + (void)load{
-     [[ServiceGateway sharedInstance] registerHandler:[NavigationService_onFlutterPageResult new]];
- }
+
  - (NSString *)returnType
  {
    return @"BOOL";
  }
- - (NSString *)service
- {
-   return @"NavigationService";
- }
- 
+
  @end

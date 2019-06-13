@@ -28,7 +28,56 @@
 #import "FLBFactory.h"
 #import "FLB2Factory.h"
 
+#import "FLBMessageDispather.h"
+#import "FLBMessageImp.h"
+#import "NavigationService_closePage.h"
+#import "NavigationService_openPage.h"
+#import "NavigationService_pageOnStart.h"
+#import "NavigationService_onShownContainerChanged.h"
+#import "NavigationService_onFlutterPageResult.h"
+
+@interface FlutterBoostPlugin()
+@property (nonatomic,strong) FLBMessageDispather *dispatcher;
+@end
+
 @implementation FlutterBoostPlugin
+
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:@"flutter_boost"
+                                     binaryMessenger:[registrar messenger]];
+    FlutterBoostPlugin* instance = [self.class sharedInstance];
+    instance.methodChannel = channel;
+    [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if ([@"getPlatformVersion" isEqualToString:call.method]) {
+        result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+    } else {
+        FLBMessageImp *msg = FLBMessageImp.new;
+        msg.name = call.method;
+        msg.params = call.arguments;
+        if(![self.dispatcher dispatch:msg result:result]){
+             result(FlutterMethodNotImplemented);
+        }
+    }
+}
+
+- (void)registerHandlers
+{
+    NSArray *handlers = @[
+                        NavigationService_openPage.class,
+                        NavigationService_closePage.class,
+                        NavigationService_pageOnStart.class,
+                        NavigationService_onShownContainerChanged.class,
+                        NavigationService_onFlutterPageResult.class
+                          ];
+    
+    for(Class cls in handlers){
+        [self.dispatcher registerHandler:cls.new];
+    }
+}
 
 + (instancetype)sharedInstance
 {
@@ -45,6 +94,7 @@
 {
     if (self = [super init]) {
         _resultMediator = [FLBResultMediator new];
+        [self registerHandlers];
     }
     
     return self;
@@ -64,23 +114,6 @@
 {
     return _factory;
 }
-
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"flutter_boost"
-            binaryMessenger:[registrar messenger]];
-  FlutterBoostPlugin* instance = [self.class sharedInstance];
-  [registrar addMethodCallDelegate:instance channel:channel];
-}
-
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  } else {
-    result(FlutterMethodNotImplemented);
-  }
-}
-
 
 - (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
                          onStart:(void (^)(id<FlutterBinaryMessenger,
