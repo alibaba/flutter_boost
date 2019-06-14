@@ -27,24 +27,28 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.alibaba.fastjson.JSON;
-import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
+import com.taobao.idlefish.flutterboost.messageing.NavigationService;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.loader.ServiceLoader;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
 import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
+import com.taobao.idlefish.flutterboost.messageing.base.Broadcastor;
+import com.taobao.idlefish.flutterboost.messageing.base.EvenListener;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageDispatcher;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageDispatcherImp;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageImp;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
+import com.taobao.idlefish.flutterboost.messageing.handlers.ClosePageHandler;
+import com.taobao.idlefish.flutterboost.messageing.handlers.OnFlutterPageResultHandler;
+import com.taobao.idlefish.flutterboost.messageing.handlers.OnShownContainerChangedHandler;
+import com.taobao.idlefish.flutterboost.messageing.handlers.OpenPageHandler;
+import com.taobao.idlefish.flutterboost.messageing.handlers.PageOnStartHandler;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
-import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
@@ -52,20 +56,75 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Application.ActivityLifecycleCallbacks {
 
+    private static int kRid = 0;
     private static FlutterBoostPlugin sInstance = null;
-    private  static int kRid = 0;
+    private MessageDispatcher dispatcher = new MessageDispatcherImp();
+    private Broadcastor broadcastor = null;
+
+    public static FlutterBoostPlugin getInstance(){
+        return sInstance;
+    }
 
     public static synchronized void init(IPlatform platform) {
         if (sInstance == null) {
+
             sInstance = new FlutterBoostPlugin(platform);
+
+            //Config handler
+            sInstance.dispatcher.addHandler(new OnShownContainerChangedHandler());
+            sInstance.dispatcher.addHandler(new OnFlutterPageResultHandler());
+            sInstance.dispatcher.addHandler(new PageOnStartHandler());
+            sInstance.dispatcher.addHandler(new OpenPageHandler());
+            sInstance.dispatcher.addHandler(new ClosePageHandler());
+
             platform.getApplication().registerActivityLifecycleCallbacks(sInstance);
-            ServiceLoader.load();
         }
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_boost");
+        NavigationService.methodChannel = channel;
         channel.setMethodCallHandler(sInstance);
+        sInstance.broadcastor = new Broadcastor(channel);
+    }
+
+    public void sendEvent(String name, Map arguments) {
+        broadcastor.sendEvent(name, arguments);
+    }
+
+    void addEventListener(String name, EvenListener listener) {
+        broadcastor.addEventListener(name, listener);
+    }
+
+    void removeEventListener(String name, EvenListener listener) {
+        broadcastor.removeEventListener(name, listener);
+    }
+
+
+    @Override
+    public void onMethodCall(MethodCall call, final MethodChannel.Result result) {
+        if (call.method.equals("getPlatformVersion")) {
+            result.success("Android " + android.os.Build.VERSION.RELEASE);
+        } else if(call.method.equals("__event__")){
+            broadcastor.dispatch(call.method,(Map)call.arguments);
+        }else{
+            dispatcher.dispatch(new MessageImp(call.method, (Map)call.arguments), new MessageResult() {
+                @Override
+                public void success(Object var1) {
+                    result.success(var1);
+                }
+
+                @Override
+                public void error(String var1, String var2, Object var3) {
+                    result.error(var1, var2, var3);
+                }
+
+                @Override
+                public void notImplemented() {
+                    result.notImplemented();
+                }
+            });
+        }
     }
 
     public static IFlutterEngineProvider engineProvider() {
@@ -117,14 +176,6 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         return mManager.findContainerById(id);
     }
 
-    @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("getPlatformVersion")) {
-            result.success("Android " + android.os.Build.VERSION.RELEASE);
-        } else {
-            result.notImplemented();
-        }
-    }
 
     public static void openPage(Context context, String url, final Map params, int requestCode) {
         if (sInstance == null) {
@@ -139,33 +190,33 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         if (ctx == null) {
             ctx = sInstance.mPlatform.getApplication();
         }
-      
-        sInstance.mPlatform.startActivity(ctx, url ,params, requestCode);
+
+        sInstance.mPlatform.startActivity(ctx, url, params, requestCode);
     }
 
-    public static void openPage(Context context, String url, final Map params, int requestCode,PageResultHandler handler) {
+    public static void openPage(Context context, String url, final Map params, int requestCode, PageResultHandler handler) {
 
-        if(handler != null){
+        if (handler != null) {
             String rid = createResultId();
-            sInstance.mMediator.setHandler(rid,handler);
-            params.put("result_id",rid);
+            sInstance.mMediator.setHandler(rid, handler);
+            params.put("result_id", rid);
         }
 
-        openPage(context,url,params,requestCode);
+        openPage(context, url, params, requestCode);
     }
 
-    private static String createResultId(){
+    private static String createResultId() {
         kRid += 2;
         return "result_id_" + kRid;
     }
-  
-    public static void onPageResult(String key , Map resultData, Map params){
+
+    public static void onPageResult(String key, Map resultData, Map params) {
 
         if (sInstance == null) {
             throw new RuntimeException("FlutterBoostPlugin not init yet!");
         }
 
-        sInstance.mMediator.onPageResult(key,resultData,params);
+        sInstance.mMediator.onPageResult(key, resultData, params);
     }
 
     public static void setHandler(String key, PageResultHandler handler) {
@@ -185,7 +236,6 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
     }
 
 
-
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
 
@@ -199,7 +249,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
                 Map<String, String> map = new HashMap<>();
                 map.put("type", "foreground");
-                NavigationService.getService().emitEvent(map);
+                sInstance.sendEvent("lifecycle",map);
             }
         }
         mCurrentActiveActivity = activity;
@@ -223,7 +273,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
                 Map<String, String> map = new HashMap<>();
                 map.put("type", "background");
-                NavigationService.getService().emitEvent(map);
+                sInstance.sendEvent("lifecycle",map);
             }
             mCurrentActiveActivity = null;
         }
@@ -242,7 +292,7 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
             if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
                 Map<String, String> map = new HashMap<>();
                 map.put("type", "background");
-                NavigationService.getService().emitEvent(map);
+                sInstance.sendEvent("lifecycle",map);
             }
             mCurrentActiveActivity = null;
         }

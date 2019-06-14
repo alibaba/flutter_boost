@@ -23,16 +23,18 @@
  */
 package com.taobao.idlefish.flutterboost;
 
-import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
-
+import com.taobao.idlefish.flutterboost.messageing.NavigationService;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
+import com.taobao.idlefish.flutterboost.PageResultHandler;
 import java.util.HashMap;
 import java.util.Map;
 
-import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 
 class PageResultMediator {
 
+
     private Map<String,PageResultHandler> _handlers = new HashMap<>();
+
 
     void onPageResult(String key , Map resultData,Map params){
         if(key == null) return;
@@ -46,6 +48,7 @@ class PageResultMediator {
                 if(params == null){
                     params = new HashMap();
                 }
+
 
                 params.put("forward",1);
                 NavigationService.onNativePageResult(new MessageResult<Boolean>() {

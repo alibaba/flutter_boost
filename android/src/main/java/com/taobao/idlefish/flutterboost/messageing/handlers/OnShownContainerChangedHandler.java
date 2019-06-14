@@ -22,28 +22,38 @@
  * THE SOFTWARE.
  */
 
+package com.taobao.idlefish.flutterboost.messageing.handlers;
 
-#import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
+import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageHandler;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
 
-NS_ASSUME_NONNULL_BEGIN
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-typedef void (^FLBEventListener) (NSString *name ,
-                                  NSDictionary *arguments);
-typedef void (^FLBVoidCallback)(void);
 
-@interface FLBBroadcastor : NSObject
+public class OnShownContainerChangedHandler implements MessageHandler<Boolean> {
 
-- (instancetype)initWithMethodChannel:(FlutterMethodChannel *)channel;
+    private boolean onCall(MessageResult<Boolean> result, String now, String old, Map params) {
+        //Add your handler code here.
+        FlutterBoostPlugin.containerManager().onShownContainerChanged(old, now);
+        return true;
+    }
 
-- (void)sendEvent:(NSString *)eventName
-        arguments:(NSDictionary *)arguments;
 
-- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
-                            forName:(NSString *)name;
+    //==================Do not edit code blow!==============
+    @Override
+    public boolean onMethodCall(String name, Map args, MessageResult<Boolean> result) {
+        this.onCall(result, (String) args.get("newName"), (String) args.get("oldName"), (Map) args.get("params"));
+        return true;
+    }
 
-- (void)handleMethodCall:(FlutterMethodCall *)call
-                  result:(FlutterResult)result;
-@end
+    @Override
+    public List<String> handleMessageNames() {
+        List<String> h = new ArrayList<>();
+        h.add("onShownContainerChanged");
+        return h;
+    }
 
-NS_ASSUME_NONNULL_END
+}

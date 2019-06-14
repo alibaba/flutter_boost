@@ -21,29 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+package com.taobao.idlefish.flutterboost.messageing.base;
 
+import java.util.Map;
 
-#import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
+public class MessageImp implements Message{
+    private String name;
+    private Map args;
 
-NS_ASSUME_NONNULL_BEGIN
+    public MessageImp(String name,Map args){
+        this.name = name;
+        this.args = args;
+    }
 
-typedef void (^FLBEventListener) (NSString *name ,
-                                  NSDictionary *arguments);
-typedef void (^FLBVoidCallback)(void);
+    @Override
+    public String name() {
+        return name;
+    }
 
-@interface FLBBroadcastor : NSObject
-
-- (instancetype)initWithMethodChannel:(FlutterMethodChannel *)channel;
-
-- (void)sendEvent:(NSString *)eventName
-        arguments:(NSDictionary *)arguments;
-
-- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
-                            forName:(NSString *)name;
-
-- (void)handleMethodCall:(FlutterMethodCall *)call
-                  result:(FlutterResult)result;
-@end
-
-NS_ASSUME_NONNULL_END
+    @Override
+    public Map arguments() {
+        return args;
+    }
+}

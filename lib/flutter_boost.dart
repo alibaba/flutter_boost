@@ -65,13 +65,16 @@ class FlutterBoost {
 
   final MethodChannel _methodChannel = MethodChannel('flutter_boost');
   final MessageDispatcher _dispatcher = MessageDispatcher();
-  final Broadcastor _broadcastor = Broadcastor(_methodChannel);
+  Broadcastor _broadcastor;
 
   FlutterBoost() {
     _router.resultMediator = _resultMediator;
 
+    _broadcastor = Broadcastor(_methodChannel);
+
     //Config message handlers
     NavigationService.methodChannel = _methodChannel;
+
     _dispatcher.registerHandler(DidDisappearPageContainerHandler());
     _dispatcher.registerHandler(DidInitPageContainerHandler());
     _dispatcher.registerHandler(DidShowPageContainerHandler());

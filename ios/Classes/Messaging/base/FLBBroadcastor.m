@@ -44,7 +44,6 @@
 
 - (void)sendEvent:(NSString *)eventName
         arguments:(NSDictionary *)arguments
-           result:(void (^)(id _Nonnull))result
 {
     if(!eventName) return;
     NSMutableDictionary *msg = NSMutableDictionary.new;
@@ -52,7 +51,7 @@
     msg[@"arguments"] = arguments;
     [_channel invokeMethod:@"__event__"
                  arguments:msg
-                    result:result];
+                    result:^(id r){}];
 }
 
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner

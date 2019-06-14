@@ -25,14 +25,13 @@ package com.taobao.idlefish.flutterboost;
 
 import android.content.Intent;
 
-import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
+import com.taobao.idlefish.flutterboost.messageing.NavigationService;
+import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 
 public class ContainerRecord implements IContainerRecord {
     private final FlutterViewContainerManager mManager;
@@ -142,7 +141,8 @@ public class ContainerRecord implements IContainerRecord {
         map.put("type", "backPressedCallback");
         map.put("name", mContainer.getContainerName());
         map.put("uniqueId", mUniqueId);
-        NavigationService.getService().emitEvent(map);
+
+        FlutterBoostPlugin.getInstance().sendEvent("backPressedCallback",map);
 
         mContainer.getBoostFlutterView().onBackPressed();
     }
