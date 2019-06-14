@@ -51,19 +51,18 @@ public class Broadcastor{
             return ;
         }
 
-        List<EvenListener> list = lists.get(name);
-        if(list == null){
-            return ;
-        }
-
         String eventName = (String)arguments.get("name");
         Map eventArguments = (Map)arguments.get("arguments");
 
+        List<EvenListener> list = lists.get(eventName);
+        if(list == null){
+            return ;
+        }
         for(EvenListener l : list){
             l.onEvent(eventName,eventArguments);
         }
 
-        return ;
+        return;
     }
 
     public void addEventListener(String name , EvenListener listener){

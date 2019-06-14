@@ -70,15 +70,17 @@ class Broadcastor{
   }
 
   Future<dynamic> handleCall(MethodCall call){
-    if(!_lists.containsKey(call.method) || call.method != "__event__"){
+    if(call.method != "__event__"){
       return Future<dynamic>((){});
     }
 
     String name = call.arguments["name"];
     Map arg = call.arguments["arguments"];
-    List<EventListener> list = _lists[call.method];
-    for(EventListener l in list){
-      l(name,arg);
+    List<EventListener> list = _lists[name];
+    if(list != null){
+      for(EventListener l in list){
+        l(name,arg);
+      }
     }
 
     return Future<dynamic>((){});

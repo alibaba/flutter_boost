@@ -128,25 +128,20 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerDefaultPageBuilder(builder);
   }
 
-  ///Register page builder for a key.
-  void registerPageBuilder(String pageName, PageBuilder builder) {
-    ContainerCoordinator.singleton.registerPageBuilder(pageName, builder);
-  }
-
   ///Register a map builders
   void registerPageBuilders(Map<String, PageBuilder> builders) {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<bool> openPage(String url, Map params,
+  Future<bool> openPage(String name, Map params,
       {bool animated, PageResultHandler resultHandler}) {
-    return _router.openPage(url, params,
+    return _router.openPage(name, params,
         animated: animated, resultHandler: resultHandler);
   }
 
-  Future<bool> closePage(String url, String pageId, Map params,
+  Future<bool> closePage(String name, String pageId, Map params,
       {bool animated}) {
-    return _router.closePage(url, pageId, params, animated: animated);
+    return _router.closePage(name, pageId, params, animated: animated);
   }
 
   //Close currentPage page.
