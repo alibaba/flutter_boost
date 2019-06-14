@@ -24,7 +24,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/messaging/native_page_container_event_handler.dart';
@@ -37,7 +36,9 @@ class ContainerCoordinator implements NativePageContainerEventHandler {
   PageBuilder _defaultPageBuilder;
 
   ContainerCoordinator() {
-    NavigationService.listenEvent(onChannelEvent);
+    FlutterBoost.singleton.addEventListener("lifecycle", (String name , Map arguments){
+      onChannelEvent(arguments);
+    });
   }
 
   BoostContainerSettings _createContainerSettings(

@@ -35,7 +35,6 @@ public class NavigationService {
 
     public static MethodChannel methodChannel = null;
 
-
     public static void onNativePageResult(final MessageResult<Boolean> result, String uniqueId, String key, Map resultData, Map params) {
         Map<String, Object> args = new HashMap<>();
         args.put("uniqueId", uniqueId);

@@ -202,4 +202,15 @@ class FlutterBoost {
   ///register callbacks for Navigators push & pop
   VoidCallback addBoostNavigatorObserver(BoostNavigatorObserver observer) =>
       _observersHolder.addObserver<BoostNavigatorObserver>(observer);
+
+
+  //Listen broadcast event from native.
+  Function addEventListener(String name , EventListener listener){
+    return _broadcastor.addEventListener(name, listener);
+  }
+
+  //Send broadcast event to native.
+  void sendEvent(String name , Map arguments){
+    _broadcastor.sendEvent(name, arguments);
+  }
 }

@@ -30,15 +30,6 @@ class NavigationService {
 
   static MethodChannel methodChannel;
 
- //List event from event channel.
- static int listenEvent(void onData(dynamic event)) {
-//     return _service.listenEvent(onData);
- }
- //Cancel event for subscription with ID.
- static void cancelEventForSubscription(int subID) {
-//      _service.cancelEventForSubscription(subID);
- }
-
  static Future<bool> onShownContainerChanged(String newName,String oldName,Map params) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
      properties["newName"]=newName;
@@ -67,7 +58,7 @@ class NavigationService {
      });
    } catch (e) {
      print('Page on start exception');
-     return Future<Map>.value({});
+     return Future<Map>((){});
  }
  }
  static Future<bool> openPage(String pageName,Map params,bool animated) {

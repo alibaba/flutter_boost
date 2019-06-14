@@ -142,7 +142,7 @@ public class ContainerRecord implements IContainerRecord {
         map.put("name", mContainer.getContainerName());
         map.put("uniqueId", mUniqueId);
 
-        FlutterBoostPlugin.getInstance().sendEvent("backPressedCallback",map);
+        FlutterBoostPlugin.getInstance().sendEvent("lifecycle",map);
 
         mContainer.getBoostFlutterView().onBackPressed();
     }
