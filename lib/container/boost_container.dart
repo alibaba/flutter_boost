@@ -167,7 +167,7 @@ class BoostContainerState extends NavigatorState {
     Logger.log('performBackPressed');
 
     if (_backPressedListeners.isEmpty) {
-      pop();
+      maybePop();
     } else {
       for (VoidCallback cb in _backPressedListeners) {
         cb();
