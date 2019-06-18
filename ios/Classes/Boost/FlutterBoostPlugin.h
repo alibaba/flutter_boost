@@ -41,8 +41,7 @@
 
 #pragma mark - broadcast event to/from flutter
 - (void)sendEvent:(NSString *)eventName
-        arguments:(NSDictionary *)arguments
-           result:(FlutterResult)result;
+        arguments:(NSDictionary *)arguments;
 
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name;
