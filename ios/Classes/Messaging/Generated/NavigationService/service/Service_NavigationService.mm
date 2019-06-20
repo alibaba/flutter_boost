@@ -111,6 +111,10 @@
              result(tTesult);
          }
      }];
+     
+     [FlutterBoostPlugin.sharedInstance.application didInitPageContainer:pageName
+                                                                  params:params
+                                                                uniqueId:uniqueId];
  }
  
  + (void)willDeallocPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
@@ -124,6 +128,10 @@
              result(tTesult);
          }
      }];
+     
+     [FlutterBoostPlugin.sharedInstance.application willDeallocPageContainer:pageName
+                                                                      params:params
+                                                                    uniqueId:uniqueId];
  }
  
  

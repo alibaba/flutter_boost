@@ -25,12 +25,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
+#import "FLBTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
-typedef void (^FLBEventListener) (NSString *name ,
-                                  NSDictionary *arguments);
-typedef void (^FLBVoidCallback)(void);
 
 @interface FLBBroadcastor : NSObject
 

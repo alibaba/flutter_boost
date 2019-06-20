@@ -62,12 +62,12 @@ class NavigationService {
  }
  }
 
- static Future<Map<String,dynamic>> openPage(String url,Map urlParams, Map exts) {
+ static Future<Map<dynamic,dynamic>> openPage(String url,Map urlParams, Map exts) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
      properties["url"]=url;
-     properties["urlParams"]=params;
+     properties["urlParams"]=urlParams;
      properties["exts"]=exts;
-   return methodChannel.invokeMethod('openPage',properties).then<Map<String,dynamic>>((value){
+   return methodChannel.invokeMethod('openPage',properties).then<Map<dynamic,dynamic>>((value){
        return (value);
      });
  }

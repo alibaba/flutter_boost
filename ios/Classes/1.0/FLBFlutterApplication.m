@@ -154,4 +154,18 @@
                  completion:completion];
 }
 
+- (void)didInitPageContainer:(NSString *)url
+                      params:(NSDictionary *)urlParams
+                    uniqueId:(NSString *)uniqueId
+{
+    
+}
+
+- (void)willDeallocPageContainer:(NSString *)url
+                          params:(NSDictionary *)params
+                        uniqueId:(NSString *)uniqueId
+{
+    
+}
+
 @end

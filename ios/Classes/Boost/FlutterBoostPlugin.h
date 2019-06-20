@@ -24,7 +24,7 @@
 #import <Flutter/Flutter.h>
 
 #import "FLB2Platform.h"
-#import "FLBBroadcastor.h"
+#import "FLBTypes.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 

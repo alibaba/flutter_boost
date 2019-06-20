@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams
-        exts:(BOOL)animated
+        exts:(NSDictionary *)exts
       completion:(void (^)(BOOL finished))completion;
 
 - (void)close:(NSString *)uid

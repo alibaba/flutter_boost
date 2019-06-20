@@ -25,6 +25,7 @@
 
 #import "FLBFlutterApplicationInterface.h"
 #import "FLBAbstractFactory.h"
+#import "FLBBroadcastor.h"
 
 @interface FlutterBoostPlugin(){
     id<FLBFlutterApplicationInterface> _application;
@@ -39,4 +40,5 @@
 @property (nonatomic,copy) NSString *fPageId;
 @property (nonatomic,copy) NSString *fPagename;
 @property (nonatomic,strong) NSDictionary *fParams;
+
 @end

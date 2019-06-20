@@ -27,7 +27,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_manager.dart';
-import 'package:flutter_boost/messaging/page_result_mediator.dart';
 import 'package:flutter_boost/router/router.dart';
 
 import 'container/container_coordinator.dart';
@@ -63,6 +62,8 @@ class FlutterBoost {
   final Router _router = Router();
   final MethodChannel _methodChannel = MethodChannel('flutter_boost');
   final MessageDispatcher _dispatcher = MessageDispatcher();
+
+  int _callbackID = 0;
 
   Broadcastor _broadcastor;
 
@@ -131,11 +132,25 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+    if(urlParams == null) {
+      urlParams = Map();
+    }
+    if(exts == null){
+      exts = Map();
+    }
+    urlParams["__calback_id__"] = _callbackID;
+    _callbackID += 2;
     return _router.open(url,urlParams: urlParams,exts: exts);
   }
 
   Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+    if(result == null) {
+      result = Map();
+    }
+    if(exts == null){
+      exts = Map();
+    }
     return _router.close(id,result: result,exts: exts);
   }
 
@@ -149,10 +164,12 @@ class FlutterBoost {
     _broadcastor.sendEvent(name, arguments);
   }
 
-  Future<bool> openPage(String name, Map params,{bool animated}) {
+  Future<Map<String,dynamic>> openPage(String name, Map params,{bool animated}) {
     Map<String,dynamic> exts = Map();
     if(animated != null){
       exts["animated"] = animated;
+    }else{
+      exts["animated"] = true;
     }
     return open(name,urlParams: params , exts: exts);
   }
@@ -163,9 +180,11 @@ class FlutterBoost {
     Map<String,dynamic> exts = Map();
     if(animated != null){
       exts["animated"] = animated;
+    }else{
+      exts["animated"] = true;
     }
 
-    if(name != null){
+    if(url != null){
       exts["url"] = url;
     }
 

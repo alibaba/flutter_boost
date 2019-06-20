@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)inactive;
 - (BOOL)isRunning;
 
-#pragma mark - handle close/open messages
+#pragma mark - handle messages
 
 - (void)close:(NSString *)uid
        result:(NSDictionary *)result
@@ -68,6 +68,15 @@ NS_ASSUME_NONNULL_BEGIN
         exts:(NSDictionary *)exts
        reult:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
+
+
+- (void)didInitPageContainer:(NSString *)url
+                      params:(NSDictionary *)urlParams
+                    uniqueId:(NSString *)uniqueId;
+
+- (void)willDeallocPageContainer:(NSString *)url
+                          params:(NSDictionary *)params
+                        uniqueId:(NSString *)uniqueId;
 
 @end
 

@@ -26,7 +26,6 @@ import 'dart:async';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/messaging/message_proxy.dart';
-import 'package:flutter_boost/messaging/page_result_mediator.dart';
 import 'package:flutter_boost/support/logger.dart';
 
 class Router {
@@ -39,7 +38,7 @@ class Router {
   }
 
 
-  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
     return _msgProxy.open(url,urlParams: urlParams,exts: exts);
   }
 
@@ -75,6 +74,6 @@ class Router {
     Map<String,dynamic> exts = Map();
     exts["animated"] = animated;
 
-    return _msgProxy.close(id,result: {} ,exts: exts);
+    return _msgProxy.close(settings.uniqueId,result: {} ,exts: exts);
   }
 }
