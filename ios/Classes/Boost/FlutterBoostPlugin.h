@@ -46,18 +46,4 @@
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name;
 
-#pragma mark - handing vc result.
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL finished))completion
-   resultHandler:(void (^)(NSString *resultId,NSDictionary *rData))resultHandler;
-
-- (void)onResultForKey:(NSString *)vcId
-            resultData:(NSDictionary *)resultData
-                params:(NSDictionary *)params;
-
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler
-                  forKey:(NSString *)result_id;
-- (void)removeHandlerForKey:(NSString *)vcid;
 @end

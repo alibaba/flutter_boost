@@ -129,4 +129,19 @@
     return self.flutterProvider.engine.viewController;
 }
 
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion{
+    
+}
+
+- (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+       reult:(void (^)(NSDictionary *))resultCallback
+  completion:(void (^)(BOOL))completion{
+    
+}
+
 @end

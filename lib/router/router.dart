@@ -31,8 +31,6 @@ import 'package:flutter_boost/support/logger.dart';
 
 class Router {
   MessageProxy _msgProxy = MessageProxyImp();
-  PageResultMediator resultMediator = null;
-
 
   void setMessageProxy(MessageProxy prx) {
     if (prx != null) {
@@ -41,27 +39,14 @@ class Router {
   }
 
 
-  Future<bool> openPage(String url, Map params,
-      {bool animated = true, PageResultHandler resultHandler}) {
-    if (resultHandler != null) {
-      String rid = resultMediator.createResultId();
-      params["result_id"] = rid;
-      FlutterBoost.singleton.setPageResultHandler(rid,
-          (String key, Map<dynamic, dynamic> result) {
-        Logger.log("Recieved result $result for from page key $key");
-        if (resultHandler != null) {
-          resultHandler(key, result);
-        }
-      });
-    }
-
-    return _msgProxy.openPage(url, params, animated);
+  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+    return _msgProxy.open(url,urlParams: urlParams,exts: exts);
   }
 
-  Future<bool> closePage(String name, String pageId, Map params,
-      {bool animated = true}) {
-    return _msgProxy.closePage(pageId, name, params, animated);
+  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+    return _msgProxy.close(id,result:result,exts: exts);
   }
+
 
   //Close currentPage page.
   Future<bool> closeCurPage(Map params) {
@@ -87,7 +72,9 @@ class Router {
       animated = params["animated"] as bool;
     }
 
-    return _msgProxy.closePage(
-        settings.uniqueId, settings.name, settings.params, animated);
+    Map<String,dynamic> exts = Map();
+    exts["animated"] = animated;
+
+    return _msgProxy.close(id,result: {} ,exts: exts);
   }
 }

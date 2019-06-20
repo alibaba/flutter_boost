@@ -30,31 +30,18 @@
 #define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
  
  @implementation NavigationService_closePage
- 
- - (void)onCall:(void (^)(BOOL))result
-       uniqueId:(NSString *)uniqueId
-       pageName:(NSString *)pageName
-         params:(NSDictionary *)params
-       animated:(NSNumber *)animated
- {
-     //Add your handler code here!
-     [FLUTTER_APP.platform closePage:uniqueId
-                            animated:animated.boolValue
-                              params:params
-                          completion:^(BOOL finished) {
-                    if(result) result(finished);
-     }];
- }
- 
+
  #pragma mark - Do not edit these method.
-- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))result
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))resultBlock
 {
     NSDictionary *args = msg.params;
-     [self onCall:result
-         uniqueId:args[@"uniqueId"]
-         pageName:args[@"pageName"]
-           params:args[@"params"]
-         animated:args[@"animated"]];
+    NSDictionary *exts = args[@"exts"];
+    NSString *uid = args[@"uniqueId"];
+    NSDictionary *resultData = args[@"result"];
+    [FLUTTER_APP close:uid
+                result:resultData
+                  exts:exts
+            completion:resultBlock];
     return YES;
  }
 

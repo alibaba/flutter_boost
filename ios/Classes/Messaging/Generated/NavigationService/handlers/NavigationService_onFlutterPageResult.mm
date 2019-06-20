@@ -32,10 +32,7 @@
  
  - (void)onCall:(void (^)(BOOL))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params 
  {
-    //Add your handler code here!
-     [FlutterBoostPlugin.sharedInstance onResultForKey:key
-                                            resultData:resultData
-                                                params:params];
+
  }
  
  #pragma mark - Do not edit these method.

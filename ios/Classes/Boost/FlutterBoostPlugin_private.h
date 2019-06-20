@@ -24,17 +24,14 @@
 #import <Flutter/Flutter.h>
 
 #import "FLBFlutterApplicationInterface.h"
-#import "FLBResultMediator.h"
 #import "FLBAbstractFactory.h"
 
 @interface FlutterBoostPlugin(){
     id<FLBFlutterApplicationInterface> _application;
-    FLBResultMediator *_resultMediator;
     id<FLBAbstractFactory> _factory;
 }
 
 - (id<FLBFlutterApplicationInterface>)application;
-- (FLBResultMediator *)resultMediator;
 - (id<FLBAbstractFactory>)factory;
 
 @property (nonatomic,strong) FlutterMethodChannel *methodChannel;

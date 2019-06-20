@@ -23,7 +23,6 @@
  */
 
 #import "FlutterBoostPlugin.h"
-#import "FLBResultMediator.h"
 #import "FlutterBoostPlugin_private.h"
 #import "FLBFactory.h"
 #import "FLB2Factory.h"
@@ -97,7 +96,6 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _resultMediator = [FLBResultMediator new];
         _dispatcher = FLBMessageDispather.new;
     }
     
@@ -109,10 +107,6 @@
     return _application;
 }
 
-- (FLBResultMediator *)resultMediator
-{
-    return _resultMediator;
-}
 
 - (id<FLBAbstractFactory>)factory
 {
@@ -149,32 +143,6 @@
     return [self.application flutterViewController];
 }
 
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
-   resultHandler:(void (^)(NSString *, NSDictionary *))resultHandler
-{
-    static int kRid = 0;
-    NSString *resultId = [NSString stringWithFormat:@"result_id_%d",kRid++];
-    [_resultMediator setResultHandler:^(NSString * _Nonnull resultId, NSDictionary * _Nonnull resultData) {
-        if(resultHandler) resultHandler(resultId,resultData);
-    } forKey:resultId];
-}
-
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData params:(NSDictionary *)params
-{
-    [_resultMediator onResultForKey:vcId resultData:resultData params:params];
-}
-
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler forKey:(NSString *)vcid
-{
-    [_resultMediator setResultHandler:handler forKey:vcid];
-}
-
-- (void)removeHandlerForKey:(NSString *)vcid
-{
-    [_resultMediator removeHandlerForKey:vcid];
-}
 
 #pragma mark - broadcast event to/from flutter
 - (void)sendEvent:(NSString *)eventName
@@ -187,7 +155,7 @@
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name
 {
-    [_broadcastor addEventListener:listner
+   return [_broadcastor addEventListener:listner
                            forName:name];
 }
 

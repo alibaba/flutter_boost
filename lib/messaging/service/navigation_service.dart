@@ -61,23 +61,29 @@ class NavigationService {
      return Future<Map>((){});
  }
  }
- static Future<bool> openPage(String pageName,Map params,bool animated) {
+
+ static Future<Map<String,dynamic>> openPage(String url,Map urlParams, Map exts) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
-     properties["pageName"]=pageName;
-     properties["params"]=params;
-     properties["animated"]=animated;
-   return methodChannel.invokeMethod('openPage',properties).then<bool>((value){
+     properties["url"]=url;
+     properties["urlParams"]=params;
+     properties["exts"]=exts;
+   return methodChannel.invokeMethod('openPage',properties).then<Map<String,dynamic>>((value){
        return (value);
      });
  }
- static Future<bool> closePage(String uniqueId,String pageName,Map params,bool animated) {
+
+ static Future<bool> closePage(String uniqueId,{Map<String,dynamic> result,Map<String,dynamic> exts}) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
      properties["uniqueId"]=uniqueId;
-     properties["pageName"]=pageName;
-     properties["params"]=params;
-     properties["animated"]=animated;
-   return methodChannel.invokeMethod('closePage',properties).then<bool>((value){
-     return value;
+     if(result != null){
+       properties["result"]=result;
+     }
+     if(exts != null) {
+       properties["exts"] = exts;
+     }
+     return methodChannel.invokeMethod('closePage',properties).then<bool>((value){
+       return value;
      });
  }
+
  }

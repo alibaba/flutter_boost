@@ -24,7 +24,6 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:flutter_boost/flutter_boost.dart';
 
 import 'package:flutter_boost/messaging/base/message_handler.dart';
 
@@ -42,6 +41,5 @@ class OnNativePageResultHandler implements MessageHandler {
 
 //==============================================Do not edit code above!
   Future<bool> onCall(String uniqueId,String key,Map resultData,Map params) async{
-    return FlutterBoost.singleton.onPageResult(key, resultData, params);
   }
 }

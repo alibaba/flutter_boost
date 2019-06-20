@@ -25,19 +25,23 @@ import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'dart:async';
 
 abstract class MessageProxy{
-  Future<bool> openPage(String pageName,Map params,bool animated);
-  Future<bool> closePage(String uniqueId,String pageName,Map params,bool animated);
+  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts});
+  void close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts});
 }
 
 class MessageProxyImp implements MessageProxy{
+
   @override
-  Future<bool> openPage(String pageName, Map params, bool animated) {
-    return NavigationService.openPage(pageName, params, animated);
+  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+    return NavigationService.openPage(url, urlParams, exts);
   }
 
   @override
-  Future<bool> closePage(String uniqueId, String pageName, Map params, bool animated) {
-    return NavigationService.closePage(uniqueId, pageName, params, animated);
+  void close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+    return NavigationService.closePage(uniqueId,result: result,exts: exts);
   }
+
+
+
 }
 

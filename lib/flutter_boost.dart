@@ -55,43 +55,16 @@ typedef void PostPushRoute(
     String pageName, String uniqueId, Map params, Route route, Future result);
 
 class FlutterBoost {
+
   static final FlutterBoost _instance = FlutterBoost();
   final GlobalKey<ContainerManagerState> containerManagerKey =
       GlobalKey<ContainerManagerState>();
-
   final ObserversHolder _observersHolder = ObserversHolder();
-  final PageResultMediator _resultMediator = PageResultMediator();
   final Router _router = Router();
-
   final MethodChannel _methodChannel = MethodChannel('flutter_boost');
   final MessageDispatcher _dispatcher = MessageDispatcher();
+
   Broadcastor _broadcastor;
-
-  FlutterBoost() {
-    _router.resultMediator = _resultMediator;
-
-    _broadcastor = Broadcastor(_methodChannel);
-
-    //Config message handlers
-    NavigationService.methodChannel = _methodChannel;
-
-    _dispatcher.registerHandler(DidDisappearPageContainerHandler());
-    _dispatcher.registerHandler(DidInitPageContainerHandler());
-    _dispatcher.registerHandler(DidShowPageContainerHandler());
-    _dispatcher.registerHandler(OnNativePageResultHandler());
-    _dispatcher.registerHandler(WillDeallocPageContainerHandler());
-    _dispatcher.registerHandler(WillShowPageContainerHandler());
-    _dispatcher.registerHandler(WillDisappearPageContainerHandler());
-    _methodChannel.setMethodCallHandler((MethodCall call){
-      if(call.method == "__event__"){
-        //Handler broadcast event.
-        return _broadcastor.handleCall(call);
-      }else{
-        return _dispatcher.dispatch(call);
-      }
-    });
-
-  }
 
   static FlutterBoost get singleton => _instance;
 
@@ -100,8 +73,8 @@ class FlutterBoost {
 
   static TransitionBuilder init(
       {TransitionBuilder builder,
-      PrePushRoute prePush,
-      PostPushRoute postPush}) {
+        PrePushRoute prePush,
+        PostPushRoute postPush}) {
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
@@ -123,6 +96,31 @@ class FlutterBoost {
 
   ObserversHolder get observersHolder => _observersHolder;
 
+  FlutterBoost() {
+
+    _broadcastor = Broadcastor(_methodChannel);
+
+    //Config message handlers
+    NavigationService.methodChannel = _methodChannel;
+    _dispatcher.registerHandler(DidDisappearPageContainerHandler());
+    _dispatcher.registerHandler(DidInitPageContainerHandler());
+    _dispatcher.registerHandler(DidShowPageContainerHandler());
+    _dispatcher.registerHandler(OnNativePageResultHandler());
+    _dispatcher.registerHandler(WillDeallocPageContainerHandler());
+    _dispatcher.registerHandler(WillShowPageContainerHandler());
+    _dispatcher.registerHandler(WillDisappearPageContainerHandler());
+
+    _methodChannel.setMethodCallHandler((MethodCall call){
+      if(call.method == "__event__"){
+        //Handler broadcast event.
+        return _broadcastor.handleCall(call);
+      }else{
+        return _dispatcher.dispatch(call);
+      }
+    });
+
+  }
+
   ///Register a default page builder.
   void registerDefaultPageBuilder(PageBuilder builder) {
     ContainerCoordinator.singleton.registerDefaultPageBuilder(builder);
@@ -133,16 +131,51 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<bool> openPage(String name, Map params,
-      {bool animated, PageResultHandler resultHandler}) {
-    return _router.openPage(name, params,
-        animated: animated, resultHandler: resultHandler);
+  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+    return _router.open(url,urlParams: urlParams,exts: exts);
   }
 
-  Future<bool> closePage(String name, String pageId, Map params,
-      {bool animated}) {
-    return _router.closePage(name, pageId, params, animated: animated);
+  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+    return _router.close(id,result: result,exts: exts);
   }
+
+  //Listen broadcast event from native.
+  Function addEventListener(String name , EventListener listener){
+    return _broadcastor.addEventListener(name, listener);
+  }
+
+  //Send broadcast event to native.
+  void sendEvent(String name , Map arguments){
+    _broadcastor.sendEvent(name, arguments);
+  }
+
+  Future<bool> openPage(String name, Map params,{bool animated}) {
+    Map<String,dynamic> exts = Map();
+    if(animated != null){
+      exts["animated"] = animated;
+    }
+    return open(name,urlParams: params , exts: exts);
+  }
+
+  Future<bool> closePage(String url, String id, Map params,
+      {bool animated}) {
+
+    Map<String,dynamic> exts = Map();
+    if(animated != null){
+      exts["animated"] = animated;
+    }
+
+    if(name != null){
+      exts["url"] = url;
+    }
+
+    if(params != null){
+      exts["params"] = params;
+    }
+
+    close(id, result: {} , exts: exts);
+  }
+
 
   //Close currentPage page.
   Future<bool> closeCurPage(Map params) {
@@ -170,21 +203,6 @@ class FlutterBoost {
   }
 
 
-  bool onPageResult(String key, Map resultData, Map params) {
-
-    if(_resultMediator.isResultId(key)){
-      _resultMediator.onPageResult(key, resultData,params);
-    }else{
-      containerManager?.containerStateOf(key)?.performOnResult(resultData);
-    }
-    return true;
-
-  }
-
-  VoidCallback setPageResultHandler(String key, PageResultHandler handler) {
-    return _resultMediator.setPageResultHandler(key, handler);
-  }
-
   ///register for Container changed callbacks
   VoidCallback addContainerObserver(BoostContainerObserver observer) =>
       _observersHolder.addObserver<BoostContainerObserver>(observer);
@@ -199,13 +217,4 @@ class FlutterBoost {
       _observersHolder.addObserver<BoostNavigatorObserver>(observer);
 
 
-  //Listen broadcast event from native.
-  Function addEventListener(String name , EventListener listener){
-    return _broadcastor.addEventListener(name, listener);
-  }
-
-  //Send broadcast event to native.
-  void sendEvent(String name , Map arguments){
-    _broadcastor.sendEvent(name, arguments);
-  }
 }

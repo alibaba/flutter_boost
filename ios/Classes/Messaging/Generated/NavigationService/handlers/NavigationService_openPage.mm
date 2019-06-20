@@ -32,28 +32,24 @@
 #define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
  
  @implementation NavigationService_openPage
- 
- - (void)onCall:(void (^)(BOOL))result pageName:(NSString *)pageName params:(NSDictionary *)params animated:(NSNumber *)animated 
- {
-     [FLUTTER_APP.platform openPage:pageName
-                             params:params
-                           animated:animated.boolValue
-                         completion:^(BOOL finished) {
-                             if(result)result(YES);
-                         }];
- }
 
  #pragma mark - Do not edit these method.
-- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))result{
-    
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(NSDictionary *))result{
     NSDictionary *args = msg.params;
-     [self onCall:result pageName:args[@"pageName"] params:args[@"params"] animated:args[@"animated"]];
+    NSString *url = args[@"url"];
+    NSDictionary *urlParams = args[@"urlParams"];
+    NSDictionary *exts = args[@"exts"];
+    [FLUTTER_APP open:url
+            urlParams:urlParams
+                 exts:exts
+                reult:result
+           completion:^(BOOL) {}];
     return YES;
  }
 
  - (NSString *)returnType
  {
-   return @"BOOL";
+   return @"NSDictionary *";
  }
 
 - (NSArray *)handledMessageNames
