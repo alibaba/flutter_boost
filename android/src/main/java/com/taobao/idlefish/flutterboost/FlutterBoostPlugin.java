@@ -56,7 +56,6 @@ import io.flutter.plugin.common.PluginRegistry;
 
 public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Application.ActivityLifecycleCallbacks {
 
-    private static int kRid = 0;
     private static FlutterBoostPlugin sInstance = null;
     private MessageDispatcher dispatcher = new MessageDispatcherImp();
     private Broadcastor broadcastor = null;
@@ -161,15 +160,12 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
 
     private final IPlatform mPlatform;
     private final IContainerManager mManager;
-    private final PageResultMediator mMediator;
-
 
     private Activity mCurrentActiveActivity;
 
     private FlutterBoostPlugin(IPlatform platform) {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
-        mMediator = new PageResultMediator();
     }
 
     public IFlutterViewContainer findContainerById(String id) {
@@ -192,47 +188,6 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         }
 
         sInstance.mPlatform.startActivity(ctx, url, params, requestCode);
-    }
-
-    public static void openPage(Context context, String url, final Map params, int requestCode, PageResultHandler handler) {
-
-        if (handler != null) {
-            String rid = createResultId();
-            sInstance.mMediator.setHandler(rid, handler);
-            params.put("result_id", rid);
-        }
-
-        openPage(context, url, params, requestCode);
-    }
-
-    private static String createResultId() {
-        kRid += 2;
-        return "result_id_" + kRid;
-    }
-
-    public static void onPageResult(String key, Map resultData, Map params) {
-
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
-        }
-
-        sInstance.mMediator.onPageResult(key, resultData, params);
-    }
-
-    public static void setHandler(String key, PageResultHandler handler) {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
-        }
-
-        sInstance.mMediator.setHandler(key, handler);
-    }
-
-    public static void removeHandler(String key) {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
-        }
-
-        sInstance.mMediator.removeHandler(key);
     }
 
 

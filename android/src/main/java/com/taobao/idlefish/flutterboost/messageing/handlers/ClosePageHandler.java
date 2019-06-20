@@ -35,17 +35,18 @@ import java.util.Map;
 
 public class ClosePageHandler implements MessageHandler<Boolean> {
 
-    private boolean onCall(MessageResult<Boolean> result, String uniqueId, String pageName, Map params, Boolean animated) {
-        FlutterBoostPlugin.containerManager().closeContainer(uniqueId, null);
-        result.success(true);
-        return true;
-    }
-
 
     //==================Do not edit code blow!==============
     @Override
     public boolean onMethodCall(String name, Map args, MessageResult<Boolean> result) {
-        this.onCall(result, (String) args.get("uniqueId"), (String) args.get("pageName"), (Map) args.get("params"), (Boolean) args.get("animated"));
+
+        //TODO:接入新的close消息
+        String uniqueId = (String)args.get("uniqueId");
+        Map resultData = (Map)args.get("result");
+        Map exts = (Map)args.get("exts");
+
+        FlutterBoostPlugin.containerManager().closeContainer(uniqueId, null);
+        result.success(true);
         return true;
     }
 

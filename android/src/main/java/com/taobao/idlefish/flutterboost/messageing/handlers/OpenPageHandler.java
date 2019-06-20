@@ -29,32 +29,35 @@ import com.taobao.idlefish.flutterboost.messageing.base.MessageHandler;
 import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-public class OpenPageHandler implements MessageHandler<Boolean> {
+public class OpenPageHandler implements MessageHandler<Map> {
 
-    private boolean onCall(MessageResult<Boolean> result, String pageName, Map params, Boolean animated) {
+    @Override
+    public boolean onMethodCall(String name, Map args, MessageResult<Map> result) {
+
+
+        //TODO:接入新的open方法,同时兼容老方法
+        Map params = (Map)args.get("urlParams");
+        Map exts = (Map)args.get("exts");
+        String url = (String)args.get("url");
+
         int requestCode = 0;
 
         if (params != null && params.get("requestCode") != null) {
             requestCode = (int) params.get("requestCode");
         }
 
-        FlutterBoostPlugin.openPage(null, pageName, params, 0);
+        FlutterBoostPlugin.openPage(null, url, params, 0);
 
+        //TODO: to call future.
         if (result != null) {
-            result.success(true);
+            result.success(new HashMap());
         }
 
-        return true;
-    }
-
-
-    @Override
-    public boolean onMethodCall(String name, Map args, MessageResult<Boolean> result) {
-        this.onCall(result, (String) args.get("pageName"), (Map) args.get("params"), (Boolean) args.get("animated"));
         return true;
     }
 
