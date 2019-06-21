@@ -52,8 +52,6 @@ public class FlutterViewContainerManager implements IContainerManager {
     public IOperateSyncer generateSyncer(IFlutterViewContainer container) {
         Utils.assertCallOnMainThread();
 
-        BoostEngineProvider.sInstance.createEngine(container.getContextActivity());
-
         ContainerRecord record = new ContainerRecord(this, container);
         if (mRecordMap.put(container, record) != null) {
             Debuger.exception("container:" + container.getContainerName() + " already exists!");
@@ -64,7 +62,7 @@ public class FlutterViewContainerManager implements IContainerManager {
         return record;
     }
 
-    public void pushRecord(IContainerRecord record) {
+    void pushRecord(IContainerRecord record) {
         if(!mRecordMap.containsValue(record)) {
             Debuger.exception("invalid record!");
         }
@@ -72,13 +70,13 @@ public class FlutterViewContainerManager implements IContainerManager {
         mRecordStack.push(record);
     }
 
-    public void popRecord(IContainerRecord record) {
+    void popRecord(IContainerRecord record) {
         if(mRecordStack.peek() == record) {
             mRecordStack.pop();
         }
     }
 
-    public void removeRecord(IContainerRecord record) {
+    void removeRecord(IContainerRecord record) {
         mRecordStack.remove(record);
         mRecordMap.remove(record.getContainer());
     }

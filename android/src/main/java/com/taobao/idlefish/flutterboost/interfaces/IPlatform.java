@@ -23,7 +23,6 @@
  */
 package com.taobao.idlefish.flutterboost.interfaces;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
@@ -36,6 +35,10 @@ import io.flutter.plugin.common.PluginRegistry;
  */
 public interface IPlatform {
 
+    int IMMEDIATELY = 0;          //立即启动引擎
+    int ANY_ACTIVITY_CREATED = 1; //当有任何Activity创建时,启动引擎
+    int LAZY = 2;                 //尽可能延后启动引擎(通常是首页Flutter页面加载时)
+
     /**
      * get current application
      * @return
@@ -43,16 +46,16 @@ public interface IPlatform {
     Application getApplication();
 
     /**
-     * register plugins
-     * @return
-     */
-    void onRegisterPlugins(PluginRegistry registry);
-
-    /**
      * debug or not
      * @return
      */
     boolean isDebug();
+
+    /**
+     * register plugins
+     * @return
+     */
+    void onRegisterPlugins(PluginRegistry registry);
 
     /**
      * start a new activity from flutter page, you may need a page router with url
@@ -65,8 +68,11 @@ public interface IPlatform {
 
 
     /**
-     * settings, no use
      * @return
+     *
+     *  IMMEDIATELY           //立即
+     *  ANY_ACTIVITY_CREATED  //当有任何Activity创建的时候
+     *  LAZY                  //懒加载，尽可能延后
      */
-    Map getSettings();
+    int whenEngineStart();
 }

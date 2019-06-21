@@ -32,6 +32,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
 import com.taobao.idlefish.flutterboost.BoostFlutterView;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
@@ -43,21 +44,34 @@ import io.flutter.embedding.android.FlutterView;
 
 abstract public class BoostFlutterFragment extends Fragment implements IFlutterViewContainer {
 
-    private BoostFlutterView mFlutterView;
-    private IOperateSyncer mSyncer;
+    protected BoostFlutterEngine mFlutterEngine;
+    protected BoostFlutterView mFlutterView;
+    protected IOperateSyncer mSyncer;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(getContextActivity());
-        mFlutterView = builder.renderMode(FlutterView.RenderMode.texture)
-                .transparencyMode(FlutterView.TransparencyMode.opaque)
-                .build();
+        mSyncer = FlutterBoostPlugin.singleton().containerManager().generateSyncer(this);
 
-        mSyncer = FlutterBoostPlugin.containerManager().generateSyncer(this);
+        mFlutterEngine = createFlutterEngine();
+        mFlutterView = createFlutterView(mFlutterEngine);
+
         mSyncer.onCreate();
 
         return mFlutterView;
+    }
+
+    protected BoostFlutterEngine createFlutterEngine(){
+        return FlutterBoostPlugin.singleton().engineProvider().createEngine(getContext());
+    }
+
+    protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){
+        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(getContextActivity());
+
+        return builder.flutterEngine(engine)
+                .renderMode(FlutterView.RenderMode.texture)
+                .transparencyMode(FlutterView.TransparencyMode.opaque)
+                .build();
     }
 
     @Override

@@ -23,36 +23,23 @@
  */
 package com.taobao.idlefish.flutterboost;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Looper;
-import android.support.annotation.NonNull;
 
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
+import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
 
-import io.flutter.app.FlutterPluginRegistry;
-import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.platform.PlatformViewRegistry;
 import io.flutter.view.FlutterMain;
-import io.flutter.view.FlutterNativeView;
-import io.flutter.view.FlutterView;
-import io.flutter.view.TextureRegistry;
 
 public class BoostEngineProvider implements IFlutterEngineProvider {
 
-    static final BoostEngineProvider sInstance = new BoostEngineProvider();
+    private BoostFlutterEngine mEngine = null;
 
-    private BoostEngine mEngine = null;
-
-    private BoostEngineProvider() {
+    BoostEngineProvider() {
     }
 
     @Override
-    public FlutterEngine createEngine(Context context) {
+    public BoostFlutterEngine createEngine(Context context) {
 
         Utils.assertCallOnMainThread();
 
@@ -61,35 +48,25 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
             FlutterMain.ensureInitializationComplete(
                     context.getApplicationContext(), flutterShellArgs.toArray());
 
-            mEngine = new BoostEngine(context.getApplicationContext());
-            mEngine.startRun();
+            mEngine = new BoostFlutterEngine(context.getApplicationContext());
+
+            final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+            if(stateListener != null) {
+                stateListener.onEngineCreated(mEngine);
+            }
         }
         return mEngine;
     }
 
     @Override
-    public FlutterEngine tryGetEngine() {
+    public BoostFlutterEngine tryGetEngine() {
         return mEngine;
     }
 
-    public static class BoostEngine extends FlutterEngine {
-        final Context mContext;
-
-        public BoostEngine(@NonNull Context context) {
-            super(context);
-            mContext = context;
-        }
-
-        public void startRun() {
-            if (!getDartExecutor().isExecutingDart()) {
-                getNavigationChannel().setInitialRoute("/");
-
-                DartExecutor.DartEntrypoint entryPoint = new DartExecutor.DartEntrypoint(
-                        mContext.getResources().getAssets(),
-                        FlutterMain.findAppBundlePath(mContext),
-                        "main");
-                getDartExecutor().executeDartEntrypoint(entryPoint);
-            }
+    public static void assertEngineRunning(){
+        final BoostFlutterEngine engine = FlutterBoostPlugin.singleton().engineProvider().tryGetEngine();
+        if(engine == null || !engine.isRunning()) {
+            throw new RuntimeException("engine is not running yet!");
         }
     }
 }

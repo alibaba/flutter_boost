@@ -25,96 +25,68 @@ package com.taobao.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
-import com.alibaba.fastjson.JSON;
 import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.loader.ServiceLoader;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
+import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
+import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.taobao.idlefish.flutterboost.loader.ServiceLoader;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
-import fleamarket.taobao.com.xservicekit.handler.MessageResult;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
 
-public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Application.ActivityLifecycleCallbacks {
+public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
 
-    private static FlutterBoostPlugin sInstance = null;
-    private  static int kRid = 0;
+    static FlutterBoostPlugin sInstance = null;
 
     public static synchronized void init(IPlatform platform) {
         if (sInstance == null) {
             sInstance = new FlutterBoostPlugin(platform);
-            platform.getApplication().registerActivityLifecycleCallbacks(sInstance);
             ServiceLoader.load();
         }
+
+        if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
+            sInstance.mEngineProvider
+                    .createEngine(platform.getApplication())
+                    .startRun(null);
+        }
+    }
+
+    public static FlutterBoostPlugin singleton() {
+        if (sInstance == null) {
+            throw new RuntimeException("FlutterBoostPlugin not init yet");
+        }
+
+        return sInstance;
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_boost");
-        channel.setMethodCallHandler(sInstance);
-    }
-
-    public static IFlutterEngineProvider engineProvider() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
-        return BoostEngineProvider.sInstance;
-    }
-
-    public static IContainerManager containerManager() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
-        return sInstance.mManager;
-    }
-
-    public static IPlatform platform() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
-        return sInstance.mPlatform;
-    }
-
-    public static Activity currentActivity() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
-        return sInstance.mCurrentActiveActivity;
+        channel.setMethodCallHandler(singleton());
     }
 
     private final IPlatform mPlatform;
     private final IContainerManager mManager;
-    private final PageResultMediator mMediator;
-
+    private final IFlutterEngineProvider mEngineProvider;
+    IStateListener mStateListener;
 
     private Activity mCurrentActiveActivity;
 
     private FlutterBoostPlugin(IPlatform platform) {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
-        mMediator = new PageResultMediator();
-    }
-
-    public IFlutterViewContainer findContainerById(String id) {
-        return mManager.findContainerById(id);
+        mEngineProvider = new BoostEngineProvider();
+        platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
     }
 
     @Override
@@ -126,139 +98,114 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         }
     }
 
-    public static void openPage(Context context, String url, final Map params, int requestCode) {
+
+    public IFlutterEngineProvider engineProvider() {
         if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
+            throw new RuntimeException("FlutterBoostPlugin not init yet");
         }
 
-        Context ctx = context;
-        if (ctx == null) {
-            ctx = currentActivity();
-        }
-
-        if (ctx == null) {
-            ctx = sInstance.mPlatform.getApplication();
-        }
-      
-        sInstance.mPlatform.startActivity(ctx, url ,params, requestCode);
+        return sInstance.mEngineProvider;
     }
 
-    public static void openPage(Context context, String url, final Map params, int requestCode,PageResultHandler handler) {
-
-        if(handler != null){
-            String rid = createResultId();
-            sInstance.mMediator.setHandler(rid,handler);
-            params.put("result_id",rid);
-        }
-
-        openPage(context,url,params,requestCode);
-    }
-
-    private static String createResultId(){
-        kRid += 2;
-        return "result_id_" + kRid;
-    }
-  
-    public static void onPageResult(String key , Map resultData, Map params){
-
+    public IContainerManager containerManager() {
         if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
+            throw new RuntimeException("FlutterBoostPlugin not init yet");
         }
 
-        sInstance.mMediator.onPageResult(key,resultData,params);
+        return sInstance.mManager;
     }
 
-    public static void setHandler(String key, PageResultHandler handler) {
+    public IPlatform platform() {
         if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
+            throw new RuntimeException("FlutterBoostPlugin not init yet");
         }
 
-        sInstance.mMediator.setHandler(key, handler);
+        return sInstance.mPlatform;
     }
 
-    public static void removeHandler(String key) {
+    public Activity currentActivity() {
         if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet!");
+            throw new RuntimeException("FlutterBoostPlugin not init yet");
         }
 
-        sInstance.mMediator.removeHandler(key);
+        return sInstance.mCurrentActiveActivity;
+    }
+
+    public IFlutterViewContainer findContainerById(String id) {
+        return mManager.findContainerById(id);
     }
 
 
-
-    @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+    public void setStateListener(@Nullable IStateListener listener){
+        mStateListener = listener;
     }
 
-    @Override
-    public void onActivityStarted(Activity activity) {
-        if (mCurrentActiveActivity == null) {
-            Debuger.log("Application entry foreground");
-
-            if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
-                Map<String, String> map = new HashMap<>();
-                map.put("type", "foreground");
-                NavigationService.getService().emitEvent(map);
+    class ActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            if (platform().whenEngineStart() == IPlatform.ANY_ACTIVITY_CREATED) {
+                sInstance.mEngineProvider
+                        .createEngine(activity)
+                        .startRun(activity);
             }
         }
-        mCurrentActiveActivity = activity;
-    }
 
-    @Override
-    public void onActivityResumed(Activity activity) {
-        mCurrentActiveActivity = activity;
-    }
+        @Override
+        public void onActivityStarted(Activity activity) {
+            if (mCurrentActiveActivity == null) {
+                Debuger.log("Application entry foreground");
 
-    @Override
-    public void onActivityPaused(Activity activity) {
-
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-        if (mCurrentActiveActivity == activity) {
-            Debuger.log("Application entry background");
-
-            if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
-                Map<String, String> map = new HashMap<>();
-                map.put("type", "background");
-                NavigationService.getService().emitEvent(map);
+                if (mEngineProvider.tryGetEngine() != null) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("type", "foreground");
+                    NavigationService.getService().emitEvent(map);
+                }
             }
-            mCurrentActiveActivity = null;
-        }
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-    }
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        if (mCurrentActiveActivity == activity) {
-            Debuger.log("Application entry background");
-
-            if (BoostEngineProvider.sInstance.tryGetEngine() != null) {
-                Map<String, String> map = new HashMap<>();
-                map.put("type", "background");
-                NavigationService.getService().emitEvent(map);
-            }
-            mCurrentActiveActivity = null;
+            mCurrentActiveActivity = activity;
         }
 
+        @Override
+        public void onActivityResumed(Activity activity) {
+            mCurrentActiveActivity = activity;
+        }
 
-        //reset view provider when single instance context is destroyed
-//        final FlutterView flutterView = mViewProvider.tryGetFlutterView();
-//        if(flutterView != null) {
-//            Activity ctxActivity = (Activity)flutterView.getContext();
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//                if((ctxActivity.isDestroyed() || ctxActivity == activity) &&
-//                        mManager.getLastRecord() == null) {
-//                    mViewProvider.reset();
-//                }
-//            }
-//        }
+        @Override
+        public void onActivityPaused(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+            if (mCurrentActiveActivity == activity) {
+                Debuger.log("Application entry background");
+
+                if (mEngineProvider.tryGetEngine() != null) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("type", "background");
+                    NavigationService.getService().emitEvent(map);
+                }
+                mCurrentActiveActivity = null;
+            }
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            if (mCurrentActiveActivity == activity) {
+                Debuger.log("Application entry background");
+
+                if (mEngineProvider.tryGetEngine() != null) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("type", "background");
+                    NavigationService.getService().emitEvent(map);
+                }
+                mCurrentActiveActivity = null;
+            }
+        }
     }
 
     public static void setBoostResult(Activity activity, HashMap result) {
@@ -268,16 +215,6 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler, Appl
         }
         activity.setResult(Activity.RESULT_OK, intent);
     }
-
-//    public static void onBoostResult(IFlutterViewContainer container, int requestCode, int resultCode, Intent intent) {
-//        Map map = new HashMap();
-//        if (intent != null) {
-//            map.put("result", intent.getSerializableExtra(IFlutterViewContainer.RESULT_KEY));
-//        }
-//        map.put("requestCode", requestCode);
-//        map.put("responseCode", resultCode);
-//        containerManager().onContainerResult(container, map);
-//    }
 }
 
 

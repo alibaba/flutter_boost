@@ -24,9 +24,23 @@
 package com.taobao.idlefish.flutterboost.containers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
 import com.taobao.idlefish.flutterboost.BoostFlutterView;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
@@ -35,25 +49,101 @@ import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 import java.util.HashMap;
 
 import io.flutter.embedding.android.FlutterView;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 public abstract class BoostFlutterActivity extends Activity implements IFlutterViewContainer {
 
-    private BoostFlutterView mFlutterView;
-    private IOperateSyncer mSyncer;
+    protected BoostFlutterEngine mFlutterEngine;
+    protected BoostFlutterView mFlutterView;
+    protected IOperateSyncer mSyncer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
-        mFlutterView = builder.renderMode(FlutterView.RenderMode.texture)
-                .transparencyMode(FlutterView.TransparencyMode.opaque)
-                .build();
+        configureWindowForTransparency();
+
+        mSyncer = FlutterBoostPlugin.singleton().containerManager().generateSyncer(this);
+
+
+        mFlutterEngine = createFlutterEngine();
+        mFlutterView = createFlutterView(mFlutterEngine);
 
         setContentView(mFlutterView);
 
-        mSyncer = FlutterBoostPlugin.containerManager().generateSyncer(this);
         mSyncer.onCreate();
+
+        configureStatusBarForFullscreenFlutterExperience();
+    }
+
+    protected void configureWindowForTransparency() {
+        if (isBackgroundTransparent()) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            );
+        }
+    }
+
+    protected void configureStatusBarForFullscreenFlutterExperience() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(0x40000000);
+            window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI);
+        }
+    }
+
+    protected BoostFlutterEngine createFlutterEngine(){
+        return FlutterBoostPlugin.singleton().engineProvider().createEngine(this);
+    }
+
+    protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){
+        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
+
+        return builder.flutterEngine(engine)
+                .renderMode(FlutterView.RenderMode.texture)
+                .transparencyMode(isBackgroundTransparent() ?
+                        FlutterView.TransparencyMode.transparent :
+                        FlutterView.TransparencyMode.opaque)
+                .renderingProgressCoverCreator(new BoostFlutterView.RenderingProgressCoverCreator() {
+                    @Override
+                    public View createRenderingProgressCover(Context context) {
+                        return BoostFlutterActivity.this.createRenderingProgressCover();
+                    }
+                })
+                .build();
+    }
+
+    protected boolean isBackgroundTransparent(){
+        return false;
+    }
+
+    protected View createRenderingProgressCover(){
+        FrameLayout frameLayout = new FrameLayout(this);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        frameLayout.addView(linearLayout,layoutParams);
+
+        ProgressBar progressBar = new ProgressBar(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        linearLayout.addView(progressBar,params);
+
+        TextView textView = new TextView(this);
+        params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        textView.setText("Frame Rendering...");
+        linearLayout.addView(textView,params);
+
+        return frameLayout;
     }
 
     @Override

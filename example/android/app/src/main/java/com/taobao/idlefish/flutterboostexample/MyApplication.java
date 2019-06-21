@@ -3,9 +3,13 @@ package com.taobao.idlefish.flutterboostexample;
 import android.app.Application;
 import android.content.Context;
 
+import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
+import com.taobao.idlefish.flutterboost.BoostFlutterView;
 import com.taobao.idlefish.flutterboost.Debuger;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
+import com.taobao.idlefish.flutterboost.StateListener;
 import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
+import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.util.Map;
 
@@ -54,8 +58,8 @@ public class MyApplication extends FlutterApplication {
             }
 
             @Override
-            public Map getSettings() {
-                return null;
+            public int whenEngineStart() {
+                return IMMEDIATELY;
             }
         });
     }

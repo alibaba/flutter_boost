@@ -25,9 +25,7 @@
  package com.taobao.idlefish.flutterboost.NavigationService;
  
  import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
- import com.taobao.idlefish.flutterboost.FlutterViewContainerManager;
  import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
- import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
  import java.util.ArrayList;
  import java.util.HashMap;
@@ -44,11 +42,11 @@
             Map<String,Object> pageInfo = new HashMap<>();
 
             try {
-                IContainerRecord record = FlutterBoostPlugin
+                IContainerRecord record = FlutterBoostPlugin.singleton()
                         .containerManager().getCurrentTopRecord();
 
                 if(record == null) {
-                    record = FlutterBoostPlugin.containerManager().getLastGenerateRecord();
+                    record = FlutterBoostPlugin.singleton().containerManager().getLastGenerateRecord();
                 }
 
                 pageInfo.put("name",record.getContainer().getContainerName());

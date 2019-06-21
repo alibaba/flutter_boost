@@ -25,7 +25,6 @@
  package com.taobao.idlefish.flutterboost.NavigationService;
  
  import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
- import com.taobao.idlefish.flutterboost.FlutterViewContainerManager;
 
  import java.util.ArrayList;
  import java.util.List;
@@ -39,7 +38,7 @@
  
  
         private boolean onCall(MessageResult<Boolean> result,String uniqueId,String pageName,Map params,Boolean animated){
-            FlutterBoostPlugin.containerManager().closeContainer(uniqueId,null);
+            FlutterBoostPlugin.singleton().containerManager().closeContainer(uniqueId,null);
             result.success(true);
             return true;
       }

@@ -25,6 +25,7 @@ package com.taobao.idlefish.flutterboost.interfaces;
 
 import android.content.Context;
 
+import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
 import com.taobao.idlefish.flutterboost.BoostFlutterView;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -38,11 +39,11 @@ public interface IFlutterEngineProvider {
      * @param context
      * @return
      */
-    FlutterEngine createEngine(Context context);
+    BoostFlutterEngine createEngine(Context context);
 
     /**
      * may return null
      * @return
      */
-    FlutterEngine tryGetEngine();
+    BoostFlutterEngine tryGetEngine();
 }

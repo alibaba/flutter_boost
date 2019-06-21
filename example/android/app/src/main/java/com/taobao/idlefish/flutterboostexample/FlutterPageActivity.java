@@ -15,7 +15,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * 混合栈将会在flutter层根据这个名字，在注册的Route表中查找对应的Widget
      *
      * 在flutter层有注册函数：
-     *     FlutterBoost.singleton.registerPageBuilders({
+     *     FlutterBoostPlugin.singleton.registerPageBuilders({
      *       'first': (pageName, params, _) => FirstRouteWidget(),
      *       'second': (pageName, params, _) => SecondRouteWidget(),
      *       ...
@@ -34,7 +34,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * 该方法返回的参数将会传递给上层的flutter对应的Widget
      *
      * 在flutter层有注册函数：
-     *    FlutterBoost.singleton.registerPageBuilders({
+     *    FlutterBoostPlugin.singleton.registerPageBuilders({
      *       'first': (pageName, params, _) => FirstRouteWidget(),
      *       'second': (pageName, params, _) => SecondRouteWidget(),
      *        ...

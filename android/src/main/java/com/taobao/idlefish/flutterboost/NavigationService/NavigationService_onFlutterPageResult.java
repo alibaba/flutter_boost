@@ -24,8 +24,6 @@
 
  package com.taobao.idlefish.flutterboost.NavigationService;
  
- import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
-
  import java.util.ArrayList;
  import java.util.List;
  import java.util.Map;

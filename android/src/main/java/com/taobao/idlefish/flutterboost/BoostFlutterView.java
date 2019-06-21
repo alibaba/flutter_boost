@@ -26,22 +26,30 @@ package com.taobao.idlefish.flutterboost;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import io.flutter.embedding.android.FlutterView;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.platform.PlatformPlugin;
 
 public class BoostFlutterView extends FrameLayout {
 
-    private FlutterEngine mFlutterEngine;
+    private BoostFlutterEngine mFlutterEngine;
 
     private FlutterView mFlutterView;
 
@@ -49,24 +57,35 @@ public class BoostFlutterView extends FrameLayout {
 
     private Bundle mArguments;
 
-    private BoostPluginRegistry mBoostPluginRegistry;
+    private RenderingProgressCoverCreator mRenderingProgressCoverCreator;
+
+    private View mRenderingProgressCover;
 
     private final List<OnFirstFrameRenderedListener> mFirstFrameRenderedListeners = new LinkedList<>();
 
-    private final OnFirstFrameRenderedListener mOnFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
+    private boolean mNeedSnapshotWhenDetach = true;
+
+    private ImageView mSnapshot;
+
+    private final io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener mOnFirstFrameRenderedListener =
+            new io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener() {
         @Override
         public void onFirstFrameRendered() {
+            if(mRenderingProgressCover != null && mRenderingProgressCover.getParent() != null) {
+                ((ViewGroup)mRenderingProgressCover.getParent()).removeView(mRenderingProgressCover);
+            }
             final Object[] listeners = mFirstFrameRenderedListeners.toArray();
             for (Object obj : listeners) {
-                ((OnFirstFrameRenderedListener) obj).onFirstFrameRendered();
+                ((OnFirstFrameRenderedListener) obj).onFirstFrameRendered(BoostFlutterView.this);
             }
         }
     };
 
-    public BoostFlutterView(Context context, FlutterEngine engine, Bundle args) {
+    public BoostFlutterView(Context context, BoostFlutterEngine engine, Bundle args, RenderingProgressCoverCreator creator) {
         super(context);
         mFlutterEngine = engine;
         mArguments = args;
+        mRenderingProgressCoverCreator = creator;
         init();
     }
 
@@ -85,14 +104,63 @@ public class BoostFlutterView extends FrameLayout {
         addView(mFlutterView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        if(mRenderingProgressCoverCreator != null) {
+            mRenderingProgressCover = mRenderingProgressCoverCreator
+                    .createRenderingProgressCover(getContext());
+        }else{
+            mRenderingProgressCover = createRenderingProgressCorver();
+        }
+
+        if(mRenderingProgressCover != null) {
+            addView(mRenderingProgressCover, new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        }
+
+        mSnapshot = new ImageView(getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        params.gravity = Gravity.CENTER;
+        mSnapshot.setLayoutParams(params);
+
         mFlutterView.addOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
 
-        mBoostPluginRegistry = new BoostPluginRegistry(mFlutterEngine,(Activity)getContext());
-        FlutterBoostPlugin.platform().onRegisterPlugins(mBoostPluginRegistry);
+        mFlutterEngine.startRun((Activity)getContext());
+
+        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        if(stateListener != null) {
+            stateListener.onFlutterViewInited(mFlutterEngine,this);
+        }
     }
 
-    protected FlutterEngine createFlutterEngine(Context context) {
-        return BoostEngineProvider.sInstance.createEngine(context);
+    protected View createRenderingProgressCorver(){
+        FrameLayout frameLayout = new FrameLayout(getContext());
+        frameLayout.setBackgroundColor(Color.WHITE);
+
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        frameLayout.addView(linearLayout,layoutParams);
+
+        ProgressBar progressBar = new ProgressBar(getContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        linearLayout.addView(progressBar,params);
+
+        TextView textView = new TextView(getContext());
+        params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+        textView.setText("Frame Rendering...");
+        linearLayout.addView(textView,params);
+
+        return frameLayout;
+    }
+
+    protected BoostFlutterEngine createFlutterEngine(Context context) {
+        return FlutterBoostPlugin.singleton().engineProvider().createEngine(context);
     }
 
     public void addFirstFrameRendered(OnFirstFrameRenderedListener listener) {
@@ -119,6 +187,11 @@ public class BoostFlutterView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mPlatformPlugin.onPostResume();
+        ViewCompat.requestApplyInsets(this);
+    }
+
+    public BoostFlutterEngine getEngine(){
+        return mFlutterEngine;
     }
 
     public void onResume() {
@@ -143,13 +216,32 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");
+        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        if(stateListener != null) {
+            stateListener.beforeEngineAttach(mFlutterEngine,this);
+        }
         mFlutterView.attachToFlutterEngine(mFlutterEngine);
+        if(stateListener != null) {
+            stateListener.afterEngineAttached(mFlutterEngine,this);
+        }
     }
 
     public void onDetach() {
         Debuger.log("BoostFlutterView onDetach");
+
+        if(mNeedSnapshotWhenDetach) {
+            //mFlutterView.
+        }
+
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
+        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        if(stateListener != null) {
+            stateListener.beforeEngineDetach(mFlutterEngine,this);
+        }
         mFlutterView.detachFromFlutterEngine();
+        if(stateListener != null) {
+            stateListener.afterEngineDetached(mFlutterEngine,this);
+        }
     }
 
     public void onDestroy() {
@@ -226,9 +318,10 @@ public class BoostFlutterView extends FrameLayout {
 
     public static class Builder {
         private Context context;
-        private FlutterEngine engine;
+        private BoostFlutterEngine engine;
         private FlutterView.RenderMode renderMode;
         private FlutterView.TransparencyMode transparencyMode;
+        private RenderingProgressCoverCreator renderingProgressCoverCreator;
 
         public Builder(Context ctx) {
             this.context = ctx;
@@ -236,7 +329,7 @@ public class BoostFlutterView extends FrameLayout {
             transparencyMode = FlutterView.TransparencyMode.transparent;
         }
 
-        public Builder flutterEngine(FlutterEngine engine) {
+        public Builder flutterEngine(BoostFlutterEngine engine) {
             this.engine = engine;
             return this;
         }
@@ -247,6 +340,10 @@ public class BoostFlutterView extends FrameLayout {
             return this;
         }
 
+        public Builder renderingProgressCoverCreator(RenderingProgressCoverCreator creator) {
+            this.renderingProgressCoverCreator = creator;
+            return this;
+        }
 
         public Builder transparencyMode(FlutterView.TransparencyMode transparencyMode) {
             this.transparencyMode = transparencyMode;
@@ -258,7 +355,15 @@ public class BoostFlutterView extends FrameLayout {
             args.putString("flutterview_render_mode", renderMode != null ? renderMode.name() : FlutterView.RenderMode.surface.name());
             args.putString("flutterview_transparency_mode", transparencyMode != null ? transparencyMode.name() : FlutterView.TransparencyMode.transparent.name());
 
-            return new BoostFlutterView(context, engine, args);
+            return new BoostFlutterView(context, engine, args,renderingProgressCoverCreator);
         }
+    }
+
+    public interface OnFirstFrameRenderedListener {
+        void onFirstFrameRendered(BoostFlutterView view);
+    }
+
+    public interface RenderingProgressCoverCreator {
+        View createRenderingProgressCover(Context context);
     }
 }

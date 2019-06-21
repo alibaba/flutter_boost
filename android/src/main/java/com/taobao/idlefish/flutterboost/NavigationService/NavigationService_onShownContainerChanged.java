@@ -24,7 +24,6 @@
 
  package com.taobao.idlefish.flutterboost.NavigationService;
  
- import com.taobao.idlefish.flutterboost.Debuger;
  import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 
  import java.util.ArrayList;
@@ -40,7 +39,7 @@
  
         private boolean onCall(MessageResult<Boolean> result,String now,String old,Map params){
              //Add your handler code here.
-            FlutterBoostPlugin.containerManager().onShownContainerChanged(old,now);
+            FlutterBoostPlugin.singleton().containerManager().onShownContainerChanged(old,now);
            return true;
       }
  

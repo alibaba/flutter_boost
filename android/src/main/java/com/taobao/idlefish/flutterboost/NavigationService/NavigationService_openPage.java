@@ -24,6 +24,8 @@
 
  package com.taobao.idlefish.flutterboost.NavigationService;
  
+ import android.content.Context;
+
  import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 
  import java.util.ArrayList;
@@ -44,7 +46,13 @@
              requestCode = (int) params.get("requestCode");
          }
 
-         FlutterBoostPlugin.openPage(null,pageName,params,0);
+         Context ctx = FlutterBoostPlugin.singleton().currentActivity();
+
+         if (ctx == null) {
+             ctx = FlutterBoostPlugin.singleton().platform().getApplication();
+         }
+
+         FlutterBoostPlugin.singleton().platform().startActivity(ctx, pageName ,params, requestCode);
 
          if(result != null){
              result.success(true);
