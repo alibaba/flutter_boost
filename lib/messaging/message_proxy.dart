@@ -21,23 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'dart:async';
 
 abstract class MessageProxy{
-  Future<bool> openPage(String pageName,Map params,bool animated);
-  Future<bool> closePage(String uniqueId,String pageName,Map params,bool animated);
+  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts});
+  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts});
 }
 
 class MessageProxyImp implements MessageProxy{
+
   @override
-  Future<bool> openPage(String pageName, Map params, bool animated) {
-    return NavigationService.openPage(pageName, params, animated);
+  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+    return NavigationService.openPage(url, urlParams, exts);
   }
 
   @override
-  Future<bool> closePage(String uniqueId, String pageName, Map params, bool animated) {
-    return NavigationService.closePage(uniqueId, pageName, params, animated);
+  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+    return NavigationService.closePage(id,result: result,exts: exts);
   }
+
+
+
 }
 

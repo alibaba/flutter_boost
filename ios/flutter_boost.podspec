@@ -21,12 +21,11 @@ A new Flutter plugin make flutter better to use!
     'Classes/Boost/FLB2Platform.h',
     'Classes/Boost/FLBFlutterContainer.h',
     'Classes/Boost/FLBFlutterAppDelegate.h',
+    'Classes/Boost/FLBTypes.h',
     'Classes/1.0/FLBFlutterViewContainer.h',
     'Classes/1.5/FLB2FlutterViewContainer.h'
 
   s.dependency 'Flutter'
-  s.dependency 'xservice_kit'
-
   s.libraries = 'c++'
 
   s.ios.deployment_target = '8.0'

@@ -2,7 +2,6 @@ PODS:
   - Flutter (1.0.0)
   - flutter_boost (0.0.1):
     - Flutter
-    - xservice_kit
   - xservice_kit (0.0.1):
     - Flutter
 
@@ -21,7 +20,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
-  flutter_boost: 6a083f2f1b67f9b08724d6c4b280a099d1b40797
+  flutter_boost: e6949ea7bf22ad0766867b631996c2a7afa1a710
   xservice_kit: a86c64372b3e41e7d8e9b1a0b9139866680f525c
 
 PODFILE CHECKSUM: 2a757a7bdc03b37a2814666652fdff1cf694243f

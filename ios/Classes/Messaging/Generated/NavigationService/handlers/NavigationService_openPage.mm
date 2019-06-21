@@ -32,31 +32,29 @@
 #define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
  
  @implementation NavigationService_openPage
- 
- - (void)onCall:(void (^)(BOOL))result pageName:(NSString *)pageName params:(NSDictionary *)params animated:(NSNumber *)animated 
- {
-     [FLUTTER_APP.platform openPage:pageName
-                             params:params
-                           animated:animated.boolValue
-                         completion:^(BOOL finished) {
-                             if(result)result(YES);
-                         }];
- }
 
  #pragma mark - Do not edit these method.
- - (void)__flutter_p_handler_openPage:(NSDictionary *)args result:(void (^)(BOOL))result {
-     [self onCall:result pageName:args[@"pageName"] params:args[@"params"] animated:args[@"animated"]];
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(NSDictionary *))result{
+    NSDictionary *args = msg.params;
+    NSString *url = args[@"url"];
+    NSDictionary *urlParams = args[@"urlParams"];
+    NSDictionary *exts = args[@"exts"];
+    [FLUTTER_APP open:url
+            urlParams:urlParams
+                 exts:exts
+                reult:result
+           completion:^(BOOL) {}];
+    return YES;
  }
- + (void)load{
-     [[ServiceGateway sharedInstance] registerHandler:[NavigationService_openPage new]];
- }
+
  - (NSString *)returnType
  {
-   return @"BOOL";
+   return @"NSDictionary *";
  }
- - (NSString *)service
- {
-   return @"NavigationService";
- }
+
+- (NSArray *)handledMessageNames
+{
+    return @[@"openPage"];
+}
  
  @end

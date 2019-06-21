@@ -21,11 +21,64 @@
     return instance;
 }
 
+// Boost 2 switch
+- (BOOL)userBoost2
+{
+    return YES;
+}
+
+#pragma mark - Boost 2
+- (void)open:(NSString *)name
+   urlParams:(NSDictionary *)params
+        exts:(NSDictionary *)exts
+  completion:(void (^)(BOOL))completion
+{
+    BOOL animated = [exts[@"animated"] boolValue];
+    animated = YES;
+    if([params[@"present"] boolValue]){
+        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
+        [vc setName:name params:params];
+        [self.navigationController presentViewController:vc animated:animated completion:^{
+            if(completion) completion(YES);
+        }];
+    }else{
+        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
+        [vc setName:name params:params];
+        [self.navigationController pushViewController:vc animated:animated];
+        if(completion) completion(YES);
+    }
+}
+
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion
+{
+    BOOL animated = [exts[@"animated"] boolValue];
+    animated = YES;
+    FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
+    if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
+        [vc dismissViewControllerAnimated:animated completion:^{}];
+    }else{
+        [self.navigationController popViewControllerAnimated:animated];
+    }
+}
+
+#pragma mark - Boost 1
 - (void)openPage:(NSString *)name
           params:(NSDictionary *)params
         animated:(BOOL)animated
       completion:(void (^)(BOOL))completion
 {
+    if([self userBoost2]){
+        NSMutableDictionary *exts = NSMutableDictionary.new;
+        exts[@"url"] = name;
+        exts[@"params"] = params;
+        exts[@"animated"] = @(animated);
+        [self open:name urlParams:params exts:exts completion:completion];
+        return;
+    }
+    
     if([params[@"present"] boolValue]){
         FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
@@ -40,14 +93,19 @@
     }
 }
 
-- (BOOL)accessibilityEnable
-{
-    return YES;
-}
+
 
 
 - (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
 {
+    if([self userBoost2]){
+        NSMutableDictionary *exts = NSMutableDictionary.new;
+        exts[@"params"] = params;
+        exts[@"animated"] = @(animated);
+        [self close:uid result:@{} exts:exts completion:completion];
+        return;
+    }
+    
     FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];

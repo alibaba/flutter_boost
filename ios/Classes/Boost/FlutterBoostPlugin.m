@@ -23,12 +23,64 @@
  */
 
 #import "FlutterBoostPlugin.h"
-#import "FLBResultMediator.h"
 #import "FlutterBoostPlugin_private.h"
 #import "FLBFactory.h"
 #import "FLB2Factory.h"
 
+#import "FLBMessageDispather.h"
+#import "FLBMessageImp.h"
+#import "NavigationService_closePage.h"
+#import "NavigationService_openPage.h"
+#import "NavigationService_pageOnStart.h"
+#import "NavigationService_onShownContainerChanged.h"
+#import "NavigationService_onFlutterPageResult.h"
+
+@interface FlutterBoostPlugin()
+@property (nonatomic,strong) FLBMessageDispather *dispatcher;
+@end
+
 @implementation FlutterBoostPlugin
+
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:@"flutter_boost"
+                                     binaryMessenger:[registrar messenger]];
+    FlutterBoostPlugin* instance = [self.class sharedInstance];
+    [instance registerHandlers];
+    instance.methodChannel = channel;
+    instance.broadcastor = [[FLBBroadcastor alloc] initWithMethodChannel:channel];
+    [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if ([@"getPlatformVersion" isEqualToString:call.method]) {
+        result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+    } else if([@"__event__" isEqual: call.method]){
+        [_broadcastor handleMethodCall:call result:result];
+    }else{
+        FLBMessageImp *msg = FLBMessageImp.new;
+        msg.name = call.method;
+        msg.params = call.arguments;
+        if(![self.dispatcher dispatch:msg result:result]){
+             result(FlutterMethodNotImplemented);
+        }
+    }
+}
+
+- (void)registerHandlers
+{
+    NSArray *handlers = @[
+                        NavigationService_openPage.class,
+                        NavigationService_closePage.class,
+                        NavigationService_pageOnStart.class,
+                        NavigationService_onShownContainerChanged.class,
+                        NavigationService_onFlutterPageResult.class
+                          ];
+    
+    for(Class cls in handlers){
+        [self.dispatcher registerHandler:cls.new];
+    }
+}
 
 + (instancetype)sharedInstance
 {
@@ -44,7 +96,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _resultMediator = [FLBResultMediator new];
+        _dispatcher = FLBMessageDispather.new;
     }
     
     return self;
@@ -55,32 +107,11 @@
     return _application;
 }
 
-- (FLBResultMediator *)resultMediator
-{
-    return _resultMediator;
-}
 
 - (id<FLBAbstractFactory>)factory
 {
     return _factory;
 }
-
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"flutter_boost"
-            binaryMessenger:[registrar messenger]];
-  FlutterBoostPlugin* instance = [self.class sharedInstance];
-  [registrar addMethodCallDelegate:instance channel:channel];
-}
-
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  } else {
-    result(FlutterMethodNotImplemented);
-  }
-}
-
 
 - (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
                          onStart:(void (^)(id<FlutterBinaryMessenger,
@@ -112,31 +143,20 @@
     return [self.application flutterViewController];
 }
 
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
-   resultHandler:(void (^)(NSString *, NSDictionary *))resultHandler
+
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments
 {
-    static int kRid = 0;
-    NSString *resultId = [NSString stringWithFormat:@"result_id_%d",kRid++];
-    [_resultMediator setResultHandler:^(NSString * _Nonnull resultId, NSDictionary * _Nonnull resultData) {
-        if(resultHandler) resultHandler(resultId,resultData);
-    } forKey:resultId];
+    [_broadcastor sendEvent:eventName
+                  arguments:arguments];
 }
 
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData params:(NSDictionary *)params
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name
 {
-    [_resultMediator onResultForKey:vcId resultData:resultData params:params];
-}
-
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler forKey:(NSString *)vcid
-{
-    [_resultMediator setResultHandler:handler forKey:vcid];
-}
-
-- (void)removeHandlerForKey:(NSString *)vcid
-{
-    [_resultMediator removeHandlerForKey:vcid];
+   return [_broadcastor addEventListener:listner
+                           forName:name];
 }
 
 @end

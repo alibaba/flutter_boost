@@ -391,15 +391,5 @@ static NSUInteger kInstanceCounter = 0;
     self.interactiveGestureActive = NO;
 }
 
-#pragma mark - FLBViewControllerResultHandler
-- (void)onRecievedResult:(NSDictionary *)resultData forKey:(NSString *)key
-{
-    [Service_NavigationService onNativePageResult:^(NSNumber *finished) {}
-                                         uniqueId:self.uniqueIDString
-                                              key:key
-                                       resultData:resultData
-                                           params:@{}];
-}
-
 
 @end

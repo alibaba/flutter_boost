@@ -32,6 +32,10 @@
 @property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
 
 @property (nonatomic,assign) BOOL isRunning;
+
+
+@property (nonatomic,strong) NSMutableDictionary *pageResultCallbacks;
+@property (nonatomic,strong) NSMutableDictionary *callbackCache;
 @end
 
 
@@ -73,6 +77,8 @@
 {
     if (self = [super init]) {
         _manager = [FLBFlutterContainerManager new];
+        _pageResultCallbacks = NSMutableDictionary.new;
+        _callbackCache = NSMutableDictionary.new;
     }
     return self;
 }
@@ -128,5 +134,67 @@
 {
     return self.flutterProvider.engine.viewController;
 }
+
+- (void)close:(NSString *)uniqueId
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion
+{
+    [self.platform close:uniqueId
+                  result:result
+                    exts:exts
+              completion:completion];
+    
+    if(_pageResultCallbacks[uniqueId]){
+        void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
+        cb(result);
+        [_pageResultCallbacks removeObjectForKey:uniqueId];
+    }
+}
+
+- (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+       reult:(void (^)(NSDictionary *))resultCallback
+  completion:(void (^)(BOOL))completion
+{
+    NSString *cid = urlParams[@"__calback_id__"];
+   
+    if(!cid){
+        static int64_t sCallbackID = 1;
+        cid = @(sCallbackID).stringValue;
+        sCallbackID += 2;
+    }
+    
+    _callbackCache[cid] = resultCallback;
+    
+    [self.platform open:url
+              urlParams:urlParams
+                   exts:exts
+             completion:completion];
+}
+
+- (void)didInitPageContainer:(NSString *)url
+                      params:(NSDictionary *)urlParams
+                    uniqueId:(NSString *)uniqueId
+{
+    NSString *cid = urlParams[@"__calback_id__"];
+    if(cid && _callbackCache[cid]){
+        _pageResultCallbacks[uniqueId] = _callbackCache[cid];
+        [_callbackCache removeObjectForKey:cid];
+    }
+}
+
+- (void)willDeallocPageContainer:(NSString *)url
+                          params:(NSDictionary *)params
+                        uniqueId:(NSString *)uniqueId
+{
+    if(_pageResultCallbacks[uniqueId]){
+        void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
+        cb(@{});
+        [_pageResultCallbacks removeObjectForKey:uniqueId];
+    }
+}
+
 
 @end

@@ -38,19 +38,21 @@
  }
  
  #pragma mark - Do not edit these method.
- - (void)__flutter_p_handler_onShownContainerChanged:(NSDictionary *)args result:(void (^)(BOOL))result {
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))result
+{
+     NSDictionary *args = msg.params;
      [self onCall:result newName:args[@"newName"] oldName:args[@"oldName"] params:args[@"params"]];
+    return YES;
  }
- + (void)load{
-     [[ServiceGateway sharedInstance] registerHandler:[NavigationService_onShownContainerChanged new]];
- }
+
  - (NSString *)returnType
  {
    return @"BOOL";
  }
- - (NSString *)service
- {
-   return @"NavigationService";
- }
+- (NSArray *)handledMessageNames
+{
+    return @[@"onShownContainerChanged"];
+}
+
  
  @end

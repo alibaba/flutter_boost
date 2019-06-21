@@ -26,9 +26,7 @@
 
 - (IBAction)pushFlutterPage:(id)sender {
     [DemoRouter.sharedRouter openPage:@"first" params:@{} animated:YES completion:^(BOOL f){
-        
-        [FlutterBoostPlugin.sharedInstance onResultForKey:@"result_id_100" resultData:@{} params:@{}];
-        
+
     }];
 }
 

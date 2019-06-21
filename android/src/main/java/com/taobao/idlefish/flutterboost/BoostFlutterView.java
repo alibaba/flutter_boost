@@ -63,7 +63,7 @@ public class BoostFlutterView extends FrameLayout {
 
     private final List<OnFirstFrameRenderedListener> mFirstFrameRenderedListeners = new LinkedList<>();
 
-    private boolean mNeedSnapshotWhenDetach = true;
+    private boolean mNeedSnapshotWhenDetach = false;
 
     private ImageView mSnapshot;
 
@@ -74,6 +74,11 @@ public class BoostFlutterView extends FrameLayout {
             if(mRenderingProgressCover != null && mRenderingProgressCover.getParent() != null) {
                 ((ViewGroup)mRenderingProgressCover.getParent()).removeView(mRenderingProgressCover);
             }
+
+            if(mNeedSnapshotWhenDetach && mSnapshot.getParent() != null) {
+                ((ViewGroup)mSnapshot.getParent()).removeView(mSnapshot);
+            }
+
             final Object[] listeners = mFirstFrameRenderedListeners.toArray();
             for (Object obj : listeners) {
                 ((OnFirstFrameRenderedListener) obj).onFirstFrameRendered(BoostFlutterView.this);
@@ -230,7 +235,15 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDetach");
 
         if(mNeedSnapshotWhenDetach) {
-            //mFlutterView.
+
+            if(mSnapshot.getParent() != null) {
+                ((ViewGroup)mSnapshot.getParent()).removeView(mSnapshot);
+            }
+
+            Debuger.log("BoostFlutterView snapshot");
+
+            mSnapshot.setImageBitmap(mFlutterEngine.getRenderer().getBitmap());
+            BoostFlutterView.this.addView(mSnapshot);
         }
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);

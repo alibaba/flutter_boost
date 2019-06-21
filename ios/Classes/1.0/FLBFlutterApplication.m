@@ -128,7 +128,44 @@
 
 - (id<FLB2FlutterProvider>)flutterProvider
 {
-    return _viewProvider;
+    return (id)_viewProvider;
+}
+
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion
+{
+    [self.platform closePage:uid
+                    animated:[exts[@"animated"] boolValue]
+                      params:exts[@"params"]
+                  completion:completion];
+}
+
+- (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+       reult:(void (^)(NSDictionary *))resultCallback
+  completion:(void (^)(BOOL))completion
+{
+    [self.platform openPage:url
+                     params:urlParams
+                   animated:[exts[@"animated"] boolValue]
+                 completion:completion];
+}
+
+- (void)didInitPageContainer:(NSString *)url
+                      params:(NSDictionary *)urlParams
+                    uniqueId:(NSString *)uniqueId
+{
+    
+}
+
+- (void)willDeallocPageContainer:(NSString *)url
+                          params:(NSDictionary *)params
+                        uniqueId:(NSString *)uniqueId
+{
+    
 }
 
 @end

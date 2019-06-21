@@ -24,6 +24,7 @@
 #import <Flutter/Flutter.h>
 
 #import "FLB2Platform.h"
+#import "FLBTypes.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 
@@ -38,18 +39,11 @@
 - (BOOL)isRunning;
 - (FlutterViewController *)currentViewController;
 
-#pragma mark - handing vc result.
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL finished))completion
-   resultHandler:(void (^)(NSString *resultId,NSDictionary *rData))resultHandler;
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments;
 
-- (void)onResultForKey:(NSString *)vcId
-            resultData:(NSDictionary *)resultData
-                params:(NSDictionary *)params;
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name;
 
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler
-                  forKey:(NSString *)result_id;
-- (void)removeHandlerForKey:(NSString *)vcid;
 @end

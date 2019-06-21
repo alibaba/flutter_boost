@@ -23,7 +23,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_boost/AIOService/NavigationService/service/NavigationService.dart';
+import 'package:flutter_boost/messaging/service/navigation_service.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
 import 'package:flutter_boost/flutter_boost.dart';

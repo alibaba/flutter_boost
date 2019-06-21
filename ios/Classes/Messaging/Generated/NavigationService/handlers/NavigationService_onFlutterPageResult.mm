@@ -32,26 +32,25 @@
  
  - (void)onCall:(void (^)(BOOL))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params 
  {
-    //Add your handler code here!
-     [FlutterBoostPlugin.sharedInstance onResultForKey:key
-                                            resultData:resultData
-                                                params:params];
+
  }
  
  #pragma mark - Do not edit these method.
- - (void)__flutter_p_handler_onFlutterPageResult:(NSDictionary *)args result:(void (^)(BOOL))result {
+- (BOOL)call:(id<FLBMessage>)msg result:(void (^)(BOOL))result
+{
+    NSDictionary *args = msg.params;
      [self onCall:result uniqueId:args[@"uniqueId"] key:args[@"key"] resultData:args[@"resultData"] params:args[@"params"]];
+    return YES;
  }
- + (void)load{
-     [[ServiceGateway sharedInstance] registerHandler:[NavigationService_onFlutterPageResult new]];
- }
+
+- (NSArray *)handledMessageNames
+{
+    return @[@"onFlutterPageResult"];
+}
+
  - (NSString *)returnType
  {
    return @"BOOL";
  }
- - (NSString *)service
- {
-   return @"NavigationService";
- }
- 
+
  @end
