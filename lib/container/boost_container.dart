@@ -138,6 +138,8 @@ class BoostContainerState extends NavigatorState {
   @override
   BoostContainer get widget => super.widget as BoostContainer;
 
+  final List<Route<dynamic>> routerHistory = <Route<dynamic>>[];
+
   ContainerNavigatorObserver findContainerNavigatorObserver(
       Navigator navigator) {
     for (NavigatorObserver observer in navigator.observers) {
@@ -160,6 +162,7 @@ class BoostContainerState extends NavigatorState {
   void dispose() {
     findContainerNavigatorObserver(widget)?.removeBoostNavigatorObserver(
         FlutterBoost.containerManager.navigatorObserver);
+    routerHistory.clear();
     super.dispose();
   }
 
@@ -167,10 +170,32 @@ class BoostContainerState extends NavigatorState {
     Logger.log('performBackPressed');
 
     if (_backPressedListeners.isEmpty) {
-      pop();
+      maybePop();
     } else {
       for (VoidCallback cb in _backPressedListeners) {
         cb();
+      }
+    }
+  }
+
+
+  @override
+  Future<bool> maybePop<T extends Object> ([T result]) async{
+    final Route<T> route = routerHistory.last;
+    final RoutePopDisposition disposition = await route.willPop();
+    if (mounted) {
+      switch (disposition) {
+        case RoutePopDisposition.pop:
+          pop(result);
+          return true;
+          break;
+        case RoutePopDisposition.doNotPop:
+          return false;
+          break;
+        case RoutePopDisposition.bubble:
+          pop(result);
+          return true;
+          break;
       }
     }
   }
@@ -189,12 +214,15 @@ class BoostContainerState extends NavigatorState {
 
   @override
   bool pop<T extends Object>([T result]) {
+    if (routerHistory.length > 1) {
+      routerHistory.removeLast();
+    }
+
     if (canPop()) {
       return super.pop(result);
     } else {
       FlutterBoost.singleton.closePage(name, uniqueId, params);
     }
-
     return false;
   }
 
@@ -207,6 +235,8 @@ class BoostContainerState extends NavigatorState {
     }
 
     Future<T> future = super.push<T>(newRoute ?? route);
+
+    routerHistory.add(route);
 
     if (FlutterBoost.containerManager.postPushRoute != null) {
       FlutterBoost.containerManager
