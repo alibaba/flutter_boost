@@ -25,25 +25,17 @@ import 'dart:async';
 
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost/messaging/message_proxy.dart';
-import 'package:flutter_boost/support/logger.dart';
+import 'package:flutter_boost/messaging/boost_message_channel.dart';
 
 class Router {
-  MessageProxy _msgProxy = MessageProxyImp();
-
-  void setMessageProxy(MessageProxy prx) {
-    if (prx != null) {
-      _msgProxy = prx;
-    }
-  }
 
 
   Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
-    return _msgProxy.open(url,urlParams: urlParams,exts: exts);
+    return BoostMessageChannel.openPage(url,urlParams, exts);
   }
 
   Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
-    return _msgProxy.close(id,result:result,exts: exts);
+    return BoostMessageChannel.closePage(id,result:result,exts: exts);
   }
 
 
@@ -74,6 +66,6 @@ class Router {
     Map<String,dynamic> exts = Map();
     exts["animated"] = animated;
 
-    return _msgProxy.close(settings.uniqueId,result: {} ,exts: exts);
+    return BoostMessageChannel.closePage(settings.uniqueId,result: {} ,exts: exts);
   }
 }

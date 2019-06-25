@@ -26,10 +26,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost/messaging/native_page_container_event_handler.dart';
+import 'package:flutter_boost/messaging/native_container_event_handler.dart';
 import 'package:flutter_boost/support/logger.dart';
 
-class ContainerCoordinator implements NativePageContainerEventHandler {
+class ContainerCoordinator implements NativeContainerEventHandler {
   static final ContainerCoordinator singleton = ContainerCoordinator();
 
   final Map<String, PageBuilder> _pageBuilders = <String, PageBuilder>{};

@@ -23,7 +23,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_boost/messaging/service/navigation_service.dart';
+import 'package:flutter_boost/messaging/boost_message_channel.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
 import 'package:flutter_boost/flutter_boost.dart';
@@ -135,7 +135,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
   void _onShownContainerChanged(String old, String now) {
     Logger.log('onShownContainerChanged old:$old now:$now');
-    NavigationService.onShownContainerChanged(now, old, <dynamic, dynamic>{});
+    BoostMessageChannel.onShownContainerChanged(now, old, <dynamic, dynamic>{});
   }
 
   void _refreshOverlayEntries() {

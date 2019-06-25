@@ -26,29 +26,20 @@
 #import "FlutterBoostPlugin_private.h"
 #import "FLBFactory.h"
 #import "FLB2Factory.h"
-
-#import "FLBMessageDispather.h"
-#import "FLBMessageImp.h"
-#import "NavigationService_closePage.h"
-#import "NavigationService_openPage.h"
-#import "NavigationService_pageOnStart.h"
-#import "NavigationService_onShownContainerChanged.h"
-#import "NavigationService_onFlutterPageResult.h"
+#import "BoostMessageChannel.h"
+#import "FlutterBoostPlugin_private.h"
 
 @interface FlutterBoostPlugin()
-@property (nonatomic,strong) FLBMessageDispather *dispatcher;
 @end
 
 @implementation FlutterBoostPlugin
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel
-                                     methodChannelWithName:@"flutter_boost"
+                                     methodChannelWithName:@"flutter_boost_method"
                                      binaryMessenger:[registrar messenger]];
     FlutterBoostPlugin* instance = [self.class sharedInstance];
-    [instance registerHandlers];
     instance.methodChannel = channel;
-    instance.broadcastor = [[FLBBroadcastor alloc] initWithMethodChannel:channel];
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
@@ -56,31 +47,48 @@
     if ([@"getPlatformVersion" isEqualToString:call.method]) {
         result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
     } else if([@"__event__" isEqual: call.method]){
-        [_broadcastor handleMethodCall:call result:result];
-    }else{
-        FLBMessageImp *msg = FLBMessageImp.new;
-        msg.name = call.method;
-        msg.params = call.arguments;
-        if(![self.dispatcher dispatch:msg result:result]){
-             result(FlutterMethodNotImplemented);
+        [BoostMessageChannel handleMethodCall:call result:result];
+    }else if([@"closePage" isEqualToString:call.method]){
+        NSDictionary *args = call.arguments;
+        NSDictionary *exts = args[@"exts"];
+        NSString *uid = args[@"uniqueId"];
+        NSDictionary *resultData = args[@"result"];
+        [[FlutterBoostPlugin sharedInstance].application close:uid
+                                                        result:resultData
+                                                          exts:exts
+                                                    completion:^(BOOL r){
+                                                        result(@(r));
+                                                    }];
+    }else if([@"onFlutterPageResult" isEqualToString:call.method]){
+        //Do nothing
+    }else if([@"onShownContainerChanged" isEqualToString:call.method]){
+        NSString *newName = call.arguments[@"newName"];
+        if(newName){
+            [NSNotificationCenter.defaultCenter postNotificationName:@"flutter_boost_container_showed"
+                                                              object:newName];
         }
+    }else if([@"openPage" isEqualToString:call.method]){
+        NSDictionary *args = call.arguments;
+        NSString *url = args[@"url"];
+        NSDictionary *urlParams = args[@"urlParams"];
+        NSDictionary *exts = args[@"exts"];
+        [[FlutterBoostPlugin sharedInstance].application open:url
+                                                    urlParams:urlParams
+                                                         exts:exts
+                                                        reult:result
+                                                   completion:^(BOOL r) {}];
+    }else if([@"pageOnStart" isEqualToString:call.method]){
+        NSMutableDictionary *pageInfo = [NSMutableDictionary new];
+        pageInfo[@"name"] =[FlutterBoostPlugin sharedInstance].fPagename;
+        pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
+        pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
+        if(result) result(pageInfo);
+    }else{
+        result(FlutterMethodNotImplemented);
     }
 }
 
-- (void)registerHandlers
-{
-    NSArray *handlers = @[
-                        NavigationService_openPage.class,
-                        NavigationService_closePage.class,
-                        NavigationService_pageOnStart.class,
-                        NavigationService_onShownContainerChanged.class,
-                        NavigationService_onFlutterPageResult.class
-                          ];
-    
-    for(Class cls in handlers){
-        [self.dispatcher registerHandler:cls.new];
-    }
-}
+
 
 + (instancetype)sharedInstance
 {
@@ -93,14 +101,6 @@
     return _instance;
 }
 
-- (instancetype)init
-{
-    if (self = [super init]) {
-        _dispatcher = FLBMessageDispather.new;
-    }
-    
-    return self;
-}
 
 - (id<FLBFlutterApplicationInterface>)application
 {
@@ -121,7 +121,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        if([platform respondsToSelector:@selector(userBoost2)] && platform.userBoost2){
+        if([platform respondsToSelector:@selector(useBoost2)] && platform.useBoost2){
             _factory = FLB2Factory.new;
         }else{
             _factory = FLBFactory.new;
@@ -148,15 +148,15 @@
 - (void)sendEvent:(NSString *)eventName
         arguments:(NSDictionary *)arguments
 {
-    [_broadcastor sendEvent:eventName
-                  arguments:arguments];
+    [BoostMessageChannel sendEvent:eventName
+                         arguments:arguments];
 }
 
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name
 {
-   return [_broadcastor addEventListener:listner
-                           forName:name];
+   return [BoostMessageChannel addEventListener:listner
+                                        forName:name];
 }
 
 @end

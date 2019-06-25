@@ -25,10 +25,66 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 
+typedef Future<dynamic> EventListener(String name , Map arguments);
 
-class NavigationService {
+class BoostMessageChannel {
 
   static MethodChannel methodChannel;
+
+  static Map<String,List<EventListener>> _lists = Map();
+
+  static void sendEvent(String name , Map arguments){
+
+    if(name == null) {
+      return;
+    }
+
+    if(arguments == null){
+      arguments = Map();
+    }
+
+    Map msg = Map();
+    msg["name"] = name;
+    msg["arguments"] = arguments;
+    methodChannel.invokeMethod("__event__",msg);
+  }
+
+  static Function addEventListener(String name , EventListener listener){
+    if(name == null || listener == null){
+      return (){};
+    }
+
+    List<EventListener> list = _lists[name];
+    if(list == null){
+      list = List();
+      _lists[name] = list;
+    }
+
+    list.add(listener);
+
+    return (){
+      list.remove(listener);
+    };
+  }
+
+  static Future<dynamic> handleEventCall(MethodCall call){
+    if(call.method != "__event__"){
+      return Future<dynamic>((){});
+    }
+
+    String name = call.arguments["name"];
+    Map arg = call.arguments["arguments"];
+    List<EventListener> list = _lists[name];
+    if(list != null){
+      for(EventListener l in list){
+        l(name,arg);
+      }
+    }
+
+    return Future<dynamic>((){});
+  }
+
+
 
  static Future<bool> onShownContainerChanged(String newName,String oldName,Map params) {
      Map<String,dynamic> properties = new Map<String,dynamic>();

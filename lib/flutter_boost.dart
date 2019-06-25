@@ -24,21 +24,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/messaging/service/navigation_service.dart';
+import 'package:flutter_boost/messaging/boost_message_channel.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_manager.dart';
 import 'package:flutter_boost/router/router.dart';
 
 import 'container/container_coordinator.dart';
-import 'messaging/base/message_dispatcher.dart';
-import 'messaging/handlers/did_disappear_page_container_handler.dart';
-import 'messaging/handlers/did_show_page_container_handler.dart';
-import 'messaging/handlers/did_init_page_container_handler.dart';
-import 'messaging/handlers/on_native_page_result_handler.dart';
-import 'messaging/handlers/will_dealloc_page_container_handler.dart';
-import 'messaging/handlers/will_show_page_container_handler.dart';
-import 'messaging/handlers/will_disappear_page_container_handler.dart';
-import 'messaging/base/broadcastor.dart';
 import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
@@ -61,12 +52,8 @@ class FlutterBoost {
   final ObserversHolder _observersHolder = ObserversHolder();
   final Router _router = Router();
   final MethodChannel _methodChannel = MethodChannel('flutter_boost_method');
-  final EventChannel _eventChannel = EventChannel('flutter_boost_event');
-  final MessageDispatcher _dispatcher = MessageDispatcher();
 
   int _callbackID = 0;
-
-  Broadcastor _broadcastor;
 
   static FlutterBoost get singleton => _instance;
 
@@ -99,26 +86,49 @@ class FlutterBoost {
   ObserversHolder get observersHolder => _observersHolder;
 
   FlutterBoost() {
-
-    _broadcastor = Broadcastor(_methodChannel);
-
-    //Config message handlers
-    NavigationService.methodChannel = _methodChannel;
-    _dispatcher.registerHandler(DidDisappearPageContainerHandler());
-    _dispatcher.registerHandler(DidInitPageContainerHandler());
-    _dispatcher.registerHandler(DidShowPageContainerHandler());
-    _dispatcher.registerHandler(OnNativePageResultHandler());
-    _dispatcher.registerHandler(WillDeallocPageContainerHandler());
-    _dispatcher.registerHandler(WillShowPageContainerHandler());
-    _dispatcher.registerHandler(WillDisappearPageContainerHandler());
-
+    BoostMessageChannel.methodChannel = _methodChannel;
     _methodChannel.setMethodCallHandler((MethodCall call){
       if(call.method == "__event__"){
         //Handler broadcast event.
-        return _broadcastor.handleCall(call);
-      }else{
-        return _dispatcher.dispatch(call);
+        return BoostMessageChannel.handleEventCall(call);
+      }else if(call.method == "didDisappearPageContainer"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerDidDisappear(pageName, params, uniqueId);
+      }else if(call.method == "nativeContainerDidInit"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerDidInit(pageName, params, uniqueId);
+      }else if(call.method == "didShowPageContainer"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerDidShow(pageName, params, uniqueId);
+      }else if(call.method == "willDeallocPageContainer"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerWillDealloc(pageName, params, uniqueId);
+      }else if(call.method == "willDisappearPageContainer"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerWillDisappear(pageName, params, uniqueId);
+      }else if(call.method == "willShowPageContainer"){
+        String pageName = call.arguments["pageName"];
+        Map params = call.arguments["params"];
+        String uniqueId = call.arguments["uniqueId"];
+        ContainerCoordinator.singleton
+            .nativeContainerWillShow(pageName, params, uniqueId);
       }
+      return Future<dynamic>((){});
     });
 
   }
@@ -157,12 +167,12 @@ class FlutterBoost {
 
   //Listen broadcast event from native.
   Function addEventListener(String name , EventListener listener){
-    return _broadcastor.addEventListener(name, listener);
+    return BoostMessageChannel.addEventListener(name, listener);
   }
 
   //Send broadcast event to native.
   void sendEvent(String name , Map arguments){
-    _broadcastor.sendEvent(name, arguments);
+    BoostMessageChannel.sendEvent(name, arguments);
   }
 
   Future<Map<String,dynamic>> openPage(String name, Map params,{bool animated}) {
@@ -193,7 +203,7 @@ class FlutterBoost {
       exts["params"] = params;
     }
 
-    close(id, result: {} , exts: exts);
+    return close(id, result: {} , exts: exts);
   }
 
 
@@ -211,7 +221,7 @@ class FlutterBoost {
   ///query current top page and show it
   static void handleOnStartPage() async {
     final Map<dynamic, dynamic> pageInfo =
-        await NavigationService.pageOnStart(<dynamic, dynamic>{});
+        await BoostMessageChannel.pageOnStart(<dynamic, dynamic>{});
     if (pageInfo == null || pageInfo.isEmpty) return;
 
     if (pageInfo.containsKey("name") &&

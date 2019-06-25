@@ -23,8 +23,10 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "FLBTypes.h"
 
- @interface Service_NavigationService : NSObject
+ @interface BoostMessageChannel : NSObject
 
  + (void)onNativePageResult:(void (^)(NSNumber *))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params;
  + (void)didShowPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
@@ -33,4 +35,15 @@
  + (void)didDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  + (void)didInitPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  + (void)willDeallocPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
+
+
++ (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments;
+
++ (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name;
+
++ (void)handleMethodCall:(FlutterMethodCall *)call
+                  result:(FlutterResult)result;
+
  @end

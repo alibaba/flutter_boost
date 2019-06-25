@@ -27,7 +27,7 @@
 #import "FLBStackCache.h"
 #import "FLBStackCacheObjectImg.h"
 #import "FLBMemoryInspector.h"
-#import "Service_NavigationService.h"
+#import "BoostMessageChannel.h"
 #import "FlutterBoostConfig.h"
 #import "FlutterBoostPlugin_private.h"
 
@@ -51,7 +51,7 @@
     if(!_name && name){
         _name = name;
         _params = params;
-        [Service_NavigationService didInitPageContainer:^(NSNumber *r) {}
+        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
                                                pageName:name
                                                  params:params
                                                uniqueId:[self uniqueIDString]];
@@ -140,7 +140,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)notifyWillDealloc
 {
-    [Service_NavigationService willDeallocPageContainer:^(NSNumber *r) {}
+    [BoostMessageChannel willDeallocPageContainer:^(NSNumber *r) {}
                                                pageName:_name params:_params
                                                uniqueId:[self uniqueIDString]];
 
@@ -310,7 +310,7 @@ static NSUInteger kInstanceCounter = 0;
     
     [self showSnapShotVew];
     
-    [Service_NavigationService willShowPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel willShowPageContainer:^(NSNumber *result) {}
                                             pageName:_name
                                               params:_params
                                             uniqueId:self.uniqueIDString];
@@ -331,7 +331,7 @@ static NSUInteger kInstanceCounter = 0;
     //Ensure flutter view is attached.
     [self attatchFlutterView];
     
-    [Service_NavigationService didShowPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
@@ -369,7 +369,7 @@ static NSUInteger kInstanceCounter = 0;
         [self.view bringSubviewToFront:self.screenShotView];
     }
    
-    [Service_NavigationService willDisappearPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel willDisappearPageContainer:^(NSNumber *result) {}
                                                  pageName:_name
                                                    params:_params
                                                  uniqueId:self.uniqueIDString];
@@ -379,7 +379,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [Service_NavigationService didDisappearPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];

@@ -22,7 +22,7 @@
 }
 
 // Boost 2 switch
-- (BOOL)userBoost2
+- (BOOL)useBoost2
 {
     return YES;
 }
@@ -70,7 +70,7 @@
         animated:(BOOL)animated
       completion:(void (^)(BOOL))completion
 {
-    if([self userBoost2]){
+    if([self useBoost2]){
         NSMutableDictionary *exts = NSMutableDictionary.new;
         exts[@"url"] = name;
         exts[@"params"] = params;
@@ -98,7 +98,7 @@
 
 - (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
 {
-    if([self userBoost2]){
+    if([self useBoost2]){
         NSMutableDictionary *exts = NSMutableDictionary.new;
         exts[@"params"] = params;
         exts[@"animated"] = @(animated);

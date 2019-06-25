@@ -24,7 +24,7 @@
 
 #import "FLB2FlutterViewContainer.h"
 #import "FLB2FlutterApplication.h"
-#import "Service_NavigationService.h"
+#import "BoostMessageChannel.h"
 #import "FLBFlutterContainerManager.h"
 #import "FlutterBoostPlugin_private.h"
 
@@ -64,7 +64,7 @@
     if(!_name && name){
         _name = name;
         _params = params;
-        [Service_NavigationService didInitPageContainer:^(NSNumber *r) {}
+        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
                                                pageName:name
                                                  params:params
                                                uniqueId:[self uniqueIDString]];
@@ -115,7 +115,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)notifyWillDealloc
 {
-    [Service_NavigationService willDeallocPageContainer:^(NSNumber *r) {}
+    [BoostMessageChannel willDeallocPageContainer:^(NSNumber *r) {}
                                                pageName:_name params:_params
                                                uniqueId:[self uniqueIDString]];
 
@@ -169,7 +169,7 @@ static NSUInteger kInstanceCounter = 0;
     //For new page we should attach flutter view in view will appear
     //for better performance.
  
-    [Service_NavigationService willShowPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel willShowPageContainer:^(NSNumber *result) {}
                                             pageName:_name
                                               params:_params
                                             uniqueId:self.uniqueIDString];
@@ -190,7 +190,7 @@ static NSUInteger kInstanceCounter = 0;
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
     [self surfaceUpdated:YES];
-    [Service_NavigationService didShowPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
@@ -200,7 +200,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [Service_NavigationService willDisappearPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel willDisappearPageContainer:^(NSNumber *result) {}
                                                  pageName:_name
                                                    params:_params
                                                  uniqueId:self.uniqueIDString];
@@ -211,7 +211,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidDisappear:(BOOL)animated
 {
     [self detatchFlutterEngine];
-    [Service_NavigationService didDisappearPageContainer:^(NSNumber *result) {}
+    [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];

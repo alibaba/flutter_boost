@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol FLB2Platform <FLBPlatform>
 
 @optional
-- (BOOL)userBoost2;
+- (BOOL)useBoost2;
 
 @required
 - (void)open:(NSString *)url

@@ -23,16 +23,71 @@
  */
 
 
-#import "Service_NavigationService.h"
-#import <Flutter/Flutter.h>
+#import "BoostMessageChannel.h"
 #import "FlutterBoostPlugin_private.h"
+
  
- @implementation Service_NavigationService
+ @implementation BoostMessageChannel
+
++ (NSMutableDictionary *)lists{
+    static NSMutableDictionary *_list = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _list = [NSMutableDictionary new];
+    });
+    return _list;
+}
  
  + (FlutterMethodChannel *)methodChannel
  {
      return FlutterBoostPlugin.sharedInstance.methodChannel;
  }
+
++ (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments
+{
+    if(!eventName) return;
+    NSMutableDictionary *msg = [NSMutableDictionary new];
+    msg[@"name"] = eventName;
+    msg[@"arguments"] = arguments;
+    [self.methodChannel invokeMethod:@"__event__"
+                 arguments:msg
+                    result:^(id r){}];
+}
+
++ (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name
+{
+    if(!name || !listner) return ^{};
+    
+    NSMutableArray *list = [self lists][name];
+    if(!list){
+        list = [NSMutableArray new];
+        [self lists][name] = list;
+    }
+    [list addObject:listner];
+    return ^{
+        [list removeObject:listner];
+    };
+}
+
++ (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result
+{
+    if([call.method isEqual:@"__event__"]){
+        NSString *name = call.arguments[@"name"];
+        NSDictionary *arguments = call.arguments[@"arguments"];
+        if(name){
+            NSMutableArray *list = [self lists][name];
+            if(list){
+                for(FLBEventListener l in list){
+                    l(name,arguments);
+                }
+            }
+        }
+    }
+}
+
+
 
  + (void)onNativePageResult:(void (^)(NSNumber *))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params
  {
