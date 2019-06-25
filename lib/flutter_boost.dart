@@ -67,8 +67,6 @@ class FlutterBoost {
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
-      //Logger.log('Running flutter boost opt!');
-
       final BoostContainerManager manager = BoostContainerManager(
           key: _instance.containerManagerKey,
           initNavigator: child,
@@ -89,7 +87,6 @@ class FlutterBoost {
     BoostMessageChannel.methodChannel = _methodChannel;
     _methodChannel.setMethodCallHandler((MethodCall call){
       if(call.method == "__event__"){
-        //Handler broadcast event.
         return BoostMessageChannel.handleEventCall(call);
       }else if(call.method == "didDisappearPageContainer"){
         String pageName = call.arguments["pageName"];

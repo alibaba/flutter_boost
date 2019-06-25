@@ -121,7 +121,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        if([platform respondsToSelector:@selector(useBoost2useBoost2)] && platform.useBoost2){
+        if([platform respondsToSelector:@selector(useBoost2)] && platform.useBoost2){
             _factory = FLB2Factory.new;
         }else{
             _factory = FLBFactory.new;
