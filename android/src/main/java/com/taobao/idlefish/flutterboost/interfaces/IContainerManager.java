@@ -29,7 +29,9 @@ public interface IContainerManager {
 
     IOperateSyncer generateSyncer(IFlutterViewContainer container);
 
-    IFlutterViewContainer closeContainer(String uniqueId,Map<String,Object> result);
+    void openContainer(String url,Map<String,Object> urlParams,Map<String,Object> exts,OnResult onResult);
+
+    IContainerRecord closeContainer(String uniqueId,Map<String,Object> result,Map<String,Object> exts);
 
     IContainerRecord getCurrentTopRecord();
 
@@ -40,4 +42,8 @@ public interface IContainerManager {
     void onShownContainerChanged(String oldUniqueId,String nowUniqueId);
 
     boolean hasContainerAppear();
+
+    interface OnResult {
+        void onResult(Map<String,Object> result);
+    }
 }

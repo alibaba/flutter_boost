@@ -3,13 +3,8 @@ package com.taobao.idlefish.flutterboostexample;
 import android.app.Application;
 import android.content.Context;
 
-import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
-import com.taobao.idlefish.flutterboost.Debuger;
 import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
-import com.taobao.idlefish.flutterboost.StateListener;
-import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.taobao.idlefish.flutterboost.Platform;
 
 import java.util.Map;
 
@@ -22,15 +17,11 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterBoostPlugin.init(new IPlatform() {
+        FlutterBoostPlugin.init(new Platform() {
+
             @Override
             public Application getApplication() {
                 return MyApplication.this;
-            }
-
-            @Override
-            public void onRegisterPlugins(PluginRegistry registry) {
-                GeneratedPluginRegistrant.registerWith(registry);
             }
 
             @Override
@@ -38,28 +29,14 @@ public class MyApplication extends FlutterApplication {
                 return true;
             }
 
-            /**
-             * 如果flutter想打开一个本地页面，将会回调这个方法，页面参数将会拼接在url中
-             *
-             * 例如：sample://nativePage?aaa=bbb
-             *
-             * 参数就是类似 aaa=bbb 这样的键值对
-             *
-             * @param context
-             * @param url
-             * @param requestCode
-             * @return
-             */
             @Override
-            public boolean startActivity(Context context, String url, Map params, int requestCode) {
-                Debuger.log("startActivity url="+url);
-
-                return PageRouter.openPageByUrl(context,url,params,requestCode);
+            public void registerPlugins(PluginRegistry registry) {
+                GeneratedPluginRegistrant.registerWith(registry);
             }
 
             @Override
-            public int whenEngineStart() {
-                return IMMEDIATELY;
+            public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
+                PageRouter.openPageByUrl(context,url,urlParams,requestCode);
             }
         });
     }

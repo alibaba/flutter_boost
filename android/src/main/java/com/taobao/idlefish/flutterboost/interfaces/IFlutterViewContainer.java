@@ -24,12 +24,10 @@
 package com.taobao.idlefish.flutterboost.interfaces;
 
 import android.app.Activity;
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-import io.flutter.plugin.common.PluginRegistry;
+import com.taobao.idlefish.flutterboost.BoostFlutterView;
+
+import java.util.Map;
 
 /**
  * a container which contains the flutter view
@@ -48,19 +46,19 @@ public interface IFlutterViewContainer {
     /**
      * call to destroy the container
      */
-    void finishContainer();
+    void finishContainer(Map<String,Object> result);
 
     /**
      * container name
      * @return
      */
-    String getContainerName();
+    String getContainerUrl();
 
     /**
      * container params
      * @return
      */
-    Map getContainerParams();
+    Map getContainerUrlParams();
 
     /**
      * callback when container shown
@@ -71,10 +69,4 @@ public interface IFlutterViewContainer {
      * callback when container hidden
      */
     void onContainerHidden();
-
-    /**
-     * call by flutter side to set result
-     * @param result
-     */
-    void setBoostResult(HashMap result);
 }

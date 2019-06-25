@@ -38,7 +38,7 @@ import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterView;
 
@@ -137,8 +137,8 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     }
 
     @Override
-    public void finishContainer() {
-        getActivity().finish();
+    public void finishContainer(Map<String,Object> result) {
+        getFragmentManager().popBackStack();
     }
 
     @Override
@@ -146,11 +146,4 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
 
     @Override
     public void onContainerHidden() {}
-
-    @Override
-    public void setBoostResult(HashMap result) {
-        Intent data = new Intent();
-        data.putExtra(RESULT_KEY,result);
-        getActivity().setResult(Activity.RESULT_OK,data);
-    }
 }

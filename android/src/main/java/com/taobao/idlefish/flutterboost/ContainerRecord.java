@@ -25,8 +25,6 @@ package com.taobao.idlefish.flutterboost;
 
 import android.content.Intent;
 
-import com.taobao.idlefish.flutterboost.messageing.NavigationService;
-import com.taobao.idlefish.flutterboost.messageing.base.MessageResult;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
@@ -138,12 +136,12 @@ public class ContainerRecord implements IContainerRecord {
             Debuger.exception("state error");
         }
 
-        Map<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
         map.put("type", "backPressedCallback");
-        map.put("name", mContainer.getContainerName());
+        map.put("name", mContainer.getContainerUrl());
         map.put("uniqueId", mUniqueId);
 
-        FlutterBoostPlugin.getInstance().sendEvent("lifecycle",map);
+        FlutterBoostPlugin.singleton().channel().sendEvent(map);
 
         mContainer.getBoostFlutterView().onBackPressed();
     }
@@ -161,6 +159,11 @@ public class ContainerRecord implements IContainerRecord {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         mContainer.getBoostFlutterView().onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Override
+    public void onContainerResult(int requestCode, Map<String,Object> result) {
+        mManager.setContainerResult(this,requestCode,result);
     }
 
     @Override
@@ -184,10 +187,9 @@ public class ContainerRecord implements IContainerRecord {
 
         private void create() {
             if (mState == STATE_UNKNOW) {
-                NavigationService.didInitPageContainer(
-                        genResult("didInitPageContainer"),
-                        mContainer.getContainerName(),
-                        mContainer.getContainerParams(),
+                invokeChannelUnsafe(
+                        mContainer.getContainerUrl(),
+                        mContainer.getContainerUrlParams(),
                         mUniqueId
                 );
                 //Debuger.log("didInitPageContainer");
@@ -196,10 +198,9 @@ public class ContainerRecord implements IContainerRecord {
         }
 
         private void appear() {
-            NavigationService.didShowPageContainer(
-                    genResult("didShowPageContainer"),
-                    mContainer.getContainerName(),
-                    mContainer.getContainerParams(),
+            invokeChannelUnsafe(
+                    mContainer.getContainerUrl(),
+                    mContainer.getContainerUrlParams(),
                     mUniqueId
             );
             //Debuger.log("didShowPageContainer");
@@ -209,10 +210,9 @@ public class ContainerRecord implements IContainerRecord {
 
         private void disappear() {
             if (mState < STATE_DISAPPEAR) {
-                NavigationService.didDisappearPageContainer(
-                        genResult("didDisappearPageContainer"),
-                        mContainer.getContainerName(),
-                        mContainer.getContainerParams(),
+                invokeChannel(
+                        mContainer.getContainerUrl(),
+                        mContainer.getContainerUrlParams(),
                         mUniqueId
                 );
                 //Debuger.log("didDisappearPageContainer");
@@ -223,10 +223,9 @@ public class ContainerRecord implements IContainerRecord {
 
         private void destroy() {
             if (mState < STATE_DESTROYED) {
-                NavigationService.willDeallocPageContainer(
-                        genResult("willDeallocPageContainer"),
-                        mContainer.getContainerName(),
-                        mContainer.getContainerParams(),
+                invokeChannel(
+                        mContainer.getContainerUrl(),
+                        mContainer.getContainerUrlParams(),
                         mUniqueId
                 );
                 //Debuger.log("willDeallocPageContainer");
@@ -234,25 +233,21 @@ public class ContainerRecord implements IContainerRecord {
                 mState = STATE_DESTROYED;
             }
         }
-    }
 
-    private MessageResult<Boolean> genResult(final String name) {
-        return new MessageResult<Boolean>() {
+        public void invokeChannel(String pageName, Map params, String uniqueId) {
+            HashMap<String, Object> args = new HashMap<>();
+            args.put("pageName", pageName);
+            args.put("params", params);
+            args.put("uniqueId", uniqueId);
+            FlutterBoostPlugin.singleton().channel().invokeMethod("didInitPageContainer", args);
+        }
 
-            @Override
-            public void success(Boolean var1) {
-                //Debuger.log(name + " call success");
-            }
-
-            @Override
-            public void error(String var1, String var2, Object var3) {
-                Debuger.log(name + " call error");
-            }
-
-            @Override
-            public void notImplemented() {
-                Debuger.log(name + " call not Impelemented");
-            }
-        };
+        public void invokeChannelUnsafe(String pageName, Map params, String uniqueId) {
+            HashMap<String, Object> args = new HashMap<>();
+            args.put("pageName", pageName);
+            args.put("params", params);
+            args.put("uniqueId", uniqueId);
+            FlutterBoostPlugin.singleton().channel().invokeMethodUnsafe("didInitPageContainer", args);
+        }
     }
 }

@@ -270,11 +270,11 @@ public class BoostFlutterView extends FrameLayout {
     }
 
     public void onBackPressed() {
-        Log.d("FlutterFragment", "onBackPressed()");
+        Debuger.log("onBackPressed()");
         if (mFlutterEngine != null) {
             mFlutterEngine.getNavigationChannel().popRoute();
         } else {
-            Log.w("FlutterFragment", "Invoked onBackPressed() before FlutterFragment was attached to an Activity.");
+            Debuger.log("Invoked onBackPressed() before BoostFlutterView was attached to an Activity.");
         }
 
     }
@@ -283,7 +283,7 @@ public class BoostFlutterView extends FrameLayout {
         if (mFlutterEngine != null) {
             mFlutterEngine.getPluginRegistry().onRequestPermissionsResult(requestCode, permissions, grantResults);
         } else {
-            Log.w("FlutterFragment", "onRequestPermissionResult() invoked before FlutterFragment was attached to an Activity.");
+            Debuger.log("onRequestPermissionResult() invoked before BoostFlutterView was attached to an Activity.");
         }
 
     }
@@ -292,7 +292,7 @@ public class BoostFlutterView extends FrameLayout {
         if (mFlutterEngine != null) {
             mFlutterEngine.getPluginRegistry().onNewIntent(intent);
         } else {
-            Log.w("FlutterFragment", "onNewIntent() invoked before FlutterFragment was attached to an Activity.");
+            Debuger.log("onNewIntent() invoked before BoostFlutterView was attached to an Activity.");
         }
 
     }
@@ -301,16 +301,15 @@ public class BoostFlutterView extends FrameLayout {
         if (mFlutterEngine != null) {
             mFlutterEngine.getPluginRegistry().onActivityResult(requestCode, resultCode, data);
         } else {
-            Log.w("FlutterFragment", "onActivityResult() invoked before FlutterFragment was attached to an Activity.");
+            Debuger.log("onActivityResult() invoked before BoostFlutterView was attached to an Activity.");
         }
-
     }
 
     public void onUserLeaveHint() {
         if (mFlutterEngine != null) {
             mFlutterEngine.getPluginRegistry().onUserLeaveHint();
         } else {
-            Log.w("FlutterFragment", "onUserLeaveHint() invoked before FlutterFragment was attached to an Activity.");
+            Debuger.log("onUserLeaveHint() invoked before BoostFlutterView was attached to an Activity.");
         }
 
     }
@@ -321,7 +320,7 @@ public class BoostFlutterView extends FrameLayout {
                 mFlutterEngine.getSystemChannel().sendMemoryPressureWarning();
             }
         } else {
-            Log.w("FlutterFragment", "onTrimMemory() invoked before FlutterFragment was attached to an Activity.");
+            Debuger.log("onTrimMemory() invoked before BoostFlutterView was attached to an Activity.");
         }
     }
 

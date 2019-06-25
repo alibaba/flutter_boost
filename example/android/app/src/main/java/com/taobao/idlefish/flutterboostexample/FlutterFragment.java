@@ -29,12 +29,12 @@ public class FlutterFragment extends BoostFlutterFragment {
     }
 
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         return "flutterFragment";
     }
 
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
         params.put("tag",getArguments().getString("tag"));
         return params;

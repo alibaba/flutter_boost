@@ -2,6 +2,8 @@ package com.taobao.idlefish.flutterboost.interfaces;
 
 import android.content.Intent;
 
+import java.util.Map;
+
 public interface IOperateSyncer {
 
     void onCreate();
@@ -19,6 +21,8 @@ public interface IOperateSyncer {
     void onNewIntent(Intent intent);
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
+
+    void onContainerResult(int requestCode, Map<String,Object> result);
 
     void onUserLeaveHint();
 

@@ -60,7 +60,8 @@ class FlutterBoost {
       GlobalKey<ContainerManagerState>();
   final ObserversHolder _observersHolder = ObserversHolder();
   final Router _router = Router();
-  final MethodChannel _methodChannel = MethodChannel('flutter_boost');
+  final MethodChannel _methodChannel = MethodChannel('flutter_boost_method');
+  final EventChannel _eventChannel = EventChannel('flutter_boost_event');
   final MessageDispatcher _dispatcher = MessageDispatcher();
 
   int _callbackID = 0;

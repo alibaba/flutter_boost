@@ -46,7 +46,9 @@ import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.platform.PlatformPlugin;
@@ -180,6 +182,16 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mSyncer.onActivityResult(requestCode,resultCode,data);
+
+        Map<String,Object> result = null;
+        if(data != null) {
+            Serializable rlt = data.getSerializableExtra(RESULT_KEY);
+            if(rlt instanceof Map) {
+                result = (Map<String,Object>)rlt;
+            }
+        }
+
+        mSyncer.onContainerResult(requestCode,result);
     }
 
     @Override
@@ -217,8 +229,12 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     }
 
     @Override
-    public void finishContainer() {
-        finish();
+    public void finishContainer(Map<String,Object> result) {
+        Intent intent = new Intent();
+        if (result != null) {
+            intent.putExtra(RESULT_KEY, new HashMap<>(result));
+        }
+        setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
@@ -226,11 +242,4 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
 
     @Override
     public void onContainerHidden() {}
-
-    @Override
-    public void setBoostResult(HashMap result) {
-        Intent data = new Intent();
-        data.putExtra(RESULT_KEY,result);
-        setResult(RESULT_OK,data);
-    }
 }

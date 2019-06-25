@@ -52,7 +52,7 @@ public class BoostFlutterEngine extends FlutterEngine {
                 stateListener.onEngineStarted(this);
             }
 
-            FlutterBoostPlugin.singleton().platform().onRegisterPlugins(mBoostPluginRegistry);
+            FlutterBoostPlugin.singleton().platform().registerPlugins(mBoostPluginRegistry);
         }
     }
 

@@ -55,17 +55,13 @@ public interface IPlatform {
      * register plugins
      * @return
      */
-    void onRegisterPlugins(PluginRegistry registry);
+    void registerPlugins(PluginRegistry registry);
 
-    /**
-     * start a new activity from flutter page, you may need a page router with url
-     * @param context
-     * @param url
-     * @param requestCode
-     * @return
-     */
-    boolean startActivity(Context context,String url,Map params,int requestCode);
 
+    void openContainer(Context context,String url,Map<String,Object> urlParams,int requestCode,Map<String,Object> exts);
+
+
+    void closeContainer(IContainerRecord record, Map<String,Object> result, Map<String,Object> exts);
 
     /**
      * @return

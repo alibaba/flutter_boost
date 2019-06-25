@@ -29,30 +29,29 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.taobao.idlefish.flutterboost.NavigationService.NavigationService;
 import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
+import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
 import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
-import com.taobao.idlefish.flutterboost.loader.ServiceLoader;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
 
 
-public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
+public class FlutterBoostPlugin {
 
     static FlutterBoostPlugin sInstance = null;
 
     public static synchronized void init(IPlatform platform) {
         if (sInstance == null) {
             sInstance = new FlutterBoostPlugin(platform);
-            ServiceLoader.load();
         }
 
         if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
@@ -64,23 +63,25 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
 
     public static FlutterBoostPlugin singleton() {
         if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
+            Debuger.exception("FlutterBoostPlugin not init yet");
         }
 
         return sInstance;
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_boost");
-        channel.setMethodCallHandler(singleton());
+        final MethodChannel method = new MethodChannel(registrar.messenger(), "flutter_boost_method");
+        final EventChannel event = new EventChannel(registrar.messenger(), "flutter_boost_event");
+        singleton().registerChannel(method,event);
     }
 
     private final IPlatform mPlatform;
     private final IContainerManager mManager;
     private final IFlutterEngineProvider mEngineProvider;
-    IStateListener mStateListener;
 
-    private Activity mCurrentActiveActivity;
+    IStateListener mStateListener;
+    Activity mCurrentActiveActivity;
+    BoostChannel mBoostChannel;
 
     private FlutterBoostPlugin(IPlatform platform) {
         mPlatform = platform;
@@ -89,45 +90,26 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
         platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
     }
 
-    @Override
-    public void onMethodCall(MethodCall call, MethodChannel.Result result) {
-        if (call.method.equals("getPlatformVersion")) {
-            result.success("Android " + android.os.Build.VERSION.RELEASE);
-        } else {
-            result.notImplemented();
-        }
-    }
-
-
     public IFlutterEngineProvider engineProvider() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
         return sInstance.mEngineProvider;
     }
 
     public IContainerManager containerManager() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
         return sInstance.mManager;
     }
 
     public IPlatform platform() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
-        }
-
         return sInstance.mPlatform;
     }
 
-    public Activity currentActivity() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not init yet");
+    public BoostChannel channel() {
+        if(mBoostChannel == null) {
+            Debuger.exception("channel not register yet!");
         }
+        return mBoostChannel;
+    }
 
+    public Activity currentActivity() {
         return sInstance.mCurrentActiveActivity;
     }
 
@@ -135,9 +117,14 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
         return mManager.findContainerById(id);
     }
 
-
     public void setStateListener(@Nullable IStateListener listener){
         mStateListener = listener;
+    }
+
+    private void registerChannel(MethodChannel method, EventChannel event) {
+        mBoostChannel = new BoostChannel(method,event);
+
+        mBoostChannel.addMethodCallHandler(new BoostMethodHandler());
     }
 
     class ActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
@@ -156,9 +143,9 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
                 Debuger.log("Application entry foreground");
 
                 if (mEngineProvider.tryGetEngine() != null) {
-                    Map<String, String> map = new HashMap<>();
+                    HashMap<String, String> map = new HashMap<>();
                     map.put("type", "foreground");
-                    NavigationService.getService().emitEvent(map);
+                    mBoostChannel.sendEvent(map);
                 }
             }
             mCurrentActiveActivity = activity;
@@ -180,9 +167,9 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
                 Debuger.log("Application entry background");
 
                 if (mEngineProvider.tryGetEngine() != null) {
-                    Map<String, String> map = new HashMap<>();
+                    HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    NavigationService.getService().emitEvent(map);
+                    mBoostChannel.sendEvent(map);
                 }
                 mCurrentActiveActivity = null;
             }
@@ -199,11 +186,92 @@ public class FlutterBoostPlugin implements MethodChannel.MethodCallHandler {
                 Debuger.log("Application entry background");
 
                 if (mEngineProvider.tryGetEngine() != null) {
-                    Map<String, String> map = new HashMap<>();
+                    HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    NavigationService.getService().emitEvent(map);
+                    mBoostChannel.sendEvent(map);
                 }
                 mCurrentActiveActivity = null;
+            }
+        }
+    }
+
+    class BoostMethodHandler implements MethodChannel.MethodCallHandler {
+
+        @Override
+        public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
+            switch (methodCall.method) {
+                case "pageOnStart":
+                {
+                    Map<String, Object> pageInfo = new HashMap<>();
+
+                    try {
+                        IContainerRecord record = mManager.getCurrentTopRecord();
+
+                        if (record == null) {
+                            record = mManager.getLastGenerateRecord();
+                        }
+
+                        pageInfo.put("name", record.getContainer().getContainerUrl());
+                        pageInfo.put("params", record.getContainer().getContainerUrlParams());
+                        pageInfo.put("uniqueId", record.uniqueId());
+
+                        result.success(pageInfo);
+                    } catch (Throwable t) {
+                        result.error("no flutter page found!",t.getMessage(),t);
+                    }
+                }
+                break;
+                case "openPage":
+                {
+                    try {
+                        Map<String,Object> params = methodCall.argument("urlParams");
+                        Map<String,Object> exts = methodCall.argument("exts");
+                        String url = methodCall.argument("url");
+
+                        mManager.openContainer(url, params, exts, new IContainerManager.OnResult() {
+                            @Override
+                            public void onResult(Map<String, Object> rlt) {
+                                if (result != null) {
+                                    result.success(rlt);
+                                }
+                            }
+                        });
+                    }catch (Throwable t){
+
+                    }
+                }
+                break;
+                case "closePage":
+                {
+                    try {
+                        String uniqueId = methodCall.argument("uniqueId");
+                        Map<String,Object> resultData = methodCall.argument("result");
+                        Map<String,Object> exts = methodCall.argument("exts");
+
+                        mManager.closeContainer(uniqueId, resultData,exts);
+                        result.success(true);
+                    }catch (Throwable t){
+                        result.error("close page error",t.getMessage(),t);
+                    }
+                }
+                break;
+                case "onShownContainerChanged":
+                {
+                    try {
+                        String newId = methodCall.argument("newName");
+                        String oldId = methodCall.argument("oldName");
+
+                        mManager.onShownContainerChanged(newId,oldId);
+                        result.success(true);
+                    }catch (Throwable t){
+                        result.error("onShownContainerChanged",t.getMessage(),t);
+                    }
+                }
+                break;
+                default:
+                {
+                    result.notImplemented();
+                }
             }
         }
     }

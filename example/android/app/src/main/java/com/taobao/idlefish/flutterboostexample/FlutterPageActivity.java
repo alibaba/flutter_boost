@@ -26,7 +26,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * @return
      */
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         return "flutterPage";
     }
 
@@ -45,7 +45,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * @return
      */
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
         params.put("aaa","bbb");
         return params;
