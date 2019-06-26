@@ -38,6 +38,11 @@ public class MyApplication extends FlutterApplication {
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
                 PageRouter.openPageByUrl(context,url,urlParams,requestCode);
             }
+
+            @Override
+            public int whenEngineStart() {
+                return LAZY;
+            }
         });
     }
 }

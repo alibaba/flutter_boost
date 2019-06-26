@@ -25,8 +25,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
 import 'package:flutter_boost/container/container_manager.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost/router/boost_page_route.dart';
-import 'package:flutter_boost/support/logger.dart';
+import 'package:flutter_boost/container/boost_page_route.dart';
+import 'package:flutter_boost/logger.dart';
 
 enum ContainerLifeCycle {
   Init,
@@ -192,7 +192,11 @@ class BoostContainerState extends NavigatorState {
     if (canPop()) {
       return super.pop(result);
     } else {
-      FlutterBoost.singleton.closePage(name, uniqueId, params);
+      if (T is Map<String,dynamic>) {
+        FlutterBoost.singleton.close(uniqueId, result:result as Map<String,dynamic>);
+      }else{
+        FlutterBoost.singleton.close(uniqueId);
+      }
     }
 
     return false;
