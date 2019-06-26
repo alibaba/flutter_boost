@@ -51,7 +51,7 @@ class FlutterBoost {
       GlobalKey<ContainerManagerState>();
   final ObserversHolder _observersHolder = ObserversHolder();
   final Router _router = Router();
-  final MethodChannel _methodChannel = MethodChannel('flutter_boost_method');
+  final MethodChannel _methodChannel = MethodChannel('flutter_boost');
 
   int _callbackID = 0;
 
@@ -140,7 +140,7 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+  Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
     if(urlParams == null) {
       urlParams = Map();
     }
@@ -152,7 +152,7 @@ class FlutterBoost {
     return _router.open(url,urlParams: urlParams,exts: exts);
   }
 
-  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+  Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
     if(result == null) {
       result = Map();
     }
@@ -172,7 +172,7 @@ class FlutterBoost {
     BoostMessageChannel.sendEvent(name, arguments);
   }
 
-  Future<Map<String,dynamic>> openPage(String name, Map params,{bool animated}) {
+  Future<Map<dynamic,dynamic>> openPage(String name, Map params,{bool animated}) {
     Map<String,dynamic> exts = Map();
     if(animated != null){
       exts["animated"] = animated;

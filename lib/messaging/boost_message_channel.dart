@@ -128,7 +128,7 @@ class BoostMessageChannel {
      });
  }
 
- static Future<bool> closePage(String uniqueId,{Map<String,dynamic> result,Map<String,dynamic> exts}) {
+ static Future<bool> closePage(String uniqueId,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
      Map<String,dynamic> properties = new Map<String,dynamic>();
      properties["uniqueId"]=uniqueId;
      if(result != null){

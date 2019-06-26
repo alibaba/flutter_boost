@@ -30,11 +30,11 @@ import 'package:flutter_boost/messaging/boost_message_channel.dart';
 class Router {
 
 
-  Future<Map<dynamic,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+  Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
     return BoostMessageChannel.openPage(url,urlParams, exts);
   }
 
-  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+  Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
     return BoostMessageChannel.closePage(id,result:result,exts: exts);
   }
 
