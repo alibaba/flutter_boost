@@ -29,9 +29,6 @@ class _MyAppState extends State<MyApp> {
         return FlutterRouteWidget();
       },
     });
-
-    FlutterBoost.handleOnStartPage();
-
   }
 
   @override

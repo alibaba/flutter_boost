@@ -3,7 +3,9 @@ package com.taobao.idlefish.flutterboost;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import io.flutter.plugin.common.EventChannel;
@@ -13,38 +15,43 @@ import io.flutter.plugin.common.MethodChannel;
 public class BoostChannel {
 
     private final MethodChannel mMethodChannel;
-    private final EventChannel mEventChannel;
     private final Set<MethodChannel.MethodCallHandler> mMethodCallHandlers = new HashSet<>();
+    private final Map<String,Set<EventListener>> mEventListeners = new HashMap<>();
 
-    private EventChannel.EventSink mEventSink;
-
-    BoostChannel(MethodChannel methodChannel, EventChannel eventChannel){
+    BoostChannel(MethodChannel methodChannel){
         mMethodChannel = methodChannel;
-        mEventChannel = eventChannel;
 
         mMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-                Object[] handlers;
-                synchronized (mMethodCallHandlers) {
-                    handlers = mMethodCallHandlers.toArray();
+
+                if (methodCall.method.equals("__event__")) {
+                    String name = methodCall.argument("name");
+                    Map args = methodCall.argument("arguments");
+
+                    Object[] listeners = null;
+                    synchronized (mEventListeners) {
+                        Set<EventListener> set = mEventListeners.get(name);
+                        if (set != null) {
+                            listeners = set.toArray();
+                        }
+                    }
+
+                    if(listeners != null) {
+                        for(Object o:listeners) {
+                            ((EventListener)o).onEvent(name,args);
+                        }
+                    }
+                }else{
+                    Object[] handlers;
+                    synchronized (mMethodCallHandlers) {
+                        handlers = mMethodCallHandlers.toArray();
+                    }
+
+                    for(Object o:handlers) {
+                        ((MethodChannel.MethodCallHandler)o).onMethodCall(methodCall,result);
+                    }
                 }
-
-                for(Object o:handlers) {
-                    ((MethodChannel.MethodCallHandler)o).onMethodCall(methodCall,result);
-                }
-            }
-        });
-
-        mEventChannel.setStreamHandler(new EventChannel.StreamHandler(){
-            @Override
-            public void onListen(Object o, EventChannel.EventSink eventSink) {
-                mEventSink = eventSink;
-            }
-
-            @Override
-            public void onCancel(Object o) {
-
             }
         });
     }
@@ -88,6 +95,10 @@ public class BoostChannel {
     }
 
     public void invokeMethod(final String name,Serializable args,MethodChannel.Result result){
+        if("__event__".equals(name)) {
+            Debuger.exception("method name should not be __event__");
+        }
+
         mMethodChannel.invokeMethod(name, args, result);
     }
 
@@ -103,11 +114,33 @@ public class BoostChannel {
         }
     }
 
-    public void sendEvent(Serializable event){
-        if(mEventSink == null) {
-            Debuger.exception("event stream not listen yet!");
+    public void addEventListener(String name, EventListener listener) {
+        synchronized (mEventListeners){
+            Set<EventListener> set = mEventListeners.get(name);
+            if(set == null) {
+                set = new HashSet<>();
+            }
+            set.add(listener);
+            mEventListeners.put(name,set);
         }
+    }
 
-        mEventSink.success(event);
+    public void removeEventListener(EventListener listener) {
+        synchronized (mEventListeners) {
+            for(Set<EventListener> set:mEventListeners.values()) {
+                set.remove(listener);
+            }
+        }
+    }
+
+    public void sendEvent(String name,Map args){
+        Map event = new HashMap();
+        event.put("name",name);
+        event.put("arguments",args);
+        mMethodChannel.invokeMethod("__event__",event);
+    }
+
+    public interface EventListener {
+        void onEvent(String name, Map args);
     }
 }

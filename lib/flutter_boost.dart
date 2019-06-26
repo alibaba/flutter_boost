@@ -24,17 +24,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/messaging/boost_message_channel.dart';
 import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_boost/container/container_manager.dart';
-import 'package:flutter_boost/router/router.dart';
 
+import 'channel/boost_channel.dart';
 import 'container/container_coordinator.dart';
 import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
 export 'container/container_manager.dart';
-import 'package:flutter/services.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
@@ -50,10 +48,7 @@ class FlutterBoost {
   final GlobalKey<ContainerManagerState> containerManagerKey =
       GlobalKey<ContainerManagerState>();
   final ObserversHolder _observersHolder = ObserversHolder();
-  final Router _router = Router();
-  final MethodChannel _methodChannel = MethodChannel('flutter_boost');
-
-  int _callbackID = 0;
+  final BoostChannel _boostChannel = BoostChannel();
 
   static FlutterBoost get singleton => _instance;
 
@@ -64,6 +59,21 @@ class FlutterBoost {
       {TransitionBuilder builder,
         PrePushRoute prePush,
         PostPushRoute postPush}) {
+
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo){
+
+        if (pageInfo == null || pageInfo.isEmpty) return;
+
+        if (pageInfo.containsKey("name") &&
+            pageInfo.containsKey("params") &&
+            pageInfo.containsKey("uniqueId")) {
+          ContainerCoordinator.singleton.nativeContainerDidShow(
+              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+        }
+      });
+    });
+
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
@@ -83,51 +93,10 @@ class FlutterBoost {
 
   ObserversHolder get observersHolder => _observersHolder;
 
-  FlutterBoost() {
-    BoostMessageChannel.methodChannel = _methodChannel;
-    _methodChannel.setMethodCallHandler((MethodCall call){
-      if(call.method == "__event__"){
-        return BoostMessageChannel.handleEventCall(call);
-      }else if(call.method == "didDisappearPageContainer"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerDidDisappear(pageName, params, uniqueId);
-      }else if(call.method == "nativeContainerDidInit"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerDidInit(pageName, params, uniqueId);
-      }else if(call.method == "didShowPageContainer"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerDidShow(pageName, params, uniqueId);
-      }else if(call.method == "willDeallocPageContainer"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerWillDealloc(pageName, params, uniqueId);
-      }else if(call.method == "willDisappearPageContainer"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerWillDisappear(pageName, params, uniqueId);
-      }else if(call.method == "willShowPageContainer"){
-        String pageName = call.arguments["pageName"];
-        Map params = call.arguments["params"];
-        String uniqueId = call.arguments["uniqueId"];
-        ContainerCoordinator.singleton
-            .nativeContainerWillShow(pageName, params, uniqueId);
-      }
-      return Future<dynamic>((){});
-    });
+  BoostChannel get channel => _boostChannel;
 
+  FlutterBoost(){
+    ContainerCoordinator(_boostChannel);
   }
 
   ///Register a default page builder.
@@ -141,94 +110,39 @@ class FlutterBoost {
   }
 
   Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
-    if(urlParams == null) {
-      urlParams = Map();
-    }
-    if(exts == null){
-      exts = Map();
-    }
-    urlParams["__calback_id__"] = _callbackID;
-    _callbackID += 2;
-    return _router.open(url,urlParams: urlParams,exts: exts);
+
+    Map<String, dynamic> properties = new Map<String, dynamic>();
+    properties["url"] = url;
+    properties["urlParams"] = urlParams;
+    properties["exts"] = exts;
+    return channel.invokeMethod<Map<dynamic, dynamic>>(
+        'openPage', properties);
   }
 
   Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
-    if(result == null) {
-      result = Map();
+
+    assert(id != null);
+
+    Map<String, dynamic> properties = new Map<String, dynamic>();
+    properties["uniqueId"] = id;
+    if (result != null) {
+      properties["result"] = result;
     }
-    if(exts == null){
-      exts = Map();
+    if (exts != null) {
+      properties["exts"] = exts;
     }
-    return _router.close(id,result: result,exts: exts);
+    return channel.invokeMethod<bool>('closePage', properties);
   }
 
-  //Listen broadcast event from native.
-  Function addEventListener(String name , EventListener listener){
-    return BoostMessageChannel.addEventListener(name, listener);
+  Future<bool> closeCurrent({Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
+    String id = containerManager?.onstageSettings?.uniqueId;
+    return close(id,result: result,exts: exts);
   }
 
-  //Send broadcast event to native.
-  void sendEvent(String name , Map arguments){
-    BoostMessageChannel.sendEvent(name, arguments);
+  Future<bool> closeByContext(BuildContext context,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
+    String id = BoostContainer.of(context)?.settings?.uniqueId;
+    return close(id,result: result,exts: exts);
   }
-
-  Future<Map<dynamic,dynamic>> openPage(String name, Map params,{bool animated}) {
-    Map<String,dynamic> exts = Map();
-    if(animated != null){
-      exts["animated"] = animated;
-    }else{
-      exts["animated"] = true;
-    }
-    return open(name,urlParams: params , exts: exts);
-  }
-
-  Future<bool> closePage(String url, String id, Map params,
-      {bool animated}) {
-
-    Map<String,dynamic> exts = Map();
-    if(animated != null){
-      exts["animated"] = animated;
-    }else{
-      exts["animated"] = true;
-    }
-
-    if(url != null){
-      exts["url"] = url;
-    }
-
-    if(params != null){
-      exts["params"] = params;
-    }
-
-    return close(id, result: {} , exts: exts);
-  }
-
-
-  //Close currentPage page.
-  Future<bool> closeCurPage(Map params) {
-    return _router.closeCurPage(params);
-  }
-
-  Future<bool> closePageForContext(BuildContext context) {
-    BoostContainerSettings settings = BoostContainer.of(context).settings;
-    return closePage(settings.name, settings.uniqueId, settings.params,
-        animated: true);
-  }
-
-  ///query current top page and show it
-  static void handleOnStartPage() async {
-    final Map<dynamic, dynamic> pageInfo =
-        await BoostMessageChannel.pageOnStart(<dynamic, dynamic>{});
-    if (pageInfo == null || pageInfo.isEmpty) return;
-
-    if (pageInfo.containsKey("name") &&
-        pageInfo.containsKey("params") &&
-        pageInfo.containsKey("uniqueId")) {
-      ContainerCoordinator.singleton.nativeContainerDidShow(
-          pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
-    }
-  }
-
 
   ///register for Container changed callbacks
   VoidCallback addContainerObserver(BoostContainerObserver observer) =>

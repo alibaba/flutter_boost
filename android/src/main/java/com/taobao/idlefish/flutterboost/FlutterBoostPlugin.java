@@ -39,7 +39,6 @@ import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
@@ -70,9 +69,8 @@ public class FlutterBoostPlugin {
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
-        final MethodChannel method = new MethodChannel(registrar.messenger(), "flutter_boost_method");
-        final EventChannel event = new EventChannel(registrar.messenger(), "flutter_boost_event");
-        singleton().registerChannel(method,event);
+        final MethodChannel method = new MethodChannel(registrar.messenger(), "flutter_boost");
+        singleton().registerChannel(method);
     }
 
     private final IPlatform mPlatform;
@@ -121,8 +119,8 @@ public class FlutterBoostPlugin {
         mStateListener = listener;
     }
 
-    private void registerChannel(MethodChannel method, EventChannel event) {
-        mBoostChannel = new BoostChannel(method,event);
+    private void registerChannel(MethodChannel method) {
+        mBoostChannel = new BoostChannel(method);
 
         mBoostChannel.addMethodCallHandler(new BoostMethodHandler());
     }
@@ -145,7 +143,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "foreground");
-                    mBoostChannel.sendEvent(map);
+                    mBoostChannel.sendEvent("lifecycle",map);
                 }
             }
             mCurrentActiveActivity = activity;
@@ -169,7 +167,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    mBoostChannel.sendEvent(map);
+                    mBoostChannel.sendEvent("lifecycle",map);
                 }
                 mCurrentActiveActivity = null;
             }
@@ -188,7 +186,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    mBoostChannel.sendEvent(map);
+                    mBoostChannel.sendEvent("lifecycle",map);
                 }
                 mCurrentActiveActivity = null;
             }
@@ -211,9 +209,11 @@ public class FlutterBoostPlugin {
                             record = mManager.getLastGenerateRecord();
                         }
 
-                        pageInfo.put("name", record.getContainer().getContainerUrl());
-                        pageInfo.put("params", record.getContainer().getContainerUrlParams());
-                        pageInfo.put("uniqueId", record.uniqueId());
+                        if(record != null) {
+                            pageInfo.put("name", record.getContainer().getContainerUrl());
+                            pageInfo.put("params", record.getContainer().getContainerUrlParams());
+                            pageInfo.put("uniqueId", record.uniqueId());
+                        }
 
                         result.success(pageInfo);
                     } catch (Throwable t) {

@@ -69,7 +69,7 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
         BoostFlutterView.Builder builder = new BoostFlutterView.Builder(getContextActivity());
 
         return builder.flutterEngine(engine)
-                .renderMode(FlutterView.RenderMode.surface)
+                .renderMode(FlutterView.RenderMode.texture)
                 .transparencyMode(FlutterView.TransparencyMode.opaque)
                 .build();
     }
