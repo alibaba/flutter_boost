@@ -29,6 +29,8 @@
 #import "BoostMessageChannel.h"
 #import "FlutterBoostPlugin_private.h"
 
+#define NSNull2Nil(_x_) if([_x_ isKindOfClass: NSNull.class]) _x_ = nil;
+
 @interface FlutterBoostPlugin()
 @end
 
@@ -53,6 +55,9 @@
         NSDictionary *exts = args[@"exts"];
         NSString *uid = args[@"uniqueId"];
         NSDictionary *resultData = args[@"result"];
+        NSNull2Nil(exts);
+        NSNull2Nil(resultData);
+        NSNull2Nil(uid);
         [[FlutterBoostPlugin sharedInstance].application close:uid
                                                         result:resultData
                                                           exts:exts
@@ -70,6 +75,9 @@
         NSString *url = args[@"url"];
         NSDictionary *urlParams = args[@"urlParams"];
         NSDictionary *exts = args[@"exts"];
+        NSNull2Nil(url);
+        NSNull2Nil(urlParams);
+        NSNull2Nil(exts);
         [[FlutterBoostPlugin sharedInstance].application open:url
                                                     urlParams:urlParams
                                                          exts:exts
@@ -85,7 +93,6 @@
         result(FlutterMethodNotImplemented);
     }
 }
-
 
 
 + (instancetype)sharedInstance
@@ -119,12 +126,12 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if([platform respondsToSelector:@selector(useBoost2)] && platform.useBoost2){
-            _factory = FLB2Factory.new;
+            self->_factory = FLB2Factory.new;
         }else{
-            _factory = FLBFactory.new;
+            self->_factory = FLBFactory.new;
         }
-        _application = [_factory createApplication:platform];
-        [_application startFlutterWithPlatform:platform
+        self->_application = [self->_factory createApplication:platform];
+        [self->_application startFlutterWithPlatform:platform
                                        onStart:callback];
     });
 }

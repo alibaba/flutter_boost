@@ -39,10 +39,6 @@ class SecondRouteWidget extends StatelessWidget {
             // Navigate back to first route when tapped.
             
             BoostContainerSettings settings = BoostContainer.of(context).settings;
-            if(settings.params.containsKey("result_id")){
-              String rid = settings.params["result_id"];
-            }
-
             FlutterBoost.singleton.close(settings.uniqueId,result: {"result":"data from second"});
           },
           child: Text('Go back with result!'),

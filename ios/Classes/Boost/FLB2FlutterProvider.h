@@ -30,7 +30,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define RELEASE_1_0 1
 
 @protocol FLB2FlutterProvider <FLBFlutterViewProvider>
 

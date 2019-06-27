@@ -21,7 +21,7 @@
     return instance;
 }
 
-// Boost 2 switch
+//AB Boost 2 switch
 - (BOOL)useBoost2
 {
     return YES;
@@ -57,7 +57,7 @@
     BOOL animated = [exts[@"animated"] boolValue];
     animated = YES;
     FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
-    if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
+    if([vc isKindOfClass:FLB2FlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];
     }else{
         [self.navigationController popViewControllerAnimated:animated];
@@ -92,9 +92,6 @@
         if(completion) completion(YES);
     }
 }
-
-
-
 
 - (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
 {

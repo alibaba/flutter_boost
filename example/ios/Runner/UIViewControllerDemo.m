@@ -25,13 +25,19 @@
 
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [DemoRouter.sharedRouter openPage:@"first" params:@{} animated:YES completion:^(BOOL f){
+    [DemoRouter.sharedRouter openPage:@"first"
+                               params:@{}
+                             animated:YES
+                           completion:^(BOOL f){
 
     }];
 }
 
 - (IBAction)present:(id)sender {
-    [DemoRouter.sharedRouter openPage:@"second" params:@{@"present":@(YES)} animated:YES completion:^(BOOL f){}];
+    [DemoRouter.sharedRouter openPage:@"second"
+                               params:@{@"present":@(YES)}
+                             animated:YES
+                           completion:^(BOOL f){}];
 //    [self dismissViewControllerAnimated:YES completion:completion];
 }
 
