@@ -30,13 +30,9 @@
 #import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
 @protocol FLBAbstractFactory <NSObject>
-
 @required
 - (id<FLBFlutterApplicationInterface>)createApplication:(id<FLB2Platform>)platform;
 - (id<FLBFlutterContainer>)createFlutterContainer;
-
 @end
-
 NS_ASSUME_NONNULL_END

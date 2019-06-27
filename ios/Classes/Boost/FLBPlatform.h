@@ -25,7 +25,6 @@
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
 @protocol FLBPlatform <NSObject>
 
 @required
@@ -39,5 +38,4 @@ NS_ASSUME_NONNULL_BEGIN
            params:(NSDictionary *)params
        completion:(void (^)(BOOL finished))completion;
 @end
-
 NS_ASSUME_NONNULL_END

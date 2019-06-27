@@ -29,15 +29,11 @@
 @class FlutterEngine;
 
 NS_ASSUME_NONNULL_BEGIN
-
-
 @protocol FLB2FlutterProvider <FLBFlutterViewProvider>
-
 @required
 - (FlutterEngine *)engine;
 - (void)atacheToViewController:(FlutterViewController *)vc;
 - (void)detach;
 - (void)prepareEngineIfNeeded;
 @end
-
 NS_ASSUME_NONNULL_END

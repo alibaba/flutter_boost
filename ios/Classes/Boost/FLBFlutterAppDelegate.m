@@ -31,5 +31,4 @@
 - (FlutterViewController*)rootFlutterViewController {
     return FlutterBoostPlugin.sharedInstance.application.flutterViewController;
 }
-
 @end

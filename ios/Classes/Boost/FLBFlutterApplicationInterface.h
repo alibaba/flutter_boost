@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 #import "FLB2Platform.h"
@@ -29,10 +28,8 @@
 #import "FLB2FlutterProvider.h"
 #import "FLBFlutterContainer.h"
 
-
 NS_ASSUME_NONNULL_BEGIN
 @protocol FLBFlutterApplicationInterface <NSObject>
-
 @property (nonatomic,strong) id<FLB2Platform> platform;
 
 - (id<FLB2FlutterProvider>)flutterProvider;
@@ -57,7 +54,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)isRunning;
 
 #pragma mark - handle messages
-
 - (void)close:(NSString *)uid
        result:(NSDictionary *)result
          exts:(NSDictionary *)exts
@@ -79,7 +75,6 @@ NS_ASSUME_NONNULL_BEGIN
                         uniqueId:(NSString *)uniqueId;
 
 @end
-
 NS_ASSUME_NONNULL_END
 
 

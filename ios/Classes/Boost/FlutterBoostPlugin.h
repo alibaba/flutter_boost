@@ -27,16 +27,17 @@
 #import "FLBTypes.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
-
-
 #pragma mark - Initializer
 + (instancetype)sharedInstance;
 
 - (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger, FlutterTextureRegistry, FlutterPluginRegistry> engine))callback;
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                           FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
 
 #pragma mark - Some properties.
 - (BOOL)isRunning;
+
 - (FlutterViewController *)currentViewController;
 
 #pragma mark - broadcast event to/from flutter
@@ -45,5 +46,4 @@
 
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name;
-
 @end

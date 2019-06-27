@@ -26,7 +26,6 @@
 #import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
 @interface FLBFlutterContainerManager : NSObject
 
 - (NSString *)peak;
@@ -35,5 +34,4 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)contains:(id<FLBFlutterContainer>)vc;
 
 @end
-
 NS_ASSUME_NONNULL_END

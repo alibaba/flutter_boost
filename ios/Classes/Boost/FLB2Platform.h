@@ -26,9 +26,7 @@
 #import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
-
 @protocol FLB2Platform <FLBPlatform>
-
 @optional
 - (BOOL)useBoost2;
 
@@ -43,5 +41,4 @@ NS_ASSUME_NONNULL_BEGIN
          exts:(NSDictionary *)exts
    completion:(void (^)(BOOL finished))completion;
 @end
-
 NS_ASSUME_NONNULL_END

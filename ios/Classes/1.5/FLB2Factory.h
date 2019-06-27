@@ -28,7 +28,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FLB2Factory : NSObject<FLBAbstractFactory>
-
 @end
 
 NS_ASSUME_NONNULL_END

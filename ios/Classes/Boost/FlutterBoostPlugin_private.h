@@ -30,13 +30,10 @@
     id<FLBFlutterApplicationInterface> _application;
     id<FLBAbstractFactory> _factory;
 }
-
-- (id<FLBFlutterApplicationInterface>)application;
-- (id<FLBAbstractFactory>)factory;
-
 @property (nonatomic,strong) FlutterMethodChannel *methodChannel;
 @property (nonatomic,copy) NSString *fPageId;
 @property (nonatomic,copy) NSString *fPagename;
 @property (nonatomic,strong) NSDictionary *fParams;
-
+- (id<FLBFlutterApplicationInterface>)application;
+- (id<FLBAbstractFactory>)factory;
 @end

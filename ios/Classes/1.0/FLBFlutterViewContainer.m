@@ -35,7 +35,6 @@
 #define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
-
 @interface FLBFlutterViewContainer  ()
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic,strong,readwrite) NSDictionary *params;
