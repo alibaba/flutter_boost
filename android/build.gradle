@@ -1,4 +1,4 @@
-group 'com.taobao.idlefish.flutterboost'
+group 'com.idlefish.flutterboost'
 version '1.0-SNAPSHOT'
 
 buildscript {
