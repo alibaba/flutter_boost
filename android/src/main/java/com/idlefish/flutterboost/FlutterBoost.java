@@ -53,7 +53,7 @@ public class FlutterBoost {
 
         if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
             sInstance.mEngineProvider
-                    .createEngine(platform.getApplication())
+                    .provideEngine(platform.getApplication())
                     .startRun(null);
         }
     }
@@ -76,7 +76,12 @@ public class FlutterBoost {
     private FlutterBoost(IPlatform platform) {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
-        mEngineProvider = new BoostEngineProvider();
+
+        IFlutterEngineProvider provider = platform.engineProvider();
+        if(provider == null) {
+            provider = new BoostEngineProvider();
+        }
+        mEngineProvider = provider;
         platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
 
         BoostChannel.addActionAfterRegistered(new BoostChannel.ActionAfterRegistered() {
@@ -120,7 +125,7 @@ public class FlutterBoost {
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             if (platform().whenEngineStart() == IPlatform.ANY_ACTIVITY_CREATED) {
                 sInstance.mEngineProvider
-                        .createEngine(activity)
+                        .provideEngine(activity)
                         .startRun(activity);
             }
         }

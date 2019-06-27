@@ -98,7 +98,7 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     }
 
     protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoost.singleton().engineProvider().createEngine(this);
+        return FlutterBoost.singleton().engineProvider().provideEngine(this);
     }
 
     protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){

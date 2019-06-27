@@ -23,13 +23,31 @@ import io.flutter.view.TextureRegistry;
 public class BoostFlutterEngine extends FlutterEngine {
     protected final Context mContext;
     protected final BoostPluginRegistry mBoostPluginRegistry;
+    protected final DartExecutor.DartEntrypoint mEntrypoint;
+    protected final String mInitRoute;
 
     protected WeakReference<Activity> mCurrentActivityRef;
 
     public BoostFlutterEngine(@NonNull Context context) {
+        this(context,null,null);
+    }
+
+    public BoostFlutterEngine(@NonNull Context context,DartExecutor.DartEntrypoint entrypoint,String initRoute) {
         super(context);
         mContext = context.getApplicationContext();
         mBoostPluginRegistry = new BoostPluginRegistry(this,context);
+
+        if(entrypoint != null) {
+            mEntrypoint = entrypoint;
+        }else{
+            mEntrypoint = defaultDartEntrypoint(context);
+        }
+
+        if(initRoute != null) {
+            mInitRoute = initRoute;
+        }else{
+            mInitRoute = defaultInitialRoute(context);
+        }
     }
 
     public void startRun(@Nullable Activity activity) {
@@ -39,13 +57,8 @@ public class BoostFlutterEngine extends FlutterEngine {
 
             Debuger.log("engine start running...");
 
-            getNavigationChannel().setInitialRoute("/");
-
-            DartExecutor.DartEntrypoint entryPoint = new DartExecutor.DartEntrypoint(
-                    mContext.getResources().getAssets(),
-                    FlutterMain.findAppBundlePath(mContext),
-                    "main");
-            getDartExecutor().executeDartEntrypoint(entryPoint);
+            getNavigationChannel().setInitialRoute(mInitRoute);
+            getDartExecutor().executeDartEntrypoint(mEntrypoint);
 
             final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
             if(stateListener != null) {
@@ -54,6 +67,17 @@ public class BoostFlutterEngine extends FlutterEngine {
 
             FlutterBoost.singleton().platform().registerPlugins(mBoostPluginRegistry);
         }
+    }
+
+    protected DartExecutor.DartEntrypoint defaultDartEntrypoint(Context context){
+        return new DartExecutor.DartEntrypoint(
+                context.getResources().getAssets(),
+                FlutterMain.findAppBundlePath(context),
+                "main");
+    }
+
+    protected String defaultInitialRoute(Context context){
+        return "/";
     }
 
     public BoostPluginRegistry getBoostPluginRegistry(){

@@ -62,7 +62,7 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     }
 
     protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoost.singleton().engineProvider().createEngine(getContext());
+        return FlutterBoost.singleton().engineProvider().provideEngine(getContext());
     }
 
     protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){

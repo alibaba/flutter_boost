@@ -63,6 +63,8 @@ public interface IPlatform {
 
     void closeContainer(IContainerRecord record, Map<String,Object> result, Map<String,Object> exts);
 
+    IFlutterEngineProvider engineProvider();
+
     /**
      * @return
      *

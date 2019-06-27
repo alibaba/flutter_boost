@@ -167,7 +167,7 @@ public class BoostFlutterView extends FrameLayout {
     }
 
     protected BoostFlutterEngine createFlutterEngine(Context context) {
-        return FlutterBoost.singleton().engineProvider().createEngine(context);
+        return FlutterBoost.singleton().engineProvider().provideEngine(context);
     }
 
     public void addFirstFrameRendered(OnFirstFrameRenderedListener listener) {

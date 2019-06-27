@@ -39,6 +39,13 @@ public interface IFlutterEngineProvider {
     BoostFlutterEngine createEngine(Context context);
 
     /**
+     * provide a flutter engine
+     * @param context
+     * @return
+     */
+    BoostFlutterEngine provideEngine(Context context);
+
+    /**
      * may return null
      * @return
      */

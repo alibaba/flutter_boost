@@ -6,6 +6,11 @@ void main() {
   runApp(MyApp());
 }
 
+void main2() {
+  print("terry run main2");
+  runApp(MyApp());
+}
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();

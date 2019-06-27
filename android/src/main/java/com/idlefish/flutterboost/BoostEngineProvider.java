@@ -35,12 +35,15 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
 
     private BoostFlutterEngine mEngine = null;
 
-    BoostEngineProvider() {
-    }
+    public BoostEngineProvider() {}
 
     @Override
     public BoostFlutterEngine createEngine(Context context) {
+        return new BoostFlutterEngine(context.getApplicationContext());
+    }
 
+    @Override
+    public BoostFlutterEngine provideEngine(Context context) {
         Utils.assertCallOnMainThread();
 
         if (mEngine == null) {
@@ -48,7 +51,7 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
             FlutterMain.ensureInitializationComplete(
                     context.getApplicationContext(), flutterShellArgs.toArray());
 
-            mEngine = new BoostFlutterEngine(context.getApplicationContext());
+            mEngine = createEngine(context.getApplicationContext());
 
             final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
             if(stateListener != null) {
