@@ -59,8 +59,6 @@
                                                     completion:^(BOOL r){
                                                         result(@(r));
                                                     }];
-    }else if([@"onFlutterPageResult" isEqualToString:call.method]){
-        //Do nothing
     }else if([@"onShownContainerChanged" isEqualToString:call.method]){
         NSString *newName = call.arguments[@"newName"];
         if(newName){
@@ -120,15 +118,14 @@
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
         if([platform respondsToSelector:@selector(useBoost2)] && platform.useBoost2){
             _factory = FLB2Factory.new;
         }else{
             _factory = FLBFactory.new;
         }
-        
         _application = [_factory createApplication:platform];
-        [_application startFlutterWithPlatform:platform onStart:callback];
+        [_application startFlutterWithPlatform:platform
+                                       onStart:callback];
     });
 }
 

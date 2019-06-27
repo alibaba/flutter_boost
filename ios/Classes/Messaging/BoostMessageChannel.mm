@@ -26,8 +26,8 @@
 #import "BoostMessageChannel.h"
 #import "FlutterBoostPlugin_private.h"
 
- 
- @implementation BoostMessageChannel
+
+@implementation BoostMessageChannel
 
 + (NSMutableDictionary *)lists{
     static NSMutableDictionary *_list = nil;
@@ -86,8 +86,6 @@
         }
     }
 }
-
-
 
  + (void)onNativePageResult:(void (^)(NSNumber *))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params
  {

@@ -29,7 +29,6 @@
 #import "FLBFlutterAppDelegate.h"
 #import "FLBFlutterViewContainer.h"
 #import "FLBPlatform.h"
-
 #import "FLB2FlutterViewContainer.h"
 #import "FLB2Platform.h"
 
