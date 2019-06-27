@@ -13,8 +13,6 @@ import java.util.Map;
 
 import io.flutter.app.FlutterApplication;
 import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.view.FlutterMain;
 
 public class MyApplication extends FlutterApplication {

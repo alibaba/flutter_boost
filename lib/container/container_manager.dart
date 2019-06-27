@@ -23,10 +23,10 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_boost/container/boost_container.dart';
-import 'package:flutter_boost/container/container_coordinator.dart';
-import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost/logger.dart';
+import 'boost_container.dart';
+import 'container_coordinator.dart';
+import '../flutter_boost.dart';
+import '../logger.dart';
 
 enum ContainerOperation { Push, Onstage, Pop, Remove }
 

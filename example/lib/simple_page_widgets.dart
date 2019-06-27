@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost2/flutter_boost.dart';
 
 class FirstRouteWidget extends StatelessWidget {
   @override
