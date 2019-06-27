@@ -136,8 +136,12 @@
          exts:(NSDictionary *)exts
    completion:(void (^)(BOOL))completion
 {
+    BOOL animated = YES;
+    if([exts[@"animated"] boolValue]){
+        animated = [exts[@"animated"] boolValue];
+    }
     [self.platform closePage:uid
-                    animated:[exts[@"animated"] boolValue]
+                    animated:animated
                       params:exts[@"params"]
                   completion:completion];
 }
@@ -148,9 +152,14 @@
        reult:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion
 {
+    
+    BOOL animated = YES;
+    if([exts[@"animated"] boolValue]){
+        animated = [exts[@"animated"] boolValue];
+    }
     [self.platform openPage:url
                      params:urlParams
-                   animated:[exts[@"animated"] boolValue]
+                   animated:animated
                  completion:completion];
 }
 
