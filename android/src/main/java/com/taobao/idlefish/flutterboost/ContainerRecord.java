@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 Alibaba Group
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -65,7 +65,7 @@ public class ContainerRecord implements IContainerRecord {
         Utils.assertCallOnMainThread();
         BoostEngineProvider.assertEngineRunning();
 
-        if(mState != STATE_UNKNOW) {
+        if (mState != STATE_UNKNOW) {
             Debuger.exception("state error");
         }
 
@@ -78,7 +78,7 @@ public class ContainerRecord implements IContainerRecord {
     public void onAppear() {
         Utils.assertCallOnMainThread();
 
-        if(mState != STATE_CREATED && mState != STATE_DISAPPEAR) {
+        if (mState != STATE_CREATED && mState != STATE_DISAPPEAR) {
             Debuger.exception("state error");
         }
 
@@ -95,7 +95,7 @@ public class ContainerRecord implements IContainerRecord {
     public void onDisappear() {
         Utils.assertCallOnMainThread();
 
-        if(mState != STATE_APPEAR) {
+        if (mState != STATE_APPEAR) {
             Debuger.exception("state error");
         }
 
@@ -112,7 +112,7 @@ public class ContainerRecord implements IContainerRecord {
     public void onDestroy() {
         Utils.assertCallOnMainThread();
 
-        if(mState != STATE_DISAPPEAR) {
+        if (mState != STATE_DISAPPEAR) {
             Debuger.exception("state error");
         }
 
@@ -120,9 +120,11 @@ public class ContainerRecord implements IContainerRecord {
 
         mProxy.destroy();
 
+        mContainer.getBoostFlutterView().onDestroy();
+
         mManager.removeRecord(this);
 
-        if(!mManager.hasContainerAppear()) {
+        if (!mManager.hasContainerAppear()) {
             mContainer.getBoostFlutterView().onPause();
             mContainer.getBoostFlutterView().onStop();
         }
@@ -132,7 +134,7 @@ public class ContainerRecord implements IContainerRecord {
     public void onBackPressed() {
         Utils.assertCallOnMainThread();
 
-        if(mState == STATE_UNKNOW || mState == STATE_DESTROYED) {
+        if (mState == STATE_UNKNOW || mState == STATE_DESTROYED) {
             Debuger.exception("state error");
         }
 
@@ -141,14 +143,14 @@ public class ContainerRecord implements IContainerRecord {
         map.put("name", mContainer.getContainerUrl());
         map.put("uniqueId", mUniqueId);
 
-        FlutterBoostPlugin.singleton().channel().sendEvent("lifecycle",map);
+        FlutterBoostPlugin.singleton().channel().sendEvent("lifecycle", map);
 
         mContainer.getBoostFlutterView().onBackPressed();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        mContainer.getBoostFlutterView().onRequestPermissionsResult(requestCode,permissions,grantResults);
+        mContainer.getBoostFlutterView().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -158,12 +160,12 @@ public class ContainerRecord implements IContainerRecord {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mContainer.getBoostFlutterView().onActivityResult(requestCode,resultCode,data);
+        mContainer.getBoostFlutterView().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onContainerResult(int requestCode, Map<String,Object> result) {
-        mManager.setContainerResult(this,requestCode,result);
+    public void onContainerResult(int requestCode, Map<String, Object> result) {
+        mManager.setContainerResult(this, requestCode, result);
     }
 
     @Override
@@ -187,7 +189,7 @@ public class ContainerRecord implements IContainerRecord {
 
         private void create() {
             if (mState == STATE_UNKNOW) {
-                invokeChannelUnsafe(
+                invokeChannelUnsafe("didInitPageContainer",
                         mContainer.getContainerUrl(),
                         mContainer.getContainerUrlParams(),
                         mUniqueId
@@ -198,7 +200,7 @@ public class ContainerRecord implements IContainerRecord {
         }
 
         private void appear() {
-            invokeChannelUnsafe(
+            invokeChannelUnsafe("didShowPageContainer",
                     mContainer.getContainerUrl(),
                     mContainer.getContainerUrlParams(),
                     mUniqueId
@@ -210,7 +212,7 @@ public class ContainerRecord implements IContainerRecord {
 
         private void disappear() {
             if (mState < STATE_DISAPPEAR) {
-                invokeChannel(
+                invokeChannel("didDisappearPageContainer",
                         mContainer.getContainerUrl(),
                         mContainer.getContainerUrlParams(),
                         mUniqueId
@@ -223,7 +225,7 @@ public class ContainerRecord implements IContainerRecord {
 
         private void destroy() {
             if (mState < STATE_DESTROYED) {
-                invokeChannel(
+                invokeChannel("willDeallocPageContainer",
                         mContainer.getContainerUrl(),
                         mContainer.getContainerUrlParams(),
                         mUniqueId
@@ -234,20 +236,20 @@ public class ContainerRecord implements IContainerRecord {
             }
         }
 
-        public void invokeChannel(String pageName, Map params, String uniqueId) {
+        public void invokeChannel(String method, String url, Map params, String uniqueId) {
             HashMap<String, Object> args = new HashMap<>();
-            args.put("pageName", pageName);
+            args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoostPlugin.singleton().channel().invokeMethod("didInitPageContainer", args);
+            FlutterBoostPlugin.singleton().channel().invokeMethod(method, args);
         }
 
-        public void invokeChannelUnsafe(String pageName, Map params, String uniqueId) {
+        public void invokeChannelUnsafe(String method, String url, Map params, String uniqueId) {
             HashMap<String, Object> args = new HashMap<>();
-            args.put("pageName", pageName);
+            args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoostPlugin.singleton().channel().invokeMethodUnsafe("didInitPageContainer", args);
+            FlutterBoostPlugin.singleton().channel().invokeMethodUnsafe(method, args);
         }
     }
 }

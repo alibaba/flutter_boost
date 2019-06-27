@@ -26,12 +26,41 @@ package com.taobao.idlefish.flutterboost;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Looper;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class Utils {
 
     public static void assertCallOnMainThread() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             Debuger.exception("must call method on main thread");
+        }
+    }
+
+    public static void saveBitmap(Bitmap bm, String filePath) {
+        File f = new File(filePath);
+
+        try {
+            if (!f.exists()) {
+                if(!f.getParentFile().exists() && !f.getParentFile().mkdirs()) {
+                    throw new Exception("mkdir except");
+                }
+
+                if(!f.createNewFile()){
+                    throw new Exception("createNewFile except");
+                }
+            }
+
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Throwable t){
+            throw new RuntimeException(t);
         }
     }
 
