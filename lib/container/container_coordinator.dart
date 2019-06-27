@@ -104,6 +104,8 @@ class ContainerCoordinator {
       Map map = event;
       final String type = map['type'];
 
+      Logger.log("onEvent $type");
+
       switch (type) {
         //Handler back key pressed event.
         case 'backPressedCallback':
@@ -141,6 +143,8 @@ class ContainerCoordinator {
   }
 
   Future<dynamic> _onMethodCall(MethodCall call) {
+    Logger.log("onMetohdCall ${call.method}");
+
     switch (call.method) {
       case "didInitPageContainer":
         {

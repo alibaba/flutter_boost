@@ -105,7 +105,7 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
         BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
 
         return builder.flutterEngine(engine)
-                .renderMode(FlutterView.RenderMode.texture)
+                .renderMode(FlutterView.RenderMode.surface)
                 .transparencyMode(isBackgroundTransparent() ?
                         FlutterView.TransparencyMode.transparent :
                         FlutterView.TransparencyMode.opaque)

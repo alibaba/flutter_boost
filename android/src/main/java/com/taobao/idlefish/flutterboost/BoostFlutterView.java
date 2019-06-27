@@ -26,10 +26,11 @@ package com.taobao.idlefish.flutterboost;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,8 @@ public class BoostFlutterView extends FrameLayout {
             new io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener() {
         @Override
         public void onFirstFrameRendered() {
+            Debuger.log("BoostFlutterView onFirstFrameRendered");
+
             if(mRenderingProgressCover != null && mRenderingProgressCover.getParent() != null) {
                 ((ViewGroup)mRenderingProgressCover.getParent()).removeView(mRenderingProgressCover);
             }
@@ -240,13 +243,18 @@ public class BoostFlutterView extends FrameLayout {
                 ((ViewGroup)mSnapshot.getParent()).removeView(mSnapshot);
             }
 
-            Debuger.log("BoostFlutterView snapshot");
+            final Bitmap bitmap = mFlutterEngine.getRenderer().getBitmap();
 
-            mSnapshot.setImageBitmap(mFlutterEngine.getRenderer().getBitmap());
-            BoostFlutterView.this.addView(mSnapshot);
+            if(bitmap != null) {
+                Debuger.log("BoostFlutterView snapshot "+bitmap.getByteCount());
+
+                //Utils.saveBitmap(bitmap,"/sdcard/idlefish/fb/ss-"+ SystemClock.uptimeMillis());
+
+                mSnapshot.setImageBitmap(bitmap);
+                BoostFlutterView.this.addView(mSnapshot);
+            }
         }
 
-        mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
         final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
         if(stateListener != null) {
             stateListener.beforeEngineDetach(mFlutterEngine,this);
@@ -259,6 +267,8 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onDestroy() {
         Debuger.log("BoostFlutterView onDestroy");
+
+        mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
         mPlatformPlugin = null;
         mFlutterEngine = null;
     }
