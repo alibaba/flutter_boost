@@ -43,8 +43,8 @@
         _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
         [_engine runWithEntrypoint:nil];
         _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
-                                                       nibName:nil
-                                                        bundle:nil];
+                                                          nibName:nil
+                                                           bundle:nil];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {
             if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {

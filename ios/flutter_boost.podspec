@@ -24,10 +24,10 @@ A new Flutter plugin make flutter better to use!
     'Classes/Boost/FLBTypes.h',
     'Classes/1.0/FLBFlutterViewContainer.h',
     'Classes/1.5/FLB2FlutterViewContainer.h'
-
+    
   s.dependency 'Flutter'
   s.libraries = 'c++'
-
+  
   s.ios.deployment_target = '8.0'
 end
 
