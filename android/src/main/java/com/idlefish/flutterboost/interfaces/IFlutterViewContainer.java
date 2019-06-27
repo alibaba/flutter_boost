@@ -21,29 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.interfaces;
+package com.idlefish.flutterboost.interfaces;
+
+import android.app.Activity;
+
+import com.idlefish.flutterboost.BoostFlutterView;
 
 import java.util.Map;
 
-public interface IContainerManager {
+/**
+ * a container which contains the flutter view
+ */
+public interface IFlutterViewContainer {
+    String RESULT_KEY = "_flutter_result_";
 
-    IOperateSyncer generateSyncer(IFlutterViewContainer container);
+    Activity getContextActivity();
 
-    void openContainer(String url,Map<String,Object> urlParams,Map<String,Object> exts,OnResult onResult);
+    /**
+     * provide a flutter view
+     * @return
+     */
+    BoostFlutterView getBoostFlutterView();
 
-    IContainerRecord closeContainer(String uniqueId,Map<String,Object> result,Map<String,Object> exts);
+    /**
+     * call to destroy the container
+     */
+    void finishContainer(Map<String,Object> result);
 
-    IContainerRecord getCurrentTopRecord();
+    /**
+     * container name
+     * @return
+     */
+    String getContainerUrl();
 
-    IContainerRecord getLastGenerateRecord();
+    /**
+     * container params
+     * @return
+     */
+    Map getContainerUrlParams();
 
-    IFlutterViewContainer findContainerById(String uniqueId);
+    /**
+     * callback when container shown
+     */
+    void onContainerShown();
 
-    void onShownContainerChanged(String oldUniqueId,String nowUniqueId);
-
-    boolean hasContainerAppear();
-
-    interface OnResult {
-        void onResult(Map<String,Object> result);
-    }
+    /**
+     * callback when container hidden
+     */
+    void onContainerHidden();
 }

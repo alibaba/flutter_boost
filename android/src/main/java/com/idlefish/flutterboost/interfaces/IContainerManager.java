@@ -21,29 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.interfaces;
+package com.idlefish.flutterboost.interfaces;
 
-import android.content.Context;
+import java.util.Map;
 
-import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
+public interface IContainerManager {
 
-import io.flutter.embedding.engine.FlutterEngine;
-/**
- * a flutter engine provider
- */
-public interface IFlutterEngineProvider {
+    IOperateSyncer generateSyncer(IFlutterViewContainer container);
 
-    /**
-     * create flutter engine, we just hold a single instance now
-     * @param context
-     * @return
-     */
-    BoostFlutterEngine createEngine(Context context);
+    void openContainer(String url,Map<String,Object> urlParams,Map<String,Object> exts,OnResult onResult);
 
-    /**
-     * may return null
-     * @return
-     */
-    BoostFlutterEngine tryGetEngine();
+    IContainerRecord closeContainer(String uniqueId,Map<String,Object> result,Map<String,Object> exts);
+
+    IContainerRecord getCurrentTopRecord();
+
+    IContainerRecord getLastGenerateRecord();
+
+    IFlutterViewContainer findContainerById(String uniqueId);
+
+    void onShownContainerChanged(String oldUniqueId,String nowUniqueId);
+
+    boolean hasContainerAppear();
+
+    interface OnResult {
+        void onResult(Map<String,Object> result);
+    }
 }

@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.content.Intent;
 
-import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -143,7 +143,7 @@ public class ContainerRecord implements IContainerRecord {
         map.put("name", mContainer.getContainerUrl());
         map.put("uniqueId", mUniqueId);
 
-        FlutterBoostPlugin.singleton().channel().sendEvent("lifecycle", map);
+        FlutterBoost.singleton().channel().sendEvent("lifecycle", map);
 
         mContainer.getBoostFlutterView().onBackPressed();
     }
@@ -241,7 +241,7 @@ public class ContainerRecord implements IContainerRecord {
             args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoostPlugin.singleton().channel().invokeMethod(method, args);
+            FlutterBoost.singleton().channel().invokeMethod(method, args);
         }
 
         public void invokeChannelUnsafe(String method, String url, Map params, String uniqueId) {
@@ -249,7 +249,7 @@ public class ContainerRecord implements IContainerRecord {
             args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoostPlugin.singleton().channel().invokeMethodUnsafe(method, args);
+            FlutterBoost.singleton().channel().invokeMethodUnsafe(method, args);
         }
     }
 }

@@ -3,13 +3,10 @@ package com.taobao.idlefish.flutterboostexample;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.taobao.idlefish.flutterboost.containers.BoostFlutterFragment;
+import com.idlefish.flutterboost.containers.BoostFlutterFragment;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class FlutterFragment extends BoostFlutterFragment {
 

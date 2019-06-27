@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.containers;
+package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,11 +40,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
-import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
+import com.idlefish.flutterboost.BoostFlutterEngine;
+import com.idlefish.flutterboost.BoostFlutterView;
+import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
 
         configureWindowForTransparency();
 
-        mSyncer = FlutterBoostPlugin.singleton().containerManager().generateSyncer(this);
+        mSyncer = FlutterBoost.singleton().containerManager().generateSyncer(this);
 
 
         mFlutterEngine = createFlutterEngine();
@@ -98,14 +98,14 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     }
 
     protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoostPlugin.singleton().engineProvider().createEngine(this);
+        return FlutterBoost.singleton().engineProvider().createEngine(this);
     }
 
     protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){
         BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
 
         return builder.flutterEngine(engine)
-                .renderMode(FlutterView.RenderMode.surface)
+                .renderMode(FlutterView.RenderMode.texture)
                 .transparencyMode(isBackgroundTransparent() ?
                         FlutterView.TransparencyMode.transparent :
                         FlutterView.TransparencyMode.opaque)

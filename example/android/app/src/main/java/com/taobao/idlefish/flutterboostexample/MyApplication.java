@@ -3,8 +3,8 @@ package com.taobao.idlefish.flutterboostexample;
 import android.app.Application;
 import android.content.Context;
 
-import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
-import com.taobao.idlefish.flutterboost.Platform;
+import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.Platform;
 
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterBoostPlugin.init(new Platform() {
+        FlutterBoost.init(new Platform() {
 
             @Override
             public Application getApplication() {

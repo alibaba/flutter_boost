@@ -21,52 +21,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.interfaces;
-
-import android.app.Activity;
-
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
-
-import java.util.Map;
+package com.idlefish.flutterboost.interfaces;
 
 /**
- * a container which contains the flutter view
+ * a container record, which use map a flutter page
  */
-public interface IFlutterViewContainer {
-    String RESULT_KEY = "_flutter_result_";
+public interface IContainerRecord extends IOperateSyncer{
+    int STATE_UNKNOW    = 0;
+    int STATE_CREATED   = 1;
+    int STATE_APPEAR    = 2;
+    int STATE_DISAPPEAR = 3;
+    int STATE_DESTROYED = 4;
 
-    Activity getContextActivity();
-
-    /**
-     * provide a flutter view
-     * @return
-     */
-    BoostFlutterView getBoostFlutterView();
-
-    /**
-     * call to destroy the container
-     */
-    void finishContainer(Map<String,Object> result);
-
-    /**
-     * container name
-     * @return
-     */
-    String getContainerUrl();
-
-    /**
-     * container params
-     * @return
-     */
-    Map getContainerUrlParams();
-
-    /**
-     * callback when container shown
-     */
-    void onContainerShown();
-
-    /**
-     * callback when container hidden
-     */
-    void onContainerHidden();
+    String uniqueId();
+    IFlutterViewContainer getContainer();
+    int getState();
 }

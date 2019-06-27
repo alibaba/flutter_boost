@@ -21,21 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
-import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
+import com.idlefish.flutterboost.interfaces.IContainerManager;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -103,9 +102,9 @@ public class FlutterViewContainerManager implements IContainerManager {
 
     @Override
     public void openContainer(String url, Map<String, Object> urlParams, Map<String, Object> exts,OnResult onResult) {
-        Context context = FlutterBoostPlugin.singleton().currentActivity();
+        Context context = FlutterBoost.singleton().currentActivity();
         if(context == null) {
-            context = FlutterBoostPlugin.singleton().platform().getApplication();
+            context = FlutterBoost.singleton().platform().getApplication();
         }
 
         int requestCode = mRequestCode.addAndGet(3);
@@ -113,7 +112,7 @@ public class FlutterViewContainerManager implements IContainerManager {
             mOnResults.put(requestCode,onResult);
         }
 
-        FlutterBoostPlugin.singleton().platform().openContainer(context,url,urlParams,requestCode,exts);
+        FlutterBoost.singleton().platform().openContainer(context,url,urlParams,requestCode,exts);
     }
 
     @Override
@@ -130,7 +129,7 @@ public class FlutterViewContainerManager implements IContainerManager {
             Debuger.exception("closeContainer can not find uniqueId:" + uniqueId);
         }
 
-        FlutterBoostPlugin.singleton().platform().closeContainer(targetRecord,result,exts);
+        FlutterBoost.singleton().platform().closeContainer(targetRecord,result,exts);
         return targetRecord;
     }
 

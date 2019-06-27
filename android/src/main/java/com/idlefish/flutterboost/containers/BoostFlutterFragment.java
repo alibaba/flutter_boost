@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.containers;
+package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -32,11 +32,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.taobao.idlefish.flutterboost.BoostFlutterEngine;
-import com.taobao.idlefish.flutterboost.BoostFlutterView;
-import com.taobao.idlefish.flutterboost.FlutterBoostPlugin;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.interfaces.IOperateSyncer;
+import com.idlefish.flutterboost.BoostFlutterEngine;
+import com.idlefish.flutterboost.BoostFlutterView;
+import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 
 import java.util.Map;
 
@@ -51,7 +51,7 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mSyncer = FlutterBoostPlugin.singleton().containerManager().generateSyncer(this);
+        mSyncer = FlutterBoost.singleton().containerManager().generateSyncer(this);
 
         mFlutterEngine = createFlutterEngine();
         mFlutterView = createFlutterView(mFlutterEngine);
@@ -62,7 +62,7 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     }
 
     protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoostPlugin.singleton().engineProvider().createEngine(getContext());
+        return FlutterBoost.singleton().engineProvider().createEngine(getContext());
     }
 
     protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){

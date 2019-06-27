@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
@@ -29,28 +29,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.taobao.idlefish.flutterboost.interfaces.IContainerManager;
-import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.idlefish.flutterboost.interfaces.IContainerManager;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+import com.idlefish.flutterboost.interfaces.IPlatform;
+import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
 
+public class FlutterBoost {
 
-public class FlutterBoostPlugin {
-
-    static FlutterBoostPlugin sInstance = null;
+    static FlutterBoost sInstance = null;
 
     public static synchronized void init(IPlatform platform) {
         if (sInstance == null) {
-            sInstance = new FlutterBoostPlugin(platform);
+            sInstance = new FlutterBoost(platform);
         }
 
         if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
@@ -60,17 +58,12 @@ public class FlutterBoostPlugin {
         }
     }
 
-    public static FlutterBoostPlugin singleton() {
+    public static FlutterBoost singleton() {
         if (sInstance == null) {
-            Debuger.exception("FlutterBoostPlugin not init yet");
+            throw new RuntimeException("FlutterBoost not init yet");
         }
 
         return sInstance;
-    }
-
-    public static void registerWith(PluginRegistry.Registrar registrar) {
-        final MethodChannel method = new MethodChannel(registrar.messenger(), "flutter_boost");
-        singleton().registerChannel(method);
     }
 
     private final IPlatform mPlatform;
@@ -79,13 +72,19 @@ public class FlutterBoostPlugin {
 
     IStateListener mStateListener;
     Activity mCurrentActiveActivity;
-    BoostChannel mBoostChannel;
 
-    private FlutterBoostPlugin(IPlatform platform) {
+    private FlutterBoost(IPlatform platform) {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
         mEngineProvider = new BoostEngineProvider();
         platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
+
+        BoostChannel.addActionAfterRegistered(new BoostChannel.ActionAfterRegistered() {
+            @Override
+            public void onChannelRegistered(BoostChannel channel) {
+                channel.addMethodCallHandler(new BoostMethodHandler());
+            }
+        });
     }
 
     public IFlutterEngineProvider engineProvider() {
@@ -101,10 +100,7 @@ public class FlutterBoostPlugin {
     }
 
     public BoostChannel channel() {
-        if(mBoostChannel == null) {
-            Debuger.exception("channel not register yet!");
-        }
-        return mBoostChannel;
+        return BoostChannel.singleton();
     }
 
     public Activity currentActivity() {
@@ -117,12 +113,6 @@ public class FlutterBoostPlugin {
 
     public void setStateListener(@Nullable IStateListener listener){
         mStateListener = listener;
-    }
-
-    private void registerChannel(MethodChannel method) {
-        mBoostChannel = new BoostChannel(method);
-
-        mBoostChannel.addMethodCallHandler(new BoostMethodHandler());
     }
 
     class ActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
@@ -143,7 +133,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "foreground");
-                    mBoostChannel.sendEvent("lifecycle",map);
+                    channel().sendEvent("lifecycle",map);
                 }
             }
             mCurrentActiveActivity = activity;
@@ -167,7 +157,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    mBoostChannel.sendEvent("lifecycle",map);
+                    channel().sendEvent("lifecycle",map);
                 }
                 mCurrentActiveActivity = null;
             }
@@ -186,7 +176,7 @@ public class FlutterBoostPlugin {
                 if (mEngineProvider.tryGetEngine() != null) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("type", "background");
-                    mBoostChannel.sendEvent("lifecycle",map);
+                    channel().sendEvent("lifecycle",map);
                 }
                 mCurrentActiveActivity = null;
             }

@@ -21,19 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.interfaces;
+package com.idlefish.flutterboost;
 
-/**
- * a container record, which use map a flutter page
- */
-public interface IContainerRecord extends IOperateSyncer{
-    int STATE_UNKNOW    = 0;
-    int STATE_CREATED   = 1;
-    int STATE_APPEAR    = 2;
-    int STATE_DISAPPEAR = 3;
-    int STATE_DESTROYED = 4;
 
-    String uniqueId();
-    IFlutterViewContainer getContainer();
-    int getState();
+import android.util.Log;
+
+public class Debuger {
+    private static final String TAG = "FlutterBoost#";
+    private static final Debuger DEBUG = new Debuger();
+
+    private Debuger(){ }
+
+    private void print(String info) {
+        if(isDebug()) {
+            Log.e(TAG, info);
+        }
+    }
+
+    public static void log(String info) {
+        DEBUG.print(info);
+    }
+
+    public static void exception(String message) {
+        if(isDebug()) {
+            throw new RuntimeException(message);
+        }else{
+            Log.e(TAG,"exception",new RuntimeException(message));
+        }
+    }
+
+    public static void exception(Throwable t) {
+        if(isDebug()) {
+            throw new RuntimeException(t);
+        }else{
+            Log.e(TAG,"exception",t);
+        }
+    }
+
+    public static boolean isDebug(){
+        try {
+            return FlutterBoost.singleton().platform().isDebug();
+        }catch (Throwable t){
+            return false;
+        }
+    }
 }

@@ -1,7 +1,7 @@
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
-import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import com.idlefish.flutterboost.interfaces.IPlatform;
 
 import java.util.Map;
 

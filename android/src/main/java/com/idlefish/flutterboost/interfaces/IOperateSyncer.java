@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboost.interfaces;
+package com.idlefish.flutterboost.interfaces;
 
 import android.content.Intent;
 

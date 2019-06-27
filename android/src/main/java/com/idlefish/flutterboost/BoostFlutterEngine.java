@@ -1,12 +1,12 @@
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.taobao.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.lang.ref.WeakReference;
 
@@ -47,12 +47,12 @@ public class BoostFlutterEngine extends FlutterEngine {
                     "main");
             getDartExecutor().executeDartEntrypoint(entryPoint);
 
-            final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
             if(stateListener != null) {
                 stateListener.onEngineStarted(this);
             }
 
-            FlutterBoostPlugin.singleton().platform().registerPlugins(mBoostPluginRegistry);
+            FlutterBoost.singleton().platform().registerPlugins(mBoostPluginRegistry);
         }
     }
 
@@ -92,13 +92,13 @@ public class BoostFlutterEngine extends FlutterEngine {
             Activity activity;
             IContainerRecord record;
 
-            record = FlutterBoostPlugin.singleton().containerManager().getCurrentTopRecord();
+            record = FlutterBoost.singleton().containerManager().getCurrentTopRecord();
             if(record == null) {
-                record = FlutterBoostPlugin.singleton().containerManager().getLastGenerateRecord();
+                record = FlutterBoost.singleton().containerManager().getLastGenerateRecord();
             }
 
             if(record == null){
-                activity = FlutterBoostPlugin.singleton().currentActivity();
+                activity = FlutterBoost.singleton().currentActivity();
             }else{
                 activity = record.getContainer().getContextActivity();
             }

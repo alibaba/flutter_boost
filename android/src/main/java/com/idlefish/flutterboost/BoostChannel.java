@@ -1,6 +1,8 @@
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.support.annotation.Nullable;
+
+import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -8,18 +10,55 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 
 public class BoostChannel {
+
+    private static BoostChannel sInstance;
 
     private final MethodChannel mMethodChannel;
     private final Set<MethodChannel.MethodCallHandler> mMethodCallHandlers = new HashSet<>();
     private final Map<String,Set<EventListener>> mEventListeners = new HashMap<>();
 
-    BoostChannel(MethodChannel methodChannel){
-        mMethodChannel = methodChannel;
+    private static final Set<ActionAfterRegistered> sActions = new HashSet<>();
+
+    public static BoostChannel singleton() {
+        if (sInstance == null) {
+            throw new RuntimeException("BoostChannel not register yet");
+        }
+
+        return sInstance;
+    }
+
+    public static void addActionAfterRegistered(ActionAfterRegistered action) {
+        if(action == null) return;
+
+        if(sInstance == null) {
+            sActions.add(action);
+        }else{
+            action.onChannelRegistered(sInstance);
+        }
+    }
+
+    public static void registerWith(PluginRegistry.Registrar registrar) {
+        sInstance = new BoostChannel(registrar);
+
+        for(ActionAfterRegistered a : sActions) {
+            a.onChannelRegistered(sInstance);
+        }
+
+        final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
+        if(stateListener != null) {
+            stateListener.onChannelRegistered(registrar,sInstance);
+        }
+
+        sActions.clear();
+    }
+
+    private BoostChannel(PluginRegistry.Registrar registrar){
+        mMethodChannel = new MethodChannel(registrar.messenger(), "flutter_boost");
 
         mMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
@@ -142,5 +181,9 @@ public class BoostChannel {
 
     public interface EventListener {
         void onEvent(String name, Map args);
+    }
+
+    public interface ActionAfterRegistered {
+        void onChannelRegistered(BoostChannel channel);
     }
 }

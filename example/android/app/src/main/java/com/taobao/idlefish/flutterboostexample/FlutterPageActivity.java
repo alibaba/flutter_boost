@@ -1,12 +1,9 @@
 package com.taobao.idlefish.flutterboostexample;
 
-import com.taobao.idlefish.flutterboost.containers.BoostFlutterActivity;
+import com.idlefish.flutterboost.containers.BoostFlutterActivity;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class FlutterPageActivity extends BoostFlutterActivity {
 
@@ -15,7 +12,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * 混合栈将会在flutter层根据这个名字，在注册的Route表中查找对应的Widget
      *
      * 在flutter层有注册函数：
-     *     FlutterBoostPlugin.singleton.registerPageBuilders({
+     *     FlutterBoost.singleton.registerPageBuilders({
      *       'first': (pageName, params, _) => FirstRouteWidget(),
      *       'second': (pageName, params, _) => SecondRouteWidget(),
      *       ...
@@ -34,7 +31,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * 该方法返回的参数将会传递给上层的flutter对应的Widget
      *
      * 在flutter层有注册函数：
-     *    FlutterBoostPlugin.singleton.registerPageBuilders({
+     *    FlutterBoost.singleton.registerPageBuilders({
      *       'first': (pageName, params, _) => FirstRouteWidget(),
      *       'second': (pageName, params, _) => SecondRouteWidget(),
      *        ...

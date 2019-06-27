@@ -21,12 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.content.Context;
 
-import com.taobao.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
+import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.view.FlutterMain;
@@ -50,7 +50,7 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
 
             mEngine = new BoostFlutterEngine(context.getApplicationContext());
 
-            final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
             if(stateListener != null) {
                 stateListener.onEngineCreated(mEngine);
             }
@@ -64,7 +64,7 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
     }
 
     public static void assertEngineRunning(){
-        final BoostFlutterEngine engine = FlutterBoostPlugin.singleton().engineProvider().tryGetEngine();
+        final BoostFlutterEngine engine = FlutterBoost.singleton().engineProvider().tryGetEngine();
         if(engine == null || !engine.isRunning()) {
             throw new RuntimeException("engine is not running yet!");
         }

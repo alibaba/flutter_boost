@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -40,7 +39,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -134,7 +133,7 @@ public class BoostFlutterView extends FrameLayout {
 
         mFlutterEngine.startRun((Activity)getContext());
 
-        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
         if(stateListener != null) {
             stateListener.onFlutterViewInited(mFlutterEngine,this);
         }
@@ -168,7 +167,7 @@ public class BoostFlutterView extends FrameLayout {
     }
 
     protected BoostFlutterEngine createFlutterEngine(Context context) {
-        return FlutterBoostPlugin.singleton().engineProvider().createEngine(context);
+        return FlutterBoost.singleton().engineProvider().createEngine(context);
     }
 
     public void addFirstFrameRendered(OnFirstFrameRenderedListener listener) {
@@ -224,7 +223,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");
-        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
         if(stateListener != null) {
             stateListener.beforeEngineAttach(mFlutterEngine,this);
         }
@@ -255,7 +254,7 @@ public class BoostFlutterView extends FrameLayout {
             }
         }
 
-        final IStateListener stateListener = FlutterBoostPlugin.sInstance.mStateListener;
+        final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
         if(stateListener != null) {
             stateListener.beforeEngineDetach(mFlutterEngine,this);
         }
@@ -269,8 +268,6 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDestroy");
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
-        mPlatformPlugin = null;
-        mFlutterEngine = null;
     }
 
     @Override

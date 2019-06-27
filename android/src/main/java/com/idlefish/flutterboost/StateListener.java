@@ -1,6 +1,8 @@
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost;
 
-import com.taobao.idlefish.flutterboost.interfaces.IStateListener;
+import com.idlefish.flutterboost.interfaces.IStateListener;
+
+import io.flutter.plugin.common.PluginRegistry;
 
 public class StateListener implements IStateListener {
     @Override
@@ -11,6 +13,11 @@ public class StateListener implements IStateListener {
     @Override
     public void onEngineStarted(BoostFlutterEngine engine) {
         Debuger.log(">>onEngineStarted");
+    }
+
+    @Override
+    public void onChannelRegistered(PluginRegistry.Registrar registrar, BoostChannel channel) {
+        Debuger.log(">>onFlutterViewInited");
     }
 
     @Override

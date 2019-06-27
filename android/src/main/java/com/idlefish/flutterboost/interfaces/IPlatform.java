@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost.interfaces;
+package com.idlefish.flutterboost.interfaces;
 
 import android.app.Application;
 import android.content.Context;

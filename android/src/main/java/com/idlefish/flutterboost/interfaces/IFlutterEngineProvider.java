@@ -21,48 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.taobao.idlefish.flutterboost;
+package com.idlefish.flutterboost.interfaces;
 
+import android.content.Context;
 
-import android.util.Log;
+import com.idlefish.flutterboost.BoostFlutterEngine;
+/**
+ * a flutter engine provider
+ */
+public interface IFlutterEngineProvider {
 
-public class Debuger {
-    private static final String TAG = "FlutterBoost#";
-    private static final Debuger DEBUG = new Debuger();
+    /**
+     * create flutter engine, we just hold a single instance now
+     * @param context
+     * @return
+     */
+    BoostFlutterEngine createEngine(Context context);
 
-    private Debuger(){ }
-
-    private void print(String info) {
-        if(isDebug()) {
-            Log.e(TAG, info);
-        }
-    }
-
-    public static void log(String info) {
-        DEBUG.print(info);
-    }
-
-    public static void exception(String message) {
-        if(isDebug()) {
-            throw new RuntimeException(message);
-        }else{
-            Log.e(TAG,"exception",new RuntimeException(message));
-        }
-    }
-
-    public static void exception(Throwable t) {
-        if(isDebug()) {
-            throw new RuntimeException(t);
-        }else{
-            Log.e(TAG,"exception",t);
-        }
-    }
-
-    public static boolean isDebug(){
-        try {
-            return FlutterBoostPlugin.singleton().platform().isDebug();
-        }catch (Throwable t){
-            return false;
-        }
-    }
+    /**
+     * may return null
+     * @return
+     */
+    BoostFlutterEngine tryGetEngine();
 }
