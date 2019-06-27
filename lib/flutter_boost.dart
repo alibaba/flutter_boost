@@ -24,8 +24,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/container/boost_container.dart';
-import 'package:flutter_boost/container/container_manager.dart';
+import 'container/boost_container.dart';
+import 'container/container_manager.dart';
 
 import 'channel/boost_channel.dart';
 import 'container/container_coordinator.dart';

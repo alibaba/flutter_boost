@@ -3,7 +3,7 @@
 //
 
 #import "GeneratedPluginRegistrant.h"
-#import <flutter_boost/BoostChannel.h>
+#import <flutter_boost2/BoostChannel.h>
 
 @implementation GeneratedPluginRegistrant
 

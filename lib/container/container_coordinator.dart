@@ -25,10 +25,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_boost/channel/boost_channel.dart';
-import 'package:flutter_boost/container/boost_container.dart';
-import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost/logger.dart';
+import '../channel/boost_channel.dart';
+import 'boost_container.dart';
+import '../flutter_boost.dart';
+import '../logger.dart';
 
 class ContainerCoordinator {
   static ContainerCoordinator get singleton => _instance;
