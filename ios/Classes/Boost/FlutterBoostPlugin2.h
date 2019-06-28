@@ -21,23 +21,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#import <Flutter/Flutter.h>
 
-#import <Foundation/Foundation.h>
+#import "FLB2Platform.h"
+#import "FLBTypes.h"
 
-@class FlutterViewController;
+@interface FlutterBoostPlugin2 : NSObject<FlutterPlugin>
+#pragma mark - Initializer
++ (instancetype)sharedInstance;
 
-NS_ASSUME_NONNULL_BEGIN
+- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                           FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
 
-#define RELEASE_1_0 0
+#pragma mark - Some properties.
+- (BOOL)isRunning;
 
-@protocol FLBFlutterViewProvider <NSObject>
+- (FlutterViewController *)currentViewController;
 
-@required
-- (FlutterViewController *)viewController;
-- (void)pause;
-- (void)resume;
-- (void)inactive;
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments;
 
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name;
 @end
-
-NS_ASSUME_NONNULL_END

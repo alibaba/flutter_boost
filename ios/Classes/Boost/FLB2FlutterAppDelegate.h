@@ -22,16 +22,12 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FLBFlutterContainer.h"
+#import <Flutter/Flutter.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLBFlutterContainerManager : NSObject
-
-- (NSString *)peak;
-- (void)addUnique:(id<FLBFlutterContainer>)vc;
-- (void)remove:(id<FLBFlutterContainer>)vc;
-- (BOOL)contains:(id<FLBFlutterContainer>)vc;
-
+@interface FLB2FlutterAppDelegate : FlutterAppDelegate
+// Returns the key window's rootViewController, if it's a FlutterViewController.
+// Otherwise, returns nil.
+- (FlutterViewController*)rootFlutterViewController;
 @end
 NS_ASSUME_NONNULL_END

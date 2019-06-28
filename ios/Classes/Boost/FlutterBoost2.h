@@ -22,21 +22,12 @@
  * THE SOFTWARE.
  */
 
-#import "FLBViewProviderFactory.h"
-#import "FLBFlutterEngineOld.h"
-#import "FLBPlatform.h"
+#ifndef FlutterBoost_h
+#define FlutterBoost_h
 
+#import "FlutterBoostPlugin2.h"
+#import "FLB2FlutterAppDelegate.h"
+#import "FLB2FlutterViewContainer.h"
+#import "FLBTypes.h"
 
-@implementation FLBViewProviderFactory
-
-- (id<FLBFlutterViewProvider>)createViewProviderWithPlatform:(id<FLBPlatform>)platform
-{
-    return [[FLBFlutterEngineOld alloc] initWithPlatform:platform];
-}
-
-- (id<FLBFlutterViewProvider>)createViewProvider
-{
-    return [FLBFlutterEngineOld new];
-}
-
-@end
+#endif /* FlutterBoost_h */

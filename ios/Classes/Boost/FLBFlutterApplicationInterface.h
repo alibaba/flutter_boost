@@ -24,7 +24,7 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 #import "FLB2Platform.h"
-#import "FlutterBoost.h"
+#import "FlutterBoost2.h"
 #import "FLB2FlutterProvider.h"
 #import "FLBFlutterContainer.h"
 

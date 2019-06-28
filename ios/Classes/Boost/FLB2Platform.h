@@ -23,13 +23,9 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@protocol FLB2Platform <FLBPlatform>
-@optional
-- (BOOL)useBoost2;
-
+@protocol FLB2Platform <NSObject>
 @required
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams

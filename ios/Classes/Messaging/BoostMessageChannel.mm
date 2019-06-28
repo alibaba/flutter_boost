@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 #import "BoostMessageChannel.h"
-#import "FlutterBoostPlugin_private.h"
+#import "FlutterBoostPlugin2_private.h"
 
 @implementation BoostMessageChannel
 
@@ -37,7 +37,7 @@
  
  + (FlutterMethodChannel *)methodChannel
  {
-     return FlutterBoostPlugin.sharedInstance.methodChannel;
+     return FlutterBoostPlugin2.sharedInstance.methodChannel;
  }
 
 + (void)sendEvent:(NSString *)eventName
@@ -162,7 +162,7 @@
          }
      }];
      
-     [FlutterBoostPlugin.sharedInstance.application didInitPageContainer:pageName
+     [FlutterBoostPlugin2.sharedInstance.application didInitPageContainer:pageName
                                                                   params:params
                                                                 uniqueId:uniqueId];
  }
@@ -179,7 +179,7 @@
          }
      }];
      
-     [FlutterBoostPlugin.sharedInstance.application willDeallocPageContainer:pageName
+     [FlutterBoostPlugin2.sharedInstance.application willDeallocPageContainer:pageName
                                                                       params:params
                                                                     uniqueId:uniqueId];
  }

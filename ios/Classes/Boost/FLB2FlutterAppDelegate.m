@@ -22,55 +22,13 @@
  * THE SOFTWARE.
  */
 
-#import "FLBFlutterContainerManager.h"
+#import "FLB2FlutterAppDelegate.h"
+#import "FlutterBoostPlugin2_private.h"
 
-@interface FLBFlutterContainerManager()
-@property (nonatomic,strong) NSMutableArray *idStk;
-@property (nonatomic,strong) NSMutableDictionary *existedID;
-@end
-
-@implementation FLBFlutterContainerManager
-
-- (instancetype)init
-{
-    if (self = [super init]) {
-        _idStk= [NSMutableArray new];
-        _existedID = [NSMutableDictionary dictionary];
-    }
-    
-    return self;
+@implementation FLB2FlutterAppDelegate
+// Returns the key window's rootViewController, if it's a FlutterViewController.
+// Otherwise, returns nil.
+- (FlutterViewController*)rootFlutterViewController {
+    return FlutterBoostPlugin2.sharedInstance.application.flutterViewController;
 }
-
-- (BOOL)contains:(id<FLBFlutterContainer>)vc
-{
-    if (vc) {
-        return _existedID[vc.uniqueIDString]?YES:NO;
-    }
-    
-    return NO;
-}
-
-- (void)addUnique:(id<FLBFlutterContainer>)vc
-{
-    if (vc) {
-        if(!_existedID[vc.uniqueIDString]){
-            [_idStk addObject:vc.uniqueIDString];
-        }
-        _existedID[vc.uniqueIDString] = vc.uniqueIDString;
-    }
-}
-
-- (void)remove:(id<FLBFlutterContainer>)vc
-{
-    if (vc) {
-        [_existedID removeObjectForKey:vc.uniqueIDString];
-        [_idStk removeObject:vc.uniqueIDString];
-    }
-}
-
-- (NSString *)peak
-{
-    return _idStk.lastObject;
-}
-
 @end

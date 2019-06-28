@@ -23,17 +23,14 @@
  */
 
 #import "FLB2FlutterApplication.h"
-#import "FlutterBoost.h"
-#import "FLBFlutterContainerManager.h"
+#import "FlutterBoost2.h"
+#import "FLB2FlutterContainerManager.h"
 #import "FLB2FlutterEngine.h"
 
 @interface FLB2FlutterApplication()
-@property (nonatomic,strong) FLBFlutterContainerManager *manager;
+@property (nonatomic,strong) FLB2FlutterContainerManager *manager;
 @property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
-
 @property (nonatomic,assign) BOOL isRunning;
-
-
 @property (nonatomic,strong) NSMutableDictionary *pageResultCallbacks;
 @property (nonatomic,strong) NSMutableDictionary *callbackCache;
 @end
@@ -76,7 +73,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _manager = [FLBFlutterContainerManager new];
+        _manager = [FLB2FlutterContainerManager new];
         _pageResultCallbacks = NSMutableDictionary.new;
         _callbackCache = NSMutableDictionary.new;
     }

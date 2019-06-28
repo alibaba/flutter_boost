@@ -22,25 +22,23 @@
  * THE SOFTWARE.
  */
 
-#import "FlutterBoostPlugin.h"
-#import "FlutterBoostPlugin_private.h"
-#import "FLBFactory.h"
+#import "FlutterBoostPlugin2.h"
+#import "FlutterBoostPlugin2_private.h"
 #import "FLB2Factory.h"
 #import "BoostMessageChannel.h"
-#import "FlutterBoostPlugin_private.h"
 
 #define NSNull2Nil(_x_) if([_x_ isKindOfClass: NSNull.class]) _x_ = nil;
 
-@interface FlutterBoostPlugin()
+@interface FlutterBoostPlugin2()
 @end
 
-@implementation FlutterBoostPlugin
+@implementation FlutterBoostPlugin2
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
     FlutterMethodChannel* channel = [FlutterMethodChannel
                                      methodChannelWithName:@"flutter_boost"
                                      binaryMessenger:[registrar messenger]];
-    FlutterBoostPlugin* instance = [self.class sharedInstance];
+    FlutterBoostPlugin2* instance = [self.class sharedInstance];
     instance.methodChannel = channel;
     [registrar addMethodCallDelegate:instance channel:channel];
 }
@@ -58,7 +56,7 @@
         NSNull2Nil(exts);
         NSNull2Nil(resultData);
         NSNull2Nil(uid);
-        [[FlutterBoostPlugin sharedInstance].application close:uid
+        [[FlutterBoostPlugin2 sharedInstance].application close:uid
                                                         result:resultData
                                                           exts:exts
                                                     completion:^(BOOL r){
@@ -78,16 +76,16 @@
         NSNull2Nil(url);
         NSNull2Nil(urlParams);
         NSNull2Nil(exts);
-        [[FlutterBoostPlugin sharedInstance].application open:url
+        [[FlutterBoostPlugin2 sharedInstance].application open:url
                                                     urlParams:urlParams
                                                          exts:exts
                                                         reult:result
                                                    completion:^(BOOL r) {}];
     }else if([@"pageOnStart" isEqualToString:call.method]){
         NSMutableDictionary *pageInfo = [NSMutableDictionary new];
-        pageInfo[@"name"] =[FlutterBoostPlugin sharedInstance].fPagename;
-        pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
-        pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
+        pageInfo[@"name"] =[FlutterBoostPlugin2 sharedInstance].fPagename;
+        pageInfo[@"params"] = [FlutterBoostPlugin2 sharedInstance].fParams;
+        pageInfo[@"uniqueId"] = [FlutterBoostPlugin2 sharedInstance].fPageId;
         if(result) result(pageInfo);
     }else{
         result(FlutterMethodNotImplemented);
@@ -125,11 +123,7 @@
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if([platform respondsToSelector:@selector(useBoost2)] && platform.useBoost2){
-            self->_factory = FLB2Factory.new;
-        }else{
-            self->_factory = FLBFactory.new;
-        }
+        self->_factory = FLB2Factory.new;
         self->_application = [self->_factory createApplication:platform];
         [self->_application startFlutterWithPlatform:platform
                                        onStart:callback];

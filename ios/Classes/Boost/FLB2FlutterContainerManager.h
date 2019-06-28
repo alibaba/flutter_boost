@@ -22,38 +22,16 @@
  * THE SOFTWARE.
  */
 
-#import "FlutterBoostConfig.h"
+#import <Foundation/Foundation.h>
+#import "FLBFlutterContainer.h"
 
-@interface FlutterBoostConfig()
-@property (nonatomic,assign) BOOL firstView;
+NS_ASSUME_NONNULL_BEGIN
+@interface FLB2FlutterContainerManager : NSObject
 
-@end
-
-@implementation FlutterBoostConfig
-
-+ (instancetype)sharedInstance
-{
-    static FlutterBoostConfig *instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [self new];
-        instance.firstView = YES;
-    });
-    
-    return instance;
-}
-
-- (void)setFPageId:(NSString *)fPageId
-{
-    _fPageId = fPageId;
-    _firstView = NO;
-}
-
-- (BOOL)firstView
-{
-    return _firstView;
-}
+- (NSString *)peak;
+- (void)addUnique:(id<FLBFlutterContainer>)vc;
+- (void)remove:(id<FLBFlutterContainer>)vc;
+- (BOOL)contains:(id<FLBFlutterContainer>)vc;
 
 @end
-
-
+NS_ASSUME_NONNULL_END
