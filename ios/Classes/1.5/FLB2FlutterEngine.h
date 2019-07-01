@@ -24,8 +24,10 @@
 
 #import <Foundation/Foundation.h>
 #import "FLB2FlutterProvider.h"
+#import "FLB2Platform.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLB2FlutterEngine : NSObject<FLB2FlutterProvider>
+- (instancetype)initWithPlatform:(id<FLB2Platform>)platform;
 @end
 NS_ASSUME_NONNULL_END

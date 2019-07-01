@@ -123,11 +123,25 @@ class FlutterBoost {
 
     assert(id != null);
 
+    BoostContainerSettings settings = containerManager?.onstageSettings;
     Map<String, dynamic> properties = new Map<String, dynamic>();
+
+    if(exts == null){
+      exts = Map<dynamic,dynamic>();
+    }
+
+    exts["params"] = settings.params;
+
+    if(!exts.containsKey("animated")){
+      exts["animated"] = true;
+    }
+
     properties["uniqueId"] = id;
+
     if (result != null) {
       properties["result"] = result;
     }
+
     if (exts != null) {
       properties["exts"] = exts;
     }
@@ -135,13 +149,27 @@ class FlutterBoost {
   }
 
   Future<bool> closeCurrent({Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
-    String id = containerManager?.onstageSettings?.uniqueId;
-    return close(id,result: result,exts: exts);
+    BoostContainerSettings settings = containerManager?.onstageSettings;
+    if(exts == null){
+      exts = Map<dynamic,dynamic>();
+    }
+    exts["params"] = settings.params;
+    if(!exts.containsKey("animated")){
+      exts["animated"] = true;
+    }
+    return close(settings.uniqueId,result: result,exts: exts);
   }
 
   Future<bool> closeByContext(BuildContext context,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
-    String id = BoostContainer.of(context)?.settings?.uniqueId;
-    return close(id,result: result,exts: exts);
+    BoostContainerSettings settings = containerManager?.onstageSettings;
+    if(exts == null){
+      exts = Map<dynamic,dynamic>();
+    }
+    exts["params"] = settings.params;
+    if(!exts.containsKey("animated")){
+      exts["animated"] = true;
+    }
+    return close(settings.uniqueId,result: result,exts: exts);
   }
 
   ///register for Container changed callbacks

@@ -64,7 +64,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = FLB2FlutterEngine.new;
+        self.viewProvider = [[FLB2FlutterEngine alloc] initWithPlatform:platform];
         self.isRunning = YES;
         if(callback) callback(self.viewProvider.engine);
     });

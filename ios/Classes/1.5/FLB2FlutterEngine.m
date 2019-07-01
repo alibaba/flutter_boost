@@ -33,15 +33,21 @@
 @end
 
 @implementation FLB2FlutterEngine
-
-- (instancetype)init
+    
+- (instancetype)initWithPlatform:(id<FLB2Platform>)platform
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     
     if (self = [super init]) {
         _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
-        [_engine runWithEntrypoint:nil];
+        if(platform &&
+           [platform respondsToSelector: @selector(entryForDart)] &&
+           platform.entryForDart){
+            [_engine runWithEntrypoint:platform.entryForDart];
+        }else{
+            [_engine runWithEntrypoint:nil];
+        }
         _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
                                                           nibName:nil
                                                            bundle:nil];
@@ -56,6 +62,11 @@
     
     return self;
 #pragma clang diagnostic pop
+}
+
+- (instancetype)init
+{
+    return [self initWithPlatform:nil];
 }
 
 - (void)pause

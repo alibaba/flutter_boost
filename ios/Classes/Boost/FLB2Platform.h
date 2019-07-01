@@ -26,6 +26,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @protocol FLB2Platform <NSObject>
+@optional
+- (NSString *)entryForDart;
+    
 @required
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams
