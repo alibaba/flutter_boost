@@ -28,6 +28,11 @@ public class MyApplication extends FlutterApplication {
             }
 
             @Override
+            public boolean isDebug() {
+                return true;
+            }
+
+            @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
                 PageRouter.openPageByUrl(context,url,urlParams,requestCode);
             }

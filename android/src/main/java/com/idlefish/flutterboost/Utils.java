@@ -38,12 +38,12 @@ public class Utils {
         }
     }
 
-    public static void saveBitmap(Bitmap bm, String filePath) {
-        File f = new File(filePath);
-
+    public static void saveBitmap(Bitmap bm,File path, String name) {
         try {
-            if (!f.exists()) {
-                if(!f.getParentFile().exists() && !f.getParentFile().mkdirs()) {
+            File f = new File(path,name);
+
+            if (!path.exists()) {
+                if(!path.mkdirs()) {
                     throw new Exception("mkdir except");
                 }
 
@@ -56,6 +56,8 @@ public class Utils {
             bm.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
+
+            Debuger.exception("saved bitmap:"+f.getAbsolutePath());
         } catch (Throwable t){
             throw new RuntimeException(t);
         }

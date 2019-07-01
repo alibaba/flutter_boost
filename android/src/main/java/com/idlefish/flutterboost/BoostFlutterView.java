@@ -29,6 +29,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
@@ -41,6 +43,7 @@ import android.widget.TextView;
 
 import com.idlefish.flutterboost.interfaces.IStateListener;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,9 +66,11 @@ public class BoostFlutterView extends FrameLayout {
 
     private final List<OnFirstFrameRenderedListener> mFirstFrameRenderedListeners = new LinkedList<>();
 
+    private boolean mEngineAttached = false;
+
     private boolean mNeedSnapshotWhenDetach = false;
 
-    private ImageView mSnapshot;
+    private SnapshotView mSnapshot;
 
     private final io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener mOnFirstFrameRenderedListener =
             new io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener() {
@@ -77,8 +82,8 @@ public class BoostFlutterView extends FrameLayout {
                 ((ViewGroup)mRenderingProgressCover.getParent()).removeView(mRenderingProgressCover);
             }
 
-            if(mNeedSnapshotWhenDetach && mSnapshot.getParent() != null) {
-                ((ViewGroup)mSnapshot.getParent()).removeView(mSnapshot);
+            if(mNeedSnapshotWhenDetach) {
+                mSnapshot.dismissSnapshot(BoostFlutterView.this);
             }
 
             final Object[] listeners = mFirstFrameRenderedListeners.toArray();
@@ -111,6 +116,8 @@ public class BoostFlutterView extends FrameLayout {
         addView(mFlutterView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        mSnapshot = new SnapshotView(getContext());
+
         if(mRenderingProgressCoverCreator != null) {
             mRenderingProgressCover = mRenderingProgressCoverCreator
                     .createRenderingProgressCover(getContext());
@@ -122,12 +129,6 @@ public class BoostFlutterView extends FrameLayout {
             addView(mRenderingProgressCover, new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         }
-
-        mSnapshot = new ImageView(getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        params.gravity = Gravity.CENTER;
-        mSnapshot.setLayoutParams(params);
 
         mFlutterView.addOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
 
@@ -228,8 +229,21 @@ public class BoostFlutterView extends FrameLayout {
             stateListener.beforeEngineAttach(mFlutterEngine,this);
         }
         mFlutterView.attachToFlutterEngine(mFlutterEngine);
+        mEngineAttached = true;
         if(stateListener != null) {
             stateListener.afterEngineAttached(mFlutterEngine,this);
+        }
+    }
+
+    public void toggleSnapshot() {
+        mSnapshot.toggleSnapshot(this);
+    }
+
+    public void toggleAttach() {
+        if(mEngineAttached) {
+            onDetach();
+        }else{
+            onAttach();
         }
     }
 
@@ -237,21 +251,7 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDetach");
 
         if(mNeedSnapshotWhenDetach) {
-
-            if(mSnapshot.getParent() != null) {
-                ((ViewGroup)mSnapshot.getParent()).removeView(mSnapshot);
-            }
-
-            final Bitmap bitmap = mFlutterEngine.getRenderer().getBitmap();
-
-            if(bitmap != null) {
-                Debuger.log("BoostFlutterView snapshot "+bitmap.getByteCount());
-
-                //Utils.saveBitmap(bitmap,"/sdcard/idlefish/fb/ss-"+ SystemClock.uptimeMillis());
-
-                mSnapshot.setImageBitmap(bitmap);
-                BoostFlutterView.this.addView(mSnapshot);
-            }
+            mSnapshot.showSnapshot(BoostFlutterView.this);
         }
 
         final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
@@ -259,6 +259,7 @@ public class BoostFlutterView extends FrameLayout {
             stateListener.beforeEngineDetach(mFlutterEngine,this);
         }
         mFlutterView.detachFromFlutterEngine();
+        mEngineAttached = false;
         if(stateListener != null) {
             stateListener.afterEngineDetached(mFlutterEngine,this);
         }
