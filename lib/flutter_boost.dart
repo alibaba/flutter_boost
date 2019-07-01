@@ -109,17 +109,17 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
+  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
 
     Map<String, dynamic> properties = new Map<String, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    return channel.invokeMethod<Map<dynamic, dynamic>>(
+    return channel.invokeMethod<Map<String,dynamic>>(
         'openPage', properties);
   }
 
-  Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
+  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
 
     assert(id != null);
 
@@ -127,7 +127,7 @@ class FlutterBoost {
     Map<String, dynamic> properties = new Map<String, dynamic>();
 
     if(exts == null){
-      exts = Map<dynamic,dynamic>();
+      exts = Map<String,dynamic>();
     }
 
     exts["params"] = settings.params;
@@ -148,10 +148,10 @@ class FlutterBoost {
     return channel.invokeMethod<bool>('closePage', properties);
   }
 
-  Future<bool> closeCurrent({Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
+  Future<bool> closeCurrent({Map<String,dynamic> result,Map<String,dynamic> exts}) {
     BoostContainerSettings settings = containerManager?.onstageSettings;
     if(exts == null){
-      exts = Map<dynamic,dynamic>();
+      exts = Map<String,dynamic>();
     }
     exts["params"] = settings.params;
     if(!exts.containsKey("animated")){
@@ -160,10 +160,10 @@ class FlutterBoost {
     return close(settings.uniqueId,result: result,exts: exts);
   }
 
-  Future<bool> closeByContext(BuildContext context,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}) {
+  Future<bool> closeByContext(BuildContext context,{Map<String,dynamic> result,Map<String,dynamic> exts}) {
     BoostContainerSettings settings = containerManager?.onstageSettings;
     if(exts == null){
-      exts = Map<dynamic,dynamic>();
+      exts = Map<String,dynamic>();
     }
     exts["params"] = settings.params;
     if(!exts.containsKey("animated")){
