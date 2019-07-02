@@ -121,8 +121,9 @@ public class FlutterViewContainerManager implements IContainerManager {
         }
 
         int requestCode = 0;
-        if (urlParams.containsKey("requestCode")) {
-            requestCode = Integer.valueOf((String)urlParams.remove("requestCode"));
+        final Object v = urlParams.remove("requestCode");
+        if(v != null) {
+            requestCode = Integer.valueOf(String.valueOf(v));
         }
 
         final String uniqueId = ContainerRecord.genUniqueId(url);
