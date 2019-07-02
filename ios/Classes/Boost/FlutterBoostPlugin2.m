@@ -26,6 +26,7 @@
 #import "FlutterBoostPlugin2_private.h"
 #import "FLB2Factory.h"
 #import "BoostMessageChannel.h"
+#import "FLBCollectionHelper.h"
 
 #define NSNull2Nil(_x_) if([_x_ isKindOfClass: NSNull.class]) _x_ = nil;
 
@@ -49,7 +50,10 @@
     } else if([@"__event__" isEqual: call.method]){
         [BoostMessageChannel handleMethodCall:call result:result];
     }else if([@"closePage" isEqualToString:call.method]){
-        NSDictionary *args = call.arguments;
+        NSDictionary *args = [FLBCollectionHelper deepCopyNSDictionary:call.arguments
+                                                                filter:^bool(id  _Nonnull value) {
+                                                    return ![value isKindOfClass:NSNull.class];
+        }];
         NSDictionary *exts = args[@"exts"];
         NSString *uid = args[@"uniqueId"];
         NSDictionary *resultData = args[@"result"];
@@ -69,7 +73,10 @@
                                                               object:newName];
         }
     }else if([@"openPage" isEqualToString:call.method]){
-        NSDictionary *args = call.arguments;
+        NSDictionary *args = [FLBCollectionHelper deepCopyNSDictionary:call.arguments
+                                                                filter:^bool(id  _Nonnull value) {
+                                                                    return ![value isKindOfClass:NSNull.class];
+                                                                }];
         NSString *url = args[@"url"];
         NSDictionary *urlParams = args[@"urlParams"];
         NSDictionary *exts = args[@"exts"];
