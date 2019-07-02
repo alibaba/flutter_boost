@@ -35,6 +35,7 @@ import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,8 +49,7 @@ public class FlutterViewContainerManager implements IContainerManager {
     private final Set<ContainerRef> mRefs = new HashSet<>();
     private final Stack<IContainerRecord> mRecordStack = new Stack<>();
 
-    private final AtomicInteger mRequestCode = new AtomicInteger(0);
-    private final SparseArray<OnResult> mOnResults = new SparseArray<>();
+    private final Map<String,OnResult> mOnResults = new HashMap<>();
 
     FlutterViewContainerManager() {}
 
@@ -86,37 +86,55 @@ public class FlutterViewContainerManager implements IContainerManager {
         mRecordMap.remove(record.getContainer());
     }
 
-    void setContainerResult(IContainerRecord record,int requestCode, Map<String,Object> result) {
+    void setContainerResult(IContainerRecord record,int requestCode, int resultCode, Map<String,Object> result) {
 
         IFlutterViewContainer target = findContainerById(record.uniqueId());
         if(target == null) {
             Debuger.exception("setContainerResult error, url="+record.getContainer().getContainerUrl());
         }
 
-        OnResult onResult = mOnResults.get(requestCode);
+        if (result == null) {
+            result = new HashMap<>();
+        }
+
+        result.put("_requestCode__",requestCode);
+        result.put("_resultCode__",resultCode);
+
+        final OnResult onResult = mOnResults.remove(record.uniqueId());
         if(onResult != null) {
             onResult.onResult(result);
         }
-        mOnResults.remove(requestCode);
     }
 
-    @Override
-    public void openContainer(String url, Map<String, Object> urlParams, Map<String, Object> exts,OnResult onResult) {
+    public IContainerRecord recordOf(IFlutterViewContainer container) {
+        return mRecordMap.get(container);
+    }
+
+    void openContainer(String url, Map<String, Object> urlParams, Map<String, Object> exts,OnResult onResult) {
         Context context = FlutterBoost.singleton().currentActivity();
         if(context == null) {
             context = FlutterBoost.singleton().platform().getApplication();
         }
 
-        int requestCode = mRequestCode.addAndGet(3);
+        if(urlParams == null) {
+            urlParams = new HashMap<>();
+        }
+
+        int requestCode = 0;
+        if (urlParams.containsKey("requestCode")) {
+            requestCode = Integer.valueOf((String)urlParams.remove("requestCode"));
+        }
+
+        final String uniqueId = ContainerRecord.genUniqueId(url);
+        urlParams.put(IContainerRecord.UNIQ_KEY,uniqueId);
         if(onResult != null) {
-            mOnResults.put(requestCode,onResult);
+            mOnResults.put(uniqueId,onResult);
         }
 
         FlutterBoost.singleton().platform().openContainer(context,url,urlParams,requestCode,exts);
     }
 
-    @Override
-    public IContainerRecord closeContainer(String uniqueId, Map<String, Object> result,Map<String,Object> exts) {
+    IContainerRecord closeContainer(String uniqueId, Map<String, Object> result,Map<String,Object> exts) {
         IContainerRecord targetRecord = null;
         for (Map.Entry<IFlutterViewContainer, IContainerRecord> entry : mRecordMap.entrySet()) {
             if (TextUtils.equals(uniqueId, entry.getValue().uniqueId())) {
@@ -170,8 +188,7 @@ public class FlutterViewContainerManager implements IContainerManager {
         return target;
     }
 
-    @Override
-    public void onShownContainerChanged(String old, String now) {
+    void onShownContainerChanged(String old, String now) {
         Utils.assertCallOnMainThread();
 
         IFlutterViewContainer oldContainer = null;
@@ -219,5 +236,9 @@ public class FlutterViewContainerManager implements IContainerManager {
             this.uniqueId = id;
             this.container = new WeakReference<>(container);
         }
+    }
+
+    interface OnResult {
+        void onResult(Map<String,Object> result);
     }
 }

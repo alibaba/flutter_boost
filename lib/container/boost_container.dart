@@ -39,9 +39,6 @@ enum ContainerLifeCycle {
 typedef void BoostContainerLifeCycleObserver(
     ContainerLifeCycle state, BoostContainerSettings settings);
 
-typedef void ResultObserver(
-    int requestCode, int responseCode, Map<dynamic, dynamic> result);
-
 class BoostContainer extends Navigator {
   final BoostContainerSettings settings;
 
@@ -116,9 +113,7 @@ class BoostContainer extends Navigator {
 }
 
 class BoostContainerState extends NavigatorState {
-  final Set<VoidCallback> _backPressedListeners = Set<VoidCallback>();
-
-  final Set<ResultObserver> _resultObservers = Set<ResultObserver>();
+  VoidCallback backPressedHandler;
 
   String get uniqueId => widget.settings.uniqueId;
 
@@ -149,6 +144,12 @@ class BoostContainerState extends NavigatorState {
   }
 
   @override
+  void initState() {
+    super.initState();
+    backPressedHandler = ()=>pop();
+  }
+
+  @override
   void didUpdateWidget(Navigator oldWidget) {
     super.didUpdateWidget(oldWidget);
     findContainerNavigatorObserver(oldWidget)?.removeBoostNavigatorObserver(
@@ -165,25 +166,7 @@ class BoostContainerState extends NavigatorState {
   void performBackPressed() {
     Logger.log('performBackPressed');
 
-    if (_backPressedListeners.isEmpty) {
-      pop();
-    } else {
-      for (VoidCallback cb in _backPressedListeners) {
-        cb();
-      }
-    }
-  }
-
-  void performOnResult(Map<dynamic, dynamic> data) {
-    Logger.log('performOnResult ${data.toString()}');
-
-    final int requestCode = data['requestCode'];
-    final int responseCode = data['responseCode'];
-    final Map result = data['result'];
-
-    for (ResultObserver observer in _resultObservers) {
-      observer(requestCode, responseCode, result);
-    }
+    backPressedHandler?.call();
   }
 
   @override
@@ -217,18 +200,6 @@ class BoostContainerState extends NavigatorState {
     }
 
     return future;
-  }
-
-  VoidCallback addBackPressedListener(VoidCallback listener) {
-    _backPressedListeners.add(listener);
-
-    return () => _backPressedListeners.remove(listener);
-  }
-
-  VoidCallback addResultObserver(ResultObserver observer) {
-    _resultObservers.add(observer);
-
-    return () => _resultObservers.remove(observer);
   }
 
   VoidCallback addLifeCycleObserver(BoostContainerLifeCycleObserver observer) {

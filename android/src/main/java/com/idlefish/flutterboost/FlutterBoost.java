@@ -67,7 +67,7 @@ public class FlutterBoost {
     }
 
     private final IPlatform mPlatform;
-    private final IContainerManager mManager;
+    private final FlutterViewContainerManager mManager;
     private final IFlutterEngineProvider mEngineProvider;
 
     IStateListener mStateListener;
@@ -223,7 +223,7 @@ public class FlutterBoost {
                         Map<String,Object> exts = methodCall.argument("exts");
                         String url = methodCall.argument("url");
 
-                        mManager.openContainer(url, params, exts, new IContainerManager.OnResult() {
+                        mManager.openContainer(url, params, exts, new FlutterViewContainerManager.OnResult() {
                             @Override
                             public void onResult(Map<String, Object> rlt) {
                                 if (result != null) {
@@ -232,7 +232,7 @@ public class FlutterBoost {
                             }
                         });
                     }catch (Throwable t){
-
+                        result.error("open page error",t.getMessage(),t);
                     }
                 }
                 break;

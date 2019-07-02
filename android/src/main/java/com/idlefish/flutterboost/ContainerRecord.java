@@ -40,7 +40,13 @@ public class ContainerRecord implements IContainerRecord {
     private MethodChannelProxy mProxy = new MethodChannelProxy();
 
     ContainerRecord(FlutterViewContainerManager manager, IFlutterViewContainer container) {
-        mUniqueId = System.currentTimeMillis() + "-" + hashCode();
+        final Map params = container.getContainerUrlParams();
+        if(params != null && params.containsKey(IContainerRecord.UNIQ_KEY)) {
+            mUniqueId = String.valueOf(params.get(IContainerRecord.UNIQ_KEY));
+        }else{
+            mUniqueId = genUniqueId(this);
+        }
+
         mManager = manager;
         mContainer = container;
     }
@@ -124,6 +130,8 @@ public class ContainerRecord implements IContainerRecord {
 
         mManager.removeRecord(this);
 
+        mManager.setContainerResult(this,-1,-1,null);
+
         if (!mManager.hasContainerAppear()) {
             mContainer.getBoostFlutterView().onPause();
             mContainer.getBoostFlutterView().onStop();
@@ -164,8 +172,8 @@ public class ContainerRecord implements IContainerRecord {
     }
 
     @Override
-    public void onContainerResult(int requestCode, Map<String, Object> result) {
-        mManager.setContainerResult(this, requestCode, result);
+    public void onContainerResult(int requestCode, int resultCode, Map<String, Object> result) {
+        mManager.setContainerResult(this, requestCode,resultCode, result);
     }
 
     @Override
@@ -251,5 +259,9 @@ public class ContainerRecord implements IContainerRecord {
             args.put("uniqueId", uniqueId);
             FlutterBoost.singleton().channel().invokeMethodUnsafe(method, args);
         }
+    }
+
+    public static String genUniqueId(Object obj) {
+        return System.currentTimeMillis() + "-" + obj.hashCode();
     }
 }

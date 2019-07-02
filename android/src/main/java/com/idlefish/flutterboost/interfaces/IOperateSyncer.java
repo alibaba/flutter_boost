@@ -22,7 +22,7 @@ public interface IOperateSyncer {
 
     void onActivityResult(int requestCode, int resultCode, Intent data);
 
-    void onContainerResult(int requestCode, Map<String,Object> result);
+    void onContainerResult(int requestCode, int resultCode, Map<String,Object> result);
 
     void onUserLeaveHint();
 

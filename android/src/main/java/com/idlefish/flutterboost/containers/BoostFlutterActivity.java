@@ -191,7 +191,7 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
             }
         }
 
-        mSyncer.onContainerResult(requestCode,result);
+        mSyncer.onContainerResult(requestCode,resultCode,result);
     }
 
     @Override
@@ -230,11 +230,11 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
 
     @Override
     public void finishContainer(Map<String,Object> result) {
-        Intent intent = new Intent();
-        if (result != null) {
-            intent.putExtra(RESULT_KEY, new HashMap<>(result));
+        if(result != null) {
+            FlutterBoost.setBoostResult(this,new HashMap<>(result));
+        }else{
+            finish();
         }
-        setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

@@ -27,6 +27,9 @@ package com.idlefish.flutterboost.interfaces;
  * a container record, which use map a flutter page
  */
 public interface IContainerRecord extends IOperateSyncer{
+
+    String UNIQ_KEY = "__container_uniqueId_key__";
+
     int STATE_UNKNOW    = 0;
     int STATE_CREATED   = 1;
     int STATE_APPEAR    = 2;

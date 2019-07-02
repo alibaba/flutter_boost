@@ -23,15 +23,9 @@
  */
 package com.idlefish.flutterboost.interfaces;
 
-import java.util.Map;
-
 public interface IContainerManager {
 
     IOperateSyncer generateSyncer(IFlutterViewContainer container);
-
-    void openContainer(String url,Map<String,Object> urlParams,Map<String,Object> exts,OnResult onResult);
-
-    IContainerRecord closeContainer(String uniqueId,Map<String,Object> result,Map<String,Object> exts);
 
     IContainerRecord getCurrentTopRecord();
 
@@ -39,11 +33,5 @@ public interface IContainerManager {
 
     IFlutterViewContainer findContainerById(String uniqueId);
 
-    void onShownContainerChanged(String oldUniqueId,String nowUniqueId);
-
     boolean hasContainerAppear();
-
-    interface OnResult {
-        void onResult(Map<String,Object> result);
-    }
 }

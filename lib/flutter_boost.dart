@@ -37,10 +37,10 @@ export 'container/container_manager.dart';
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
 typedef Route PrePushRoute(
-    String pageName, String uniqueId, Map params, Route route);
+    String url, String uniqueId, Map params, Route route);
 
 typedef void PostPushRoute(
-    String pageName, String uniqueId, Map params, Route route, Future result);
+    String url, String uniqueId, Map params, Route route, Future result);
 
 class FlutterBoost {
 
