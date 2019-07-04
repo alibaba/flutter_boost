@@ -8,16 +8,16 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - flutter_boost (from `/Users/zhongchengguo/Desktop/flutter_boost/ios`)
-  - xservice_kit (from `/Users/zhongchengguo/.pub-cache/hosted/pub.flutter-io.cn/xservice_kit-0.0.29/ios`)
+  - flutter_boost (from `/Users/jidong/Documents/projects/Flutter/flutter_boost/ios`)
+  - xservice_kit (from `/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.29/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_boost:
-    :path: "/Users/zhongchengguo/Desktop/flutter_boost/ios"
+    :path: "/Users/jidong/Documents/projects/Flutter/flutter_boost/ios"
   xservice_kit:
-    :path: "/Users/zhongchengguo/.pub-cache/hosted/pub.flutter-io.cn/xservice_kit-0.0.29/ios"
+    :path: "/Users/jidong/.pub-cache/hosted/pub.dartlang.org/xservice_kit-0.0.29/ios"
 
 SPEC CHECKSUMS:
   Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296

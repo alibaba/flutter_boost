@@ -26,7 +26,7 @@
  
 #import <xservice_kit/ServiceGateway.h>
 #import "NavigationService_pageOnStart.h"
- #import "FLBFlutterApplication.h"
+#import "FLBFlutterApplication.h"
 #import "FlutterBoostConfig.h"
 
  @implementation NavigationService_pageOnStart
