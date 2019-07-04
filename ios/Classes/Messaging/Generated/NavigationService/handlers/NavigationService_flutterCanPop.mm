@@ -6,7 +6,7 @@
 //
 
 #import "NavigationService_flutterCanPop.h"
-#import "ServiceGateway.h"
+#import <xservice_kit/ServiceGateway.h>
 #import "FLBFlutterApplication.h"
 #import "FlutterBoostConfig.h"
 
