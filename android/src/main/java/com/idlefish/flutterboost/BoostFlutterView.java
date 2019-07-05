@@ -26,24 +26,20 @@ package com.idlefish.flutterboost;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.SystemClock;
 import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.idlefish.flutterboost.interfaces.IStateListener;
 
-import java.io.File;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -137,6 +133,19 @@ public class BoostFlutterView extends FrameLayout {
         final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
         if(stateListener != null) {
             stateListener.onFlutterViewInited(mFlutterEngine,this);
+        }
+
+        checkAssert();
+    }
+
+    private void checkAssert(){
+        try {
+            Method method = FlutterView.class.getDeclaredMethod("sendViewportMetricsToFlutter");
+            if(method == null) {
+                throw new Exception("method: FlutterView.sendViewportMetricsToFlutter not found!");
+            }
+        }catch (Throwable t){
+            Debuger.exception(t);
         }
     }
 

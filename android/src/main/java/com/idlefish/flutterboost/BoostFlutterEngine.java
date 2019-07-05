@@ -2,17 +2,24 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Surface;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
 
 import io.flutter.app.FlutterPluginRegistry;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.embedding.engine.renderer.FlutterRenderer;
+import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformViewRegistry;
@@ -26,28 +33,41 @@ public class BoostFlutterEngine extends FlutterEngine {
     protected final DartExecutor.DartEntrypoint mEntrypoint;
     protected final String mInitRoute;
 
+    private final FakeRender mFakeRender;
+
     protected WeakReference<Activity> mCurrentActivityRef;
 
     public BoostFlutterEngine(@NonNull Context context) {
-        this(context,null,null);
+        this(context, null, null);
     }
 
-    public BoostFlutterEngine(@NonNull Context context,DartExecutor.DartEntrypoint entrypoint,String initRoute) {
+    public BoostFlutterEngine(@NonNull Context context, DartExecutor.DartEntrypoint entrypoint, String initRoute) {
         super(context);
         mContext = context.getApplicationContext();
-        mBoostPluginRegistry = new BoostPluginRegistry(this,context);
+        mBoostPluginRegistry = new BoostPluginRegistry(this, context);
 
-        if(entrypoint != null) {
+        if (entrypoint != null) {
             mEntrypoint = entrypoint;
-        }else{
+        } else {
             mEntrypoint = defaultDartEntrypoint(context);
         }
 
-        if(initRoute != null) {
+        if (initRoute != null) {
             mInitRoute = initRoute;
-        }else{
+        } else {
             mInitRoute = defaultInitialRoute(context);
         }
+
+        FlutterJNI flutterJNI = null;
+        try {
+            Field field = FlutterEngine.class.getDeclaredField("flutterJNI");
+            field.setAccessible(true);
+
+            flutterJNI = (FlutterJNI) field.get(this);
+        } catch (Throwable t) {
+            Debuger.exception(t);
+        }
+        mFakeRender = new FakeRender(flutterJNI);
     }
 
     public void startRun(@Nullable Activity activity) {
@@ -61,7 +81,7 @@ public class BoostFlutterEngine extends FlutterEngine {
             getDartExecutor().executeDartEntrypoint(mEntrypoint);
 
             final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
-            if(stateListener != null) {
+            if (stateListener != null) {
                 stateListener.onEngineStarted(this);
             }
 
@@ -69,23 +89,43 @@ public class BoostFlutterEngine extends FlutterEngine {
         }
     }
 
-    protected DartExecutor.DartEntrypoint defaultDartEntrypoint(Context context){
+    protected DartExecutor.DartEntrypoint defaultDartEntrypoint(Context context) {
         return new DartExecutor.DartEntrypoint(
                 context.getResources().getAssets(),
                 FlutterMain.findAppBundlePath(context),
                 "main");
     }
 
-    protected String defaultInitialRoute(Context context){
+    protected String defaultInitialRoute(Context context) {
         return "/";
     }
 
-    public BoostPluginRegistry getBoostPluginRegistry(){
+    public BoostPluginRegistry getBoostPluginRegistry() {
         return mBoostPluginRegistry;
     }
 
-    public boolean isRunning(){
+    public boolean isRunning() {
         return getDartExecutor().isExecutingDart();
+    }
+
+    @NonNull
+    @Override
+    public FlutterRenderer getRenderer() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+
+        boolean hit = false;
+        for (StackTraceElement st : stackTrace) {
+            if (st.getMethodName().equals("sendViewportMetricsToFlutter")) {
+                hit = true;
+                break;
+            }
+        }
+
+        if (hit) {
+            return mFakeRender;
+        } else {
+            return super.getRenderer();
+        }
     }
 
     public class BoostPluginRegistry extends FlutterPluginRegistry {
@@ -97,7 +137,7 @@ public class BoostFlutterEngine extends FlutterEngine {
         }
 
         public PluginRegistry.Registrar registrarFor(String pluginKey) {
-            return new BoostRegistrar(mEngine,super.registrarFor(pluginKey));
+            return new BoostRegistrar(mEngine, super.registrarFor(pluginKey));
         }
     }
 
@@ -117,21 +157,21 @@ public class BoostFlutterEngine extends FlutterEngine {
             IContainerRecord record;
 
             record = FlutterBoost.singleton().containerManager().getCurrentTopRecord();
-            if(record == null) {
+            if (record == null) {
                 record = FlutterBoost.singleton().containerManager().getLastGenerateRecord();
             }
 
-            if(record == null){
+            if (record == null) {
                 activity = FlutterBoost.singleton().currentActivity();
-            }else{
+            } else {
                 activity = record.getContainer().getContextActivity();
             }
 
-            if(activity == null && mCurrentActivityRef != null) {
+            if (activity == null && mCurrentActivityRef != null) {
                 activity = mCurrentActivityRef.get();
             }
 
-            if(activity == null) {
+            if (activity == null) {
                 throw new RuntimeException("current has no valid Activity yet");
             }
 
@@ -175,7 +215,7 @@ public class BoostFlutterEngine extends FlutterEngine {
 
         @Override
         public String lookupKeyForAsset(String s, String s1) {
-            return mRegistrar.lookupKeyForAsset(s,s1);
+            return mRegistrar.lookupKeyForAsset(s, s1);
         }
 
         @Override
@@ -206,6 +246,112 @@ public class BoostFlutterEngine extends FlutterEngine {
         @Override
         public PluginRegistry.Registrar addViewDestroyListener(PluginRegistry.ViewDestroyListener viewDestroyListener) {
             return mRegistrar.addViewDestroyListener(viewDestroyListener);
+        }
+    }
+
+    private boolean viewportMetricsEqual(FlutterRenderer.ViewportMetrics a, FlutterRenderer.ViewportMetrics b) {
+        return a != null && b != null &&
+                a.height == b.height &&
+                a.width == b.width &&
+                a.devicePixelRatio == b.devicePixelRatio &&
+                a.paddingBottom == b.paddingBottom &&
+                a.paddingLeft == b.paddingLeft &&
+                a.paddingRight == b.paddingRight &&
+                a.paddingTop == b.paddingTop &&
+                a.viewInsetLeft == b.viewInsetLeft &&
+                a.viewInsetRight == b.viewInsetRight &&
+                a.viewInsetTop == b.viewInsetTop &&
+                a.viewInsetBottom == b.viewInsetBottom;
+    }
+
+    class FakeRender extends FlutterRenderer {
+
+        private ViewportMetrics last;
+
+        public FakeRender(FlutterJNI flutterJNI) {
+            super(flutterJNI);
+        }
+
+        @Override
+        public void setViewportMetrics(@NonNull ViewportMetrics viewportMetrics) {
+            if (viewportMetrics.width > 0 && viewportMetrics.height > 0 && !viewportMetricsEqual(last, viewportMetrics)) {
+                last = viewportMetrics;
+                Debuger.log("setViewportMetrics w:" + viewportMetrics.width + " h:" + viewportMetrics.height);
+                super.setViewportMetrics(viewportMetrics);
+            }
+        }
+
+        @Override
+        public void attachToRenderSurface(@NonNull RenderSurface renderSurface) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void detachFromRenderSurface() {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void addOnFirstFrameRenderedListener(@NonNull OnFirstFrameRenderedListener listener) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void removeOnFirstFrameRenderedListener(@NonNull OnFirstFrameRenderedListener listener) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public SurfaceTextureEntry createSurfaceTexture() {
+            Debuger.exception("should never called!");
+            return null;
+        }
+
+        @Override
+        public void surfaceCreated(Surface surface) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void surfaceChanged(int width, int height) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void surfaceDestroyed() {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public Bitmap getBitmap() {
+            Debuger.exception("should never called!");
+            return null;
+        }
+
+        @Override
+        public void dispatchPointerDataPacket(ByteBuffer buffer, int position) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public boolean isSoftwareRenderingEnabled() {
+            Debuger.exception("should never called!");
+            return false;
+        }
+
+        @Override
+        public void setAccessibilityFeatures(int flags) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void setSemanticsEnabled(boolean enabled) {
+            Debuger.exception("should never called!");
+        }
+
+        @Override
+        public void dispatchSemanticsAction(int id, int action, ByteBuffer args, int argsPosition) {
+            Debuger.exception("should never called!");
         }
     }
 }

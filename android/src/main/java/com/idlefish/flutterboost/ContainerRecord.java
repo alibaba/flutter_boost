@@ -108,6 +108,9 @@ public class ContainerRecord implements IContainerRecord {
         mState = STATE_DISAPPEAR;
 
         mProxy.disappear();
+        if(getContainer().getContextActivity().isFinishing()) {
+            mProxy.destroy();
+        }
 
         mContainer.getBoostFlutterView().onDetach();
 
