@@ -30,6 +30,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +45,7 @@ import android.widget.TextView;
 import com.idlefish.flutterboost.BoostFlutterEngine;
 import com.idlefish.flutterboost.BoostFlutterView;
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 
@@ -58,6 +61,8 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     protected BoostFlutterEngine mFlutterEngine;
     protected BoostFlutterView mFlutterView;
     protected IOperateSyncer mSyncer;
+
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +83,17 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
         configureStatusBarForFullscreenFlutterExperience();
     }
 
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                configureStatusBarForFullscreenFlutterExperience();
+            }
+        });
+    }
+
     protected void configureWindowForTransparency() {
         if (isBackgroundTransparent()) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -95,6 +111,8 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
             window.setStatusBarColor(0x40000000);
             window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI);
         }
+
+        Utils.setStatusBarLightMode(this,true);
     }
 
     protected BoostFlutterEngine createFlutterEngine(){

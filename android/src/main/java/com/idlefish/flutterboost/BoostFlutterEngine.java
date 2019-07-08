@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Surface;
+import android.view.View;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.idlefish.flutterboost.interfaces.IStateListener;
@@ -86,6 +87,32 @@ public class BoostFlutterEngine extends FlutterEngine {
             }
 
             FlutterBoost.singleton().platform().registerPlugins(mBoostPluginRegistry);
+
+            if(activity != null) {
+                FlutterRenderer.ViewportMetrics metrics = new FlutterRenderer.ViewportMetrics();
+                metrics.devicePixelRatio = activity.getResources().getDisplayMetrics().density;
+                final View decor = activity.getWindow().getDecorView();
+                if(decor != null) {
+                    metrics.width = decor.getWidth();
+                    metrics.height = decor.getHeight();
+                }
+
+                if (metrics.width <= 0 || metrics.height <= 0) {
+                    metrics.width = Utils.getMetricsWidth(activity);
+                    metrics.height = Utils.getMetricsHeight(activity);
+                }
+
+                metrics.paddingTop = Utils.getStatusBarHeight(activity);
+                metrics.paddingRight = 0;
+                metrics.paddingBottom = 0;
+                metrics.paddingLeft = 0;
+                metrics.viewInsetTop = 0;
+                metrics.viewInsetRight = 0;
+                metrics.viewInsetBottom = 0;
+                metrics.viewInsetLeft = 0;
+
+                getRenderer().setViewportMetrics(metrics);
+            }
         }
     }
 
