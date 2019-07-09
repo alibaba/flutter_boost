@@ -49,9 +49,11 @@ public class BoostChannel {
             a.onChannelRegistered(sInstance);
         }
 
-        final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
-        if(stateListener != null) {
-            stateListener.onChannelRegistered(registrar,sInstance);
+        if(FlutterBoost.sInstance != null) {
+            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
+            if (stateListener != null) {
+                stateListener.onChannelRegistered(registrar, sInstance);
+            }
         }
 
         sActions.clear();
