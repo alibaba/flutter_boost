@@ -66,7 +66,22 @@ public class BoostFlutterEngine extends FlutterEngine {
 
             flutterJNI = (FlutterJNI) field.get(this);
         } catch (Throwable t) {
-            Debuger.exception(t);
+            try {
+                for(Field field:FlutterEngine.class.getDeclaredFields()) {
+                    field.setAccessible(true);
+                    Object o = field.get(this);
+
+                    if(o instanceof FlutterJNI) {
+                        flutterJNI = (FlutterJNI)o;
+                    }
+                }
+
+                if(flutterJNI == null) {
+                    throw new RuntimeException("FlutterJNI not found");
+                }
+            }catch (Throwable it){
+                Debuger.exception(it);
+            }
         }
         mFakeRender = new FakeRender(flutterJNI);
     }
