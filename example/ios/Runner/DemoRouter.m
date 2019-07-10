@@ -7,7 +7,7 @@
 //
 
 #import "DemoRouter.h"
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost2/FlutterBoost2.h>
 
 @implementation DemoRouter
 
@@ -56,7 +56,7 @@
 {
     BOOL animated = [exts[@"animated"] boolValue];
     animated = YES;
-    FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
+    FLB2FlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     if([vc isKindOfClass:FLB2FlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];
     }else{
@@ -80,13 +80,13 @@
     }
     
     if([params[@"present"] boolValue]){
-        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
+        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
         [vc setName:name params:params];
         [self.navigationController presentViewController:vc animated:animated completion:^{
             if(completion) completion(YES);
         }];
     }else{
-        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
+        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
         [vc setName:name params:params];
         [self.navigationController pushViewController:vc animated:animated];
         if(completion) completion(YES);
@@ -103,8 +103,8 @@
         return;
     }
     
-    FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
-    if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
+    FLB2FlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
+    if([vc isKindOfClass:FLB2FlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];
     }else{
         [self.navigationController popViewControllerAnimated:animated];

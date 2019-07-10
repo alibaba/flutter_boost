@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost2/FlutterBoost2.h>
 
-@interface AppDelegate : FLBFlutterAppDelegate <UIApplicationDelegate>
+@interface AppDelegate : FLB2FlutterAppDelegate <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

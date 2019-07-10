@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost2/FlutterBoost2.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
