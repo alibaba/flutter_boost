@@ -286,14 +286,14 @@ public class BoostFlutterView extends FrameLayout {
         onDetach();
     }
 
+    //混合栈的返回和原来Flutter的返回逻辑不同
     public void onBackPressed() {
-        Debuger.log("onBackPressed()");
-        if (mFlutterEngine != null) {
-            mFlutterEngine.getNavigationChannel().popRoute();
-        } else {
-            Debuger.log("Invoked onBackPressed() before BoostFlutterView was attached to an Activity.");
-        }
-
+//        Debuger.log("onBackPressed()");
+//        if (mFlutterEngine != null) {
+//            mFlutterEngine.getNavigationChannel().popRoute();
+//        } else {
+//            Debuger.log("Invoked onBackPressed() before BoostFlutterView was attached to an Activity.");
+//        }
     }
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
