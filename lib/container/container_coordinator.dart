@@ -22,8 +22,10 @@
  * THE SOFTWARE.
  */
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import '../channel/boost_channel.dart';
 import 'boost_container.dart';
@@ -44,13 +46,9 @@ class ContainerCoordinator {
     _instance = this;
 
     channel.addEventListener("lifecycle",
-        (String name, Map arguments) {
-      _onChannelEvent(arguments);
-    });
+        (String name, Map arguments) => _onChannelEvent(arguments));
 
-    channel.addMethodHandler((MethodCall call) {
-      return _onMethodCall(call);
-    });
+    channel.addMethodHandler((MethodCall call) => _onMethodCall(call));
   }
 
   BoostContainerSettings _createContainerSettings(
@@ -214,6 +212,19 @@ class ContainerCoordinator {
   bool nativeContainerDidShow(String name, Map params, String pageId) {
     FlutterBoost.containerManager
         ?.showContainer(_createContainerSettings(name, params, pageId));
+
+    //在Android上对无障碍辅助模式的兼容
+    if (Platform.isAndroid) {
+      try {
+        final SemanticsOwner owner =
+            WidgetsBinding.instance.pipelineOwner.semanticsOwner;
+        final SemanticsNode root = owner.rootSemanticsNode;
+        root?.detach();
+        root?.attach(owner);
+      } catch (e) {
+        assert(false, e.toString());
+      }
+    }
 
     performContainerLifeCycle(_createContainerSettings(name, params, pageId),
         ContainerLifeCycle.Appear);

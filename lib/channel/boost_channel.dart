@@ -51,6 +51,8 @@ class BoostChannel {
           handler(call);
         }
       }
+
+      return Future.value();
     });
   }
 
