@@ -71,18 +71,21 @@
 
 - (void)pause
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.pause"];
+    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
+    [self detach];
 }
 
 - (void)resume
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resume"];
+    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    [(FLB2FlutterViewContainer *)_engine.viewController surfaceUpdated:YES];
 }
 
 - (void)inactive
 {
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
 }
+
 
 
 - (FlutterEngine *)engine

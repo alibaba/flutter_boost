@@ -83,7 +83,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter++;
     if(kInstanceCounter == 1){
-//        [FLUTTER_APP resume];
+        [FLUTTER_APP resume];
     }
 }
 
@@ -91,7 +91,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
-//        [FLUTTER_APP pause];
+        [FLUTTER_APP pause];
     }
 }
 
@@ -165,7 +165,6 @@ static NSUInteger kInstanceCounter = 0;
   
     [FLUTTER_APP resume];
     
-    [self surfaceUpdated:YES];
     //For new page we should attach flutter view in view will appear
     //for better performance.
  
@@ -189,7 +188,8 @@ static NSUInteger kInstanceCounter = 0;
     
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
-    [self surfaceUpdated:YES];
+    [FLUTTER_APP resume];
+ 
     [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
@@ -210,12 +210,14 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [self detatchFlutterEngine];
+    [super viewDidDisappear:animated];
+    
+    [FLUTTER_APP resume];
+    
     [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-    [super viewDidDisappear:animated];
 }
 
 - (void)installSplashScreenViewIfNecessary {
