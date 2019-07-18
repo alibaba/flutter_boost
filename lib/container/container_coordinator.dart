@@ -217,8 +217,8 @@ class ContainerCoordinator {
     if (Platform.isAndroid) {
       try {
         final SemanticsOwner owner =
-            WidgetsBinding.instance.pipelineOwner.semanticsOwner;
-        final SemanticsNode root = owner.rootSemanticsNode;
+            WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+        final SemanticsNode root = owner?.rootSemanticsNode;
         root?.detach();
         root?.attach(owner);
       } catch (e) {

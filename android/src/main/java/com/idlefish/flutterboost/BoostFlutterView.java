@@ -284,7 +284,7 @@ public class BoostFlutterView extends FrameLayout {
         if(stateListener != null) {
             stateListener.beforeEngineDetach(mFlutterEngine,this);
         }
-        mFlutterView.detachFromFlutterEngine();
+        //mFlutterView.detachFromFlutterEngine();
         mEngineAttached = false;
         if(stateListener != null) {
             stateListener.afterEngineDetached(mFlutterEngine,this);
