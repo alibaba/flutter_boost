@@ -42,6 +42,8 @@
     
     tabVC.viewControllers = @[vc,fvc];
     
+    self.window.rootViewController = rvc;
+    
     
     [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
                                                         onStart:^(FlutterViewController *fvc) {
@@ -49,7 +51,7 @@
                                                         }];
     
     
-    self.window.rootViewController = rvc;
+    
     
     UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 50, 200, 100, 45);
