@@ -316,7 +316,7 @@ public class BoostFlutterEngine extends FlutterEngine {
 
         @Override
         public void setViewportMetrics(@NonNull ViewportMetrics viewportMetrics) {
-            if (viewportMetrics.width > 0 && viewportMetrics.height > 0 && !viewportMetricsEqual(last, viewportMetrics)) {
+            if (viewportMetrics.width > 0 && viewportMetrics.height > 0 /*&& !viewportMetricsEqual(last, viewportMetrics)*/) {
                 last = viewportMetrics;
                 Debuger.log("setViewportMetrics w:" + viewportMetrics.width + " h:" + viewportMetrics.height);
                 super.setViewportMetrics(viewportMetrics);

@@ -32,6 +32,7 @@ import android.support.v4.view.ViewCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -86,6 +87,13 @@ public class BoostFlutterView extends FrameLayout {
             for (Object obj : listeners) {
                 ((OnFirstFrameRenderedListener) obj).onFirstFrameRendered(BoostFlutterView.this);
             }
+        }
+    };
+
+    private final ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            ViewCompat.requestApplyInsets(mFlutterView);
         }
     };
 
@@ -205,6 +213,15 @@ public class BoostFlutterView extends FrameLayout {
         super.onAttachedToWindow();
         mPlatformPlugin.onPostResume();
         ViewCompat.requestApplyInsets(this);
+        getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
+    }
+
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
+        onDetach();
     }
 
     public BoostFlutterEngine getEngine(){
@@ -278,12 +295,6 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDestroy");
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        onDetach();
     }
 
     //混合栈的返回和原来Flutter的返回逻辑不同
