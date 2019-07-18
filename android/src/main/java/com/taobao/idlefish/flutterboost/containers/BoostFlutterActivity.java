@@ -158,10 +158,9 @@ abstract public class BoostFlutterActivity extends FlutterActivity implements IF
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //防止imagepick等回调数据被拦截
-        if(data.hasExtra(IFlutterViewContainer.RESULT_KEY)){
+        if(data != null && data.hasExtra(IFlutterViewContainer.RESULT_KEY)){
             FlutterBoostPlugin.onBoostResult(this,requestCode,resultCode,data);
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
