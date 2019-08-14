@@ -1,7 +1,7 @@
 package com.taobao.idlefish.flutterboostexample;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.taobao.idlefish.flutterboost.containers.BoostFlutterFragment;
 

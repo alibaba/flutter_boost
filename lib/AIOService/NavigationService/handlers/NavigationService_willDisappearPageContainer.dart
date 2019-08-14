@@ -25,8 +25,8 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
-import 'package:xservice_kit/ServiceCallHandler.dart';
-import 'package:xservice_kit/ServiceGateway.dart';
+import 'package:xservice_kit_androidx/service_call_handler.dart';
+import 'package:xservice_kit_androidx/service_gateway.dart';
 
 class NavigationService_willDisappearPageContainer extends ServiceCallHandler {
   static void regsiter() {
