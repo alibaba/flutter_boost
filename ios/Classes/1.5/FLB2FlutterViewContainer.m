@@ -204,6 +204,7 @@ static NSUInteger kInstanceCounter = 0;
                                                  pageName:_name
                                                    params:_params
                                                  uniqueId:self.uniqueIDString];
+    [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
 }
 
