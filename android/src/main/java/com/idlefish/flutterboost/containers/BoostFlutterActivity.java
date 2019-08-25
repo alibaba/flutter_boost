@@ -171,12 +171,16 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     protected void onResume() {
         super.onResume();
         mSyncer.onAppear();
+        mFlutterEngine.getLifecycleChannel().appIsResumed();
+
     }
 
     @Override
     protected void onPause() {
         mSyncer.onDisappear();
         super.onPause();
+        mFlutterEngine.getLifecycleChannel().appIsInactive();
+
     }
 
     @Override

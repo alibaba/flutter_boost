@@ -230,7 +230,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onResume() {
         Debuger.log("BoostFlutterView onResume");
-        mFlutterEngine.getLifecycleChannel().appIsResumed();
+//        mFlutterEngine.getLifecycleChannel().appIsResumed();
     }
 
 //    public void onPostResume() {
@@ -240,12 +240,12 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onPause() {
         Debuger.log("BoostFlutterView onPause");
-        mFlutterEngine.getLifecycleChannel().appIsInactive();
+//        mFlutterEngine.getLifecycleChannel().appIsInactive();
     }
 
     public void onStop() {
         Debuger.log("BoostFlutterView onStop");
-        mFlutterEngine.getLifecycleChannel().appIsPaused();
+//        mFlutterEngine.getLifecycleChannel().appIsPaused();
     }
 
     public void onAttach() {
