@@ -25,6 +25,7 @@ package com.taobao.idlefish.flutterboost;
 
 import android.app.Activity;
 
+import android.content.Context;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.taobao.idlefish.flutterboost.interfaces.IFlutterViewProvider;
 import com.taobao.idlefish.flutterboost.interfaces.IPlatform;
@@ -52,7 +53,13 @@ public class FlutterViewProvider implements IFlutterViewProvider {
         }
 
         if (mFlutterView == null) {
-            mFlutterView = new BoostFlutterView(activity, null, createFlutterNativeView(container));
+            if(container!=null&&container.getActivity()!=null){
+                mFlutterView = new BoostFlutterView(activity, null, createFlutterNativeView(container));
+            }else{
+                mFlutterView = new BoostFlutterView(activity, null, createFlutterNativeView(activity.getApplicationContext()));
+
+            }
+
         }
         return mFlutterView;
     }
@@ -65,6 +72,13 @@ public class FlutterViewProvider implements IFlutterViewProvider {
         return mFlutterNativeView;
     }
 
+
+    private BoostFlutterNativeView createFlutterNativeView(Context context) {
+        if (mFlutterNativeView == null) {
+            mFlutterNativeView = new BoostFlutterNativeView(context);
+        }
+        return mFlutterNativeView;
+    }
     @Override
     public BoostFlutterView tryGetFlutterView() {
         return mFlutterView;
