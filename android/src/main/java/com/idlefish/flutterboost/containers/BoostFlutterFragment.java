@@ -83,12 +83,16 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     public void onResume() {
         super.onResume();
         mSyncer.onAppear();
+        mFlutterEngine.getLifecycleChannel().appIsResumed();
+
     }
 
     @Override
     public void onPause() {
         mSyncer.onDisappear();
         super.onPause();
+        mFlutterEngine.getLifecycleChannel().appIsInactive();
+
     }
 
     @Override
