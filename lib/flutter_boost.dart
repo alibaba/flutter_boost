@@ -65,7 +65,6 @@ class FlutterBoost {
 
         if (pageInfo == null || pageInfo.isEmpty) return;
 
-        print("[DEBUG]-should i ContainerCoordinator.singleton.nativeContainerDidShow again?");
         // if (pageInfo.containsKey("name") &&
         //     pageInfo.containsKey("params") &&
         //     pageInfo.containsKey("uniqueId")) {
