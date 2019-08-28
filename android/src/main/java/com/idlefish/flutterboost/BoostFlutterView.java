@@ -33,6 +33,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.accessibility.AccessibilityNodeProvider;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -46,12 +47,13 @@ import java.util.List;
 
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.platform.PlatformPlugin;
+import io.flutter.view.AccessibilityBridge;
 
 public class BoostFlutterView extends FrameLayout {
 
     private BoostFlutterEngine mFlutterEngine;
 
-    private FlutterView mFlutterView;
+    private XFlutterView mFlutterView;
 
     private PlatformPlugin mPlatformPlugin;
 
@@ -116,7 +118,7 @@ public class BoostFlutterView extends FrameLayout {
 
         mPlatformPlugin = new PlatformPlugin((Activity) getContext(), mFlutterEngine.getPlatformChannel());
 
-        mFlutterView = new FlutterView(getContext(), getRenderMode(), getTransparencyMode());
+        mFlutterView = new XFlutterView(getContext(), getRenderMode(), getTransparencyMode());
         addView(mFlutterView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
@@ -295,6 +297,10 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDestroy");
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
+        AccessibilityBridge bridge=mFlutterView.getAccessibilityBridge();
+        if(bridge!=null){
+            bridge.release();
+        }
     }
 
     //混合栈的返回和原来Flutter的返回逻辑不同
