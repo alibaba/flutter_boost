@@ -227,7 +227,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
           .observersOf<BoostContainerObserver>()) {
         observer(ContainerOperation.Onstage, _onstage.settings);
       }
-      Logger.log('ContainerObserver didOnstage');
+      Logger.log('ContainerObserver#2 didOnstage');
     } else {
       pushContainer(settings);
     }
@@ -269,7 +269,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
         .observersOf<BoostContainerObserver>()) {
       observer(ContainerOperation.Push, _onstage.settings);
     }
-    Logger.log('ContainerObserver didPush');
+    Logger.log('ContainerObserver#2 didPush');
   }
 
   void pop() {
@@ -285,7 +285,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
       observer(ContainerOperation.Pop, old.settings);
     }
 
-    Logger.log('ContainerObserver didPop');
+    Logger.log('ContainerObserver#2 didPop');
   }
 
   void remove(String uniqueId) {
@@ -306,7 +306,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
           observer(ContainerOperation.Remove, container.settings);
         }
 
-        Logger.log('ContainerObserver didRemove');
+        Logger.log('ContainerObserver#2 didRemove');
       }
     }
 
