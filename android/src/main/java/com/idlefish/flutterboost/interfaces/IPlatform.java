@@ -37,7 +37,6 @@ public interface IPlatform {
 
     int IMMEDIATELY = 0;          //立即启动引擎
     int ANY_ACTIVITY_CREATED = 1; //当有任何Activity创建时,启动引擎
-    int LAZY = 2;                 //尽可能延后启动引擎(通常是首页Flutter页面加载时)
 
     /**
      * get current application

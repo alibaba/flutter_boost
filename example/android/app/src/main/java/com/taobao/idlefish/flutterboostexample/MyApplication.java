@@ -52,7 +52,7 @@ public class MyApplication extends FlutterApplication {
 
             @Override
             public int whenEngineStart() {
-                return LAZY;
+                return ANY_ACTIVITY_CREATED;
             }
         });
     }
