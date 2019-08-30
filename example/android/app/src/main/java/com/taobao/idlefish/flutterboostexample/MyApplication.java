@@ -45,7 +45,7 @@ public class MyApplication extends FlutterApplication {
                         return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
                                 context.getResources().getAssets(),
                                 FlutterMain.findAppBundlePath(context),
-                                "main2"),"/");
+                                "main"),"/");
                     }
                 };
             }
