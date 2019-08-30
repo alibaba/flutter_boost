@@ -254,6 +254,7 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
     public void finishContainer(Map<String,Object> result) {
         if(result != null) {
             FlutterBoost.setBoostResult(this,new HashMap<>(result));
+            finish();
         }else{
             finish();
         }
