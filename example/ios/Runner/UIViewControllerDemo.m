@@ -23,17 +23,20 @@
     // Do any additional setup after loading the view from its nib.
 }
 
-
 - (IBAction)pushFlutterPage:(id)sender {
-    [DemoRouter.sharedRouter openPage:@"first" params:@{} animated:YES completion:^(BOOL f){
-        
-        [FlutterBoostPlugin.sharedInstance onResultForKey:@"result_id_100" resultData:@{} params:@{}];
-        
+    [DemoRouter.sharedRouter open:@"first"
+                        urlParams:@{}
+                             exts:@{@"animated":@(YES)}
+                       completion:^(BOOL f){
+
     }];
 }
 
 - (IBAction)present:(id)sender {
-    [DemoRouter.sharedRouter openPage:@"second" params:@{@"present":@(YES)} animated:YES completion:^(BOOL f){}];
+    [DemoRouter.sharedRouter open:@"second"
+                        urlParams:@{@"present":@(YES)}
+                             exts:@{@"animated":@(YES)}
+                       completion:^(BOOL f){}];
 //    [self dismissViewControllerAnimated:YES completion:completion];
 }
 

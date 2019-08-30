@@ -4,17 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import java.util.Map;
+
 public class PageRouter {
 
     public static final String NATIVE_PAGE_URL = "sample://nativePage";
     public static final String FLUTTER_PAGE_URL = "sample://flutterPage";
     public static final String FLUTTER_FRAGMENT_PAGE_URL = "sample://flutterFragmentPage";
 
-    public static boolean openPageByUrl(Context context, String url) {
-        return openPageByUrl(context, url, 0);
+    public static boolean openPageByUrl(Context context, String url,Map params) {
+        return openPageByUrl(context, url,params, 0);
     }
 
-    public static boolean openPageByUrl(Context context, String url, int requestCode) {
+    public static boolean openPageByUrl(Context context, String url, Map params, int requestCode) {
         try {
             if (url.startsWith(FLUTTER_PAGE_URL)) {
                 context.startActivity(new Intent(context, FlutterPageActivity.class));

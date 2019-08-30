@@ -25,12 +25,9 @@
 #import <Flutter/Flutter.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
 @interface FLBFlutterAppDelegate : FlutterAppDelegate
 // Returns the key window's rootViewController, if it's a FlutterViewController.
 // Otherwise, returns nil.
 - (FlutterViewController*)rootFlutterViewController;
-
 @end
-
 NS_ASSUME_NONNULL_END

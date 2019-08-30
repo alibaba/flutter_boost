@@ -13,8 +13,10 @@ class FirstRouteWidget extends StatelessWidget {
           child: Text('Open second route'),
           onPressed: () {
 
-            FlutterBoost.singleton.openPage("second", {}, animated: true, resultHandler:(String key , Map<dynamic,dynamic> result){
-              print("did recieve second route result $key $result");
+            print("open second page!");
+            FlutterBoost.singleton.open("second").then((Map value){
+              print("did recieve second route result");
+              print("did recieve second route result $value");
             });
 
           },
@@ -37,14 +39,9 @@ class SecondRouteWidget extends StatelessWidget {
             // Navigate back to first route when tapped.
             
             BoostContainerSettings settings = BoostContainer.of(context).settings;
-            if(settings.params.containsKey("result_id")){
-              String rid = settings.params["result_id"];
-              FlutterBoost.singleton.onPageResult(rid, {"data":"works"},{});
-            }
-
-            FlutterBoost.singleton.closePageForContext(context);
+            FlutterBoost.singleton.close(settings.uniqueId,result: {"result":"data from second"});
           },
-          child: Text('Go back!'),
+          child: Text('Go back with result!'),
         ),
       ),
     );
@@ -61,7 +58,7 @@ class TabRouteWidget extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            FlutterBoost.singleton.openPage("second", {}, animated: true);
+            FlutterBoost.singleton.open("second");
           },
           child: Text('Open second route'),
         ),
@@ -106,7 +103,7 @@ class FlutterRouteWidget extends StatelessWidget {
             ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
             ///例如：sample://nativePage?aaa=bbb
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://nativePage", {
+                FlutterBoost.singleton.open("sample://nativePage", urlParams:{
                   "query": {"aaa": "bbb"}
                 }),
           ),
@@ -123,7 +120,7 @@ class FlutterRouteWidget extends StatelessWidget {
             ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
             ///例如：sample://nativePage?aaa=bbb
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://flutterPage", {
+                FlutterBoost.singleton.open("sample://flutterPage", urlParams:{
                   "query": {"aaa": "bbb"}
                 }),
           ),
@@ -151,7 +148,7 @@ class FlutterRouteWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
             onTap: () => FlutterBoost.singleton
-                .openPage("sample://flutterFragmentPage", {}),
+                .open("sample://flutterFragmentPage"),
           )
         ],
       ),
@@ -200,7 +197,7 @@ class FragmentRouteWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://nativePage", {}),
+                FlutterBoost.singleton.open("sample://nativePage"),
           ),
           InkWell(
             child: Container(
@@ -212,7 +209,7 @@ class FragmentRouteWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
             onTap: () =>
-                FlutterBoost.singleton.openPage("sample://flutterPage", {}),
+                FlutterBoost.singleton.open("sample://flutterPage"),
           ),
           InkWell(
             child: Container(
@@ -224,7 +221,7 @@ class FragmentRouteWidget extends StatelessWidget {
                   style: TextStyle(fontSize: 22.0, color: Colors.black),
                 )),
             onTap: () => FlutterBoost.singleton
-                .openPage("sample://flutterFragmentPage", {}),
+                .open("sample://flutterFragmentPage"),
           )
         ],
       ),

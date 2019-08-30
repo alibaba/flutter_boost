@@ -130,7 +130,7 @@ Initialize FlutterBoost with FLBPlatform at the beginning of your App.
 
 ```objc
  [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterViewController *fvc) {
+                                                        onStart:^(id engine) {
                                                             
                                                         }];
 ```

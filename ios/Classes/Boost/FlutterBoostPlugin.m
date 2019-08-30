@@ -23,14 +23,82 @@
  */
 
 #import "FlutterBoostPlugin.h"
-#import "FLBFlutterApplication.h"
-#import "FLBResultMediator.h"
+#import "FlutterBoostPlugin_private.h"
+#import "FLBFactory.h"
+#import "BoostMessageChannel.h"
+#import "FLBCollectionHelper.h"
+
+#define NSNull2Nil(_x_) if([_x_ isKindOfClass: NSNull.class]) _x_ = nil;
 
 @interface FlutterBoostPlugin()
-@property (nonatomic,strong) FLBResultMediator *resultMediator;
 @end
 
 @implementation FlutterBoostPlugin
+
++ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    FlutterMethodChannel* channel = [FlutterMethodChannel
+                                     methodChannelWithName:@"flutter_boost"
+                                     binaryMessenger:[registrar messenger]];
+    FlutterBoostPlugin* instance = [self.class sharedInstance];
+    instance.methodChannel = channel;
+    [registrar addMethodCallDelegate:instance channel:channel];
+}
+
+- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
+    if ([@"getPlatformVersion" isEqualToString:call.method]) {
+        result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
+    } else if([@"__event__" isEqual: call.method]){
+        [BoostMessageChannel handleMethodCall:call result:result];
+    }else if([@"closePage" isEqualToString:call.method]){
+        NSDictionary *args = [FLBCollectionHelper deepCopyNSDictionary:call.arguments
+                                                                filter:^bool(id  _Nonnull value) {
+                                                    return ![value isKindOfClass:NSNull.class];
+        }];
+        NSDictionary *exts = args[@"exts"];
+        NSString *uid = args[@"uniqueId"];
+        NSDictionary *resultData = args[@"result"];
+        NSNull2Nil(exts);
+        NSNull2Nil(resultData);
+        NSNull2Nil(uid);
+        [[FlutterBoostPlugin sharedInstance].application close:uid
+                                                        result:resultData
+                                                          exts:exts
+                                                    completion:^(BOOL r){
+                                                        result(@(r));
+                                                    }];
+    }else if([@"onShownContainerChanged" isEqualToString:call.method]){
+        NSString *newName = call.arguments[@"newName"];
+        if(newName){
+            [NSNotificationCenter.defaultCenter postNotificationName:@"flutter_boost_container_showed"
+                                                              object:newName];
+        }
+    }else if([@"openPage" isEqualToString:call.method]){
+        NSDictionary *args = [FLBCollectionHelper deepCopyNSDictionary:call.arguments
+                                                                filter:^bool(id  _Nonnull value) {
+                                                                    return ![value isKindOfClass:NSNull.class];
+                                                                }];
+        NSString *url = args[@"url"];
+        NSDictionary *urlParams = args[@"urlParams"];
+        NSDictionary *exts = args[@"exts"];
+        NSNull2Nil(url);
+        NSNull2Nil(urlParams);
+        NSNull2Nil(exts);
+        [[FlutterBoostPlugin sharedInstance].application open:url
+                                                    urlParams:urlParams
+                                                         exts:exts
+                                                        reult:result
+                                                   completion:^(BOOL r) {}];
+    }else if([@"pageOnStart" isEqualToString:call.method]){
+        NSMutableDictionary *pageInfo = [NSMutableDictionary new];
+        pageInfo[@"name"] =[FlutterBoostPlugin sharedInstance].fPagename;
+        pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
+        pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
+        if(result) result(pageInfo);
+    }else{
+        result(FlutterMethodNotImplemented);
+    }
+}
+
 
 + (instancetype)sharedInstance
 {
@@ -43,79 +111,57 @@
     return _instance;
 }
 
-- (instancetype)init
+
+- (id<FLBFlutterApplicationInterface>)application
 {
-    if (self = [super init]) {
-        _resultMediator = [FLBResultMediator new];
-    }
-    
-    return self;
+    return _application;
 }
 
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  FlutterMethodChannel* channel = [FlutterMethodChannel
-      methodChannelWithName:@"flutter_boost"
-            binaryMessenger:[registrar messenger]];
-  FlutterBoostPlugin* instance = [self.class sharedInstance];
-  [registrar addMethodCallDelegate:instance channel:channel];
-}
 
-- (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-  if ([@"getPlatformVersion" isEqualToString:call.method]) {
-    result([@"iOS " stringByAppendingString:[[UIDevice currentDevice] systemVersion]]);
-  } else {
-    result(FlutterMethodNotImplemented);
-  }
+- (id<FLBAbstractFactory>)factory
+{
+    return _factory;
 }
-
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(FlutterViewController *))callback;
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                             FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
 {
-    [FLBFlutterApplication.sharedApplication startFlutterWithPlatform:platform
-                                                              onStart:callback];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        self->_factory = FLBFactory.new;
+        self->_application = [self->_factory createApplication:platform];
+        [self->_application startFlutterWithPlatform:platform
+                                       onStart:callback];
+    });
 }
 
 - (BOOL)isRunning
 {
-    return [FLBFlutterApplication.sharedApplication isRunning];
+    return [self.application isRunning];
 }
+
 
 - (FlutterViewController *)currentViewController
 {
-    return [[FLBFlutterApplication sharedApplication] flutterViewController];
+    return [self.application flutterViewController];
 }
 
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
-   resultHandler:(void (^)(NSString *, NSDictionary *))resultHandler
+
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments
 {
-    static int kRid = 0;
-    NSString *resultId = [NSString stringWithFormat:@"result_id_%d",kRid++];
-    [_resultMediator setResultHandler:^(NSString * _Nonnull resultId, NSDictionary * _Nonnull resultData) {
-        if(resultHandler) resultHandler(resultId,resultData);
-    } forKey:resultId];
+    [BoostMessageChannel sendEvent:eventName
+                         arguments:arguments];
 }
 
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData params:(NSDictionary *)params
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name
 {
-    [_resultMediator onResultForKey:vcId resultData:resultData params:params];
-}
-
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler forKey:(NSString *)vcid
-{
-    [_resultMediator setResultHandler:handler forKey:vcid];
-}
-
-- (void)removeHandlerForKey:(NSString *)vcid
-{
-    [_resultMediator removeHandlerForKey:vcid];
-}
-
-- (void)setAccessibilityEnable:(BOOL)enable
-{
-    [[FLBFlutterApplication sharedApplication] setAccessibilityEnable:enable];
+   return [BoostMessageChannel addEventListener:listner
+                                        forName:name];
 }
 
 @end

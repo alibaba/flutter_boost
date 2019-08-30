@@ -21,11 +21,14 @@
     return instance;
 }
 
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
+#pragma mark - Boost 2
+- (void)open:(NSString *)name
+   urlParams:(NSDictionary *)params
+        exts:(NSDictionary *)exts
+  completion:(void (^)(BOOL))completion
 {
+    BOOL animated = [exts[@"animated"] boolValue];
+    animated = YES;
     if([params[@"present"] boolValue]){
         FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
@@ -40,14 +43,13 @@
     }
 }
 
-- (BOOL)accessibilityEnable
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion
 {
-    return YES;
-}
-
-
-- (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
-{
+    BOOL animated = [exts[@"animated"] boolValue];
+    animated = YES;
     FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];
@@ -56,8 +58,26 @@
     }
 }
 
-- (void)flutterCanPop:(BOOL)canpop {
-    self.navigationController.interactivePopGestureRecognizer.enabled = !canpop;
+#pragma mark - Boost 1
+- (void)openPage:(NSString *)name
+          params:(NSDictionary *)params
+        animated:(BOOL)animated
+      completion:(void (^)(BOOL))completion
+{
+    NSMutableDictionary *exts = NSMutableDictionary.new;
+    exts[@"url"] = name;
+    exts[@"params"] = params;
+    exts[@"animated"] = @(animated);
+    [self open:name urlParams:params exts:exts completion:completion];
+    return;
 }
 
+- (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
+{
+    NSMutableDictionary *exts = NSMutableDictionary.new;
+    exts[@"params"] = params;
+    exts[@"animated"] = @(animated);
+    [self close:uid result:@{} exts:exts completion:completion];
+    return;
+}
 @end

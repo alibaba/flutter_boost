@@ -1,19 +1,11 @@
 package com.taobao.idlefish.flutterboostexample;
 
-import com.taobao.idlefish.flutterboost.containers.BoostFlutterActivity;
+import com.idlefish.flutterboost.containers.BoostFlutterActivity;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.GeneratedPluginRegistrant;
-
 public class FlutterPageActivity extends BoostFlutterActivity {
-
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
 
     /**
      * 该方法返回当前Activity在Flutter层对应的name，
@@ -31,7 +23,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * @return
      */
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         return "flutterPage";
     }
 
@@ -50,7 +42,7 @@ public class FlutterPageActivity extends BoostFlutterActivity {
      * @return
      */
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
         params.put("aaa","bbb");
         return params;
