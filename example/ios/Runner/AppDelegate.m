@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "UIViewControllerDemo.h"
 #import "DemoRouter.h"
-#import <flutter_boost2/FlutterBoost2.h>
+#import <flutter_boost/FlutterBoost2.h>
 
 @interface AppDelegate ()
 

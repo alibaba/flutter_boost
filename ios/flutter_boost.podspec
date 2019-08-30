@@ -15,14 +15,13 @@ A new Flutter plugin make flutter better to use!
   s.source_files = 'Classes/**/*.{h,m,mm}'
   
   s.public_header_files = 
-    'Classes/Boost/FlutterBoost.h',
-    'Classes/Boost/FlutterBoostPlugin.h',
-    'Classes/Boost/FLBPlatform.h',
+    'Classes/Boost/FlutterBoostPlugin2.h',
     'Classes/Boost/FLB2Platform.h',
     'Classes/Boost/FLBFlutterContainer.h',
-    'Classes/Boost/FLBFlutterAppDelegate.h',
+    'Classes/Boost/FLB2FlutterAppDelegate.h',
     'Classes/Boost/FLBTypes.h',
-    'Classes/1.0/FLBFlutterViewContainer.h',
+    'Classes/Boost/FlutterBoost2.h',
+    'Classes/Boost/BoostChannel.h',
     'Classes/1.5/FLB2FlutterViewContainer.h'
     
   s.dependency 'Flutter'

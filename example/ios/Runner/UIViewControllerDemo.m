@@ -9,7 +9,7 @@
 #import "UIViewControllerDemo.h"
 #import <Flutter/Flutter.h>
 #import "DemoRouter.h"
-#import <flutter_boost2/FlutterBoostPlugin2.h>
+#import <flutter_boost/FlutterBoostPlugin2.h>
 
 
 @interface UIViewControllerDemo ()
