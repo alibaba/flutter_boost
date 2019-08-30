@@ -546,7 +546,9 @@ public class XFlutterView extends FrameLayout {
     } else {
       locales.add(config.locale);
     }
-    flutterEngine.getLocalizationChannel().sendLocales(locales);
+    if(flutterEngine!=null&&flutterEngine.getLocalizationChannel()!=null){
+      flutterEngine.getLocalizationChannel().sendLocales(locales);
+    }
   }
 
   /**
