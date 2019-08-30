@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- *
+ * 
  * Copyright (c) 2019 Alibaba Group
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,20 +22,12 @@
  * THE SOFTWARE.
  */
 
-#import "FLB2Factory.h"
-#import "FLB2FlutterApplication.h"
-#import "FLB2FlutterViewContainer.h"
+#import <Flutter/Flutter.h>
 
-@implementation FLB2Factory
-
-- (id<FLBFlutterApplicationInterface>)createApplication:(id<FLB2Platform>)platform
-{
-    return FLB2FlutterApplication.new;
-}
-
-- (id<FLBFlutterContainer>)createFlutterContainer
-{
-    return FLB2FlutterViewContainer.new;
-}
-
+NS_ASSUME_NONNULL_BEGIN
+@interface FLBFlutterAppDelegate : FlutterAppDelegate
+// Returns the key window's rootViewController, if it's a FlutterViewController.
+// Otherwise, returns nil.
+- (FlutterViewController*)rootFlutterViewController;
 @end
+NS_ASSUME_NONNULL_END

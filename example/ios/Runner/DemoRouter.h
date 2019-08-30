@@ -8,12 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <flutter_boost/FlutterBoost2.h>
+#import <flutter_boost/FlutterBoost.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol FLBPlatform;
 
-@interface DemoRouter : NSObject<FLB2Platform>
+@interface DemoRouter : NSObject<FLBPlatform>
 
 @property (nonatomic,strong) UINavigationController *navigationController;
 

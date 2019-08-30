@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_boost'
-  s.version          = '0.0.1'
+  s.version          = '0.0.2'
   s.summary          = 'A new Flutter plugin make flutter better to use!'
   s.description      = <<-DESC
 A new Flutter plugin make flutter better to use!
@@ -15,14 +15,14 @@ A new Flutter plugin make flutter better to use!
   s.source_files = 'Classes/**/*.{h,m,mm}'
   
   s.public_header_files = 
-    'Classes/Boost/FlutterBoostPlugin2.h',
-    'Classes/Boost/FLB2Platform.h',
+    'Classes/Boost/FlutterBoostPlugin.h',
+    'Classes/Boost/FLBPlatform.h',
     'Classes/Boost/FLBFlutterContainer.h',
-    'Classes/Boost/FLB2FlutterAppDelegate.h',
+    'Classes/Boost/FLBFlutterAppDelegate.h',
     'Classes/Boost/FLBTypes.h',
-    'Classes/Boost/FlutterBoost2.h',
+    'Classes/Boost/FlutterBoost.h',
     'Classes/Boost/BoostChannel.h',
-    'Classes/1.5/FLB2FlutterViewContainer.h'
+    'Classes/1.5/FLBFlutterViewContainer.h'
     
   s.dependency 'Flutter'
   s.libraries = 'c++'

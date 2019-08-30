@@ -22,22 +22,55 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import "FLBFlutterContainerManager.h"
 
-@class FlutterViewController;
-@class FlutterEngine;
-
-NS_ASSUME_NONNULL_BEGIN
-@protocol FLB2FlutterProvider <NSObject>
-@required
-- (FlutterEngine *)engine;
-- (void)atacheToViewController:(FlutterViewController *)vc;
-- (void)detach;
-- (void)prepareEngineIfNeeded;
-- (void)pause;
-- (void)resume;
-- (void)inactive;
-- (void)didEnterBackground;
-- (void)willEnterForeground;
+@interface FLBFlutterContainerManager()
+@property (nonatomic,strong) NSMutableArray *idStk;
+@property (nonatomic,strong) NSMutableDictionary *existedID;
 @end
-NS_ASSUME_NONNULL_END
+
+@implementation FLBFlutterContainerManager
+
+- (instancetype)init
+{
+    if (self = [super init]) {
+        _idStk= [NSMutableArray new];
+        _existedID = [NSMutableDictionary dictionary];
+    }
+    
+    return self;
+}
+
+- (BOOL)contains:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        return _existedID[vc.uniqueIDString]?YES:NO;
+    }
+    
+    return NO;
+}
+
+- (void)addUnique:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        if(!_existedID[vc.uniqueIDString]){
+            [_idStk addObject:vc.uniqueIDString];
+        }
+        _existedID[vc.uniqueIDString] = vc.uniqueIDString;
+    }
+}
+
+- (void)remove:(id<FLBFlutterContainer>)vc
+{
+    if (vc) {
+        [_existedID removeObjectForKey:vc.uniqueIDString];
+        [_idStk removeObject:vc.uniqueIDString];
+    }
+}
+
+- (NSString *)peak
+{
+    return _idStk.lastObject;
+}
+
+@end

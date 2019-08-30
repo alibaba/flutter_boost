@@ -22,20 +22,20 @@
  * THE SOFTWARE.
  */
 
-#import "FLB2FlutterEngine.h"
+#import "FLBFlutterEngine.h"
 #import <Flutter/Flutter.h>
-#import "FLB2FlutterViewContainer.h"
+#import "FLBFlutterViewContainer.h"
 #import "BoostMessageChannel.h"
 
 
-@interface FLB2FlutterEngine()
+@interface FLBFlutterEngine()
 @property (nonatomic,strong) FlutterEngine *engine;
-@property (nonatomic,strong)  FLB2FlutterViewContainer *dummy;
+@property (nonatomic,strong)  FLBFlutterViewContainer *dummy;
 @end
 
-@implementation FLB2FlutterEngine
+@implementation FLBFlutterEngine
     
-- (instancetype)initWithPlatform:(id<FLB2Platform>)platform
+- (instancetype)initWithPlatform:(id<FLBPlatform>)platform
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -49,7 +49,7 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-        _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
+        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
                                                           nibName:nil
                                                            bundle:nil];
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
@@ -79,7 +79,7 @@
 - (void)resume
 {
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
-    [(FLB2FlutterViewContainer *)_engine.viewController surfaceUpdated:YES];
+    [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:YES];
 }
 
 - (void)inactive

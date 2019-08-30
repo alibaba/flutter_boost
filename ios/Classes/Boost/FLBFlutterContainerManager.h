@@ -23,13 +23,15 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "FLB2Platform.h"
-#import "FLB2FlutterProvider.h"
-#import "FLBFlutterApplicationInterface.h"
+#import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLB2FlutterApplication : NSObject<FLBFlutterApplicationInterface>
-@property (nonatomic,strong) id<FLB2Platform> platform;
+@interface FLBFlutterContainerManager : NSObject
+
+- (NSString *)peak;
+- (void)addUnique:(id<FLBFlutterContainer>)vc;
+- (void)remove:(id<FLBFlutterContainer>)vc;
+- (BOOL)contains:(id<FLBFlutterContainer>)vc;
+
 @end
 NS_ASSUME_NONNULL_END

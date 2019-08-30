@@ -23,18 +23,18 @@
  */
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "FLB2Platform.h"
-#import "FlutterBoost2.h"
-#import "FLB2FlutterProvider.h"
+#import "FLBPlatform.h"
+#import "FlutterBoost.h"
+#import "FLBFlutterProvider.h"
 #import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @protocol FLBFlutterApplicationInterface <NSObject>
-@property (nonatomic,strong) id<FLB2Platform> platform;
+@property (nonatomic,strong) id<FLBPlatform> platform;
 
-- (id<FLB2FlutterProvider>)flutterProvider;
+- (id<FLBFlutterProvider>)flutterProvider;
 
-- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(id<FlutterBinaryMessenger,
                                            FlutterTextureRegistry,
                                            FlutterPluginRegistry> engine))callback;

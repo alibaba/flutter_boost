@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 #import "UIViewControllerDemo.h"
 #import "DemoRouter.h"
-#import <flutter_boost/FlutterBoost2.h>
+#import <flutter_boost/FlutterBoost.h>
 
 @interface AppDelegate ()
 
@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     DemoRouter *router = [DemoRouter sharedRouter];
-    [FlutterBoostPlugin2.sharedInstance startFlutterWithPlatform:router
+    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
                                                         onStart:^(FlutterEngine *fvc) {
                                                             
                                                         }];
@@ -35,7 +35,7 @@
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
    
     
-    FLB2FlutterViewContainer *fvc = FLB2FlutterViewContainer.new;
+    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
     [fvc setName:@"tab" params:@{}];
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
     

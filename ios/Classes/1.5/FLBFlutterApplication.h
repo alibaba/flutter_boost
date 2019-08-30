@@ -23,21 +23,13 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "FLBPlatform.h"
+#import "FLBFlutterProvider.h"
+#import "FLBFlutterApplicationInterface.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@protocol FLB2Platform <NSObject>
-@optional
-- (NSString *)entryForDart;
-    
-@required
-- (void)open:(NSString *)url
-   urlParams:(NSDictionary *)urlParams
-        exts:(NSDictionary *)exts
-      completion:(void (^)(BOOL finished))completion;
-
-- (void)close:(NSString *)uid
-       result:(NSDictionary *)result
-         exts:(NSDictionary *)exts
-   completion:(void (^)(BOOL finished))completion;
+@interface FLBFlutterApplication : NSObject<FLBFlutterApplicationInterface>
+@property (nonatomic,strong) id<FLBPlatform> platform;
 @end
 NS_ASSUME_NONNULL_END

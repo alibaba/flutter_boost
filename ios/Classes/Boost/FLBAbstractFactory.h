@@ -25,14 +25,14 @@
 
 #import <Foundation/Foundation.h>
 #import "FLBFlutterApplicationInterface.h"
-#import "FLB2FlutterProvider.h"
-#import "FLB2Platform.h"
+#import "FLBFlutterProvider.h"
+#import "FLBPlatform.h"
 #import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
 @protocol FLBAbstractFactory <NSObject>
 @required
-- (id<FLBFlutterApplicationInterface>)createApplication:(id<FLB2Platform>)platform;
+- (id<FLBFlutterApplicationInterface>)createApplication:(id<FLBPlatform>)platform;
 - (id<FLBFlutterContainer>)createFlutterContainer;
 @end
 NS_ASSUME_NONNULL_END

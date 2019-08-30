@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-#import <Flutter/Flutter.h>
+#import <Foundation/Foundation.h>
+#import "FLBFlutterProvider.h"
+#import "FLBPlatform.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLB2FlutterAppDelegate : FlutterAppDelegate
-// Returns the key window's rootViewController, if it's a FlutterViewController.
-// Otherwise, returns nil.
-- (FlutterViewController*)rootFlutterViewController;
+@interface FLBFlutterEngine : NSObject<FLBFlutterProvider>
+- (instancetype)initWithPlatform:(id<FLBPlatform>)platform;
 @end
 NS_ASSUME_NONNULL_END

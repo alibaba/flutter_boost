@@ -7,7 +7,7 @@
 //
 
 #import "DemoRouter.h"
-#import <flutter_boost/FlutterBoost2.h>
+#import <flutter_boost/FlutterBoost.h>
 
 @implementation DemoRouter
 
@@ -21,12 +21,6 @@
     return instance;
 }
 
-//AB Boost 2 switch
-- (BOOL)useBoost2
-{
-    return YES;
-}
-
 #pragma mark - Boost 2
 - (void)open:(NSString *)name
    urlParams:(NSDictionary *)params
@@ -36,13 +30,13 @@
     BOOL animated = [exts[@"animated"] boolValue];
     animated = YES;
     if([params[@"present"] boolValue]){
-        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
+        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
         [self.navigationController presentViewController:vc animated:animated completion:^{
             if(completion) completion(YES);
         }];
     }else{
-        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
+        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
         [self.navigationController pushViewController:vc animated:animated];
         if(completion) completion(YES);
@@ -56,8 +50,8 @@
 {
     BOOL animated = [exts[@"animated"] boolValue];
     animated = YES;
-    FLB2FlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
-    if([vc isKindOfClass:FLB2FlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
+    FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
+    if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
         [vc dismissViewControllerAnimated:animated completion:^{}];
     }else{
         [self.navigationController popViewControllerAnimated:animated];
@@ -70,44 +64,20 @@
         animated:(BOOL)animated
       completion:(void (^)(BOOL))completion
 {
-    if([self useBoost2]){
-        NSMutableDictionary *exts = NSMutableDictionary.new;
-        exts[@"url"] = name;
-        exts[@"params"] = params;
-        exts[@"animated"] = @(animated);
-        [self open:name urlParams:params exts:exts completion:completion];
-        return;
-    }
-    
-    if([params[@"present"] boolValue]){
-        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
-        [vc setName:name params:params];
-        [self.navigationController presentViewController:vc animated:animated completion:^{
-            if(completion) completion(YES);
-        }];
-    }else{
-        FLB2FlutterViewContainer *vc = FLB2FlutterViewContainer.new;
-        [vc setName:name params:params];
-        [self.navigationController pushViewController:vc animated:animated];
-        if(completion) completion(YES);
-    }
+    NSMutableDictionary *exts = NSMutableDictionary.new;
+    exts[@"url"] = name;
+    exts[@"params"] = params;
+    exts[@"animated"] = @(animated);
+    [self open:name urlParams:params exts:exts completion:completion];
+    return;
 }
 
 - (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
 {
-    if([self useBoost2]){
-        NSMutableDictionary *exts = NSMutableDictionary.new;
-        exts[@"params"] = params;
-        exts[@"animated"] = @(animated);
-        [self close:uid result:@{} exts:exts completion:completion];
-        return;
-    }
-    
-    FLB2FlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
-    if([vc isKindOfClass:FLB2FlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
-        [vc dismissViewControllerAnimated:animated completion:^{}];
-    }else{
-        [self.navigationController popViewControllerAnimated:animated];
-    }
+    NSMutableDictionary *exts = NSMutableDictionary.new;
+    exts[@"params"] = params;
+    exts[@"animated"] = @(animated);
+    [self close:uid result:@{} exts:exts completion:completion];
+    return;
 }
 @end

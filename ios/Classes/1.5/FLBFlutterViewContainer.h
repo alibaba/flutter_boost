@@ -22,12 +22,12 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FLB2FlutterProvider.h"
-#import "FLB2Platform.h"
+#import <UIKit/UIKit.h>
+#import <Flutter/Flutter.h>
+#import "FLBFlutterContainer.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLB2FlutterEngine : NSObject<FLB2FlutterProvider>
-- (instancetype)initWithPlatform:(id<FLB2Platform>)platform;
+@interface FLBFlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
+- (void)surfaceUpdated:(BOOL)appeared;
 @end
 NS_ASSUME_NONNULL_END

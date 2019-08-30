@@ -22,12 +22,22 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
-#import <Flutter/Flutter.h>
-#import "FLBFlutterContainer.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
-@interface FLB2FlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
-- (void)surfaceUpdated:(BOOL)appeared;
+@protocol FLBPlatform <NSObject>
+@optional
+- (NSString *)entryForDart;
+    
+@required
+- (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+      completion:(void (^)(BOOL finished))completion;
+
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL finished))completion;
 @end
 NS_ASSUME_NONNULL_END

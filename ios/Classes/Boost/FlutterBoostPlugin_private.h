@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2019 Alibaba Group
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,27 +23,17 @@
  */
 #import <Flutter/Flutter.h>
 
-#import "FLB2Platform.h"
-#import "FLBTypes.h"
-
-@interface FlutterBoostPlugin2 : NSObject<FlutterPlugin>
-#pragma mark - Initializer
-+ (instancetype)sharedInstance;
-
-- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,
-                                           FlutterTextureRegistry,
-                                           FlutterPluginRegistry> engine))callback;
-
-#pragma mark - Some properties.
-- (BOOL)isRunning;
-
-- (FlutterViewController *)currentViewController;
-
-#pragma mark - broadcast event to/from flutter
-- (void)sendEvent:(NSString *)eventName
-        arguments:(NSDictionary *)arguments;
-
-- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
-                            forName:(NSString *)name;
+#import "FLBFlutterApplicationInterface.h"
+#import "FLBAbstractFactory.h"
+#import "FlutterBoostPlugin.h"
+@interface FlutterBoostPlugin(){
+    id<FLBFlutterApplicationInterface> _application;
+    id<FLBAbstractFactory> _factory;
+}
+@property (nonatomic,strong) FlutterMethodChannel *methodChannel;
+@property (nonatomic,copy) NSString *fPageId;
+@property (nonatomic,copy) NSString *fPagename;
+@property (nonatomic,strong) NSDictionary *fParams;
+- (id<FLBFlutterApplicationInterface>)application;
+- (id<FLBAbstractFactory>)factory;
 @end

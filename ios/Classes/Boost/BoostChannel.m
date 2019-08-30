@@ -22,14 +22,14 @@
  * THE SOFTWARE.
  */
 #import "BoostChannel.h"
-#import "FlutterBoost2.h"
+#import "FlutterBoost.h"
 
 @implementation BoostChannel
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-    [FlutterBoostPlugin2 registerWithRegistrar:registrar];
+    [FlutterBoostPlugin registerWithRegistrar:registrar];
 }
     
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    [FlutterBoostPlugin2.sharedInstance handleMethodCall:call result:result];
+    [FlutterBoostPlugin.sharedInstance handleMethodCall:call result:result];
 }
 @end

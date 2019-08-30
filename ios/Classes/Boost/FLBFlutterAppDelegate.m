@@ -22,16 +22,13 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FLBFlutterContainer.h"
+#import "FLBFlutterAppDelegate.h"
+#import "FlutterBoostPlugin_private.h"
 
-NS_ASSUME_NONNULL_BEGIN
-@interface FLB2FlutterContainerManager : NSObject
-
-- (NSString *)peak;
-- (void)addUnique:(id<FLBFlutterContainer>)vc;
-- (void)remove:(id<FLBFlutterContainer>)vc;
-- (BOOL)contains:(id<FLBFlutterContainer>)vc;
-
+@implementation FLBFlutterAppDelegate
+// Returns the key window's rootViewController, if it's a FlutterViewController.
+// Otherwise, returns nil.
+- (FlutterViewController*)rootFlutterViewController {
+    return FlutterBoostPlugin.sharedInstance.application.flutterViewController;
+}
 @end
-NS_ASSUME_NONNULL_END

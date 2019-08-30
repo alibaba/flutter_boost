@@ -22,23 +22,23 @@
  * THE SOFTWARE.
  */
 
-#import "FLB2FlutterViewContainer.h"
-#import "FLB2FlutterApplication.h"
+#import "FLBFlutterViewContainer.h"
+#import "FLBFlutterApplication.h"
 #import "BoostMessageChannel.h"
-#import "FLB2FlutterContainerManager.h"
-#import "FlutterBoostPlugin2_private.h"
+#import "FLBFlutterContainerManager.h"
+#import "FlutterBoostPlugin_private.h"
 
-#define FLUTTER_APP [FlutterBoostPlugin2 sharedInstance].application
+#define FLUTTER_APP [FlutterBoostPlugin sharedInstance].application
 #define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
-@interface FLB2FlutterViewContainer  ()
+@interface FLBFlutterViewContainer  ()
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
 @end
 
-@implementation FLB2FlutterViewContainer
+@implementation FLBFlutterViewContainer
 
 - (instancetype)init
 {
@@ -173,10 +173,10 @@ static NSUInteger kInstanceCounter = 0;
                                               params:_params
                                             uniqueId:self.uniqueIDString];
     //Save some first time page info.
-    if(![FlutterBoostPlugin2 sharedInstance].fPagename){
-        [FlutterBoostPlugin2 sharedInstance].fPagename = _name;
-        [FlutterBoostPlugin2 sharedInstance].fPageId = self.uniqueIDString;
-        [FlutterBoostPlugin2 sharedInstance].fParams = _params;
+    if(![FlutterBoostPlugin sharedInstance].fPagename){
+        [FlutterBoostPlugin sharedInstance].fPagename = _name;
+        [FlutterBoostPlugin sharedInstance].fPageId = self.uniqueIDString;
+        [FlutterBoostPlugin sharedInstance].fParams = _params;
     }
     
     [super viewWillAppear:animated];

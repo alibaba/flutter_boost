@@ -22,25 +22,25 @@
  * THE SOFTWARE.
  */
 
-#import "FLB2FlutterApplication.h"
-#import "FlutterBoost2.h"
-#import "FLB2FlutterContainerManager.h"
-#import "FLB2FlutterEngine.h"
+#import "FLBFlutterApplication.h"
+#import "FlutterBoost.h"
+#import "FLBFlutterContainerManager.h"
+#import "FLBFlutterEngine.h"
 
-@interface FLB2FlutterApplication()
-@property (nonatomic,strong) FLB2FlutterContainerManager *manager;
-@property (nonatomic,strong) id<FLB2FlutterProvider> viewProvider;
+@interface FLBFlutterApplication()
+@property (nonatomic,strong) FLBFlutterContainerManager *manager;
+@property (nonatomic,strong) id<FLBFlutterProvider> viewProvider;
 @property (nonatomic,assign) BOOL isRunning;
 @property (nonatomic,strong) NSMutableDictionary *pageResultCallbacks;
 @property (nonatomic,strong) NSMutableDictionary *callbackCache;
 @end
 
 
-@implementation FLB2FlutterApplication
+@implementation FLBFlutterApplication
 
-+ (FLB2FlutterApplication *)sharedApplication
++ (FLBFlutterApplication *)sharedApplication
 {
-    static FLB2FlutterApplication *instance = nil;
+    static FLBFlutterApplication *instance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         instance = [self new];
@@ -58,13 +58,13 @@
     return _viewProvider;
 }
 
-- (void)startFlutterWithPlatform:(id<FLB2Platform>)platform
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLB2FlutterEngine alloc] initWithPlatform:platform];
+        self.viewProvider = [[FLBFlutterEngine alloc] initWithPlatform:platform];
         self.isRunning = YES;
         if(callback) callback(self.viewProvider.engine);
     });
@@ -73,7 +73,7 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _manager = [FLB2FlutterContainerManager new];
+        _manager = [FLBFlutterContainerManager new];
         _pageResultCallbacks = NSMutableDictionary.new;
         _callbackCache = NSMutableDictionary.new;
         
