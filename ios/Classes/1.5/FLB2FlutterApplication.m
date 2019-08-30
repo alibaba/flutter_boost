@@ -76,13 +76,24 @@
         _manager = [FLB2FlutterContainerManager new];
         _pageResultCallbacks = NSMutableDictionary.new;
         _callbackCache = NSMutableDictionary.new;
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationWillEnterForeground:)
+                                                     name:UIApplicationWillEnterForegroundNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(applicationDidEnterBackground:)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
     }
     return self;
 }
 
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 - (UIView *)flutterView
@@ -90,6 +101,13 @@
     return [self flutterViewController].view;
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    [self.viewProvider didEnterBackground];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self.viewProvider willEnterForeground];
+}
 
 - (BOOL)contains:(id<FLBFlutterContainer>)vc
 {

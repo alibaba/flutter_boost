@@ -25,6 +25,7 @@
 #import "FLB2FlutterEngine.h"
 #import <Flutter/Flutter.h>
 #import "FLB2FlutterViewContainer.h"
+#import "BoostMessageChannel.h"
 
 
 @interface FLB2FlutterEngine()
@@ -87,6 +88,17 @@
 }
 
 
+- (void)didEnterBackground
+{
+    [BoostMessageChannel sendEvent:@"background"
+                         arguments:nil];
+}
+
+- (void)willEnterForeground
+{
+    [BoostMessageChannel sendEvent:@"foreground"
+                         arguments:nil];
+}
 
 - (FlutterEngine *)engine
 {
