@@ -71,7 +71,6 @@
     }
 }
 
-
 static NSUInteger kInstanceCounter = 0;
 
 + (NSUInteger)instanceCounter

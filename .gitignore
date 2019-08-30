@@ -9,3 +9,4 @@ build/
 pubspec.lock
 .flutter-plugins
 flutter
+flutter_boost

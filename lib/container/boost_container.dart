@@ -25,7 +25,7 @@ import 'package:flutter/material.dart';
 import 'container_manager.dart';
 import '../flutter_boost.dart';
 import 'boost_page_route.dart';
-import '../logger.dart';
+import '../support/logger.dart';
 
 enum ContainerLifeCycle {
   Init,

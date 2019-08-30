@@ -30,7 +30,7 @@ import 'package:flutter/services.dart';
 import '../channel/boost_channel.dart';
 import 'boost_container.dart';
 import '../flutter_boost.dart';
-import '../logger.dart';
+import '../support/logger.dart';
 
 class ContainerCoordinator {
   static ContainerCoordinator get singleton => _instance;

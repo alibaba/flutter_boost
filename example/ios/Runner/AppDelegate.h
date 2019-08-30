@@ -11,8 +11,5 @@
 
 @interface AppDelegate : FLBFlutterAppDelegate <UIApplicationDelegate>
 
-@property (strong, nonatomic) UIWindow *window;
-
-
 @end
 
