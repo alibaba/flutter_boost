@@ -26,6 +26,10 @@ A new Flutter plugin make flutter better to use!
     
   s.dependency 'Flutter'
   s.libraries = 'c++'
+  s.xcconfig = {
+      'CLANG_CXX_LANGUAGE_STANDARD' => 'c++11',
+      'CLANG_CXX_LIBRARY' => 'libc++'
+  }
   
   s.ios.deployment_target = '8.0'
 end
