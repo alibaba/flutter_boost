@@ -123,7 +123,7 @@ class _MyAppState extends State<MyApp> {
 
 ```的ObjectiveC
  [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform：router
-                                                        onStart：^（FlutterViewController * fvc）{
+                                                        onStart：^（id engine）{
                                                             
                                                         }];
 ```
