@@ -28,7 +28,6 @@
   completion:(void (^)(BOOL))completion
 {
     BOOL animated = [exts[@"animated"] boolValue];
-    animated = YES;
     if([params[@"present"] boolValue]){
         FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
         [vc setName:name params:params];
