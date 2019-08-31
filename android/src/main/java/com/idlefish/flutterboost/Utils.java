@@ -113,11 +113,7 @@ public class Utils {
             }
         }
 
-        if (diffCount <= 10) {
-            return false;
-        } else {
-            return true;
-        }
+        return diffCount > 10;
     }
 
     public static int getMetricsWidth(Context context) {

@@ -3,10 +3,11 @@ package com.idlefish.flutterboost;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.Surface;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.idlefish.flutterboost.interfaces.IStateListener;
@@ -29,6 +30,7 @@ import io.flutter.view.FlutterView;
 import io.flutter.view.TextureRegistry;
 
 public class BoostFlutterEngine extends FlutterEngine {
+
     protected final Context mContext;
     protected final BoostPluginRegistry mBoostPluginRegistry;
     protected final DartExecutor.DartEntrypoint mEntrypoint;

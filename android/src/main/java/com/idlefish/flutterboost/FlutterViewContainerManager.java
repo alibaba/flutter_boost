@@ -25,7 +25,6 @@ package com.idlefish.flutterboost;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.SparseArray;
 
 import com.idlefish.flutterboost.interfaces.IContainerManager;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
@@ -41,7 +40,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FlutterViewContainerManager implements IContainerManager {
 

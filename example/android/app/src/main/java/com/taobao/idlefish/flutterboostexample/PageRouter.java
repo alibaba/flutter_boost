@@ -2,7 +2,6 @@ package com.taobao.idlefish.flutterboostexample;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 
 import java.util.Map;
 

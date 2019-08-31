@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -53,6 +52,7 @@ import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
 
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.platform.PlatformPlugin;
