@@ -158,9 +158,11 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewWillAppear:(BOOL)animated
 {
     if([FLUTTER_APP contains:self]){
+        [self surfaceUpdated:NO];
         [self detatchFlutterEngine];
     }else{
         [self attatchFlutterEngine];
+        [self surfaceUpdated:YES];
     }
   
     [FLUTTER_APP resume];
