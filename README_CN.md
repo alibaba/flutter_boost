@@ -2,6 +2,9 @@
   <img src="flutter_boost.png">
 </p>
 
+
+Note: 请查看最新版本0.1.50的release note 确认变更，[0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)。
+
 # FlutterBoost
 
 新一代Flutter-Native混合解决方案。 FlutterBoost是一个Flutter插件，它可以轻松地为现有原生应用程序提供Flutter混合集成方案。FlutterBoost的理念是将Flutter像Webview那样来使用。在现有应用程序中同时管理Native页面和Flutter页面并非易事。 FlutterBoost帮你处理页面的映射和跳转，你只需关心页面的名字和参数即可（通常可以是URL）。
