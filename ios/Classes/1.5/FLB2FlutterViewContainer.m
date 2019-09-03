@@ -146,6 +146,10 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP.flutterProvider detach];
 }
 
+- (void)setEnableForRunnersBatch:(BOOL)enable{
+    //dummy function
+    NSLog(@"[DEBUG]- I did nothing, I am innocent");
+}
 
 #pragma mark - Life circle methods
 
