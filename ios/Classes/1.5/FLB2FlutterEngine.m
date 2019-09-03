@@ -121,6 +121,9 @@
 
 - (void)prepareEngineIfNeeded
 {
+    if ([_dummy respondsToSelector:@selector(setEnableForRunnersBatch:)]) {
+        [_dummy setEnableForRunnersBatch:YES];
+    }
     [self detach];
     [_dummy surfaceUpdated:YES];
 }

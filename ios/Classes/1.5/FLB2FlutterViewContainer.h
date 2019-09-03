@@ -29,5 +29,6 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface FLB2FlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
 - (void)surfaceUpdated:(BOOL)appeared;
+- (void)setEnableForRunnersBatch:(BOOL)enable;
 @end
 NS_ASSUME_NONNULL_END
