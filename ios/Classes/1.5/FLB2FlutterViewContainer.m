@@ -217,14 +217,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
-    
     [FLUTTER_APP resume];
-    
     [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
+    [super viewDidDisappear:animated];
+    
 }
 
 - (void)installSplashScreenViewIfNecessary {
