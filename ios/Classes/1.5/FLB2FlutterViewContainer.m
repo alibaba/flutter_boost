@@ -222,6 +222,7 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
+    [FLUTTER_APP resume];
     
 }
 
