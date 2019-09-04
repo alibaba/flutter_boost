@@ -19,6 +19,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    DemoRouter *router = [DemoRouter sharedRouter];
+    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
+                                                        onStart:^(FlutterEngine *fvc) {
+                                                            
+                                                        }];
+    
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
     
@@ -37,19 +43,18 @@
     UITabBarController *tabVC = [[UITabBarController alloc] init];
     UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:tabVC];
     
-    DemoRouter *router = [DemoRouter sharedRouter];
+   
     router.navigationController = rvc;
     
     tabVC.viewControllers = @[vc,fvc];
     
-    
-    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterViewController *fvc) {
-                                                            
-                                                        }];
-    
-    
     self.window.rootViewController = rvc;
+    
+    
+  
+    
+    
+    
     
     UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 50, 200, 100, 45);

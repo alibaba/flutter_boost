@@ -26,8 +26,8 @@
 #define FlutterBoost_h
 
 #import "FlutterBoostPlugin.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBPlatform.h"
 #import "FLBFlutterAppDelegate.h"
+#import "FLBFlutterViewContainer.h"
+#import "FLBTypes.h"
 
 #endif /* FlutterBoost_h */

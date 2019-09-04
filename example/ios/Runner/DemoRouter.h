@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import <flutter_boost/FLBPlatform.h>
+#import <flutter_boost/FlutterBoost.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+@protocol FLBPlatform;
 
 @interface DemoRouter : NSObject<FLBPlatform>
 

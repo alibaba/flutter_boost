@@ -20,18 +20,32 @@ class _MyAppState extends State<MyApp> {
       'first': (pageName, params, _) => FirstRouteWidget(),
       'second': (pageName, params, _) => SecondRouteWidget(),
       'tab': (pageName, params, _) => TabRouteWidget(),
-      'flutterPage': (pageName, params, _) => FlutterRouteWidget(),
       'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
-    });
 
-    FlutterBoost.handleOnStartPage();
+      ///可以在native层通过 getContainerParams 来传递参数
+      'flutterPage': (pageName, params, _) {
+        print("flutterPage params:$params");
+
+        return FlutterRouteWidget();
+      },
+    });
   }
+
+  Map<String, WidgetBuilder> routes = {
+    "second": (BuildContext context) =>
+        SecondRouteWidget(),
+  };
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Boost example',
-        builder: FlutterBoost.init(),
+        builder: FlutterBoost.init(postPush: _onRoutePushed),
+        routes: routes,
         home: Container());
+  }
+
+  void _onRoutePushed(
+      String pageName, String uniqueId, Map params, Route route, Future _) {
   }
 }

@@ -23,24 +23,27 @@
  */
 #import <Flutter/Flutter.h>
 
-#import "FLBFlutterViewContainer.h"
 #import "FLBPlatform.h"
-
-typedef FLBFlutterViewContainer * (^FLBPageBuilder)(NSString *name,NSDictionary *params);
+#import "FLBTypes.h"
 
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 #pragma mark - Initializer
-
 + (instancetype)sharedInstance;
 
-- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform onStart:(void (^)(FlutterViewController *))callback;
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                         onStart:(void (^)(id<FlutterBinaryMessenger,
+                                           FlutterTextureRegistry,
+                                           FlutterPluginRegistry> engine))callback;
 
 #pragma mark - Some properties.
 - (BOOL)isRunning;
+
 - (FlutterViewController *)currentViewController;
 
-#pragma mark - handing vc result.
-- (void)onResultForKey:(NSString *)vcId resultData:(NSDictionary *)resultData;
-- (void)setResultHandler:(void (^)(NSString *, NSDictionary *))handler forKey:(NSString *)vcid;
-- (void)removeHandlerForKey:(NSString *)vcid;
+#pragma mark - broadcast event to/from flutter
+- (void)sendEvent:(NSString *)eventName
+        arguments:(NSDictionary *)arguments;
+
+- (FLBVoidCallback)addEventListener:(FLBEventListener)listner
+                            forName:(NSString *)name;
 @end

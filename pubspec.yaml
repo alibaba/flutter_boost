@@ -1,6 +1,6 @@
 name: flutter_boost
 description: A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.
-version: 0.0.39
+version: 0.1.50
 author: Alibaba Xianyu
 homepage: https://github.com/alibaba/flutter_boost
 
@@ -11,8 +11,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  xservice_kit: ^0.0.26
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -20,8 +18,8 @@ dependencies:
 # The following section is specific to Flutter.
 flutter:
   plugin:
-    androidPackage: com.taobao.idlefish.flutterboost
-    pluginClass: FlutterBoostPlugin
+    androidPackage: com.idlefish.flutterboost
+    pluginClass: BoostChannel
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

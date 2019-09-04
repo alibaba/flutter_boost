@@ -25,18 +25,19 @@
 #import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
 @protocol FLBPlatform <NSObject>
+@optional
+- (NSString *)entryForDart;
+    
 @required
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
+- (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
       completion:(void (^)(BOOL finished))completion;
 
-- (void)closePage:(NSString *)uid
-         animated:(BOOL)animated
-           params:(NSDictionary *)params
-       completion:(void (^)(BOOL finished))completion;
+- (void)close:(NSString *)uid
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL finished))completion;
 @end
-
 NS_ASSUME_NONNULL_END
