@@ -3,7 +3,9 @@
 </p>
 
 
-Note: 请查看最新版本0.1.50的release note 确认变更，[0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)。
+# Release Note
+
+ 请查看最新版本0.1.50的release note 确认变更，[0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)。
 
 # FlutterBoost
 
@@ -20,15 +22,18 @@ Note: 请查看最新版本0.1.50的release note 确认变更，[0.1.50 release 
 打开pubspec.yaml并将以下行添加到依赖项：
 
 ```json
-flutter_boost: ^0.0.415
+flutter_boost: ^0.1.50
 ```
 
 或者可以直接依赖github的项目的版本，Tag，pub发布会有延迟，推荐直接依赖Github项目
+
 ```java
+
 flutter_boost:
         git:
             url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.0.415'
+            ref: '0.1.50'
+            
 ```
 ## Dart代码的集成
 将init代码添加到App App
@@ -146,30 +151,32 @@ public class MyApplication extends FlutterApplication {
                 return MyApplication.this;
             }
 
-            /**
-             * get the main activity, this activity should always at the bottom of task stack.
-             */
-            @Override
-            public Activity getMainActivity() {
-                return MainActivity.sRef.get();
-            }
-
             @Override
             public boolean isDebug() {
-                return false;
-            }
-
-            /**
-             * start a new activity from flutter page, you may need a activity router.
-             */
-            @Override
-            public boolean startActivity(Context context, String url, int requestCode) {
-                return PageRouter.openPageByUrl(context,url,requestCode);
+                return true;
             }
 
             @Override
-            public Map getSettings() {
-                return null;
+            public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
+                PageRouter.openPageByUrl(context,url,urlParams,requestCode);
+            }
+
+            @Override
+            public IFlutterEngineProvider engineProvider() {
+                return new BoostEngineProvider(){
+                    @Override
+                    public BoostFlutterEngine createEngine(Context context) {
+                        return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
+                                context.getResources().getAssets(),
+                                FlutterMain.findAppBundlePath(context),
+                                "main"),"/");
+                    }
+                };
+            }
+
+            @Override
+            public int whenEngineStart() {
+                return ANY_ACTIVITY_CREATED;
             }
         });
     }
@@ -243,14 +250,17 @@ public class FlutterFragment extends BoostFlutterFragment {
 Dart
 
 ```java
- FlutterBoost.singleton.openPage("pagename", {}, true);
+
+ FlutterBoost.singleton
+                .open("sample://flutterFragmentPage")
+
 ```
 
 
 ## 使用Flutter Boost在dart代码关闭页面。
 
 ```java
-FlutterBoost.singleton.closePageForContext(context);
+ FlutterBoost.singleton.close(uniqueId);
 ```
 
 # Examples

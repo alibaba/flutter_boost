@@ -5,7 +5,9 @@
   <a href="https://mp.weixin.qq.com/s?__biz=MzU4MDUxOTI5NA==&mid=2247484367&idx=1&sn=fcbc485f068dae5de9f68d52607ea08f&chksm=fd54d7deca235ec86249a9e3714ec18be8b2d6dc580cae19e4e5113533a6c5b44dfa5813c4c3&scene=0&subscene=131&clicktime=1551942425&ascene=7&devicetype=android-28&version=2700033b&nettype=ctnet&abtest_cookie=BAABAAoACwASABMABAAklx4AVpkeAMSZHgDWmR4AAAA%3D&lang=zh_CN&pass_ticket=1qvHqOsbLBHv3wwAcw577EHhNjg6EKXqTfnOiFbbbaw%3D&wx_header=1">中文介绍</a>
 </p>
 
-Note: Please checkout the release note for the latest 0.1.50 to see changes [0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)
+#Release Note
+
+Please checkout the release note for the latest 0.1.50 to see changes [0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
@@ -22,15 +24,16 @@ You need to add Flutter to your project before moving on.
 Open you pubspec.yaml and add the following line to dependencies:
 
 ```java
-flutter_boost: ^0.0.415
+flutter_boost: ^0.1.50
 ```
 
 or you could rely directly on a Github project tag, for example(recommended)
+
 ```java
 flutter_boost:
         git:
             url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.0.415'
+            ref: '0.1.50'
 ```
 
 
@@ -147,36 +150,40 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
         FlutterBoostPlugin.init(new IPlatform() {
-            @Override
+        
+        @Override
             public Application getApplication() {
                 return MyApplication.this;
             }
 
-            /**
-             * get the main activity, this activity should always at the bottom of task stack.
-             */
-            @Override
-            public Activity getMainActivity() {
-                return MainActivity.sRef.get();
-            }
-
             @Override
             public boolean isDebug() {
-                return false;
-            }
-
-            /**
-             * start a new activity from flutter page, you may need a activity router.
-             */
-            @Override
-            public boolean startActivity(Context context, String url, int requestCode) {
-                return PageRouter.openPageByUrl(context,url,requestCode);
+                return true;
             }
 
             @Override
-            public Map getSettings() {
-                return null;
+            public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
+                PageRouter.openPageByUrl(context,url,urlParams,requestCode);
             }
+
+            @Override
+            public IFlutterEngineProvider engineProvider() {
+                return new BoostEngineProvider(){
+                    @Override
+                    public BoostFlutterEngine createEngine(Context context) {
+                        return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
+                                context.getResources().getAssets(),
+                                FlutterMain.findAppBundlePath(context),
+                                "main"),"/");
+                    }
+                };
+            }
+
+            @Override
+            public int whenEngineStart() {
+                return ANY_ACTIVITY_CREATED;
+            }
+        
         });
     }
 ```
@@ -254,13 +261,18 @@ public class FlutterFragment extends BoostFlutterFragment {
 Dart
 
 ```objc
- FlutterBoost.singleton.openPage("pagename", {}, true);
+
+FlutterBoost.singleton
+                .open("pagename")
+                
 ```
 
 ## Use Flutter Boost to close a page in dart code.
 
 ```objc
-FlutterBoost.singleton.closePageForContext(context);
+
+FlutterBoost.singleton.close(uniqueId);
+
 ```
 
 # Running the Demo
