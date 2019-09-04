@@ -31,17 +31,11 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  Map<String, WidgetBuilder> routes = {
-    "second": (BuildContext context) =>
-        SecondRouteWidget(),
-  };
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
-        routes: routes,
         home: Container());
   }
 
