@@ -33,7 +33,6 @@
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
 @interface FLB2FlutterViewContainer  ()
-@property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
 @end

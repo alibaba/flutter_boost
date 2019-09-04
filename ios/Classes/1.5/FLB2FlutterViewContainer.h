@@ -28,6 +28,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLB2FlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
+@property (nonatomic,copy,readwrite) NSString *name;
 - (void)surfaceUpdated:(BOOL)appeared;
 - (void)setEnableForRunnersBatch:(BOOL)enable;
 @end
