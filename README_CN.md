@@ -259,6 +259,11 @@ Dart
 该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE.md]（LICENSE.md）文件
 <a name="Acknowledgments"> </a>
 
+# 问题反馈群（钉钉群)
+
+<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
+
+
 ## 关于我们
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。
 
