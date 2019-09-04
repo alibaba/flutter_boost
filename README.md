@@ -163,7 +163,7 @@ public class MyApplication extends FlutterApplication {
 
             @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
-                PageRouter.openPageByUrl(context,url,urlParams,requestCode);
+            		//native open url 
             }
 
             @Override
@@ -210,21 +210,16 @@ Android
 ```java
 public class FlutterPageActivity extends BoostFlutterActivity {
 
+
     @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        //register flutter plugins
-        GeneratedPluginRegistrant.registerWith(registry);
+    public String getContainerUrl() {
+     	//specify the page name register in FlutterBoost
+       return "sample://firstPage";
     }
 
     @Override
-    public String getContainerName() {
-        //specify the page name register in FlutterBoost
-        return "sample://firstPage";
-    }
-
-    @Override
-    public Map getContainerParams() {
-        //params of the page
+    public Map getContainerUrlParams() {
+    	//params of the page
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
         return params;
@@ -235,21 +230,17 @@ public class FlutterPageActivity extends BoostFlutterActivity {
 or
 
 ```java
+
 public class FlutterFragment extends BoostFlutterFragment {
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
+	  @Override
+     public String getContainerUrl() {
+        return "flutterFragment";
     }
 
     @Override
-    public String getContainerName() {
-        return "sample://firstPage";
-    }
-
-    @Override
-    public Map getContainerParams() {
+     public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
-        params.put("key","value");
+        params.put("tag",getArguments().getString("tag"));
         return params;
     }
 }

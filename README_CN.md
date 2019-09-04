@@ -200,20 +200,15 @@ Android
 ```java
 public class FlutterPageActivity extends BoostFlutterActivity {
 
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        //register flutter plugins
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
 
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         //specify the page name register in FlutterBoost
         return "sample://firstPage";
     }
 
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         //params of the page
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
@@ -226,18 +221,14 @@ public class FlutterPageActivity extends BoostFlutterActivity {
 
 ```java
 public class FlutterFragment extends BoostFlutterFragment {
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
 
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         return "sample://firstPage";
     }
 
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
         return params;
