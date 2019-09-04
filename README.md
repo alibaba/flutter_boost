@@ -60,8 +60,6 @@ class _MyAppState extends State<MyApp> {
       'sample://secondPage': (pageName, params, _) => SecondRouteWidget(),
     });
 
-    ///query current top page and load it
-    FlutterBoost.handleOnStartPage();
   }
 
   @override
