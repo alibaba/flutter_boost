@@ -55,8 +55,6 @@ public class BoostFlutterView extends FrameLayout {
 
     private XFlutterView mFlutterView;
 
-    private PlatformPlugin mPlatformPlugin;
-
     private Bundle mArguments;
 
     private RenderingProgressCoverCreator mRenderingProgressCoverCreator;
@@ -115,8 +113,6 @@ public class BoostFlutterView extends FrameLayout {
         if (mArguments == null) {
             mArguments = new Bundle();
         }
-
-        mPlatformPlugin = new PlatformPlugin((Activity) getContext(), mFlutterEngine.getPlatformChannel());
 
         mFlutterView = new XFlutterView(getContext(), getRenderMode(), getTransparencyMode());
         addView(mFlutterView, new FrameLayout.LayoutParams(
@@ -213,7 +209,6 @@ public class BoostFlutterView extends FrameLayout {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mPlatformPlugin.onPostResume();
         ViewCompat.requestApplyInsets(this);
         getViewTreeObserver().addOnGlobalLayoutListener(mGlobalLayoutListener);
     }
