@@ -292,10 +292,7 @@ public class BoostFlutterView extends FrameLayout {
         Debuger.log("BoostFlutterView onDestroy");
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
-        AccessibilityBridge bridge=mFlutterView.getAccessibilityBridge();
-        if(bridge!=null){
-            bridge.release();
-        }
+        mFlutterView.release();
     }
 
     //混合栈的返回和原来Flutter的返回逻辑不同

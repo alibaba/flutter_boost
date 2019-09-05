@@ -59,9 +59,9 @@ public class XFlutterView extends FrameLayout {
   // These components essentially add some additional behavioral logic on top of
   // existing, stateless system channels, e.g., KeyEventChannel, TextInputChannel, etc.
   @Nullable
-  private TextInputPlugin textInputPlugin;
+  private XTextInputPlugin textInputPlugin;
   @Nullable
-  private AndroidKeyProcessor androidKeyProcessor;
+  private XAndroidKeyProcessor androidKeyProcessor;
   @Nullable
   private AndroidTouchProcessor androidTouchProcessor;
   @Nullable
@@ -404,16 +404,7 @@ public class XFlutterView extends FrameLayout {
     }
   }
 
-  public AccessibilityBridge getAccessibilityBridge() {
-    if (accessibilityBridge != null) {
-      return accessibilityBridge;
-    } else {
-      // TODO(goderbauer): when a11y is off this should return a one-off snapshot of
-      // the a11y
-      // tree.
-      return null;
-    }
-  }
+
   // TODO(mattcarroll): Confer with Ian as to why we need this method. Delete if possible, otherwise add comments.
   private void resetWillNotDraw(boolean isAccessibilityEnabled, boolean isTouchExplorationEnabled) {
     if(flutterEngine==null) return;
@@ -459,14 +450,19 @@ public class XFlutterView extends FrameLayout {
 
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
-    textInputPlugin = new TextInputPlugin(
-        this,
-        this.flutterEngine.getDartExecutor()
-    );
-    androidKeyProcessor = new AndroidKeyProcessor(
-        this.flutterEngine.getKeyEventChannel(),
-        textInputPlugin
-    );
+    if(textInputPlugin==null){
+      textInputPlugin = new XTextInputPlugin(
+              this,
+              this.flutterEngine.getDartExecutor()
+      );
+      androidKeyProcessor = new XAndroidKeyProcessor(
+              this.flutterEngine.getKeyEventChannel(),
+              textInputPlugin
+      );
+    }
+
+
+
     androidTouchProcessor = new AndroidTouchProcessor(this.flutterEngine.getRenderer());
 
     if(accessibilityBridge==null){
@@ -498,6 +494,16 @@ public class XFlutterView extends FrameLayout {
     sendUserSettingsToFlutter();
     sendLocalesToFlutter(getResources().getConfiguration());
     sendViewportMetricsToFlutter();
+  }
+
+
+  public void release(){
+
+    if(accessibilityBridge!=null){
+      accessibilityBridge.release();
+    }
+    textInputPlugin.release();
+
   }
 
   /**
