@@ -185,8 +185,10 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
 
     @Override
     protected void onDestroy() {
+        Utils.fixInputMethodManagerLeak(this);
         mSyncer.onDestroy();
         super.onDestroy();
+
     }
 
     @Override

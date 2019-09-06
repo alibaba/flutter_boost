@@ -32,8 +32,7 @@
 #define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
-@interface FLBFlutterViewContainer  ()
-@property (nonatomic,copy,readwrite) NSString *name;
+@interface FLB2FlutterViewContainer  ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
 @end
@@ -146,6 +145,10 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP.flutterProvider detach];
 }
 
+- (void)setEnableForRunnersBatch:(BOOL)enable{
+    //dummy function
+    NSLog(@"[DEBUG]- I did nothing, I am innocent");
+}
 
 #pragma mark - Life circle methods
 
@@ -158,9 +161,11 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewWillAppear:(BOOL)animated
 {
     if([FLUTTER_APP contains:self]){
+        [self surfaceUpdated:NO];
         [self detatchFlutterEngine];
     }else{
         [self attatchFlutterEngine];
+        [self surfaceUpdated:YES];
     }
   
     [FLUTTER_APP resume];
@@ -211,14 +216,14 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [super viewDidDisappear:animated];
-    
     [FLUTTER_APP resume];
-    
     [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
+    [super viewDidDisappear:animated];
+    [FLUTTER_APP resume];
+
 }
 
 - (void)installSplashScreenViewIfNecessary {

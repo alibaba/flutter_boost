@@ -26,6 +26,8 @@
 #import <Flutter/Flutter.h>
 #import "FLBTypes.h"
 
+#define kIgnoreMessageWithName  @"__flutterboost_dummy__"
+
  @interface BoostMessageChannel : NSObject
 
  + (void)onNativePageResult:(void (^)(NSNumber *))result uniqueId:(NSString *)uniqueId key:(NSString *)key resultData:(NSDictionary *)resultData params:(NSDictionary *)params;
