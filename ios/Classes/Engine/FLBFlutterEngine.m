@@ -52,6 +52,8 @@
         _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
                                                           nibName:nil
                                                            bundle:nil];
+        _dummy.name = kIgnoreMessageWithName;
+        
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {
             if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
@@ -121,6 +123,9 @@
 
 - (void)prepareEngineIfNeeded
 {
+//    if ([_dummy respondsToSelector:@selector(setEnableForRunnersBatch:)]) {
+//        [_dummy setEnableForRunnersBatch:YES];
+//    }
     [self detach];
     [_dummy surfaceUpdated:YES];
 }

@@ -59,9 +59,9 @@ public class XFlutterView extends FrameLayout {
   // These components essentially add some additional behavioral logic on top of
   // existing, stateless system channels, e.g., KeyEventChannel, TextInputChannel, etc.
   @Nullable
-  private TextInputPlugin textInputPlugin;
+  private XTextInputPlugin textInputPlugin;
   @Nullable
-  private AndroidKeyProcessor androidKeyProcessor;
+  private XAndroidKeyProcessor androidKeyProcessor;
   @Nullable
   private AndroidTouchProcessor androidTouchProcessor;
   @Nullable
@@ -168,8 +168,14 @@ public class XFlutterView extends FrameLayout {
   @Override
   protected void onConfigurationChanged(Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
-    sendLocalesToFlutter(newConfig);
-    sendUserSettingsToFlutter();
+    try {
+      sendLocalesToFlutter(newConfig);
+      sendUserSettingsToFlutter();
+    }catch (Throwable e){
+      Log.e(TAG, "onConfigurationChanged error ");
+
+    }
+
   }
 
   /**
@@ -398,16 +404,7 @@ public class XFlutterView extends FrameLayout {
     }
   }
 
-  public AccessibilityBridge getAccessibilityBridge() {
-    if (accessibilityBridge != null) {
-      return accessibilityBridge;
-    } else {
-      // TODO(goderbauer): when a11y is off this should return a one-off snapshot of
-      // the a11y
-      // tree.
-      return null;
-    }
-  }
+
   // TODO(mattcarroll): Confer with Ian as to why we need this method. Delete if possible, otherwise add comments.
   private void resetWillNotDraw(boolean isAccessibilityEnabled, boolean isTouchExplorationEnabled) {
     if(flutterEngine==null) return;
@@ -453,39 +450,60 @@ public class XFlutterView extends FrameLayout {
 
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
-    textInputPlugin = new TextInputPlugin(
-        this,
-        this.flutterEngine.getDartExecutor()
-    );
-    androidKeyProcessor = new AndroidKeyProcessor(
-        this.flutterEngine.getKeyEventChannel(),
-        textInputPlugin
-    );
+    if(textInputPlugin==null){
+      textInputPlugin = new XTextInputPlugin(
+              this,
+              this.flutterEngine.getDartExecutor()
+      );
+      androidKeyProcessor = new XAndroidKeyProcessor(
+              this.flutterEngine.getKeyEventChannel(),
+              textInputPlugin
+      );
+    }
+
+
+
     androidTouchProcessor = new AndroidTouchProcessor(this.flutterEngine.getRenderer());
-    accessibilityBridge = new AccessibilityBridge(
-        this,
-        flutterEngine.getAccessibilityChannel(),
-        (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE),
-        getContext().getContentResolver(),
-        // TODO(mattcaroll): plumb the platform views controller to the accessibility bridge.
-        // https://github.com/flutter/flutter/issues/29618
-        null
-    );
-    accessibilityBridge.setOnAccessibilityChangeListener(onAccessibilityChangeListener);
-    resetWillNotDraw(
-        accessibilityBridge.isAccessibilityEnabled(),
-        accessibilityBridge.isTouchExplorationEnabled()
-    );
+
+    if(accessibilityBridge==null){
+      accessibilityBridge = new AccessibilityBridge(
+              this,
+              flutterEngine.getAccessibilityChannel(),
+              (AccessibilityManager) getContext().getSystemService(Context.ACCESSIBILITY_SERVICE),
+              getContext().getContentResolver(),
+              // TODO(mattcaroll): plumb the platform views controller to the accessibility bridge.
+              // https://github.com/flutter/flutter/issues/29618
+              null
+      );
+      accessibilityBridge.setOnAccessibilityChangeListener(onAccessibilityChangeListener);
+      resetWillNotDraw(
+              accessibilityBridge.isAccessibilityEnabled(),
+              accessibilityBridge.isTouchExplorationEnabled()
+      );
+      textInputPlugin.getInputMethodManager().restartInput(this);
+
+    }
+
+
 
     // Inform the Android framework that it should retrieve a new InputConnection
     // now that an engine is attached.
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-    textInputPlugin.getInputMethodManager().restartInput(this);
 
     // Push View and Context related information from Android to Flutter.
     sendUserSettingsToFlutter();
     sendLocalesToFlutter(getResources().getConfiguration());
     sendViewportMetricsToFlutter();
+  }
+
+
+  public void release(){
+
+    if(accessibilityBridge!=null){
+      accessibilityBridge.release();
+    }
+    textInputPlugin.release();
+
   }
 
   /**
@@ -511,7 +529,6 @@ public class XFlutterView extends FrameLayout {
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
     textInputPlugin.getInputMethodManager().restartInput(this);
-
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     flutterEngine.getRenderer().detachFromRenderSurface();
     flutterEngine = null;
@@ -560,10 +577,13 @@ public class XFlutterView extends FrameLayout {
    * FlutterEngine must be non-null when this method is invoked.
    */
   private void sendUserSettingsToFlutter() {
-    flutterEngine.getSettingsChannel().startMessage()
-        .setTextScaleFactor(getResources().getConfiguration().fontScale)
-        .setUse24HourFormat(DateFormat.is24HourFormat(getContext()))
-        .send();
+    if(flutterEngine!=null&&flutterEngine.getSettingsChannel()!=null){
+      flutterEngine.getSettingsChannel().startMessage()
+              .setTextScaleFactor(getResources().getConfiguration().fontScale)
+              .setUse24HourFormat(DateFormat.is24HourFormat(getContext()))
+              .send();
+    }
+
   }
 
   // TODO(mattcarroll): consider introducing a system channel for this communication instead of JNI

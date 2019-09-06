@@ -100,6 +100,10 @@
  
  + (void)didShowPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;
@@ -113,6 +117,10 @@
  
  + (void)willShowPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;
@@ -126,6 +134,10 @@
  
  + (void)willDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;
@@ -139,6 +151,10 @@
  
  + (void)didDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;
@@ -152,6 +168,10 @@
  
  + (void)didInitPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;
@@ -169,6 +189,10 @@
  
  + (void)willDeallocPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
  {
+     if ([pageName isEqualToString:kIgnoreMessageWithName]) {
+         return;
+     }
+     
      NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
      if(pageName) tmp[@"pageName"] = pageName;
      if(params) tmp[@"params"] = params;

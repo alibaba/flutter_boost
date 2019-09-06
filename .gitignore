@@ -9,4 +9,10 @@ build/
 pubspec.lock
 .flutter-plugins
 flutter
-flutter_boost
+IDEWorkspaceChecks.plist
+org.eclipse.buildship.core.prefs
+Breakpoints_v2.xcbkptlist
+flutter_boost2
+example/android/app/.classpath
+example/android/app/.project
+example/android/.project

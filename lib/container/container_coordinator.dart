@@ -236,6 +236,8 @@ class ContainerCoordinator {
   }
 
   bool _nativeContainerWillDisappear(String name, Map params, String pageId) {
+    performContainerLifeCycle(_createContainerSettings(name, params, pageId),
+        ContainerLifeCycle.WillDisappear);
     return true;
   }
 

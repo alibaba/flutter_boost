@@ -30,6 +30,7 @@ import '../support/logger.dart';
 enum ContainerLifeCycle {
   Init,
   Appear,
+  WillDisappear,
   Disappear,
   Destroy,
   Background,
