@@ -3,12 +3,13 @@ package com.taobao.idlefish.flutterboostexample;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import io.flutter.plugin.platform.PlatformPlugin;
 
@@ -33,7 +34,7 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
         super.onCreate(savedInstanceState);
 
         final ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.hide();
         }
 
@@ -59,23 +60,23 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
         mTab3.setBackgroundColor(Color.WHITE);
         mTab4.setBackgroundColor(Color.WHITE);
 
-        if(mTab1 == v) {
+        if (mTab1 == v) {
             mTab1.setBackgroundColor(Color.YELLOW);
             mFragment = FlutterFragment.instance("tab1");
-        }else if(mTab2 == v) {
+        } else if (mTab2 == v) {
             mTab2.setBackgroundColor(Color.YELLOW);
             mFragment = FlutterFragment.instance("tab2");
-        }else if(mTab3 == v) {
+        } else if (mTab3 == v) {
             mTab3.setBackgroundColor(Color.YELLOW);
-           mFragment = FlutterFragment.instance("tab3");
-        }else{
+            mFragment = FlutterFragment.instance("tab3");
+        } else {
             mTab4.setBackgroundColor(Color.YELLOW);
             mFragment = FlutterFragment.instance("tab4");
         }
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_stub,mFragment)
+                .replace(R.id.fragment_stub, mFragment)
                 .commit();
     }
 
