@@ -13,7 +13,7 @@
 
 
 # 前置条件
-在继续之前，您需要将Flutter集成到你现有的项目中。
+在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要 v1.5.4-hotfixes，否则会编译失败.
 
 # 安装
 
@@ -57,8 +57,6 @@ class _MyAppState extends State<MyApp> {
       'sample://secondPage': (pageName, params, _) => SecondRouteWidget(),
     });
 
-    ///query current top page and load it
-    FlutterBoost.handleOnStartPage();
   }
 
   @override
@@ -200,20 +198,15 @@ Android
 ```java
 public class FlutterPageActivity extends BoostFlutterActivity {
 
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        //register flutter plugins
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
 
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         //specify the page name register in FlutterBoost
         return "sample://firstPage";
     }
 
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         //params of the page
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
@@ -226,18 +219,14 @@ public class FlutterPageActivity extends BoostFlutterActivity {
 
 ```java
 public class FlutterFragment extends BoostFlutterFragment {
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
-    }
 
     @Override
-    public String getContainerName() {
+    public String getContainerUrl() {
         return "sample://firstPage";
     }
 
     @Override
-    public Map getContainerParams() {
+    public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
         return params;
@@ -269,6 +258,11 @@ Dart
 # 许可证
 该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE.md]（LICENSE.md）文件
 <a name="Acknowledgments"> </a>
+
+# 问题反馈群（钉钉群)
+
+<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
+
 
 ## 关于我们
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。

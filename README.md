@@ -14,7 +14,7 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 <a name="bf647454"></a>
 
 # Prerequisites
-You need to add Flutter to your project before moving on.
+You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.5.4-hotfixes, or it will compile error.
 
 # Getting Started
 
@@ -60,8 +60,6 @@ class _MyAppState extends State<MyApp> {
       'sample://secondPage': (pageName, params, _) => SecondRouteWidget(),
     });
 
-    ///query current top page and load it
-    FlutterBoost.handleOnStartPage();
   }
 
   @override
@@ -150,7 +148,7 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
         FlutterBoostPlugin.init(new IPlatform() {
-        
+
         @Override
             public Application getApplication() {
                 return MyApplication.this;
@@ -163,7 +161,7 @@ public class MyApplication extends FlutterApplication {
 
             @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
-                PageRouter.openPageByUrl(context,url,urlParams,requestCode);
+            		//native open url 
             }
 
             @Override
@@ -183,7 +181,7 @@ public class MyApplication extends FlutterApplication {
             public int whenEngineStart() {
                 return ANY_ACTIVITY_CREATED;
             }
-        
+
         });
     }
 ```
@@ -210,21 +208,16 @@ Android
 ```java
 public class FlutterPageActivity extends BoostFlutterActivity {
 
+
     @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        //register flutter plugins
-        GeneratedPluginRegistrant.registerWith(registry);
+    public String getContainerUrl() {
+     	//specify the page name register in FlutterBoost
+       return "sample://firstPage";
     }
 
     @Override
-    public String getContainerName() {
-        //specify the page name register in FlutterBoost
-        return "sample://firstPage";
-    }
-
-    @Override
-    public Map getContainerParams() {
-        //params of the page
+    public Map getContainerUrlParams() {
+    	//params of the page
         Map<String,String> params = new HashMap<>();
         params.put("key","value");
         return params;
@@ -235,21 +228,17 @@ public class FlutterPageActivity extends BoostFlutterActivity {
 or
 
 ```java
+
 public class FlutterFragment extends BoostFlutterFragment {
-    @Override
-    public void onRegisterPlugins(PluginRegistry registry) {
-        GeneratedPluginRegistrant.registerWith(registry);
+	  @Override
+     public String getContainerUrl() {
+        return "flutterFragment";
     }
 
     @Override
-    public String getContainerName() {
-        return "sample://firstPage";
-    }
-
-    @Override
-    public Map getContainerParams() {
+     public Map getContainerUrlParams() {
         Map<String,String> params = new HashMap<>();
-        params.put("key","value");
+        params.put("tag",getArguments().getString("tag"));
         return params;
     }
 }
@@ -264,7 +253,7 @@ Dart
 
 FlutterBoost.singleton
                 .open("pagename")
-                
+
 ```
 
 ## Use Flutter Boost to close a page in dart code.
@@ -281,6 +270,14 @@ Please see the example for details.
 
 # License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+
+# Problem feedback group（ dingding group)
+
+<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
+
+
+
 
 ## 关于我们
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。
