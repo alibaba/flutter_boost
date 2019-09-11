@@ -450,16 +450,15 @@ public class XFlutterView extends FrameLayout {
 
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
-    if(textInputPlugin==null){
-      textInputPlugin = new XTextInputPlugin(
-              this,
-              this.flutterEngine.getDartExecutor()
-      );
-      androidKeyProcessor = new XAndroidKeyProcessor(
-              this.flutterEngine.getKeyEventChannel(),
-              textInputPlugin
-      );
-    }
+
+    textInputPlugin = new XTextInputPlugin(
+            this,
+            this.flutterEngine.getDartExecutor()
+    );
+    androidKeyProcessor = new XAndroidKeyProcessor(
+            this.flutterEngine.getKeyEventChannel(),
+            textInputPlugin
+    );
 
 
 
