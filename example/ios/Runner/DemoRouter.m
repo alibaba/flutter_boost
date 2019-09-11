@@ -21,7 +21,7 @@
     return instance;
 }
 
-#pragma mark - Boost 2
+#pragma mark - Boost 1.5
 - (void)open:(NSString *)name
    urlParams:(NSDictionary *)params
         exts:(NSDictionary *)exts
@@ -57,7 +57,7 @@
     }
 }
 
-#pragma mark - Boost 1
+#pragma mark - Boost 1.0 - deprecated~
 - (void)openPage:(NSString *)name
           params:(NSDictionary *)params
         animated:(BOOL)animated
