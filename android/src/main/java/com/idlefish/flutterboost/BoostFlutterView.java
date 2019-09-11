@@ -54,7 +54,7 @@ public class BoostFlutterView extends FrameLayout {
     private BoostFlutterEngine mFlutterEngine;
 
     private XFlutterView mFlutterView;
-    private PlatformPlugin mPlatformPlugin;
+    private XPlatformPlugin mPlatformPlugin;
 
     private Bundle mArguments;
 
@@ -114,7 +114,7 @@ public class BoostFlutterView extends FrameLayout {
         if (mArguments == null) {
             mArguments = new Bundle();
         }
-        mPlatformPlugin = new PlatformPlugin((Activity) getContext(), mFlutterEngine.getPlatformChannel());
+        mPlatformPlugin = new XPlatformPlugin((Activity) getContext(), mFlutterEngine.getPlatformChannel());
 
         mFlutterView = new XFlutterView(getContext(), getRenderMode(), getTransparencyMode());
         addView(mFlutterView, new FrameLayout.LayoutParams(
@@ -295,6 +295,7 @@ public class BoostFlutterView extends FrameLayout {
 
         mFlutterView.removeOnFirstFrameRenderedListener(mOnFirstFrameRenderedListener);
         mFlutterView.release();
+        mPlatformPlugin.release();
     }
 
     //混合栈的返回和原来Flutter的返回逻辑不同
