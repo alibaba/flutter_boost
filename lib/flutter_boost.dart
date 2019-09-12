@@ -101,7 +101,6 @@ class FlutterBoost {
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    print("[JDEBUGX]------boost2.openPage channel call--------");
     return channel.invokeMethod<Map<String,dynamic>>(
         'openPage', properties);
   }
