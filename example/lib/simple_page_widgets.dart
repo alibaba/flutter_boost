@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost_example/text_platform_view.dart';
 
 class FirstRouteWidget extends StatelessWidget {
   @override
@@ -151,18 +150,6 @@ class FlutterRouteWidget extends StatelessWidget {
             onTap: () =>
                 FlutterBoost.singleton.open("sample://flutterFragmentPage"),
           ),
-          InkWell(
-            child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.all(8.0),
-                color: Colors.yellow,
-                child: Text(
-                  'open platform view page',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
-            onTap: () => Navigator.of(context).push(
-                new MaterialPageRoute(builder: (_) => TextPlatformViewPage())),
-          )
         ],
       ),
     );
