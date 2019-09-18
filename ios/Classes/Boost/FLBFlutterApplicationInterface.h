@@ -53,14 +53,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - handle messages
 - (void)close:(NSString *)uid
-       result:(NSDictionary *)result
+       result:(NSDictionary *)resultData
          exts:(NSDictionary *)exts
    completion:(void (^)(BOOL))completion;
 
-- (void)open:(NSString *)url
+- (void)open:(NSString *)uri
    urlParams:(NSDictionary *)urlParams
         exts:(NSDictionary *)exts
-       reult:(void (^)(NSDictionary *))resultCallback
+       onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
 
 

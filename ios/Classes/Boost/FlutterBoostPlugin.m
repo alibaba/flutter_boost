@@ -86,7 +86,7 @@
         [[FlutterBoostPlugin sharedInstance].application open:url
                                                     urlParams:urlParams
                                                          exts:exts
-                                                        reult:result
+                                                        onPageFinished:result
                                                    completion:^(BOOL r) {}];
     }else if([@"pageOnStart" isEqualToString:call.method]){
         NSMutableDictionary *pageInfo = [NSMutableDictionary new];
@@ -163,13 +163,13 @@
 }
 
 #pragma mark - open/close Page
-+ (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams exts:(NSDictionary *)exts reult:(void (^)(NSDictionary *))resultCallback completion:(void (^)(BOOL))completion{
++ (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams exts:(NSDictionary *)exts onPageFinished:(void (^)(NSDictionary *))resultCallback completion:(void (^)(BOOL))completion{
     id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
-    [app open:url urlParams:urlParams exts:exts reult:resultCallback completion:completion];
+    [app open:url urlParams:urlParams exts:exts onPageFinished:resultCallback completion:completion];
 }
 
-+ (void)close:(NSString *)uniqueId result:(NSDictionary *)result exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
++ (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
     id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
-    [app close:uniqueId result:result exts:exts completion:completion];
+    [app close:uniqueId result:resultData exts:exts completion:completion];
 }
 @end

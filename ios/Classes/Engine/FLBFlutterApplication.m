@@ -152,18 +152,18 @@
 }
 
 - (void)close:(NSString *)uniqueId
-       result:(NSDictionary *)result
+       result:(NSDictionary *)resultData
          exts:(NSDictionary *)exts
    completion:(void (^)(BOOL))completion
 {
     [self.platform close:uniqueId
-                  result:result
+                  result:resultData
                     exts:exts
               completion:completion];
     
     if(_pageResultCallbacks[uniqueId]){
         void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
-        cb(result);
+        cb(resultData);
         [_pageResultCallbacks removeObjectForKey:uniqueId];
     }
 }
@@ -171,7 +171,7 @@
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams
         exts:(NSDictionary *)exts
-       reult:(void (^)(NSDictionary *))resultCallback
+       onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion
 {
     NSString *cid = urlParams[kPageCallBackId];
