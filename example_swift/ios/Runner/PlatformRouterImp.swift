@@ -11,8 +11,9 @@ import Foundation
 
 class PlatformRouterImp: NSObject, FLBPlatform {
     func open(_ url: String, urlParams: [AnyHashable : Any], exts: [AnyHashable : Any], completion: @escaping (Bool) -> Void) {
-        guard let animated = exts["animated"] as? Bool else{
-            return;
+        var animated = false;
+        if exts["animated"] != nil{
+            animated = exts["animated"] as! Bool;
         }
         let vc = FLBFlutterViewContainer.init();
         vc.setName(url, params: urlParams);
@@ -21,8 +22,9 @@ class PlatformRouterImp: NSObject, FLBPlatform {
     }
     
     func present(_ url: String, urlParams: [AnyHashable : Any], exts: [AnyHashable : Any], completion: @escaping (Bool) -> Void) {
-        guard let animated = exts["animated"] as? Bool else{
-            return;
+        var animated = false;
+        if exts["animated"] != nil{
+            animated = exts["animated"] as! Bool;
         }
         let vc = FLBFlutterViewContainer.init();
         vc.setName(url, params: urlParams);
@@ -32,8 +34,9 @@ class PlatformRouterImp: NSObject, FLBPlatform {
     }
     
     func close(_ uid: String, result: [AnyHashable : Any], exts: [AnyHashable : Any], completion: @escaping (Bool) -> Void) {
-        guard let animated = exts["animated"] as? Bool else{
-            return;
+        var animated = false;
+        if exts["animated"] != nil{
+            animated = exts["animated"] as! Bool;
         }
         let presentedVC = self.navigationController().presentedViewController;
         let vc = presentedVC as? FLBFlutterViewContainer;
