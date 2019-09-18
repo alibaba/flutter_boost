@@ -1,10 +1,5 @@
 //
 //  ViewController.swift
-//  product
-//
-//  Created by 宪祥郑 on 2019/9/18.
-//  Copyright © 2019 宪祥郑. All rights reserved.
-//
 
 import UIKit
 
