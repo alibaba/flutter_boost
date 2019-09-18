@@ -162,4 +162,14 @@
                                         forName:name];
 }
 
+#pragma mark - open/close Page
++ (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams exts:(NSDictionary *)exts reult:(void (^)(NSDictionary *))resultCallback completion:(void (^)(BOOL))completion{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    [app open:url urlParams:urlParams exts:exts reult:resultCallback completion:completion];
+}
+
++ (void)close:(NSString *)uniqueId result:(NSDictionary *)result exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    [app close:uniqueId result:result exts:exts completion:completion];
+}
 @end

@@ -9,17 +9,10 @@
 #import "DemoRouter.h"
 #import <flutter_boost/FlutterBoost.h>
 
-@implementation DemoRouter
+@interface DemoRouter()
+@end
 
-+ (DemoRouter *)sharedRouter
-{
-    static id instance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        instance = [[self alloc] init];
-    });
-    return instance;
-}
+@implementation DemoRouter
 
 #pragma mark - Boost 1.5
 - (void)open:(NSString *)name
@@ -55,28 +48,5 @@
     }else{
         [self.navigationController popViewControllerAnimated:animated];
     }
-}
-
-#pragma mark - Boost 1.0 - deprecated~
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
-{
-    NSMutableDictionary *exts = NSMutableDictionary.new;
-    exts[@"url"] = name;
-    exts[@"params"] = params;
-    exts[@"animated"] = @(animated);
-    [self open:name urlParams:params exts:exts completion:completion];
-    return;
-}
-
-- (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
-{
-    NSMutableDictionary *exts = NSMutableDictionary.new;
-    exts[@"params"] = params;
-    exts[@"animated"] = @(animated);
-    [self close:uid result:@{} exts:exts completion:completion];
-    return;
 }
 @end

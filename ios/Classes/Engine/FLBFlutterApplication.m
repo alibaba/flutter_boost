@@ -37,6 +37,7 @@
 
 
 @implementation FLBFlutterApplication
+@synthesize platform;
 
 + (FLBFlutterApplication *)sharedApplication
 {
@@ -173,7 +174,7 @@
        reult:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion
 {
-    NSString *cid = urlParams[@"__calback_id__"];
+    NSString *cid = urlParams[kPageCallBackId];
    
     if(!cid){
         static int64_t sCallbackID = 1;
@@ -193,7 +194,7 @@
                       params:(NSDictionary *)urlParams
                     uniqueId:(NSString *)uniqueId
 {
-    NSString *cid = urlParams[@"__calback_id__"];
+    NSString *cid = urlParams[kPageCallBackId];
     if(cid && _callbackCache[cid]){
         _pageResultCallbacks[uniqueId] = _callbackCache[cid];
         [_callbackCache removeObjectForKey:cid];

@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    DemoRouter *router = [DemoRouter sharedRouter];
+    DemoRouter *router = [DemoRouter new];
     [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
                                                         onStart:^(FlutterEngine *engine) {
                                                             

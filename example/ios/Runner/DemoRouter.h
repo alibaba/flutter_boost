@@ -15,12 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol FLBPlatform;
 
 @interface DemoRouter : NSObject<FLBPlatform>
-
 @property (nonatomic,strong) UINavigationController *navigationController;
-
-+ (DemoRouter *)sharedRouter;
-
-
 @end
 
 NS_ASSUME_NONNULL_END

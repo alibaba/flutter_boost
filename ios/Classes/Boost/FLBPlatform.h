@@ -24,6 +24,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kPageCallBackId @"__callback_id__"
+
 NS_ASSUME_NONNULL_BEGIN
 @protocol FLBPlatform <NSObject>
 @optional

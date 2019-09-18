@@ -44,4 +44,16 @@
 
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name;
+
+#pragma mark - open/close Page
++ (void)close:(NSString *)uniqueId
+       result:(NSDictionary *)result
+         exts:(NSDictionary *)exts
+   completion:(void (^)(BOOL))completion;
+
++ (void)open:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+       reult:(void (^)(NSDictionary *))resultCallback
+  completion:(void (^)(BOOL))completion;
 @end
