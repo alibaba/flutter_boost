@@ -14,8 +14,7 @@ class FirstRouteWidget extends StatelessWidget {
           onPressed: () {
             print("open second page!");
             FlutterBoost.singleton.open("second").then((Map value) {
-              print("did recieve second route result");
-              print("did recieve second route result $value");
+              print("call me when page is finished. did recieve second route result $value");
             });
           },
         ),
