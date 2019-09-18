@@ -8,7 +8,6 @@
 
 #import "UIViewControllerDemo.h"
 #import <Flutter/Flutter.h>
-#import "DemoRouter.h"
 #import <flutter_boost/FlutterBoostPlugin.h>
 
 

@@ -8,7 +8,7 @@
 
 #import "AppDelegate.h"
 #import "UIViewControllerDemo.h"
-#import "DemoRouter.h"
+#import "PlatformRouterImp.h"
 #import <flutter_boost/FlutterBoost.h>
 
 @interface AppDelegate ()
@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    DemoRouter *router = [DemoRouter new];
+    PlatformRouterImp *router = [PlatformRouterImp new];
     [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
                                                         onStart:^(FlutterEngine *engine) {
                                                             
