@@ -180,6 +180,9 @@
         static int64_t sCallbackID = 1;
         cid = @(sCallbackID).stringValue;
         sCallbackID += 2;
+        NSMutableDictionary *newParams = [[NSMutableDictionary alloc]initWithDictionary:urlParams];
+        [newParams setObject:cid?cid:@"__default#0__" forKey:kPageCallBackId];
+        urlParams = newParams;
     }
     
     _callbackCache[cid] = resultCallback;

@@ -95,25 +95,25 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<Map<String,dynamic>> open(String url,{Map<String,dynamic> urlParams,Map<String,dynamic> exts}){
+  Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
 
-    Map<String, dynamic> properties = new Map<String, dynamic>();
+    Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    return channel.invokeMethod<Map<String,dynamic>>(
+    return channel.invokeMethod<Map<dynamic,dynamic>>(
         'openPage', properties);
   }
 
-  Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
+  Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
 
     assert(id != null);
 
     BoostContainerSettings settings = containerManager?.onstageSettings;
-    Map<String, dynamic> properties = new Map<String, dynamic>();
+    Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
 
     if(exts == null){
-      exts = Map<String,dynamic>();
+      exts = Map<dynamic,dynamic>();
     }
 
     exts["params"] = settings.params;
