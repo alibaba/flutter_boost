@@ -186,11 +186,17 @@
     }
     
     _callbackCache[cid] = resultCallback;
-    
-    [self.platform open:url
-              urlParams:urlParams
-                   exts:exts
-             completion:completion];
+    if([urlParams[@"present"]respondsToSelector:@selector(boolValue)] && [urlParams[@"present"] boolValue] && [self.platform respondsToSelector:@selector(present:urlParams:exts:completion:)]){
+        [self.platform present:url
+                  urlParams:urlParams
+                       exts:exts
+                 completion:completion];
+    }else{
+        [self.platform open:url
+                  urlParams:urlParams
+                       exts:exts
+                 completion:completion];
+    }
 }
 
 - (void)didInitPageContainer:(NSString *)url

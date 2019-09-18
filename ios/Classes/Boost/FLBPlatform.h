@@ -52,6 +52,20 @@ NS_ASSUME_NONNULL_BEGIN
       completion:(void (^)(BOOL finished))completion;
 
 /**
+ * 基于Native平台实现present页面打开，Dart层的页面打开能力依赖于这个函数实现；Native或者Dart侧不建议直接使用这个函数。应直接使用FlutterBoost封装的函数
+ *
+ * @param url 打开的页面资源定位符
+ * @param urlParams 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
+ * @param exts 额外参数
+ * @param completion 打开页面的即时回调，页面一旦打开即回调
+ */
+@optional
+- (void)present:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+  completion:(void (^)(BOOL finished))completion;
+
+/**
  * 基于Native平台实现页面关闭，Dart层的页面关闭能力依赖于这个函数实现；Native或者Dart侧不建议直接使用这个函数。应直接使用FlutterBoost封装的函数
  *
  * @param uid 关闭的页面唯一ID符
