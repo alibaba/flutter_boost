@@ -67,7 +67,7 @@
    completion:(void (^)(BOOL))completion;
 
 /**
- * 打开新页面，混合栈推荐使用的用于操作页面的接口
+ * 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口；通过urlParams可以设置为以present方式打开页面：urlParams:@{@"present":@(YES)}
  *
  * @param url 打开的页面资源定位符
  * @param urlParams 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
@@ -79,5 +79,20 @@
    urlParams:(NSDictionary *)urlParams
         exts:(NSDictionary *)exts
        onPageFinished:(void (^)(NSDictionary *))resultCallback
+  completion:(void (^)(BOOL))completion;
+
+/**
+ * Present方式打开新页面，混合栈推荐使用的用于操作页面的接口
+ *
+ * @param url 打开的页面资源定位符
+ * @param urlParams 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
+ * @param exts 额外参数
+ * @param resultCallback 当页面结束返回时执行的回调，通过这个回调可以取得页面的返回数据，如close函数传入的resultData
+ * @param completion 打开页面的即时回调，页面一旦打开即回调
+ */
++ (void)present:(NSString *)url
+   urlParams:(NSDictionary *)urlParams
+        exts:(NSDictionary *)exts
+onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
 @end
