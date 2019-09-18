@@ -183,6 +183,9 @@
     
     _callbackCache[cid] = resultCallback;
     
+    NSMutableDictionary *params = urlParams.mutableCopy;
+    params[@"__calback_id__"] = cid ?: @"";
+    
     [self.platform open:url
               urlParams:urlParams
                    exts:exts
