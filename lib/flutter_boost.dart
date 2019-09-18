@@ -101,8 +101,7 @@ class FlutterBoost {
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    return channel.invokeMapMethod<Map<String,dynamic>>(
-        'openPage', properties);
+    return channel.invokeMapMethod<String, dynamic>('openPage', properties);
   }
 
   Future<bool> close(String id,{Map<String,dynamic> result,Map<String,dynamic> exts}){
