@@ -23,7 +23,7 @@
 }
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} reult:^(NSDictionary *result) {
+    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
         NSLog(@"call me when page finished, and your result is:%@", result);
     } completion:^(BOOL f) {
         NSLog(@"page is opened");
@@ -31,7 +31,7 @@
 }
 
 - (IBAction)present:(id)sender {
-    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} reult:^(NSDictionary *result) {
+    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
         NSLog(@"call me when page finished, and your result is:%@", result);
     } completion:^(BOOL f) {
         NSLog(@"page is presented");
