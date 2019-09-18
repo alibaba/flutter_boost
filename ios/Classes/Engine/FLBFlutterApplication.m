@@ -59,7 +59,7 @@
 }
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
+                         onStart:(void (^)(FlutterEngine *engine))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

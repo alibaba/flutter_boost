@@ -21,7 +21,7 @@
 {
     DemoRouter *router = [DemoRouter sharedRouter];
     [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterEngine *fvc) {
+                                                        onStart:^(FlutterEngine *engine) {
                                                             
                                                         }];
     

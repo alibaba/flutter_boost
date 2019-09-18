@@ -35,9 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (id<FLBFlutterProvider>)flutterProvider;
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,
-                                           FlutterTextureRegistry,
-                                           FlutterPluginRegistry> engine))callback;
+                         onStart:(void (^)(FlutterEngine *engine))callback;
 
 - (FlutterViewController *)flutterViewController;
 

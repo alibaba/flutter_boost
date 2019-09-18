@@ -31,9 +31,7 @@
 + (instancetype)sharedInstance;
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,
-                                           FlutterTextureRegistry,
-                                           FlutterPluginRegistry> engine))callback;
+                         onStart:(void (^)(FlutterEngine *engine))callback;
 
 #pragma mark - Some properties.
 - (BOOL)isRunning;
