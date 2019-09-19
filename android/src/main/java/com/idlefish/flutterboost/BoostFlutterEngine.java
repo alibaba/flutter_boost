@@ -134,8 +134,7 @@ public class BoostFlutterEngine extends FlutterEngine {
 
     protected DartExecutor.DartEntrypoint defaultDartEntrypoint(Context context) {
         return new DartExecutor.DartEntrypoint(
-                context.getResources().getAssets(),
-                FlutterMain.findAppBundlePath(context),
+                FlutterMain.findAppBundlePath(),
                 "main");
     }
 

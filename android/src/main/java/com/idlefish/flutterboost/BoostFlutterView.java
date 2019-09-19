@@ -307,7 +307,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (mFlutterEngine != null) {
-            mFlutterEngine.getPluginRegistry().onRequestPermissionsResult(requestCode, permissions, grantResults);
+            mFlutterEngine.getBoostPluginRegistry().onRequestPermissionsResult(requestCode, permissions, grantResults);
         } else {
             Debuger.log("onRequestPermissionResult() invoked before BoostFlutterView was attached to an Activity.");
         }
@@ -316,7 +316,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onNewIntent(Intent intent) {
         if (mFlutterEngine != null) {
-            mFlutterEngine.getPluginRegistry().onNewIntent(intent);
+            mFlutterEngine.getBoostPluginRegistry().onNewIntent(intent);
         } else {
             Debuger.log("onNewIntent() invoked before BoostFlutterView was attached to an Activity.");
         }
@@ -325,7 +325,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (mFlutterEngine != null) {
-            mFlutterEngine.getPluginRegistry().onActivityResult(requestCode, resultCode, data);
+            mFlutterEngine.getBoostPluginRegistry().onActivityResult(requestCode, resultCode, data);
         } else {
             Debuger.log("onActivityResult() invoked before BoostFlutterView was attached to an Activity.");
         }
@@ -333,7 +333,7 @@ public class BoostFlutterView extends FrameLayout {
 
     public void onUserLeaveHint() {
         if (mFlutterEngine != null) {
-            mFlutterEngine.getPluginRegistry().onUserLeaveHint();
+            mFlutterEngine.getBoostPluginRegistry().onUserLeaveHint();
         } else {
             Debuger.log("onUserLeaveHint() invoked before BoostFlutterView was attached to an Activity.");
         }

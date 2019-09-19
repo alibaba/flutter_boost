@@ -57,6 +57,11 @@ public class XTextInputPlugin {
             }
 
             @Override
+            public void setPlatformViewClient(int i) {
+                //todo implement platformview input
+            }
+
+            @Override
             public void setEditingState(TextInputChannel.TextEditState editingState) {
                 setTextInputEditingState(mView, editingState);
             }
