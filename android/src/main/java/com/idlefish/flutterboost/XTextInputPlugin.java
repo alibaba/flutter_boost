@@ -24,7 +24,6 @@ public class XTextInputPlugin {
     @NonNull
     private final InputMethodManager mImm;
     @NonNull
-    private final TextInputChannel textInputChannel;
     private int mClient = 0;
     @Nullable
     private TextInputChannel.Configuration configuration;
@@ -33,13 +32,17 @@ public class XTextInputPlugin {
     private boolean mRestartInputPending;
     @Nullable
     private InputConnection lastInputConnection;
-
-    public XTextInputPlugin(View view, @NonNull DartExecutor dartExecutor) {
+    private TextInputChannel textInputChannel;
+    public XTextInputPlugin(View view, TextInputChannel mTextInputChannel) {
         mView = view;
         mImm = (InputMethodManager) view.getContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
+        textInputChannel=mTextInputChannel;
 
-        textInputChannel = new TextInputChannel(dartExecutor);
+
+    }
+
+    public void setTextInputMethodHandler( ){
         textInputChannel.setTextInputMethodHandler(new TextInputChannel.TextInputMethodHandler() {
             @Override
             public void show() {
@@ -173,6 +176,7 @@ public class XTextInputPlugin {
     }
 
     private void showTextInput(View view) {
+        if(view==null) return;
         view.requestFocus();
         mImm.showSoftInput(view, 0);
     }

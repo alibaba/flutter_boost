@@ -1,6 +1,7 @@
 package com.idlefish.flutterboost;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -34,6 +35,7 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.editing.TextInputPlugin;
+import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.AccessibilityBridge;
 
 public class XFlutterView extends FrameLayout {
@@ -430,6 +432,7 @@ public class XFlutterView extends FrameLayout {
    * {@link FlutterEngine}.
    */
   public void attachToFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+
     Log.d(TAG, "attachToFlutterEngine()");
     if (isAttachedToFlutterEngine()) {
       if (flutterEngine == this.flutterEngine) {
@@ -450,19 +453,22 @@ public class XFlutterView extends FrameLayout {
 
     // Instruct our FlutterRenderer that we are now its designated RenderSurface.
     this.flutterEngine.getRenderer().attachToRenderSurface(renderSurface);
-
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
     if(textInputPlugin==null){
       textInputPlugin = new XTextInputPlugin(
               this,
-              this.flutterEngine.getDartExecutor()
+              flutterEngine.getTextInputChannel()
       );
-      androidKeyProcessor = new XAndroidKeyProcessor(
-              this.flutterEngine.getKeyEventChannel(),
-              textInputPlugin
-      );
+
     }
+    textInputPlugin.setTextInputMethodHandler();
+    textInputPlugin.getInputMethodManager().restartInput(this);
+
+    androidKeyProcessor = new XAndroidKeyProcessor(
+            this.flutterEngine.getKeyEventChannel(),
+            textInputPlugin
+    );
 
 
 
@@ -483,7 +489,6 @@ public class XFlutterView extends FrameLayout {
               accessibilityBridge.isAccessibilityEnabled(),
               accessibilityBridge.isTouchExplorationEnabled()
       );
-      textInputPlugin.getInputMethodManager().restartInput(this);
 
     }
 
@@ -535,8 +540,9 @@ public class XFlutterView extends FrameLayout {
     // now that the engine is detached. The new InputConnection will be null, which
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-    textInputPlugin.getInputMethodManager().restartInput(this);
+//    textInputPlugin.getInputMethodManager().restartInput(this);
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
+//    this.textInputPlugin.getInputMethodManager().restartInput(this);
     flutterEngine.getRenderer().detachFromRenderSurface();
     flutterEngine = null;
 
