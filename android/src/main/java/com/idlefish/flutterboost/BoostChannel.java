@@ -43,6 +43,7 @@ public class BoostChannel {
     }
 
     public static void registerWith(PluginRegistry.Registrar registrar) {
+        if (sInstance != null) return;
         sInstance = new BoostChannel(registrar);
 
         for(ActionAfterRegistered a : sActions) {
