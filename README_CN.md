@@ -22,7 +22,7 @@
 打开pubspec.yaml并将以下行添加到依赖项：
 
 ```json
-flutter_boost: ^0.1.52
+flutter_boost: ^0.1.53
 ```
 
 或者可以直接依赖github的项目的版本，Tag，pub发布会有延迟，推荐直接依赖Github项目
@@ -32,7 +32,7 @@ flutter_boost: ^0.1.52
 flutter_boost:
         git:
             url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.1.52'
+            ref: '0.1.53'
             
 ```
 ## Dart代码的集成
