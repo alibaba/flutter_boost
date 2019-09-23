@@ -86,7 +86,7 @@
         [[FlutterBoostPlugin sharedInstance].application open:url
                                                     urlParams:urlParams
                                                          exts:exts
-                                                        reult:result
+                                                        onPageFinished:result
                                                    completion:^(BOOL r) {}];
     }else if([@"pageOnStart" isEqualToString:call.method]){
         NSMutableDictionary *pageInfo = [NSMutableDictionary new];
@@ -124,9 +124,7 @@
 }
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,
-                                             FlutterTextureRegistry,
-                                           FlutterPluginRegistry> engine))callback;
+                         onStart:(void (^)(FlutterEngine *engine))callback;
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -164,4 +162,21 @@
                                         forName:name];
 }
 
+#pragma mark - open/close Page
++ (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams exts:(NSDictionary *)exts onPageFinished:(void (^)(NSDictionary *))resultCallback completion:(void (^)(BOOL))completion{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    [app open:url urlParams:urlParams exts:exts onPageFinished:resultCallback completion:completion];
+}
+
++ (void)present:(NSString *)url urlParams:(NSDictionary *)urlParams exts:(NSDictionary *)exts onPageFinished:(void (^)(NSDictionary *))resultCallback completion:(void (^)(BOOL))completion{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    NSMutableDictionary *myParams = [[NSMutableDictionary alloc]initWithDictionary:urlParams];
+    [myParams setObject:@(YES) forKey:@"present"];
+    [app open:url urlParams:myParams exts:exts onPageFinished:resultCallback completion:completion];
+}
+
++ (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    [app close:uniqueId result:resultData exts:exts completion:completion];
+}
 @end

@@ -37,6 +37,8 @@
 @property (nonatomic,assign) long long identifier;
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation FLBFlutterViewContainer
 
 - (instancetype)init
@@ -236,3 +238,4 @@ static NSUInteger kInstanceCounter = 0;
 
 
 @end
+#pragma clang diagnostic pop

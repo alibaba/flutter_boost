@@ -37,6 +37,7 @@
 
 
 @implementation FLBFlutterApplication
+@synthesize platform;
 
 + (FLBFlutterApplication *)sharedApplication
 {
@@ -59,7 +60,7 @@
 }
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
-                         onStart:(void (^)(id<FlutterBinaryMessenger,FlutterTextureRegistry,FlutterPluginRegistry> _Nonnull))callback
+                         onStart:(void (^)(FlutterEngine *engine))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -151,18 +152,18 @@
 }
 
 - (void)close:(NSString *)uniqueId
-       result:(NSDictionary *)result
+       result:(NSDictionary *)resultData
          exts:(NSDictionary *)exts
    completion:(void (^)(BOOL))completion
 {
     [self.platform close:uniqueId
-                  result:result
+                  result:resultData
                     exts:exts
               completion:completion];
     
     if(_pageResultCallbacks[uniqueId]){
         void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
-        cb(result);
+        cb(resultData);
         [_pageResultCallbacks removeObjectForKey:uniqueId];
     }
 }
@@ -170,30 +171,39 @@
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams
         exts:(NSDictionary *)exts
-       reult:(void (^)(NSDictionary *))resultCallback
+       onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion
 {
-    NSString *cid = urlParams[@"__calback_id__"];
+    NSString *cid = urlParams[kPageCallBackId];
    
     if(!cid){
         static int64_t sCallbackID = 1;
         cid = @(sCallbackID).stringValue;
         sCallbackID += 2;
+        NSMutableDictionary *newParams = [[NSMutableDictionary alloc]initWithDictionary:urlParams];
+        [newParams setObject:cid?cid:@"__default#0__" forKey:kPageCallBackId];
+        urlParams = newParams;
     }
     
     _callbackCache[cid] = resultCallback;
-    
-    [self.platform open:url
-              urlParams:urlParams
-                   exts:exts
-             completion:completion];
+    if([urlParams[@"present"]respondsToSelector:@selector(boolValue)] && [urlParams[@"present"] boolValue] && [self.platform respondsToSelector:@selector(present:urlParams:exts:completion:)]){
+        [self.platform present:url
+                  urlParams:urlParams
+                       exts:exts
+                 completion:completion];
+    }else{
+        [self.platform open:url
+                  urlParams:urlParams
+                       exts:exts
+                 completion:completion];
+    }
 }
 
 - (void)didInitPageContainer:(NSString *)url
                       params:(NSDictionary *)urlParams
                     uniqueId:(NSString *)uniqueId
 {
-    NSString *cid = urlParams[@"__calback_id__"];
+    NSString *cid = urlParams[kPageCallBackId];
     if(cid && _callbackCache[cid]){
         _pageResultCallbacks[uniqueId] = _callbackCache[cid];
         [_callbackCache removeObjectForKey:cid];

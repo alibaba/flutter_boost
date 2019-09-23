@@ -13,12 +13,14 @@ public class XAndroidKeyProcessor {
     private final KeyEventChannel keyEventChannel;
     @NonNull
     private final XTextInputPlugin textInputPlugin;
+
     private int combiningCharacter;
 
     public XAndroidKeyProcessor(@NonNull KeyEventChannel keyEventChannel, @NonNull XTextInputPlugin textInputPlugin) {
         this.keyEventChannel = keyEventChannel;
         this.textInputPlugin = textInputPlugin;
     }
+
 
     public void onKeyUp(@NonNull KeyEvent keyEvent) {
         Character complexCharacter = applyCombiningCharacterToBaseCharacter(keyEvent.getUnicodeChar());

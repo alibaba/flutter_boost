@@ -30,6 +30,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterApplication : NSObject<FLBFlutterApplicationInterface>
-@property (nonatomic,strong) id<FLBPlatform> platform;
++ (FLBFlutterApplication *)sharedApplication;
 @end
 NS_ASSUME_NONNULL_END

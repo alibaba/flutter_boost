@@ -82,16 +82,16 @@ class _MyAppState extends State<MyApp> {
 为您的应用程序实现FLBPlatform协议方法。
 
 ```objectivec
-@interface DemoRouter : NSObject<FLBPlatform>
+@interface PlatformRouterImp : NSObject<FLBPlatform>
 
 @property (nonatomic,strong) UINavigationController *navigationController;
 
-+ (DemoRouter *)sharedRouter;
++ (PlatformRouterImp *)sharedRouter;
 
 @end
 
 
-@implementation DemoRouter
+@implementation PlatformRouterImp
 
 - (void)openPage:(NSString *)name
           params:(NSDictionary *)params
@@ -127,9 +127,10 @@ class _MyAppState extends State<MyApp> {
 
 在应用程序开头使用FLBPlatform初始化FlutterBoost。
 
-```的ObjectiveC
+```objc
+ PlatformRouterImp *router = [PlatformRouterImp new];
  [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform：router
-                                                        onStart：^（id engine）{
+                                                        onStart：^（FlutterEngine *engine）{
                                                             
                                                         }];
 ```
@@ -193,6 +194,24 @@ public class MyApplication extends FlutterApplication {
         [self.navigationController presentViewController:vc animated:animated completion:^{}];
 ```
 
+但是，这种方式无法获取页面返回的数据，建议你按上面的example实现类似于PlatformRouterImp这样的路由器，然后通过以下方式来打开/关闭页面
+
+```objc
+//push the page
+[FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+        NSLog(@"call me when page finished, and your result is:%@", result);
+    } completion:^(BOOL f) {
+        NSLog(@"page is opened");
+    }];
+//prsent the page
+[FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+        NSLog(@"call me when page finished, and your result is:%@", result);
+    } completion:^(BOOL f) {
+        NSLog(@"page is presented");
+    }];
+//close the page
+[FlutterBoostPlugin close:yourUniqueId result:yourdata exts:exts completion:nil];
+```
 Android
 
 ```java

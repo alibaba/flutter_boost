@@ -28,6 +28,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterEngine : NSObject<FLBFlutterProvider>
-- (instancetype)initWithPlatform:(id<FLBPlatform>)platform;
+- (instancetype)initWithPlatform:(id<FLBPlatform>_Nullable)platform;
 @end
 NS_ASSUME_NONNULL_END

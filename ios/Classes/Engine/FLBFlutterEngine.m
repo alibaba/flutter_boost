@@ -35,7 +35,7 @@
 
 @implementation FLBFlutterEngine
     
-- (instancetype)initWithPlatform:(id<FLBPlatform>)platform
+- (instancetype)initWithPlatform:(id<FLBPlatform> _Nullable)platform
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"

@@ -23,7 +23,7 @@
 		DF544AA62177253600931378 /* UIViewControllerDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF544AA42177253600931378 /* UIViewControllerDemo.m */; };
 		DF544AA72177253600931378 /* UIViewControllerDemo.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF544AA52177253600931378 /* UIViewControllerDemo.xib */; };
 		DF544AD4217838EF00931378 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DF544AD3217838EF00931378 /* libc++.tbd */; };
-		DFD80BFA217DF95400E3F036 /* DemoRouter.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD80BF9217DF95400E3F036 /* DemoRouter.m */; };
+		DFD80BFA217DF95400E3F036 /* PlatformRouterImp.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -66,8 +66,8 @@
 		DF544AA52177253600931378 /* UIViewControllerDemo.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UIViewControllerDemo.xib; sourceTree = "<group>"; };
 		DF544ACF217836F600931378 /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 		DF544AD3217838EF00931378 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		DFD80BF8217DF95400E3F036 /* DemoRouter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoRouter.h; sourceTree = "<group>"; };
-		DFD80BF9217DF95400E3F036 /* DemoRouter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DemoRouter.m; sourceTree = "<group>"; };
+		DFD80BF8217DF95400E3F036 /* PlatformRouterImp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlatformRouterImp.h; sourceTree = "<group>"; };
+		DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlatformRouterImp.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,8 +142,8 @@
 				DF544AA32177253600931378 /* UIViewControllerDemo.h */,
 				DF544AA42177253600931378 /* UIViewControllerDemo.m */,
 				DF544AA52177253600931378 /* UIViewControllerDemo.xib */,
-				DFD80BF8217DF95400E3F036 /* DemoRouter.h */,
-				DFD80BF9217DF95400E3F036 /* DemoRouter.m */,
+				DFD80BF8217DF95400E3F036 /* PlatformRouterImp.h */,
+				DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */,
 				7AFFD8ED1D35381100E5BB4D /* AppDelegate.h */,
 				7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -328,7 +328,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFD80BFA217DF95400E3F036 /* DemoRouter.m in Sources */,
+				DFD80BFA217DF95400E3F036 /* PlatformRouterImp.m in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				97C146F31CF9000F007C117D /* main.m in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
@@ -472,6 +472,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -497,6 +498,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
