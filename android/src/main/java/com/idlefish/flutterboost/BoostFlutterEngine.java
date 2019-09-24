@@ -174,13 +174,20 @@ public class BoostFlutterEngine extends FlutterEngine {
     public class BoostPluginRegistry extends FlutterPluginRegistry {
         private final FlutterEngine mEngine;
 
+        private PluginRegistry.Registrar mRegistrar;
+
+        public Registrar getRegistrar() {
+            return mRegistrar;
+        }
+
         public BoostPluginRegistry(FlutterEngine engine, Context context) {
             super(engine, context);
             mEngine = engine;
         }
 
         public PluginRegistry.Registrar registrarFor(String pluginKey) {
-            return new BoostRegistrar(mEngine, super.registrarFor(pluginKey));
+            mRegistrar = new BoostRegistrar(mEngine, super.registrarFor(pluginKey));
+            return mRegistrar;
         }
     }
 
