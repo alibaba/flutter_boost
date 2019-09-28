@@ -160,11 +160,18 @@ public class FlutterViewContainerManager implements IContainerManager {
 
     @Override
     public IContainerRecord getLastGenerateRecord() {
-        final Collection<IContainerRecord> values = mRecordMap.values();
-        if(!values.isEmpty()) {
-            final ArrayList<IContainerRecord> array = new ArrayList<>(values);
-            return array.get(array.size()-1);
+        try {
+            final Collection<IContainerRecord> values = mRecordMap.values();
+            if(!values.isEmpty()) {
+                final ArrayList<IContainerRecord> array = new ArrayList<>(values);
+                return array.get(array.size()-1);
+            }
+        }catch (Throwable e){
+
+            Debuger.log("getLastGenerateRecord:"+e.getCause());
+
         }
+
         return null;
     }
 
