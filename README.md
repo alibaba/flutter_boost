@@ -24,7 +24,7 @@ You need to add Flutter to your project before moving on.The version of the flut
 Open you pubspec.yaml and add the following line to dependencies:
 
 ```java
-flutter_boost: ^0.1.52
+flutter_boost: ^0.1.54
 ```
 
 or you could rely directly on a Github project tag, for example(recommended)
@@ -33,7 +33,7 @@ or you could rely directly on a Github project tag, for example(recommended)
 flutter_boost:
         git:
             url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.1.52'
+            ref: '0.1.54'
 ```
 
 
