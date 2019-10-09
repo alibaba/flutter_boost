@@ -3,6 +3,7 @@ package com.taobao.idlefish.flutterboostexample;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import com.idlefish.flutterboost.containers.NewBoostFlutterActivity;
 
 import java.util.Map;
 
@@ -19,10 +20,11 @@ public class PageRouter {
     public static boolean openPageByUrl(Context context, String url, Map params, int requestCode) {
         try {
             if (url.startsWith(FLUTTER_PAGE_URL)) {
-                context.startActivity(new Intent(context, FlutterPageActivity.class));
+
+                context.startActivity( NewBoostFlutterActivity.createDefaultIntent(context));
                 return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
-                context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
+//                context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
                 return true;
             } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));

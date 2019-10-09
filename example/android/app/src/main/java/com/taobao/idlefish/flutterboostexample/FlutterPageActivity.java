@@ -1,11 +1,17 @@
 package com.taobao.idlefish.flutterboostexample;
 
 import com.idlefish.flutterboost.containers.BoostFlutterActivity;
+import com.idlefish.flutterboost.containers.FlutterSplashView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class FlutterPageActivity extends BoostFlutterActivity {
+
+    @Override
+    public FlutterSplashView getBoostFlutterView() {
+        return null;
+    }
 
     /**
      * 该方法返回当前Activity在Flutter层对应的name，

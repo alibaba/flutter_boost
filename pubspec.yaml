@@ -19,7 +19,7 @@ dependencies:
 flutter:
   plugin:
     androidPackage: com.idlefish.flutterboost
-    pluginClass: BoostChannel
+    pluginClass: FlutterBoostPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:

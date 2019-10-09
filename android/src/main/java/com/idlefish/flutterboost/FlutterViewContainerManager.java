@@ -111,9 +111,9 @@ public class FlutterViewContainerManager implements IContainerManager {
     }
 
     void openContainer(String url, Map<String, Object> urlParams, Map<String, Object> exts,OnResult onResult) {
-        Context context = FlutterBoost.singleton().currentActivity();
+        Context context = NewFlutterBoost.instance().currentActivity();
         if(context == null) {
-            context = FlutterBoost.singleton().platform().getApplication();
+            context =NewFlutterBoost.instance().platform().getApplication();
         }
 
         if(urlParams == null) {
@@ -132,7 +132,7 @@ public class FlutterViewContainerManager implements IContainerManager {
             mOnResults.put(uniqueId,onResult);
         }
 
-        FlutterBoost.singleton().platform().openContainer(context,url,urlParams,requestCode,exts);
+        NewFlutterBoost.instance().platform().openContainer(context,url,urlParams,requestCode,exts);
     }
 
     IContainerRecord closeContainer(String uniqueId, Map<String, Object> result,Map<String,Object> exts) {
@@ -148,7 +148,7 @@ public class FlutterViewContainerManager implements IContainerManager {
             Debuger.exception("closeContainer can not find uniqueId:" + uniqueId);
         }
 
-        FlutterBoost.singleton().platform().closeContainer(targetRecord,result,exts);
+        NewFlutterBoost.instance().platform().closeContainer(targetRecord,result,exts);
         return targetRecord;
     }
 

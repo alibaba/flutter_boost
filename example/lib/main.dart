@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
-        home: Container());
+        home: FlutterRouteWidget());
   }
 
   void _onRoutePushed(

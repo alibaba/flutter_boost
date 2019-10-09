@@ -28,12 +28,13 @@ import android.content.Context;
 import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
 import com.idlefish.flutterboost.interfaces.IStateListener;
 
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.view.FlutterMain;
 
 public class BoostEngineProvider implements IFlutterEngineProvider {
 
-    private BoostFlutterEngine mEngine = null;
+    private FlutterEngine mEngine = null;
 
     public BoostEngineProvider() {}
 
@@ -43,7 +44,7 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
     }
 
     @Override
-    public BoostFlutterEngine provideEngine(Context context) {
+    public FlutterEngine provideEngine(Context context) {
         Utils.assertCallOnMainThread();
 
         if (mEngine == null) {
@@ -51,25 +52,25 @@ public class BoostEngineProvider implements IFlutterEngineProvider {
             FlutterMain.ensureInitializationComplete(
                     context.getApplicationContext(), flutterShellArgs.toArray());
 
-            mEngine = createEngine(context.getApplicationContext());
+            mEngine = new FlutterEngine(context.getApplicationContext());
 
-            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
-            if(stateListener != null) {
-                stateListener.onEngineCreated(mEngine);
-            }
+//            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
+//            if(stateListener != null) {
+//                stateListener.onEngineCreated(mEngine);
+//            }
         }
         return mEngine;
     }
 
     @Override
-    public BoostFlutterEngine tryGetEngine() {
+    public FlutterEngine tryGetEngine() {
         return mEngine;
     }
 
     public static void assertEngineRunning(){
-        final BoostFlutterEngine engine = FlutterBoost.singleton().engineProvider().tryGetEngine();
-        if(engine == null || !engine.isRunning()) {
-            throw new RuntimeException("engine is not running yet!");
-        }
+        final FlutterEngine engine = NewFlutterBoost.instance().engineProvider().tryGetEngine();
+//        if(engine == null || !engine.isRunning()) {
+//            throw new RuntimeException("engine is not running yet!");
+//        }
     }
 }

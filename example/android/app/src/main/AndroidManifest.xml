@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.taobao.idlefish.flutterboostexample">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.taobao.idlefish.flutterboostexample">
 
     <!-- The INTERNET permission is required for development. Specifically,
          flutter needs it to communicate with the running application
@@ -33,6 +34,10 @@
             </intent-filter>
         </activity>
 
+
+
+
+
         <activity
             android:name=".FlutterPageActivity"
             android:theme="@style/Theme.AppCompat"
@@ -40,6 +45,15 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity
+                android:name="com.idlefish.flutterboost.containers.NewBoostFlutterActivity"
+                android:theme="@style/Theme.AppCompat"
+                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+                android:hardwareAccelerated="true"
+                android:windowSoftInputMode="adjustResize" >
+                <!--<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/avd_hide_password"/>-->
+
+            </activity>
         <activity
             android:name=".FlutterFragmentPageActivity"
             android:theme="@style/Theme.AppCompat"

@@ -10,6 +10,11 @@ import java.util.Map;
 public class BoostFlutterDefaultActivity extends BoostFlutterActivity {
 
     @Override
+    public FlutterSplashView getBoostFlutterView() {
+        return null;
+    }
+
+    @Override
     public String getContainerUrl() {
         return getIntent().getStringExtra("url");
     }

@@ -16,7 +16,7 @@ public class StateListener implements IStateListener {
     }
 
     @Override
-    public void onChannelRegistered(PluginRegistry.Registrar registrar, BoostChannel channel) {
+    public void onChannelRegistered(PluginRegistry.Registrar registrar, FlutterBoostPlugin channel) {
         Debuger.log(">>onFlutterViewInited");
     }
 

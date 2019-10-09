@@ -51,11 +51,11 @@ public class FlutterBoost {
             sInstance = new FlutterBoost(platform);
         }
 
-        if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
-            sInstance.mEngineProvider
-                    .provideEngine(platform.getApplication())
-                    .startRun(null);
-        }
+//        if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
+//            sInstance.mEngineProvider
+//                    .provideEngine(platform.getApplication())
+//                    .startRun(null);
+//        }
     }
 
     public static FlutterBoost singleton() {
@@ -84,9 +84,9 @@ public class FlutterBoost {
         mEngineProvider = provider;
         platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
 
-        BoostChannel.addActionAfterRegistered(new BoostChannel.ActionAfterRegistered() {
+        FlutterBoostPlugin.addActionAfterRegistered(new FlutterBoostPlugin.ActionAfterRegistered() {
             @Override
-            public void onChannelRegistered(BoostChannel channel) {
+            public void onChannelRegistered(FlutterBoostPlugin channel) {
                 channel.addMethodCallHandler(new BoostMethodHandler());
             }
         });
@@ -104,8 +104,8 @@ public class FlutterBoost {
         return sInstance.mPlatform;
     }
 
-    public BoostChannel channel() {
-        return BoostChannel.singleton();
+    public FlutterBoostPlugin channel() {
+        return FlutterBoostPlugin.singleton();
     }
 
     public Activity currentActivity() {
@@ -124,9 +124,9 @@ public class FlutterBoost {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             if (platform().whenEngineStart() == IPlatform.ANY_ACTIVITY_CREATED) {
-                sInstance.mEngineProvider
-                        .provideEngine(activity)
-                        .startRun(activity);
+//                sInstance.mEngineProvider
+//                        .provideEngine(activity)
+//                        .startRun(activity);
             }
         }
 

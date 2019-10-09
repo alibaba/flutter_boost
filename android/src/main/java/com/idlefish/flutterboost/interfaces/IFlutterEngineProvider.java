@@ -26,6 +26,8 @@ package com.idlefish.flutterboost.interfaces;
 import android.content.Context;
 
 import com.idlefish.flutterboost.BoostFlutterEngine;
+import io.flutter.embedding.engine.FlutterEngine;
+
 /**
  * a flutter engine provider
  */
@@ -36,18 +38,18 @@ public interface IFlutterEngineProvider {
      * @param context
      * @return
      */
-    BoostFlutterEngine createEngine(Context context);
+    FlutterEngine createEngine(Context context);
 
     /**
      * provide a flutter engine
      * @param context
      * @return
      */
-    BoostFlutterEngine provideEngine(Context context);
+    FlutterEngine provideEngine(Context context);
 
     /**
      * may return null
      * @return
      */
-    BoostFlutterEngine tryGetEngine();
+    FlutterEngine tryGetEngine();
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import com.idlefish.flutterboost.containers.BoostFlutterFragment;
+import com.idlefish.flutterboost.containers.FlutterSplashView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,11 @@ public class FlutterFragment extends BoostFlutterFragment {
         Bundle args = new Bundle();
         args.putString("tag",tag);
         super.setArguments(args);
+    }
+
+    @Override
+    public FlutterSplashView getBoostFlutterView() {
+        return null;
     }
 
     @Override

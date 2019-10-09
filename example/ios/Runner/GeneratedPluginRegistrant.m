@@ -3,12 +3,12 @@
 //
 
 #import "GeneratedPluginRegistrant.h"
-#import <flutter_boost/BoostChannel.h>
+#import <flutter_boost/FlutterBoostPlugin.h>
 
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
-  [BoostChannel registerWithRegistrar:[registry registrarForPlugin:@"BoostChannel"]];
+  [FlutterBoostPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterBoostPlugin"]];
 }
 
 @end

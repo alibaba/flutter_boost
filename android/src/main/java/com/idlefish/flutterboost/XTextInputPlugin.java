@@ -1,8 +1,10 @@
 package com.idlefish.flutterboost;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
@@ -57,6 +59,11 @@ public class XTextInputPlugin {
             @Override
             public void setClient(int textInputClientId, TextInputChannel.Configuration configuration) {
                 setTextInputClient(textInputClientId, configuration);
+            }
+
+            @Override
+            public void setPlatformViewClient(int i) {
+
             }
 
             @Override
@@ -206,6 +213,7 @@ public class XTextInputPlugin {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
     private void setTextInputEditingState(View view, TextInputChannel.TextEditState state) {
         if (!mRestartInputPending && state.text.equals(mEditable.toString())) {
             applyStateToSelection(state);

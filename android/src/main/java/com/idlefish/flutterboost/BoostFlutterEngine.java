@@ -30,122 +30,114 @@ import io.flutter.view.FlutterView;
 import io.flutter.view.TextureRegistry;
 
 public class BoostFlutterEngine extends FlutterEngine {
-    protected final Context mContext;
-    protected final BoostPluginRegistry mBoostPluginRegistry;
-    protected final DartExecutor.DartEntrypoint mEntrypoint;
-    protected final String mInitRoute;
 
-    private final FakeRender mFakeRender;
 
     protected WeakReference<Activity> mCurrentActivityRef;
 
     public BoostFlutterEngine(@NonNull Context context) {
-        this(context, null, null);
-    }
-
-    public BoostFlutterEngine(@NonNull Context context, DartExecutor.DartEntrypoint entrypoint, String initRoute) {
         super(context);
-        mContext = context.getApplicationContext();
-        mBoostPluginRegistry = new BoostPluginRegistry(this, context);
-
-        if (entrypoint != null) {
-            mEntrypoint = entrypoint;
-        } else {
-            mEntrypoint = defaultDartEntrypoint(context);
-        }
-
-        if (initRoute != null) {
-            mInitRoute = initRoute;
-        } else {
-            mInitRoute = defaultInitialRoute(context);
-        }
-
-        FlutterJNI flutterJNI = null;
-        try {
-            Field field = FlutterEngine.class.getDeclaredField("flutterJNI");
-            field.setAccessible(true);
-
-            flutterJNI = (FlutterJNI) field.get(this);
-        } catch (Throwable t) {
-            try {
-                for(Field field:FlutterEngine.class.getDeclaredFields()) {
-                    field.setAccessible(true);
-                    Object o = field.get(this);
-
-                    if(o instanceof FlutterJNI) {
-                        flutterJNI = (FlutterJNI)o;
-                    }
-                }
-
-                if(flutterJNI == null) {
-                    throw new RuntimeException("FlutterJNI not found");
-                }
-            }catch (Throwable it){
-                Debuger.exception(it);
-            }
-        }
-        mFakeRender = new FakeRender(flutterJNI);
     }
 
-    public void startRun(@Nullable Activity activity) {
-        mCurrentActivityRef = new WeakReference<>(activity);
+//    public BoostFlutterEngine(@NonNull Context context, DartExecutor.DartEntrypoint entrypoint, String initRoute) {
+//        super(context);
+//        mContext = context.getApplicationContext();
+////        mBoostPluginRegistry = new BoostPluginRegistry(this, context);
+//
+//        if (entrypoint != null) {
+//            mEntrypoint = entrypoint;
+//        } else {
+//            mEntrypoint = defaultDartEntrypoint(context);
+//        }
+//
+//        if (initRoute != null) {
+//            mInitRoute = initRoute;
+//        } else {
+//            mInitRoute = defaultInitialRoute(context);
+//        }
+//
+//        FlutterJNI flutterJNI = null;
+//        try {
+//            Field field = FlutterEngine.class.getDeclaredField("flutterJNI");
+//            field.setAccessible(true);
+//
+//            flutterJNI = (FlutterJNI) field.get(this);
+//        } catch (Throwable t) {
+//            try {
+//                for(Field field:FlutterEngine.class.getDeclaredFields()) {
+//                    field.setAccessible(true);
+//                    Object o = field.get(this);
+//
+//                    if(o instanceof FlutterJNI) {
+//                        flutterJNI = (FlutterJNI)o;
+//                    }
+//                }
+//
+//                if(flutterJNI == null) {
+//                    throw new RuntimeException("FlutterJNI not found");
+//                }
+//            }catch (Throwable it){
+//                Debuger.exception(it);
+//            }
+//        }
+//        mFakeRender = new FakeRender(flutterJNI);
+//    }
 
-        if (!getDartExecutor().isExecutingDart()) {
-
-            Debuger.log("engine start running...");
-
-            getNavigationChannel().setInitialRoute(mInitRoute);
-            getDartExecutor().executeDartEntrypoint(mEntrypoint);
-
-            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
-            if (stateListener != null) {
-                stateListener.onEngineStarted(this);
-            }
-
-            FlutterBoost.singleton().platform().registerPlugins(mBoostPluginRegistry);
-
-            if(activity != null) {
-                FlutterRenderer.ViewportMetrics metrics = new FlutterRenderer.ViewportMetrics();
-                metrics.devicePixelRatio = activity.getResources().getDisplayMetrics().density;
-                final View decor = activity.getWindow().getDecorView();
-                if(decor != null) {
-                    metrics.width = decor.getWidth();
-                    metrics.height = decor.getHeight();
-                }
-
-                if (metrics.width <= 0 || metrics.height <= 0) {
-                    metrics.width = Utils.getMetricsWidth(activity);
-                    metrics.height = Utils.getMetricsHeight(activity);
-                }
-
-                metrics.paddingTop = Utils.getStatusBarHeight(activity);
-                metrics.paddingRight = 0;
-                metrics.paddingBottom = 0;
-                metrics.paddingLeft = 0;
-                metrics.viewInsetTop = 0;
-                metrics.viewInsetRight = 0;
-                metrics.viewInsetBottom = 0;
-                metrics.viewInsetLeft = 0;
-
-                getRenderer().setViewportMetrics(metrics);
-            }
-        }
-    }
+//    public void startRun(@Nullable Activity activity) {
+//        mCurrentActivityRef = new WeakReference<>(activity);
+//
+//        if (!getDartExecutor().isExecutingDart()) {
+//
+//            Debuger.log("engine start running...");
+//
+//            getNavigationChannel().setInitialRoute(mInitRoute);
+//            getDartExecutor().executeDartEntrypoint(mEntrypoint);
+//
+//            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
+//            if (stateListener != null) {
+//                stateListener.onEngineStarted(this);
+//            }
+//
+////            FlutterBoost.singleton().platform().registerPlugins(mBoostPluginRegistry);
+//
+//            if(activity != null) {
+//                FlutterRenderer.ViewportMetrics metrics = new FlutterRenderer.ViewportMetrics();
+//                metrics.devicePixelRatio = activity.getResources().getDisplayMetrics().density;
+//                final View decor = activity.getWindow().getDecorView();
+//                if(decor != null) {
+//                    metrics.width = decor.getWidth();
+//                    metrics.height = decor.getHeight();
+//                }
+//
+//                if (metrics.width <= 0 || metrics.height <= 0) {
+//                    metrics.width = Utils.getMetricsWidth(activity);
+//                    metrics.height = Utils.getMetricsHeight(activity);
+//                }
+//
+//                metrics.paddingTop = Utils.getStatusBarHeight(activity);
+//                metrics.paddingRight = 0;
+//                metrics.paddingBottom = 0;
+//                metrics.paddingLeft = 0;
+//                metrics.viewInsetTop = 0;
+//                metrics.viewInsetRight = 0;
+//                metrics.viewInsetBottom = 0;
+//                metrics.viewInsetLeft = 0;
+//
+//                getRenderer().setViewportMetrics(metrics);
+//            }
+//        }
+//    }
 
     protected DartExecutor.DartEntrypoint defaultDartEntrypoint(Context context) {
-        return new DartExecutor.DartEntrypoint(
-                context.getResources().getAssets(),
-                FlutterMain.findAppBundlePath(context),
-                "main");
+        return DartExecutor.DartEntrypoint.createDefault();
     }
 
     protected String defaultInitialRoute(Context context) {
         return "/";
     }
 
-    public BoostPluginRegistry getBoostPluginRegistry() {
-        return mBoostPluginRegistry;
-    }
+//    public BoostPluginRegistry getBoostPluginRegistry() {
+//        return mBoostPluginRegistry;
+//    }
 
     public boolean isRunning() {
         return getDartExecutor().isExecutingDart();
@@ -165,14 +157,14 @@ public class BoostFlutterEngine extends FlutterEngine {
         }
 
         if (hit) {
-            return mFakeRender;
+            return null;
         } else {
             return super.getRenderer();
         }
     }
 
     public class BoostPluginRegistry extends FlutterPluginRegistry {
-        private final FlutterEngine mEngine;
+        private  FlutterEngine mEngine;
 
         public BoostPluginRegistry(FlutterEngine engine, Context context) {
             super(engine, context);
@@ -184,7 +176,7 @@ public class BoostFlutterEngine extends FlutterEngine {
         }
     }
 
-    public class BoostRegistrar implements PluginRegistry.Registrar {
+    public  class BoostRegistrar implements PluginRegistry.Registrar {
 
         private final PluginRegistry.Registrar mRegistrar;
         private final FlutterEngine mEngine;

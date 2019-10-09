@@ -449,7 +449,7 @@ public class XFlutterView extends FrameLayout {
     this.flutterEngine = flutterEngine;
 
     // initialize PlatformViewsController
-    this.flutterEngine.getPluginRegistry().getPlatformViewsController().attach(getContext(),flutterEngine.getRenderer(),flutterEngine.getDartExecutor());
+//    this.flutterEngine.getPluginRegistry().getPlatformViewsController().attach(getContext(),flutterEngine.getRenderer(),flutterEngine.getDartExecutor());
 
     // Instruct our FlutterRenderer that we are now its designated RenderSurface.
     this.flutterEngine.getRenderer().attachToRenderSurface(renderSurface);
@@ -533,8 +533,8 @@ public class XFlutterView extends FrameLayout {
     Log.d(TAG, "Detaching from Flutter Engine");
 
     // detach platformviews in page in case memory leak
-    flutterEngine.getPluginRegistry().getPlatformViewsController().detach();
-    flutterEngine.getPluginRegistry().getPlatformViewsController().onFlutterViewDestroyed();
+//    flutterEngine.getPluginRegistry().getPlatformViewsController().detach();
+//    flutterEngine.getPluginRegistry().getPlatformViewsController().onFlutterViewDestroyed();
 
     // Inform the Android framework that it should retrieve a new InputConnection
     // now that the engine is detached. The new InputConnection will be null, which

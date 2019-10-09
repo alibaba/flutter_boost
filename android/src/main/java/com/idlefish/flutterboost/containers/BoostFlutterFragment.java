@@ -67,7 +67,8 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
     }
 
     protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoost.singleton().engineProvider().provideEngine(getContext());
+//        return FlutterBoost.singleton().engineProvider().provideEngine(getContext());
+        return  null;
     }
 
     protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){
@@ -140,10 +141,10 @@ abstract public class BoostFlutterFragment extends Fragment implements IFlutterV
         return getActivity();
     }
 
-    @Override
-    public BoostFlutterView getBoostFlutterView() {
-        return mFlutterView;
-    }
+//    @Override
+//    public BoostFlutterView getBoostFlutterView() {
+//        return mFlutterView;
+//    }
 
     @Override
     public void finishContainer(Map<String,Object> result) {
