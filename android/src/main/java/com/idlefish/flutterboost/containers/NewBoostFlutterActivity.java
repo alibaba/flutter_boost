@@ -4,11 +4,7 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LifecycleRegistry;
-import android.arch.lifecycle.Lifecycle.Event;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -24,8 +20,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
-import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import io.flutter.Log;
@@ -554,7 +548,7 @@ public class NewBoostFlutterActivity extends Activity
     @Override
     public FlutterEngine provideFlutterEngine(@NonNull Context context) {
         // No-op. Hook for subclasses.
-        return NewFlutterBoost.instance().engineProvider().provideEngine(this);
+        return NewFlutterBoost.instance().engineProvider();
     }
 
     /**
@@ -595,6 +589,25 @@ public class NewBoostFlutterActivity extends Activity
 
     @Override
     public void onFirstFrameRendered() {
+    }
+
+    @Override
+    public void finishContainer(Map<String, Object> result) {
+        Activity activity= this.getActivity();
+
+        activity.finish();
+    }
+
+    @Override
+    public String getContainerUrl() {
+        return "flutterPage";
+    }
+
+    @Override
+    public Map getContainerUrlParams() {
+        Map<String,String> params = new HashMap<>();
+        params.put("aaa","bbb");
+        return params;
     }
 
     /**

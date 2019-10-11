@@ -3,7 +3,6 @@ package com.idlefish.flutterboost;
 import android.support.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.idlefish.flutterboost.interfaces.IStateListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -50,12 +49,12 @@ public class FlutterBoostPlugin {
             a.onChannelRegistered(sInstance);
         }
 
-        if (FlutterBoost.sInstance != null) {
-            final IStateListener stateListener = FlutterBoost.sInstance.mStateListener;
-            if (stateListener != null) {
-                stateListener.onChannelRegistered(registrar, sInstance);
-            }
-        }
+//        if (NewFlutterBoost.instance() != null) {
+//            final IStateListener stateListener = NewFlutterBoost.instance().mStateListener;
+//            if (stateListener != null) {
+//                stateListener.onChannelRegistered(registrar, sInstance);
+//            }
+//        }
 
         sActions.clear();
     }

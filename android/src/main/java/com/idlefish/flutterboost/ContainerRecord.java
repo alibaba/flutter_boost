@@ -69,7 +69,6 @@ public class ContainerRecord implements IContainerRecord {
     @Override
     public void onCreate() {
         Utils.assertCallOnMainThread();
-        BoostEngineProvider.assertEngineRunning();
 
         if (mState != STATE_UNKNOW) {
             Debuger.exception("state error");

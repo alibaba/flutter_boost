@@ -19,8 +19,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.idlefish.flutterboost.BoostFlutterView;
-import com.idlefish.flutterboost.FlutterBoost;
+
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
@@ -63,7 +62,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
         @Override
         public void onFirstFrameRendered() {
-            host.onFirstFrameRendered();
+            if(host!=null){
+                host.onFirstFrameRendered();
+            }
         }
     };
 
@@ -136,15 +137,15 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.d(TAG, "Setting up FlutterEngine.");
 
         // First, check if the host wants to use a cached FlutterEngine.
-        String cachedEngineId = host.getCachedEngineId();
-        if (cachedEngineId != null) {
-            flutterEngine = FlutterEngineCache.getInstance().get(cachedEngineId);
-            isFlutterEngineFromHost = true;
-            if (flutterEngine == null) {
-                throw new IllegalStateException("The requested cached FlutterEngine did not exist in the FlutterEngineCache: '" + cachedEngineId + "'");
-            }
-            return;
-        }
+//        String cachedEngineId = host.getCachedEngineId();
+//        if (cachedEngineId != null) {
+//            flutterEngine = FlutterEngineCache.getInstance().get(cachedEngineId);
+//            isFlutterEngineFromHost = true;
+//            if (flutterEngine == null) {
+//                throw new IllegalStateException("The requested cached FlutterEngine did not exist in the FlutterEngineCache: '" + cachedEngineId + "'");
+//            }
+//            return;
+//        }
 
         // Second, defer to subclasses for a custom FlutterEngine.
         flutterEngine = host.provideFlutterEngine(host.getContext());
@@ -170,7 +171,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
 
         ensureAlive();
-        flutterView = new FlutterView(host.getActivity(), host.getRenderMode(), host.getTransparencyMode());
+        flutterView = new FlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
+
         flutterView.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
 
         flutterSplashView = new FlutterSplashView(host.getContext());
@@ -197,47 +199,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         // causes launching Activitys to wait a second or two before launching. By post()'ing this
         // behavior we are able to move this blocking logic to after the Activity's launch.
         // TODO(mattcarroll): figure out how to avoid blocking the MAIN thread when connecting a surface
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                Log.v(TAG, "Attaching FlutterEngine to FlutterView.");
-                flutterView.attachToFlutterEngine(flutterEngine);
 
-                doInitialFlutterViewRun();
-            }
-        });
     }
 
-
-    private void doInitialFlutterViewRun() {
-        // Don't attempt to start a FlutterEngine if we're using a cached FlutterEngine.
-        if (host.getCachedEngineId() != null) {
-            return;
-        }
-
-        if (flutterEngine.getDartExecutor().isExecutingDart()) {
-            // No warning is logged because this situation will happen on every config
-            // change if the developer does not choose to retain the Fragment instance.
-            // So this is expected behavior in many cases.
-            return;
-        }
-
-        Log.d(TAG, "Executing Dart entrypoint: " + host.getDartEntrypointFunctionName()
-                + ", and sending initial route: " + host.getInitialRoute());
-
-        // The engine needs to receive the Flutter app's initial route before executing any
-        // Dart code to ensure that the initial route arrives in time to be applied.
-        if (host.getInitialRoute() != null) {
-            flutterEngine.getNavigationChannel().setInitialRoute(host.getInitialRoute());
-        }
-
-        // Configure the Dart entrypoint and execute it.
-        DartExecutor.DartEntrypoint entrypoint = new DartExecutor.DartEntrypoint(
-                host.getAppBundlePath(),
-                host.getDartEntrypointFunctionName()
-        );
-        flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
-    }
 
 
     void onResume() {
@@ -267,7 +231,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     void onPause() {
         Log.v(TAG, "onPause()");
-        mSyncer.onDisappear();
 
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsInactive();
@@ -277,8 +240,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onStop() {
         Log.v(TAG, "onStop()");
         ensureAlive();
+        mSyncer.onDisappear();
         flutterEngine.getLifecycleChannel().appIsPaused();
-        flutterView.detachFromFlutterEngine();
+//        flutterView.detachFromFlutterEngine();
     }
 
     void onDestroyView() {
@@ -286,7 +250,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
-        flutterView.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
+//        flutterView.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
     }
 
 
@@ -312,15 +276,15 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         }
 
         // Destroy our FlutterEngine if we're not set to retain it.
-        if (host.shouldDestroyEngineWithHost()) {
-            flutterEngine.destroy();
-
-            if (host.getCachedEngineId() != null) {
-                FlutterEngineCache.getInstance().remove(host.getCachedEngineId());
-            }
-
-            flutterEngine = null;
-        }
+//        if (host.shouldDestroyEngineWithHost()) {
+//            flutterEngine.destroy();
+//
+//            if (host.getCachedEngineId() != null) {
+//                FlutterEngineCache.getInstance().remove(host.getCachedEngineId());
+//            }
+//
+//            flutterEngine = null;
+//        }
     }
 
 
@@ -440,7 +404,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     @Override
     public Activity getContextActivity() {
-        return (Activity)this.host;
+        return (Activity)this.host.getActivity();
     }
 
     @Override
@@ -450,19 +414,19 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        Activity activity= (Activity)this.host;
+        this.host.finishContainer(result);
 
-        activity.finish();
     }
 
     @Override
     public String getContainerUrl() {
-        return "flutterPage";
+        return   this.host.getContainerUrl();
     }
 
     @Override
     public Map getContainerUrlParams() {
-        return null;
+        return this.host.getContainerUrlParams();
+
     }
 
     @Override
@@ -590,6 +554,16 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
          * frame.
          */
         void onFirstFrameRendered();
+
+
+        void finishContainer(Map<String, Object> result) ;
+
+
+        String getContainerUrl() ;
+
+        Map getContainerUrlParams() ;
+
+
     }
 
 

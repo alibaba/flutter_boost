@@ -24,7 +24,7 @@ public class PageRouter {
                 context.startActivity( NewBoostFlutterActivity.createDefaultIntent(context));
                 return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
-//                context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
+                context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
                 return true;
             } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));

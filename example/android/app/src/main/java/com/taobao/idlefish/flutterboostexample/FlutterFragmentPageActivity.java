@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
+import com.idlefish.flutterboost.containers.FlutterFragment;
 import io.flutter.plugin.platform.PlatformPlugin;
 
 public class FlutterFragmentPageActivity extends AppCompatActivity implements View.OnClickListener {
@@ -61,16 +61,16 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
 
         if(mTab1 == v) {
             mTab1.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.instance("tab1");
+            mFragment = FlutterFragment.createDefault();
         }else if(mTab2 == v) {
             mTab2.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.instance("tab2");
+            mFragment = FlutterFragment.createDefault();
         }else if(mTab3 == v) {
             mTab3.setBackgroundColor(Color.YELLOW);
-           mFragment = FlutterFragment.instance("tab3");
+           mFragment = FlutterFragment.createDefault();
         }else{
             mTab4.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.instance("tab4");
+            mFragment = FlutterFragment.createDefault();
         }
 
         getSupportFragmentManager()

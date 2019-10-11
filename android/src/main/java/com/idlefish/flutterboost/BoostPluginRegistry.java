@@ -46,13 +46,13 @@ public class BoostPluginRegistry extends FlutterPluginRegistry {
             Activity activity;
             IContainerRecord record;
 
-            record = FlutterBoost.singleton().containerManager().getCurrentTopRecord();
+            record = NewFlutterBoost.instance().containerManager().getCurrentTopRecord();
             if (record == null) {
-                record = FlutterBoost.singleton().containerManager().getLastGenerateRecord();
+                record = NewFlutterBoost.instance().containerManager().getLastGenerateRecord();
             }
 
             if (record == null) {
-                activity = FlutterBoost.singleton().currentActivity();
+                activity = NewFlutterBoost.instance().currentActivity();
             } else {
                 activity = record.getContainer().getContextActivity();
             }

@@ -9,5 +9,4 @@ public interface INativeRouter {
     void openContainer(Context context, String url, Map<String,Object> urlParams, int requestCode, Map<String,Object> exts);
 
 
-    void closeContainer(IContainerRecord record, Map<String,Object> result, Map<String,Object> exts);
 }

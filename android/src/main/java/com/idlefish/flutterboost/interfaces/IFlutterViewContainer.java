@@ -25,7 +25,6 @@ package com.idlefish.flutterboost.interfaces;
 
 import android.app.Activity;
 
-import com.idlefish.flutterboost.BoostFlutterView;
 import com.idlefish.flutterboost.containers.FlutterSplashView;
 
 import java.util.Map;

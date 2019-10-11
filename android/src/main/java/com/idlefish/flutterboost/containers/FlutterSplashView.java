@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.idlefish.flutterboost.*;
-import com.idlefish.flutterboost.interfaces.IStateListener;
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.SplashScreen;
@@ -84,7 +83,7 @@ public class FlutterSplashView extends FrameLayout {
 
         setSaveEnabled(true);
         if (mFlutterEngine == null) {
-            mFlutterEngine = NewFlutterBoost.instance().engineProvider().provideEngine(context);
+            mFlutterEngine = NewFlutterBoost.instance().engineProvider();
         }
     }
 
