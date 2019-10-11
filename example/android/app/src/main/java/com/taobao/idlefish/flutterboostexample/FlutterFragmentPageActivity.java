@@ -9,12 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import com.idlefish.flutterboost.containers.FlutterFragment;
+import com.idlefish.flutterboost.containers.NewFlutterFragment;
 import io.flutter.plugin.platform.PlatformPlugin;
 
 public class FlutterFragmentPageActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private FlutterFragment mFragment;
+    private NewFlutterFragment mFragment;
 
     private View mTab1;
     private View mTab2;
@@ -61,16 +61,18 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
 
         if(mTab1 == v) {
             mTab1.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.createDefault();
+
+            mFragment= new NewFlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+
         }else if(mTab2 == v) {
             mTab2.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.createDefault();
+            mFragment= new NewFlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }else if(mTab3 == v) {
             mTab3.setBackgroundColor(Color.YELLOW);
-           mFragment = FlutterFragment.createDefault();
+            mFragment= new NewFlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }else{
             mTab4.setBackgroundColor(Color.YELLOW);
-            mFragment = FlutterFragment.createDefault();
+            mFragment= new NewFlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }
 
         getSupportFragmentManager()

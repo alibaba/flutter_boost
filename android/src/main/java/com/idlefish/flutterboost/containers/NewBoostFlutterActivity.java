@@ -41,21 +41,19 @@ public class NewBoostFlutterActivity extends Activity
     private static final String TAG = "NewBoostFlutterActivity";
 
     // Meta-data arguments, processed from manifest XML.
-    protected static final String DART_ENTRYPOINT_META_DATA_KEY = "io.flutter.Entrypoint";
-    protected static final String INITIAL_ROUTE_META_DATA_KEY = "io.flutter.InitialRoute";
     protected static final String SPLASH_SCREEN_META_DATA_KEY = "io.flutter.embedding.android.SplashScreenDrawable";
     protected static final String NORMAL_THEME_META_DATA_KEY = "io.flutter.embedding.android.NormalTheme";
 
     // Intent extra arguments.
     protected static final String EXTRA_DART_ENTRYPOINT = "dart_entrypoint";
-    protected static final String EXTRA_INITIAL_ROUTE = "initial_route";
     protected static final String EXTRA_BACKGROUND_MODE = "background_mode";
-    protected static final String EXTRA_CACHED_ENGINE_ID = "cached_engine_id";
     protected static final String EXTRA_DESTROY_ENGINE_WITH_ACTIVITY = "destroy_engine_with_activity";
 
+    protected static final String EXTRA_URL = "url";
+    protected static final String EXTRA_PARAMS = "params";
+
+
     // Default configuration.
-    protected static final String DEFAULT_DART_ENTRYPOINT = "main";
-    protected static final String DEFAULT_INITIAL_ROUTE = "/";
     protected static final String DEFAULT_BACKGROUND_MODE = BackgroundMode.opaque.name();
 
 
@@ -71,11 +69,9 @@ public class NewBoostFlutterActivity extends Activity
 
     public static class NewEngineIntentBuilder {
         private final Class<? extends NewBoostFlutterActivity> activityClass;
-        private String dartEntrypoint = DEFAULT_DART_ENTRYPOINT;
-        private String initialRoute = DEFAULT_INITIAL_ROUTE;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url = "";
-        private Map params = null;
+        private HashMap params = new HashMap();
 
 
 
@@ -84,10 +80,7 @@ public class NewBoostFlutterActivity extends Activity
         }
 
 
-        public NewEngineIntentBuilder dartEntrypoint(@NonNull String dartEntrypoint) {
-            this.dartEntrypoint = dartEntrypoint;
-            return this;
-        }
+
 
         public NewEngineIntentBuilder url (@NonNull String url) {
             this.url = url;
@@ -95,15 +88,11 @@ public class NewBoostFlutterActivity extends Activity
         }
 
 
-        public NewEngineIntentBuilder params (@NonNull Map params) {
+        public NewEngineIntentBuilder params (@NonNull HashMap params) {
             this.params = params;
             return this;
         }
 
-        public NewEngineIntentBuilder initialRoute(@NonNull String initialRoute) {
-            this.initialRoute = initialRoute;
-            return this;
-        }
 
 
         public NewEngineIntentBuilder backgroundMode(@NonNull BackgroundMode backgroundMode) {
@@ -114,12 +103,10 @@ public class NewBoostFlutterActivity extends Activity
 
         public Intent build(@NonNull Context context) {
             return new Intent(context, activityClass)
-                    .putExtra(EXTRA_DART_ENTRYPOINT, dartEntrypoint)
-                    .putExtra(EXTRA_INITIAL_ROUTE, initialRoute)
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, false)
-                    .putExtra("url", url)
-                    .putExtra("params", (HashMap)params);
+                    .putExtra(EXTRA_URL, url)
+                    .putExtra(EXTRA_PARAMS, (HashMap)params);
         }
     }
 
@@ -365,129 +352,7 @@ public class NewBoostFlutterActivity extends Activity
         return FlutterShellArgs.fromIntent(getIntent());
     }
 
-    /**
-     * Returns the ID of a statically cached {@link FlutterEngine} to use within this
-     * {@code FlutterActivity}, or {@code null} if this {@code FlutterActivity} does not want to
-     * use a cached {@link FlutterEngine}.
-     */
-    @Override
-    @Nullable
-    public String getCachedEngineId() {
-        return getIntent().getStringExtra(EXTRA_CACHED_ENGINE_ID);
-    }
 
-    /**
-     * Returns false if the {@link FlutterEngine} backing this {@code FlutterActivity} should
-     * outlive this {@code FlutterActivity}, or true to be destroyed when the {@code FlutterActivity}
-     * is destroyed.
-     * <p>
-     * The default value is {@code true} in cases where {@code FlutterActivity} created its own
-     * {@link FlutterEngine}, and {@code false} in cases where a cached {@link FlutterEngine} was
-     * provided.
-     */
-    @Override
-    public boolean shouldDestroyEngineWithHost() {
-        return getIntent().getBooleanExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, false);
-    }
-
-    /**
-     * The Dart entrypoint that will be executed as soon as the Dart snapshot is loaded.
-     * <p>
-     * This preference can be controlled with 2 methods:
-     * <ol>
-     * <li>Pass a {@code String} as {@link #EXTRA_DART_ENTRYPOINT} with the launching {@code Intent}, or</li>
-     * <li>Set a {@code <meta-data>} called {@link #DART_ENTRYPOINT_META_DATA_KEY} for this
-     * {@code Activity} in the Android manifest.</li>
-     * </ol>
-     * If both preferences are set, the {@code Intent} preference takes priority.
-     * <p>
-     * The reason that a {@code <meta-data>} preference is supported is because this {@code Activity}
-     * might be the very first {@code Activity} launched, which means the developer won't have
-     * control over the incoming {@code Intent}.
-     * <p>
-     * Subclasses may override this method to directly control the Dart entrypoint.
-     */
-    @NonNull
-    public String getDartEntrypointFunctionName() {
-        if (getIntent().hasExtra(EXTRA_DART_ENTRYPOINT)) {
-            return getIntent().getStringExtra(EXTRA_DART_ENTRYPOINT);
-        }
-
-        try {
-            ActivityInfo activityInfo = getPackageManager().getActivityInfo(
-                    getComponentName(),
-                    PackageManager.GET_META_DATA | PackageManager.GET_ACTIVITIES
-            );
-            Bundle metadata = activityInfo.metaData;
-            String desiredDartEntrypoint = metadata != null ? metadata.getString(DART_ENTRYPOINT_META_DATA_KEY) : null;
-            return desiredDartEntrypoint != null ? desiredDartEntrypoint : DEFAULT_DART_ENTRYPOINT;
-        } catch (PackageManager.NameNotFoundException e) {
-            return DEFAULT_DART_ENTRYPOINT;
-        }
-    }
-
-    /**
-     * The initial route that a Flutter app will render upon loading and executing its Dart code.
-     * <p>
-     * This preference can be controlled with 2 methods:
-     * <ol>
-     * <li>Pass a boolean as {@link #EXTRA_INITIAL_ROUTE} with the launching {@code Intent}, or</li>
-     * <li>Set a {@code <meta-data>} called {@link #INITIAL_ROUTE_META_DATA_KEY} for this
-     * {@code Activity} in the Android manifest.</li>
-     * </ol>
-     * If both preferences are set, the {@code Intent} preference takes priority.
-     * <p>
-     * The reason that a {@code <meta-data>} preference is supported is because this {@code Activity}
-     * might be the very first {@code Activity} launched, which means the developer won't have
-     * control over the incoming {@code Intent}.
-     * <p>
-     * Subclasses may override this method to directly control the initial route.
-     */
-    @NonNull
-    public String getInitialRoute() {
-        if (getIntent().hasExtra(EXTRA_INITIAL_ROUTE)) {
-            return getIntent().getStringExtra(EXTRA_INITIAL_ROUTE);
-        }
-
-        try {
-            ActivityInfo activityInfo = getPackageManager().getActivityInfo(
-                    getComponentName(),
-                    PackageManager.GET_META_DATA | PackageManager.GET_ACTIVITIES
-            );
-            Bundle metadata = activityInfo.metaData;
-            String desiredInitialRoute = metadata != null ? metadata.getString(INITIAL_ROUTE_META_DATA_KEY) : null;
-            return desiredInitialRoute != null ? desiredInitialRoute : DEFAULT_INITIAL_ROUTE;
-        } catch (PackageManager.NameNotFoundException e) {
-            return DEFAULT_INITIAL_ROUTE;
-        }
-    }
-
-    /**
-     * The path to the bundle that contains this Flutter app's resources, e.g., Dart code snapshots.
-     * <p>
-     * When this {@code FlutterActivity} is run by Flutter tooling and a data String is included
-     * in the launching {@code Intent}, that data String is interpreted as an app bundle path.
-     * <p>
-     * By default, the app bundle path is obtained from {@link FlutterMain#findAppBundlePath()}.
-     * <p>
-     * Subclasses may override this method to return a custom app bundle path.
-     */
-    @NonNull
-    public String getAppBundlePath() {
-        // If this Activity was launched from tooling, and the incoming Intent contains
-        // a custom app bundle path, return that path.
-        // TODO(mattcarroll): determine if we should have an explicit FlutterTestActivity instead of conflating.
-        if (isDebuggable() && Intent.ACTION_RUN.equals(getIntent().getAction())) {
-            String appBundlePath = getIntent().getDataString();
-            if (appBundlePath != null) {
-                return appBundlePath;
-            }
-        }
-
-        // Return the default app bundle path.
-        // TODO(mattcarroll): move app bundle resolution into an appropriately named class.
-        return FlutterMain.findAppBundlePath();
-    }
 
     /**
      * Returns true if Flutter is running in "debug mode", and false otherwise.
@@ -600,13 +465,22 @@ public class NewBoostFlutterActivity extends Activity
 
     @Override
     public String getContainerUrl() {
-        return "flutterPage";
+        if (getIntent().hasExtra(EXTRA_URL)) {
+            return getIntent().getStringExtra(EXTRA_URL);
+        }
+        return "";
+
     }
 
     @Override
     public Map getContainerUrlParams() {
+
+        if (getIntent().hasExtra(EXTRA_PARAMS)) {
+            return (Map) getIntent().getSerializableExtra(EXTRA_PARAMS);
+        }
+
         Map<String,String> params = new HashMap<>();
-        params.put("aaa","bbb");
+
         return params;
     }
 

@@ -19,7 +19,8 @@ public class MyApplication extends FlutterApplication {
         INativeRouter router =new INativeRouter() {
             @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
-                PageRouter.openPageByUrl(context,url, urlParams);
+               String  assembleUrl=Utils.assembleUrl(url,urlParams);
+                PageRouter.openPageByUrl(context,assembleUrl, urlParams);
             }
 
         };

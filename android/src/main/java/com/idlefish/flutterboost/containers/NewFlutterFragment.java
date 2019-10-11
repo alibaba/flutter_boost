@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class FlutterFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
+public class NewFlutterFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
 
-    private static final String TAG = "FlutterFragment";
+    private static final String TAG = "NewFlutterFragment";
 
     /**
      * The Dart entrypoint method name that is executed upon initialization.
@@ -48,12 +48,12 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     protected static final String ARG_FLUTTER_INITIALIZATION_ARGS = "initialization_args";
     /**
      * {@link FlutterView.RenderMode} to be used for the {@link FlutterView} in this
-     * {@code FlutterFragment}
+     * {@code NewFlutterFragment}
      */
     protected static final String ARG_FLUTTERVIEW_RENDER_MODE = "flutterview_render_mode";
     /**
      * {@link FlutterView.TransparencyMode} to be used for the {@link FlutterView} in this
-     * {@code FlutterFragment}
+     * {@code NewFlutterFragment}
      */
     protected static final String ARG_FLUTTERVIEW_TRANSPARENCY_MODE = "flutterview_transparency_mode";
     /**
@@ -61,21 +61,26 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
      */
     protected static final String ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY = "should_attach_engine_to_activity";
     /**
-     * the created {@code FlutterFragment}.
+     * the created {@code NewFlutterFragment}.
      */
     protected static final String ARG_CACHED_ENGINE_ID = "cached_engine_id";
     /**
-     * True if the {@link FlutterEngine} in the created {@code FlutterFragment} should be destroyed
-     * when the {@code FlutterFragment} is destroyed, false if the {@link FlutterEngine} should
-     * outlive the {@code FlutterFragment}.
+     * True if the {@link FlutterEngine} in the created {@code NewFlutterFragment} should be destroyed
+     * when the {@code NewFlutterFragment} is destroyed, false if the {@link FlutterEngine} should
+     * outlive the {@code NewFlutterFragment}.
      */
     protected static final String ARG_DESTROY_ENGINE_WITH_FRAGMENT = "destroy_engine_with_fragment";
 
+
+    protected static final String EXTRA_URL = "url";
+    protected static final String EXTRA_PARAMS = "params";
+
+
     /**
-     * Creates a {@code FlutterFragment} with a default configuration.
+     * Creates a {@code NewFlutterFragment} with a default configuration.
      * <p>
-     * {@code FlutterFragment}'s default configuration creates a new {@link FlutterEngine} within
-     * the {@code FlutterFragment} and uses the following settings:
+     * {@code NewFlutterFragment}'s default configuration creates a new {@link FlutterEngine} within
+     * the {@code NewFlutterFragment} and uses the following settings:
      * <ul>
      * <li>Dart entrypoint: "main"</li>
      * <li>Initial route: "/"</li>
@@ -88,12 +93,12 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
      * To use a cached {@link FlutterEngine} instead of creating a new one, use
      */
     @NonNull
-    public static FlutterFragment createDefault() {
+    public static NewFlutterFragment createDefault() {
         return new NewEngineFragmentBuilder().build();
     }
 
     /**
-     * Returns a {@link NewEngineFragmentBuilder} to create a {@code FlutterFragment} with a new
+     * Returns a {@link NewEngineFragmentBuilder} to create a {@code NewFlutterFragment} with a new
      * {@link FlutterEngine} and a desired engine configuration.
      */
     @NonNull
@@ -101,101 +106,33 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         return new NewEngineFragmentBuilder();
     }
 
-    /**
-     * Builder that creates a new {@code FlutterFragment} with {@code arguments} that correspond
-     * to the values set on this {@code NewEngineFragmentBuilder}.
-     * <p>
-     * To create a {@code FlutterFragment} with default {@code arguments}, invoke
-     * {@link #createDefault()}.
-     * <p>
-     * Subclasses of {@code FlutterFragment} that do not introduce any new arguments can use this
-     * {@code NewEngineFragmentBuilder} to construct instances of the subclass without subclassing
-     * this {@code NewEngineFragmentBuilder}.
-     * {@code
-     * MyFlutterFragment f = new FlutterFragment.NewEngineFragmentBuilder(MyFlutterFragment.class)
-     * .someProperty(...)
-     * .someOtherProperty(...)
-     * .build<MyFlutterFragment>();
-     * }
-     * <p>
-     * Subclasses of {@code FlutterFragment} that introduce new arguments should subclass this
-     * {@code NewEngineFragmentBuilder} to add the new properties:
-     * <ol>
-     * <li>Ensure the {@code FlutterFragment} subclass has a no-arg constructor.</li>
-     * <li>Subclass this {@code NewEngineFragmentBuilder}.</li>
-     * <li>Override the new {@code NewEngineFragmentBuilder}'s no-arg constructor and invoke the
-     * super constructor to set the {@code FlutterFragment} subclass: {@code
-     * public MyBuilder() {
-     * super(MyFlutterFragment.class);
-     * }
-     * }</li>
-     * <li>Add appropriate property methods for the new properties.</li>
-     * <li>Override {@link NewEngineFragmentBuilder#createArgs()}, call through to the super method,
-     * then add the new properties as arguments in the {@link Bundle}.</li>
-     * </ol>
-     * Once a {@code NewEngineFragmentBuilder} subclass is defined, the {@code FlutterFragment}
-     * subclass can be instantiated as follows.
-     * {@code
-     * MyFlutterFragment f = new MyBuilder()
-     * .someExistingProperty(...)
-     * .someNewProperty(...)
-     * .build<MyFlutterFragment>();
-     * }
-     */
+
     public static class NewEngineFragmentBuilder {
-        private final Class<? extends FlutterFragment> fragmentClass;
-        private String dartEntrypoint = "main";
-        private String initialRoute = "/";
-        private String appBundlePath = null;
+        private final Class<? extends NewFlutterFragment> fragmentClass;
+
         private FlutterShellArgs shellArgs = null;
         private FlutterView.RenderMode renderMode = FlutterView.RenderMode.surface;
         private FlutterView.TransparencyMode transparencyMode = FlutterView.TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
-
+        private String url = "";
+        private HashMap params = new HashMap();
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
-         * {@code FlutterFragment}.
+         * {@code NewFlutterFragment}.
          */
         public NewEngineFragmentBuilder() {
-            fragmentClass = FlutterFragment.class;
+            fragmentClass = NewFlutterFragment.class;
         }
 
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
-         * {@code subclass}, which extends {@code FlutterFragment}.
+         * {@code subclass}, which extends {@code NewFlutterFragment}.
          */
-        public NewEngineFragmentBuilder(@NonNull Class<? extends FlutterFragment> subclass) {
+        public NewEngineFragmentBuilder(@NonNull Class<? extends NewFlutterFragment> subclass) {
             fragmentClass = subclass;
         }
 
-        /**
-         * The name of the initial Dart method to invoke, defaults to "main".
-         */
-        @NonNull
-        public NewEngineFragmentBuilder dartEntrypoint(@NonNull String dartEntrypoint) {
-            this.dartEntrypoint = dartEntrypoint;
-            return this;
-        }
 
-        /**
-         * The initial route that a Flutter app will render in this {@link FlutterFragment},
-         * defaults to "/".
-         */
-        @NonNull
-        public NewEngineFragmentBuilder initialRoute(@NonNull String initialRoute) {
-            this.initialRoute = initialRoute;
-            return this;
-        }
-
-        /**
-         * The path to the app bundle which contains the Dart app to execute, defaults
-         * to {@link FlutterMain#findAppBundlePath()}
-         */
-        @NonNull
-        public NewEngineFragmentBuilder appBundlePath(@NonNull String appBundlePath) {
-            this.appBundlePath = appBundlePath;
-            return this;
-        }
 
         /**
          * Any special configuration arguments for the Flutter engine
@@ -219,7 +156,16 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
             this.renderMode = renderMode;
             return this;
         }
+        public NewEngineFragmentBuilder url (@NonNull String url) {
+            this.url = url;
+            return this;
+        }
 
+
+        public NewEngineFragmentBuilder params (@NonNull HashMap params) {
+            this.params = params;
+            return this;
+        }
         /**
          * Support a {@link FlutterView.TransparencyMode#transparent} background within {@link FlutterView},
          * or force an {@link FlutterView.TransparencyMode#opaque} background.
@@ -233,41 +179,34 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         }
 
 
-        @NonNull
-        public NewEngineFragmentBuilder shouldAttachEngineToActivity(boolean shouldAttachEngineToActivity) {
-            this.shouldAttachEngineToActivity = shouldAttachEngineToActivity;
-            return this;
-        }
-
 
         @NonNull
         protected Bundle createArgs() {
             Bundle args = new Bundle();
-            args.putString(ARG_INITIAL_ROUTE, initialRoute);
-            args.putString(ARG_APP_BUNDLE_PATH, appBundlePath);
-            args.putString(ARG_DART_ENTRYPOINT, dartEntrypoint);
+
             // TODO(mattcarroll): determine if we should have an explicit FlutterTestFragment instead of conflating.
             if (null != shellArgs) {
                 args.putStringArray(ARG_FLUTTER_INITIALIZATION_ARGS, shellArgs.toArray());
             }
+            args.putString(EXTRA_URL, url);
+            args.putSerializable(EXTRA_PARAMS, (HashMap)params);
             args.putString(ARG_FLUTTERVIEW_RENDER_MODE, renderMode != null ? renderMode.name() : FlutterView.RenderMode.surface.name());
             args.putString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, transparencyMode != null ? transparencyMode.name() : FlutterView.TransparencyMode.transparent.name());
-            args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
             args.putBoolean(ARG_DESTROY_ENGINE_WITH_FRAGMENT, true);
             return args;
         }
 
         /**
-         * Constructs a new {@code FlutterFragment} (or a subclass) that is configured based on
+         * Constructs a new {@code NewFlutterFragment} (or a subclass) that is configured based on
          * properties set on this {@code Builder}.
          */
         @NonNull
-        public <T extends FlutterFragment> T build() {
+        public <T extends NewFlutterFragment> T build() {
             try {
                 @SuppressWarnings("unchecked")
                 T frag = (T) fragmentClass.getDeclaredConstructor().newInstance();
                 if (frag == null) {
-                    throw new RuntimeException("The FlutterFragment subclass sent in the constructor ("
+                    throw new RuntimeException("The NewFlutterFragment subclass sent in the constructor ("
                             + fragmentClass.getCanonicalName() + ") does not match the expected return type.");
                 }
 
@@ -276,16 +215,14 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
 
                 return frag;
             } catch (Exception e) {
-                throw new RuntimeException("Could not instantiate FlutterFragment subclass (" + fragmentClass.getName() + ")", e);
+                throw new RuntimeException("Could not instantiate NewFlutterFragment subclass (" + fragmentClass.getName() + ")", e);
             }
         }
     }
 
 
-
-
     // Delegate that runs all lifecycle and OS hook logic that is common between
-    // FlutterActivity and FlutterFragment. See the FlutterActivityAndFragmentDelegate
+    // FlutterActivity and NewFlutterFragment. See the FlutterActivityAndFragmentDelegate
     // implementation for details about why it exists.
     private FlutterActivityAndFragmentDelegate delegate;
 
@@ -293,7 +230,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         @Override
         public void onFirstFrameRendered() {
             // Notify our subclasses that the first frame has been rendered.
-            FlutterFragment.this.onFirstFrameRendered();
+            NewFlutterFragment.this.onFirstFrameRendered();
 
             // Notify our owning Activity that the first frame has been rendered.
             FragmentActivity fragmentActivity = getActivity();
@@ -304,7 +241,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         }
     };
 
-    public FlutterFragment() {
+    public NewFlutterFragment() {
         // Ensure that we at least have an empty Bundle of arguments so that we don't
         // need to continually check for null arguments before grabbing one.
         setArguments(new Bundle());
@@ -449,75 +386,12 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
     /**
-     * Returns the ID of a statically cached {@link FlutterEngine} to use within this
-     * {@code FlutterFragment}, or {@code null} if this {@code FlutterFragment} does not want to
-     * use a cached {@link FlutterEngine}.
-     */
-    @Nullable
-    @Override
-    public String getCachedEngineId() {
-        return getArguments().getString(ARG_CACHED_ENGINE_ID, null);
-    }
-
-    /**
-     * Returns false if the {@link FlutterEngine} within this {@code FlutterFragment} should outlive
-     * the {@code FlutterFragment}, itself.
-     * <p>
-     * Defaults to true if no custom {@link FlutterEngine is provided}, false if a custom
-     * {@link FlutterEngine} is provided.
-     */
-    @Override
-    public boolean shouldDestroyEngineWithHost() {
-        return getArguments().getBoolean(ARG_DESTROY_ENGINE_WITH_FRAGMENT, false);
-    }
-
-    /**
-     * Returns the name of the Dart method that this {@code FlutterFragment} should execute to
-     * start a Flutter app.
-     * <p>
-     * Defaults to "main".
-     * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
-     */
-    @Override
-    @NonNull
-    public String getDartEntrypointFunctionName() {
-        return getArguments().getString(ARG_DART_ENTRYPOINT, "main");
-    }
-
-    /**
-     * Returns the file path to the desired Flutter app's bundle of code.
-     * <p>
-     * Defaults to {@link FlutterMain#findAppBundlePath()}.
-     * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
-     */
-    @Override
-    @NonNull
-    public String getAppBundlePath() {
-        return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterMain.findAppBundlePath());
-    }
-
-    /**
-     * Returns the initial route that should be rendered within Flutter, once the Flutter app starts.
-     * <p>
-     * Defaults to {@code null}, which signifies a route of "/" in Flutter.
-     * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
-     */
-    @Override
-    @Nullable
-    public String getInitialRoute() {
-        return getArguments().getString(ARG_INITIAL_ROUTE);
-    }
-
-    /**
      * Returns the desired {@link FlutterView.RenderMode} for the {@link FlutterView} displayed in
-     * this {@code FlutterFragment}.
+     * this {@code NewFlutterFragment}.
      * <p>
      * Defaults to {@link FlutterView.RenderMode#surface}.
      * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
+     * Used by this {@code NewFlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
      */
     @Override
     @NonNull
@@ -531,11 +405,11 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
 
     /**
      * Returns the desired {@link FlutterView.TransparencyMode} for the {@link FlutterView} displayed in
-     * this {@code FlutterFragment}.
+     * this {@code NewFlutterFragment}.
      * <p>
      * Defaults to {@link FlutterView.TransparencyMode#transparent}.
      * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
+     * Used by this {@code NewFlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
      */
     @Override
     @NonNull
@@ -565,18 +439,6 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     public FlutterEngine provideFlutterEngine(@NonNull Context context) {
 
         return NewFlutterBoost.instance().engineProvider();
-//        // Defer to the FragmentActivity that owns us to see if it wants to provide a
-//        // FlutterEngine.
-//        FlutterEngine flutterEngine = null;
-//        FragmentActivity attachedActivity = getActivity();
-//        if (attachedActivity instanceof FlutterEngineProvider) {
-//            // Defer to the Activity that owns us to provide a FlutterEngine.
-//            Log.d(TAG, "Deferring to attached Activity to provide a FlutterEngine.");
-//            FlutterEngineProvider flutterEngineProvider = (FlutterEngineProvider) attachedActivity;
-//            flutterEngine = flutterEngineProvider.provideFlutterEngine(getContext());
-//        }
-//
-//        return flutterEngine;
     }
 
     /**
@@ -614,7 +476,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
      * as a {@link FlutterEngineConfigurator}. Subclasses can override this method if the
      * subclass needs to override the {@code FragmentActivity}'s behavior, or add to it.
      * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
+     * Used by this {@code NewFlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
      */
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -627,7 +489,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     /**
      * See {@link NewEngineFragmentBuilder#shouldAttachEngineToActivity()} and
      * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate}
+     * Used by this {@code NewFlutterFragment}'s {@link FlutterActivityAndFragmentDelegate}
      */
     @Override
     public boolean shouldAttachEngineToActivity() {
@@ -635,7 +497,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
     /**
-     * Invoked after the {@link FlutterView} within this {@code FlutterFragment} renders its first
+     * Invoked after the {@link FlutterView} within this {@code NewFlutterFragment} renders its first
      * frame.
      * <p>
      * This method forwards {@code onFirstFrameRendered()} to its attached {@code Activity}, if
@@ -643,7 +505,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
      * <p>
      * Subclasses that override this method must call through to the {@code super} method.
      * <p>
-     * Used by this {@code FlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
+     * Used by this {@code NewFlutterFragment}'s {@link FlutterActivityAndFragmentDelegate.Host}
      */
     @Override
     public void onFirstFrameRendered() {
@@ -655,25 +517,26 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        Activity activity= this.getActivity();
+        Activity activity = this.getActivity();
 
         activity.finish();
     }
 
     @Override
     public String getContainerUrl() {
-        return "flutterFragment";
+
+        return getArguments().getString(EXTRA_URL);
+
+
     }
 
     @Override
     public Map getContainerUrlParams() {
-        Map<String,String> params = new HashMap<>();
-        params.put("aaa","bbb");
-        return params;
+       return (HashMap) getArguments().getSerializable(EXTRA_PARAMS);
     }
 
     /**
-     * Annotates methods in {@code FlutterFragment} that must be called by the containing
+     * Annotates methods in {@code NewFlutterFragment} that must be called by the containing
      * {@code Activity}.
      */
     @interface ActivityCallThrough {

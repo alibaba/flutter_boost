@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -27,9 +25,7 @@ import io.flutter.Log;
 import io.flutter.app.FlutterActivity;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
@@ -157,7 +153,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         // Our host did not provide a custom FlutterEngine. Create a FlutterEngine to back our
         // FlutterView.
         Log.d(TAG, "No preferred FlutterEngine was provided. Creating a new FlutterEngine for"
-                + " this FlutterFragment.");
+                + " this NewFlutterFragment.");
         flutterEngine = new FlutterEngine(host.getContext());
         isFlutterEngineFromHost = false;
     }
@@ -224,7 +220,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                 platformPlugin.updateSystemUiOverlays();
             }
         } else {
-            Log.w(TAG, "onPostResume() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onPostResume() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -296,7 +292,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 //            Log.v(TAG, "Forwarding onBackPressed() to FlutterEngine.");
 //            flutterEngine.getNavigationChannel().popRoute();
 //        } else {
-//            Log.w(TAG, "Invoked onBackPressed() before FlutterFragment was attached to an Activity.");
+//            Log.w(TAG, "Invoked onBackPressed() before NewFlutterFragment was attached to an Activity.");
 //        }
     }
 
@@ -312,7 +308,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                     + "grantResults: " + Arrays.toString(grantResults));
             flutterEngine.getActivityControlSurface().onRequestPermissionsResult(requestCode, permissions, grantResults);
         } else {
-            Log.w(TAG, "onRequestPermissionResult() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onRequestPermissionResult() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -325,7 +321,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
             Log.v(TAG, "Forwarding onNewIntent() to FlutterEngine.");
             flutterEngine.getActivityControlSurface().onNewIntent(intent);
         } else {
-            Log.w(TAG, "onNewIntent() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onNewIntent() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -351,7 +347,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                     + "data: " + data);
             flutterEngine.getActivityControlSurface().onActivityResult(requestCode, resultCode, data);
         } else {
-            Log.w(TAG, "onActivityResult() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onActivityResult() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -362,7 +358,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
             Log.v(TAG, "Forwarding onUserLeaveHint() to FlutterEngine.");
             flutterEngine.getActivityControlSurface().onUserLeaveHint();
         } else {
-            Log.w(TAG, "onUserLeaveHint() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onUserLeaveHint() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -379,7 +375,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                 flutterEngine.getSystemChannel().sendMemoryPressureWarning();
             }
         } else {
-            Log.w(TAG, "onTrimMemory() invoked before FlutterFragment was attached to an Activity.");
+            Log.w(TAG, "onTrimMemory() invoked before NewFlutterFragment was attached to an Activity.");
         }
     }
 
@@ -440,7 +436,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     }
 
     /**
-     * The {@link FlutterActivity} or {@link FlutterFragment} that owns this
+     * The {@link FlutterActivity} or {@link NewFlutterFragment} that owns this
      * {@code FlutterActivityAndFragmentDelegate}.
      */
     /* package */ interface Host extends SplashScreenProvider, FlutterEngineProvider, FlutterEngineConfigurator {
@@ -469,42 +465,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         @NonNull
         FlutterShellArgs getFlutterShellArgs();
 
-        /**
-         * Returns the ID of a statically cached {@link FlutterEngine} to use within this
-         * delegate's host, or {@code null} if this delegate's host does not want to
-         * use a cached {@link FlutterEngine}.
-         */
-        @Nullable
-        String getCachedEngineId();
-
-        /**
-         * Returns true if the {@link FlutterEngine} used in this delegate should be destroyed
-         * when the host/delegate are destroyed.
-         * <p>
-         * The default value is {@code true} in cases where {@code FlutterFragment} created its own
-         * {@link FlutterEngine}, and {@code false} in cases where a cached {@link FlutterEngine} was
-         * provided.
-         */
-        boolean shouldDestroyEngineWithHost();
-
-        /**
-         * Returns the Dart entrypoint that should run when a new {@link FlutterEngine} is
-         * created.
-         */
-        @NonNull
-        String getDartEntrypointFunctionName();
-
-        /**
-         * Returns the path to the app bundle where the Dart code exists.
-         */
-        @NonNull
-        String getAppBundlePath();
-
-        /**
-         * Returns the initial route that Flutter renders.
-         */
-        @Nullable
-        String getInitialRoute();
 
         /**
          * Returns the {@link FlutterView.RenderMode} used by the {@link FlutterView} that

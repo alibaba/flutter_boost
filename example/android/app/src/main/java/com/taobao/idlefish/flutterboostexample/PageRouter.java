@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import com.idlefish.flutterboost.containers.NewBoostFlutterActivity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PageRouter {
@@ -20,8 +21,12 @@ public class PageRouter {
     public static boolean openPageByUrl(Context context, String url, Map params, int requestCode) {
         try {
             if (url.startsWith(FLUTTER_PAGE_URL)) {
+                HashMap p=new HashMap();
 
-                context.startActivity( NewBoostFlutterActivity.createDefaultIntent(context));
+                Intent intent= NewBoostFlutterActivity.withNewEngine().url("flutterPage").params(p)
+                        .backgroundMode(NewBoostFlutterActivity.BackgroundMode.opaque).build(context);
+
+                context.startActivity( intent);
                 return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
                 context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));

@@ -35,14 +35,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import com.alibaba.fastjson.JSON;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -288,5 +288,56 @@ public class Utils {
             }
         }
     }
+
+
+
+
+    public static String assembleUrl(String url,Map<String, Object> urlParams){
+
+        StringBuilder targetUrl = new StringBuilder(url);
+        if(urlParams != null && !urlParams.isEmpty()) {
+            if(!targetUrl.toString().contains("?")){
+                targetUrl.append("?");
+            }
+
+
+            for(Map.Entry entry:urlParams.entrySet()) {
+                if(entry.getValue() instanceof Map ) {
+                    Map<String,Object> params = (Map<String,Object> )entry.getValue();
+
+                    for(Map.Entry param:params.entrySet()) {
+                        String key = (String)param.getKey();
+                        String value = null;
+                        if(param.getValue() instanceof Map || param.getValue() instanceof List) {
+                            try {
+                                value = URLEncoder.encode(JSON.toJSONString(param.getValue()), "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            value = (param.getValue()==null?null:URLEncoder.encode( String.valueOf(param.getValue())));
+                        }
+
+                        if(value==null){
+                            continue;
+                        }
+                        if(targetUrl.toString().endsWith("?")){
+                            targetUrl.append(key).append("=").append(value);
+                        }else{
+                            targetUrl.append("&").append(key).append("=").append(value);
+                        }
+
+                    }
+                }
+
+            }
+
+
+        }
+        return  targetUrl.toString();
+    }
+
+
+
 
 }
