@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Map params = new HashMap();
+        params.put("test1","v_test1");
+        params.put("test2","v_test2");
         //Add some params if needed.
         if (v == mOpenNative) {
             PageRouter.openPageByUrl(this, PageRouter.NATIVE_PAGE_URL , params);

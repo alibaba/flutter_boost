@@ -31,6 +31,7 @@ import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class NewBoostFlutterActivity extends Activity
         private final Class<? extends NewBoostFlutterActivity> activityClass;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url = "";
-        private HashMap params = new HashMap();
+        private Map params = new HashMap();
 
 
 
@@ -88,7 +89,7 @@ public class NewBoostFlutterActivity extends Activity
         }
 
 
-        public NewEngineIntentBuilder params (@NonNull HashMap params) {
+        public NewEngineIntentBuilder params (@NonNull Map params) {
             this.params = params;
             return this;
         }
@@ -102,15 +103,30 @@ public class NewBoostFlutterActivity extends Activity
 
 
         public Intent build(@NonNull Context context) {
+
+            SerializableMap serializableMap=new SerializableMap();
+            serializableMap.setMap(params);
+
             return new Intent(context, activityClass)
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, false)
                     .putExtra(EXTRA_URL, url)
-                    .putExtra(EXTRA_PARAMS, (HashMap)params);
+                    .putExtra(EXTRA_PARAMS, serializableMap);
         }
     }
 
+    public static class SerializableMap implements Serializable {
 
+        private Map<String,Object> map;
+
+        public Map<String, Object> getMap() {
+            return map;
+        }
+
+        public void setMap(Map<String, Object> map) {
+            this.map = map;
+        }
+    }
 
     private FlutterActivityAndFragmentDelegate delegate;
 
@@ -476,7 +492,8 @@ public class NewBoostFlutterActivity extends Activity
     public Map getContainerUrlParams() {
 
         if (getIntent().hasExtra(EXTRA_PARAMS)) {
-            return (Map) getIntent().getSerializableExtra(EXTRA_PARAMS);
+            SerializableMap serializableMap= (SerializableMap)getIntent().getSerializableExtra(EXTRA_PARAMS);
+            return serializableMap.getMap();
         }
 
         Map<String,String> params = new HashMap<>();

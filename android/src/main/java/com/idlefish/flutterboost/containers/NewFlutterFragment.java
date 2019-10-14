@@ -115,7 +115,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
         private FlutterView.TransparencyMode transparencyMode = FlutterView.TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
         private String url = "";
-        private HashMap params = new HashMap();
+        private Map params = new HashMap();
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
          * {@code NewFlutterFragment}.
@@ -162,7 +162,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
         }
 
 
-        public NewEngineFragmentBuilder params (@NonNull HashMap params) {
+        public NewEngineFragmentBuilder params (@NonNull Map params) {
             this.params = params;
             return this;
         }
@@ -188,11 +188,17 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
             if (null != shellArgs) {
                 args.putStringArray(ARG_FLUTTER_INITIALIZATION_ARGS, shellArgs.toArray());
             }
+
+            NewBoostFlutterActivity.SerializableMap serializableMap=new NewBoostFlutterActivity.SerializableMap();
+            serializableMap.setMap(params);
+
             args.putString(EXTRA_URL, url);
-            args.putSerializable(EXTRA_PARAMS, (HashMap)params);
+            args.putSerializable(EXTRA_PARAMS, serializableMap);
             args.putString(ARG_FLUTTERVIEW_RENDER_MODE, renderMode != null ? renderMode.name() : FlutterView.RenderMode.surface.name());
             args.putString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, transparencyMode != null ? transparencyMode.name() : FlutterView.TransparencyMode.transparent.name());
             args.putBoolean(ARG_DESTROY_ENGINE_WITH_FRAGMENT, true);
+
+
             return args;
         }
 
@@ -532,7 +538,10 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
 
     @Override
     public Map getContainerUrlParams() {
-       return (HashMap) getArguments().getSerializable(EXTRA_PARAMS);
+
+        NewBoostFlutterActivity.SerializableMap serializableMap= (NewBoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
+
+        return serializableMap.getMap();
     }
 
     /**
