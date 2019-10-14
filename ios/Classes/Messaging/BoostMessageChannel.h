@@ -38,7 +38,12 @@
  + (void)didInitPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
  + (void)willDeallocPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId;
 
-
+/**
+ * Native层往Dart层发送事件，事件名称通过eventName指定
+ *
+ * @param eventName 事件名称
+ * @param arguments 参数
+ */
 + (void)sendEvent:(NSString *)eventName
         arguments:(NSDictionary *)arguments;
 
