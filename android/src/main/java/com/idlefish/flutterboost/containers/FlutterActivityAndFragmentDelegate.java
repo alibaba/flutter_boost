@@ -19,6 +19,7 @@ import java.util.Map;
 
 
 import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 import io.flutter.Log;
@@ -44,7 +45,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     @Nullable
     private FlutterSplashView flutterSplashView;
     @Nullable
-    private FlutterView flutterView;
+    private XFlutterView flutterView;
     @Nullable
     private PlatformPlugin platformPlugin;
 
@@ -167,7 +168,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
 
         ensureAlive();
-        flutterView = new FlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
+        flutterView = new XFlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
 
         flutterView.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
 
@@ -229,6 +230,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.v(TAG, "onPause()");
 
         ensureAlive();
+        mSyncer.onDisappear();
         flutterEngine.getLifecycleChannel().appIsInactive();
     }
 
@@ -236,8 +238,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onStop() {
         Log.v(TAG, "onStop()");
         ensureAlive();
-        mSyncer.onDisappear();
-        flutterEngine.getLifecycleChannel().appIsPaused();
 //        flutterView.detachFromFlutterEngine();
     }
 
