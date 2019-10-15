@@ -45,9 +45,22 @@
 - (FlutterViewController *)currentViewController;
 
 #pragma mark - broadcast event to/from flutter
+
+/**
+ * Native层往Dart层发送事件，事件名称通过eventName指定
+ *
+ * @param eventName 事件名称
+ * @param arguments 参数
+ */
 - (void)sendEvent:(NSString *)eventName
         arguments:(NSDictionary *)arguments;
 
+/**
+ * 添加监听Dart层调用Native层的事件
+ *
+ * @param name 事件名称
+ * @param listner 事件监听器
+ */
 - (FLBVoidCallback)addEventListener:(FLBEventListener)listner
                             forName:(NSString *)name;
 
