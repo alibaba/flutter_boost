@@ -19,6 +19,7 @@ import java.util.Map;
 
 
 import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
@@ -270,6 +271,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
             platformPlugin.destroy();
             platformPlugin = null;
         }
+
+        Utils.fixInputMethodManagerLeak(host.getActivity());
 
         // Destroy our FlutterEngine if we're not set to retain it.
 //        if (host.shouldDestroyEngineWithHost()) {

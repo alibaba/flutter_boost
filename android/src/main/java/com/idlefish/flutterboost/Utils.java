@@ -272,14 +272,13 @@ public class Utils {
                 f = imm.getClass().getDeclaredField(param);
                 if (f.isAccessible() == false) {
                     f.setAccessible(true);
-                } // author: sodino mail:sodino@qq.com
+                }
                 obj_get = f.get(imm);
                 if (obj_get != null && obj_get instanceof View) {
                     View v_get = (View) obj_get;
-                    if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
-                        f.set(imm, null); // 置空，破坏掉path to gc节点
+                    if (v_get.getContext() == destContext) {
+                        f.set(imm, null);
                     } else {
-                        // 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了
                         break;
                     }
                 }

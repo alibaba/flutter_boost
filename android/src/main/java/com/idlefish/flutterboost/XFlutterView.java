@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.FrameLayout;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
+import io.flutter.embedding.engine.systemchannels.TextInputChannel;
 import io.flutter.plugin.editing.TextInputPlugin;
 import io.flutter.plugin.platform.PlatformViewsController;
 import io.flutter.view.AccessibilityBridge;
@@ -586,11 +588,11 @@ public class XFlutterView extends FrameLayout {
     // in a way that Flutter understands.
     if(this.textInputPlugin!=null){
       this.textInputPlugin.destroy();
+      resolveMemoryLeaks();
+
     }
 
     this.textInputPlugin = new TextInputPlugin(this, this.flutterEngine.getDartExecutor(), this.flutterEngine.getPlatformViewsController());
-
-    this.textInputPlugin.getInputMethodManager().restartInput(this);
 
 
     this.androidKeyProcessor = new AndroidKeyProcessor(
@@ -619,7 +621,7 @@ public class XFlutterView extends FrameLayout {
     // Inform the Android framework that it should retrieve a new InputConnection
     // now that an engine is attached.
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-//    textInputPlugin.getInputMethodManager().restartInput(this);
+    textInputPlugin.getInputMethodManager().restartInput(this);
 
     // Push View and Context related information from Android to Flutter.
     sendUserSettingsToFlutter();
@@ -673,8 +675,8 @@ public class XFlutterView extends FrameLayout {
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
     textInputPlugin.getInputMethodManager().restartInput(this);
-//    textInputPlugin.destroy();
-
+    textInputPlugin.destroy();
+    resolveMemoryLeaks();
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     FlutterRenderer flutterRenderer = flutterEngine.getRenderer();
     didRenderFirstFrame = false;
@@ -682,6 +684,30 @@ public class XFlutterView extends FrameLayout {
     flutterRenderer.detachFromRenderSurface();
     flutterEngine = null;
   }
+
+
+  public void resolveMemoryLeaks(){
+    try {
+    Class clazz = TextInputPlugin.class;
+
+    for (Field f : clazz.getDeclaredFields()) {
+      System.out.println(f.isAccessible());
+      f.setAccessible(true);
+
+        if(f.get(this.textInputPlugin) instanceof TextInputChannel){
+          System.out.println( "xxxxxx:" +f.getName());
+
+          TextInputChannel channel=(TextInputChannel)f.get(this.textInputPlugin);
+          channel.setTextInputMethodHandler(null);
+        }
+    }
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+  }
+
+
+
 
   /**
    * Returns true if this {@code FlutterView} is currently attached to a {@link FlutterEngine}.
