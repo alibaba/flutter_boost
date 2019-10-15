@@ -247,7 +247,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
-//        flutterView.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
+        flutterView.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
     }
 
 
