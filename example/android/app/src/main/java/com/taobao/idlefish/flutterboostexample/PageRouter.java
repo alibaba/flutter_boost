@@ -12,9 +12,12 @@ import java.util.Map;
 public class PageRouter {
 
     public final static Map<String, String> pageName = new HashMap<String, String>() {{
-        put("sample://first", "first");
-        put("sample://second", "second");
-        put("sample://tab", "tab");
+
+
+        put("first", "first");
+        put("second", "second");
+        put("tab", "tab");
+
         put("sample://flutterPage", "flutterPage");
     }};
 

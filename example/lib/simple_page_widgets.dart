@@ -14,7 +14,7 @@ class FirstRouteWidget extends StatelessWidget {
           child: Text('Open second route'),
           onPressed: () {
             print("open second page!");
-            FlutterBoost.singleton.open("sample://second").then((Map value) {
+            FlutterBoost.singleton.open("second").then((Map value) {
               print(
                   "call me when page is finished. did recieve second route result $value");
             });
@@ -59,7 +59,7 @@ class TabRouteWidget extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            FlutterBoost.singleton.open("sample://second");
+            FlutterBoost.singleton.open("second");
           },
           child: Text('Open second route'),
         ),
@@ -147,7 +147,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://first", urlParams: {
+                      .open("first", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -164,7 +164,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://second", urlParams: {
+                      .open("second", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -181,7 +181,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://tab", urlParams: {
+                      .open("tab", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),

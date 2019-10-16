@@ -36,24 +36,15 @@
 
 
 
-
-
-        <activity
-            android:name=".FlutterPageActivity"
-            android:theme="@style/Theme.AppCompat"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize"/>
-
         <activity
                 android:name="com.idlefish.flutterboost.containers.NewBoostFlutterActivity"
                 android:theme="@style/Theme.AppCompat"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
                 android:hardwareAccelerated="true"
                 android:windowSoftInputMode="adjustResize" >
-                <!--<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/avd_hide_password"/>-->
+                <!--<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/page_loading"/>-->
 
-            </activity>
+        </activity>
         <activity
             android:name=".FlutterFragmentPageActivity"
             android:theme="@style/Theme.AppCompat"
@@ -66,5 +57,6 @@
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
+
     </application>
 </manifest>
