@@ -277,7 +277,6 @@ public class NewBoostFlutterActivity extends Activity
     protected void onStop() {
         super.onStop();
         delegate.onStop();
-//        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
     }
 
     @Override

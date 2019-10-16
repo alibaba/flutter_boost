@@ -14,7 +14,7 @@ class FirstRouteWidget extends StatelessWidget {
           child: Text('Open second route'),
           onPressed: () {
             print("open second page!");
-            FlutterBoost.singleton.open("sample://flutterPage2").then((Map value) {
+            FlutterBoost.singleton.open("sample://second").then((Map value) {
               print(
                   "call me when page is finished. did recieve second route result $value");
             });
@@ -59,7 +59,7 @@ class TabRouteWidget extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            FlutterBoost.singleton.open("sample://flutterPage2");
+            FlutterBoost.singleton.open("sample://second");
           },
           child: Text('Open second route'),
         ),
@@ -140,14 +140,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: Text(
-                        'open flutterPage1',
+                        'open first',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage1", urlParams: {
+                      .open("sample://first", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -157,14 +157,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: Text(
-                        'open flutterPage2',
+                        'open second',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage2", urlParams: {
+                      .open("sample://second", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -174,14 +174,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: Text(
-                        'open flutterPage3',
+                        'open tab',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage3", urlParams: {
+                      .open("sample://tab", urlParams: {
                     "query": {"aaa": "bbb"}
                   }),
                 ),

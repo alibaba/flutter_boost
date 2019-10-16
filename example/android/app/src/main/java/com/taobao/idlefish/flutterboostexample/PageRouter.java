@@ -12,14 +12,14 @@ import java.util.Map;
 public class PageRouter {
 
     public final static Map<String, String> pageName = new HashMap<String, String>() {{
-        put("sample://flutterPage1", "flutterPage1");
-        put("sample://flutterPage2", "flutterPage2");
-        put("sample://flutterPage3", "flutterPage3");
-        put("sample://flutterMain", "flutterMain");
+        put("sample://first", "first");
+        put("sample://second", "second");
+        put("sample://tab", "tab");
+        put("sample://flutterPage", "flutterPage");
     }};
 
     public static final String NATIVE_PAGE_URL = "sample://nativePage";
-    public static final String FLUTTER_PAGE_URL = "sample://flutterMain";
+    public static final String FLUTTER_PAGE_URL = "sample://flutterPage";
     public static final String FLUTTER_FRAGMENT_PAGE_URL = "sample://flutterFragmentPage";
 
     public static boolean openPageByUrl(Context context, String url, Map params) {

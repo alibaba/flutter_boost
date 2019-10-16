@@ -17,12 +17,12 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBoost.singleton.registerPageBuilders({
-      'flutterPage1': (pageName, params, _) => FirstRouteWidget(),
-      'flutterPage2': (pageName, params, _) => SecondRouteWidget(),
-      'flutterPage3': (pageName, params, _) => TabRouteWidget(),
+      'first': (pageName, params, _) => FirstRouteWidget(),
+      'second': (pageName, params, _) => SecondRouteWidget(),
+      'tab': (pageName, params, _) => TabRouteWidget(),
       'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
       ///可以在native层通过 getContainerParams 来传递参数
-      'flutterMain': (pageName, params, _) {
+      'flutterPage': (pageName, params, _) {
         print("flutterPage params:$params");
 
         return FlutterRouteWidget(params:params);
