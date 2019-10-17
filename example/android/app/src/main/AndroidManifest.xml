@@ -35,14 +35,13 @@
         </activity>
 
 
-
         <activity
                 android:name="com.idlefish.flutterboost.containers.NewBoostFlutterActivity"
                 android:theme="@style/Theme.AppCompat"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
                 android:hardwareAccelerated="true"
                 android:windowSoftInputMode="adjustResize" >
-                <!--<meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/page_loading"/>-->
+                <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/page_loading"/>
 
         </activity>
         <activity

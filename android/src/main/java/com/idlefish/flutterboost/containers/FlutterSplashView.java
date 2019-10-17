@@ -1,6 +1,7 @@
 package com.idlefish.flutterboost.containers;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -43,7 +44,8 @@ public class FlutterSplashView extends FrameLayout {
         @Override
         public void onFlutterEngineAttachedToFlutterView(@NonNull FlutterEngine engine) {
             flutterView.removeFlutterEngineAttachmentListener(this);
-            displayFlutterViewWithSplash(flutterView, splashScreen);
+//            displayFlutterViewWithSplash(flutterView, splashScreen);
+//            splashScreenTransitionNeededNow();
         }
 
         @Override
@@ -131,24 +133,36 @@ public class FlutterSplashView extends FrameLayout {
 
         // Display the new splash screen, if needed.
         if (splashScreen != null) {
-            if (isSplashScreenNeededNow()) {
-                Log.v(TAG, "Showing splash screen UI.");
-                // This is the typical case. A FlutterEngine is attached to the FlutterView and we're
-                // waiting for the first frame to render. Show a splash UI until that happens.
-                splashScreenView = splashScreen.createSplashView(getContext(), splashScreenState);
-                addView(this.splashScreenView);
-                flutterView.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
-            } else if (isSplashScreenTransitionNeededNow()) {
-                Log.v(TAG, "Showing an immediate splash transition to Flutter due to previously interrupted transition.");
-                splashScreenView = splashScreen.createSplashView(getContext(), splashScreenState);
-                addView(splashScreenView);
-                transitionToFlutter();
-            } else if (!flutterView.isAttachedToFlutterEngine()) {
-                Log.v(TAG, "FlutterView is not yet attached to a FlutterEngine. Showing nothing until a FlutterEngine is attached.");
-                flutterView.addFlutterEngineAttachmentListener(flutterEngineAttachmentListener);
-            }
+
+
+            splashScreenView = splashScreen.createSplashView(getContext(), splashScreenState);
+            splashScreenView.setBackgroundColor(Color.WHITE);
+            addView(this.splashScreenView);
+            flutterView.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
+
+
+//            if (splashScreen != null) {
+//                if (this.isSplashScreenNeededNow()) {
+//                    Log.v(TAG, "Showing splash screen UI.");
+//                    this.splashScreenView = splashScreen.createSplashView(this.getContext(), this.splashScreenState);
+//                    this.addView(this.splashScreenView);
+//                    flutterView.addOnFirstFrameRenderedListener(this.onFirstFrameRenderedListener);
+//                } else if (this.isSplashScreenTransitionNeededNow()) {
+//                    Log.v(TAG, "Showing an immediate splash transition to Flutter due to previously interrupted transition.");
+//                    this.splashScreenView = splashScreen.createSplashView(this.getContext(), this.splashScreenState);
+//                    this.addView(this.splashScreenView);
+//                    this.transitionToFlutter();
+//                } else if (!flutterView.isAttachedToFlutterEngine()) {
+//                    Log.v(TAG, "FlutterView is not yet attached to a FlutterEngine. Showing nothing until a FlutterEngine is attached.");
+//                    flutterView.addFlutterEngineAttachmentListener(this.flutterEngineAttachmentListener);
+//                }
+//            }
         }
     }
+
+
+
+
 
     /**
      * Returns true if current conditions require a splash UI to be displayed.

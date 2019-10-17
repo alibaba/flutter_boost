@@ -17,9 +17,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
+import android.widget.*;
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import io.flutter.Log;
@@ -175,7 +174,7 @@ public class NewBoostFlutterActivity extends Activity
     public SplashScreen provideSplashScreen() {
         Drawable manifestSplashDrawable = getSplashScreenFromManifest();
         if (manifestSplashDrawable != null) {
-            return new DrawableSplashScreen(manifestSplashDrawable);
+            return new DrawableSplashScreen(manifestSplashDrawable, ImageView.ScaleType.CENTER,500L);
         } else {
             return null;
         }
@@ -469,7 +468,14 @@ public class NewBoostFlutterActivity extends Activity
 
     @Override
     public void onFirstFrameRendered() {
+
+
+
+
+
     }
+
+
 
     @Override
     public void finishContainer(Map<String, Object> result) {
