@@ -259,8 +259,15 @@ public class XFlutterView extends FrameLayout {
   protected void onConfigurationChanged(@NonNull Configuration newConfig) {
     super.onConfigurationChanged(newConfig);
     Log.v(TAG, "Configuration changed. Sending locales and user settings to Flutter.");
-    sendLocalesToFlutter(newConfig);
-    sendUserSettingsToFlutter();
+    try {
+
+      sendLocalesToFlutter(newConfig);
+      sendUserSettingsToFlutter();
+    }catch (Throwable e){
+      Log.e(TAG, "onConfigurationChanged error ");
+
+    }
+
   }
 
   /**
@@ -760,7 +767,9 @@ public class XFlutterView extends FrameLayout {
     } else {
       locales.add(config.locale);
     }
-    flutterEngine.getLocalizationChannel().sendLocales(locales);
+    if(flutterEngine!=null&&flutterEngine.getLocalizationChannel()!=null){
+      flutterEngine.getLocalizationChannel().sendLocales(locales);
+    }
   }
 
   /**
@@ -772,10 +781,12 @@ public class XFlutterView extends FrameLayout {
    * FlutterEngine must be non-null when this method is invoked.
    */
   private void sendUserSettingsToFlutter() {
+    if(flutterEngine!=null&&flutterEngine.getSettingsChannel()!=null){
     flutterEngine.getSettingsChannel().startMessage()
             .setTextScaleFactor(getResources().getConfiguration().fontScale)
             .setUse24HourFormat(DateFormat.is24HourFormat(getContext()))
             .send();
+    }
   }
 
   // TODO(mattcarroll): consider introducing a system channel for this communication instead of JNI
