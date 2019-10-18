@@ -56,8 +56,11 @@
         if(!_existedID[vc.uniqueIDString]){
             [_idStk addObject:vc.uniqueIDString];
         }
-        _existedID[vc.uniqueIDString] = vc.uniqueIDString;
+        _existedID[vc.uniqueIDString] = vc.name;
     }
+#if 1
+    [self dump:@"ADD"];
+#endif
 }
 
 - (void)remove:(id<FLBFlutterContainer>)vc
@@ -66,6 +69,9 @@
         [_existedID removeObjectForKey:vc.uniqueIDString];
         [_idStk removeObject:vc.uniqueIDString];
     }
+#if 1
+    [self dump:@"REMOVE"];
+#endif
 }
 
 - (NSString *)peak
@@ -73,4 +79,13 @@
     return _idStk.lastObject;
 }
 
+#if 1
+- (void)dump:(NSString*)flag{
+    NSMutableString *log = [[NSMutableString alloc]initWithFormat:@"[DEBUG]--%@--PageStack uid/name", flag];
+    for(NSString *uid in _idStk){
+        [log appendFormat:@"-->%@/%@",uid, _existedID[uid]];
+    }
+    NSLog(@"%@\n", log);
+}
+#endif
 @end
