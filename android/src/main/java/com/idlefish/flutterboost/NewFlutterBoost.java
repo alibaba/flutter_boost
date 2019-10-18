@@ -23,7 +23,7 @@ public class NewFlutterBoost {
     private FlutterViewContainerManager mManager;
 
     private Activity mCurrentActiveActivity;
-
+    private  BoostPluginRegistry registry;
     static NewFlutterBoost sInstance = null;
 
 
@@ -117,7 +117,7 @@ public class NewFlutterBoost {
         });
 
 
-        BoostPluginRegistry registry = new BoostPluginRegistry(this.engineProvider(),
+        registry = new BoostPluginRegistry(this.engineProvider(),
                 mPlatform.getApplication());
         mPlatform.registerPlugins(registry);
 
@@ -268,5 +268,7 @@ public class NewFlutterBoost {
         return mManager.findContainerById(id);
     }
 
-
+    public BoostPluginRegistry getPluginRegistry(){
+        return  registry;
+    }
 }
