@@ -58,7 +58,7 @@
         }
         _existedID[vc.uniqueIDString] = vc.name;
     }
-#if 1
+#if DEBUG
     [self dump:@"ADD"];
 #endif
 }
@@ -69,7 +69,7 @@
         [_existedID removeObjectForKey:vc.uniqueIDString];
         [_idStk removeObject:vc.uniqueIDString];
     }
-#if 1
+#if DEBUG
     [self dump:@"REMOVE"];
 #endif
 }
@@ -79,7 +79,7 @@
     return _idStk.lastObject;
 }
 
-#if 1
+#if DEBUG
 - (void)dump:(NSString*)flag{
     NSMutableString *log = [[NSMutableString alloc]initWithFormat:@"[DEBUG]--%@--PageStack uid/name", flag];
     for(NSString *uid in _idStk){
