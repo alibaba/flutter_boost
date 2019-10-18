@@ -149,7 +149,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)setEnableForRunnersBatch:(BOOL)enable{
     //dummy function
-    NSLog(@"[DEBUG]- I did nothing, I am innocent");
+//    NSLog(@"[DEBUG]- I did nothing, I am innocent");
 }
 
 #pragma mark - Life circle methods
