@@ -30,7 +30,7 @@
 
 - (id<FLBFlutterApplicationInterface>)createApplication:(id<FLBPlatform>)platform
 {
-    return [FLBFlutterApplication sharedApplication];
+    return [FLBFlutterApplication new];
 }
 
 - (id<FLBFlutterContainer>)createFlutterContainer
