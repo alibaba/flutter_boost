@@ -5,7 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
