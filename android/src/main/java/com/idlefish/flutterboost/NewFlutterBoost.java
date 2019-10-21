@@ -44,6 +44,8 @@ public class NewFlutterBoost {
 
             doInitialFlutterViewRun(mPlatform);
         }
+        registry = new BoostPluginRegistry(this.engineProvider(),
+                mPlatform.getApplication());
 
         platform.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
 
@@ -53,7 +55,7 @@ public class NewFlutterBoost {
 
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     Log.e("bbbb2", "xxxxx");
-
+                    registry.currentActivity(activity);
                     doInitialFlutterViewRun(mPlatform);
                 }
             }
@@ -117,8 +119,7 @@ public class NewFlutterBoost {
         });
 
 
-        registry = new BoostPluginRegistry(this.engineProvider(),
-                mPlatform.getApplication());
+
         mPlatform.registerPlugins(registry);
 
 
