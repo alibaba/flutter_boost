@@ -23,7 +23,7 @@ public class NewFlutterBoost {
     private FlutterViewContainerManager mManager;
 
     private Activity mCurrentActiveActivity;
-    private  BoostPluginRegistry registry;
+    private  BoostPluginRegistry mRegistry;
     static NewFlutterBoost sInstance = null;
 
 
@@ -40,11 +40,8 @@ public class NewFlutterBoost {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
 
-        if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
 
-            doInitialFlutterViewRun(mPlatform);
-        }
-        registry = new BoostPluginRegistry(this.engineProvider(),
+        mRegistry = new BoostPluginRegistry(this.engineProvider(),
                 mPlatform.getApplication());
 
         platform.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
@@ -55,8 +52,8 @@ public class NewFlutterBoost {
 
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     Log.e("bbbb2", "xxxxx");
-                    registry.currentActivity(activity);
-                    doInitialFlutterViewRun(mPlatform);
+                    mRegistry.currentActivity(activity);
+                    doInitialFlutterViewRun(mPlatform,mRegistry);
                 }
             }
 
@@ -118,14 +115,16 @@ public class NewFlutterBoost {
             }
         });
 
+        if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
 
+            doInitialFlutterViewRun(mPlatform,mRegistry);
+        }
 
-        mPlatform.registerPlugins(registry);
 
 
     }
 
-    private void doInitialFlutterViewRun(Platform platform) {
+    private void doInitialFlutterViewRun(Platform platform,BoostPluginRegistry registry) {
         // Don't attempt to start a FlutterEngine if we're using a cached FlutterEngine.
 //        if (host.getCachedEngineId() != null) {
 //            return;
@@ -138,8 +137,8 @@ public class NewFlutterBoost {
             // So this is expected behavior in many cases.
             return;
         }
+        platform.registerPlugins(registry);
 
-        Log.e("bbbb3", "xxxxx");
         // The engine needs to receive the Flutter app's initial route before executing any
         // Dart code to ensure that the initial route arrives in time to be applied.
         if (platform.initialRoute() != null) {
@@ -270,6 +269,6 @@ public class NewFlutterBoost {
     }
 
     public BoostPluginRegistry getPluginRegistry(){
-        return  registry;
+        return  mRegistry;
     }
 }
