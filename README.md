@@ -14,7 +14,7 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 <a name="bf647454"></a>
 
 # Prerequisites
-You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.5.4-hotfixes, or it will compile error.
+You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.9.1+hotfix.5, or it will compile error.
 
 # Getting Started
 
@@ -23,17 +23,20 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-```java
-flutter_boost: ^0.1.54
+```json
+flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'feature/flutter_1.9_androidx_upgrade'
 ```
 
 or you could rely directly on a Github project tag, for example(recommended)
 
 ```java
 flutter_boost:
-        git:
-            url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.1.54'
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'feature/flutter_1.9_androidx_upgrade'
 ```
 
 
