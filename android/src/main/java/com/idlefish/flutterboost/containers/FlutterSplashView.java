@@ -62,8 +62,6 @@ public class FlutterSplashView extends FrameLayout {
             if (splashScreen != null&&!hasRendered) {
                 transitionToFlutter();
                 hasRendered=true;
-                Log.i("xxxxxx22222",this.hashCode()+"");
-
             }
         }
     };

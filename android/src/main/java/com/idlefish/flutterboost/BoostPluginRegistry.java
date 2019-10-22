@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import io.flutter.app.FlutterPluginRegistry;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformViewRegistry;
@@ -14,13 +15,13 @@ import io.flutter.view.TextureRegistry;
 
 import java.lang.ref.WeakReference;
 
-public class BoostPluginRegistry extends FlutterPluginRegistry {
+public class BoostPluginRegistry extends ShimPluginRegistry {
     protected WeakReference<Activity> mCurrentActivityRef;
 
     private FlutterEngine mEngine;
     private Context mContext;
         public BoostPluginRegistry(FlutterEngine engine, Context context) {
-            super(engine, context);
+            super(engine);
             mEngine = engine;
             mContext=context;
         }
