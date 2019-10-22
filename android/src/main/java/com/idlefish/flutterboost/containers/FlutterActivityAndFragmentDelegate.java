@@ -28,7 +28,6 @@ import io.flutter.app.FlutterActivity;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
 
@@ -56,15 +55,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     protected IOperateSyncer mSyncer;
 
 
-    @NonNull
-    private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
-        @Override
-        public void onFirstFrameRendered() {
-            if(host!=null){
-                host.onFirstFrameRendered();
-            }
-        }
-    };
+
 
     FlutterActivityAndFragmentDelegate(@NonNull Host host) {
         this.host = host;
@@ -171,7 +162,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         ensureAlive();
         flutterView = new XFlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
 
-        flutterView.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
 
         flutterSplashView = new FlutterSplashView(host.getContext());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -247,7 +237,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
-        flutterView.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
     }
 
 
@@ -512,11 +501,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
          */
         boolean shouldAttachEngineToActivity();
 
-        /**
-         * Invoked by this delegate when its {@link FlutterView} has rendered its first Flutter
-         * frame.
-         */
-        void onFirstFrameRendered();
 
 
         void finishContainer(Map<String, Object> result) ;

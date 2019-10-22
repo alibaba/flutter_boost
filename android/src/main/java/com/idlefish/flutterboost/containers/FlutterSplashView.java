@@ -39,6 +39,8 @@ public class FlutterSplashView extends FrameLayout {
     @Nullable
     private String previousCompletedSplashIsolate;
 
+    private boolean hasRendered=false;
+
     @NonNull
     private final FlutterView.FlutterEngineAttachmentListener flutterEngineAttachmentListener = new FlutterView.FlutterEngineAttachmentListener() {
         @Override
@@ -57,8 +59,11 @@ public class FlutterSplashView extends FrameLayout {
     private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
         @Override
         public void onFirstFrameRendered() {
-            if (splashScreen != null) {
+            if (splashScreen != null&&!hasRendered) {
                 transitionToFlutter();
+                hasRendered=true;
+                Log.i("xxxxxx22222",this.hashCode()+"");
+
             }
         }
     };

@@ -686,7 +686,7 @@ public class XFlutterView extends FrameLayout {
     resolveMemoryLeaks();
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     FlutterRenderer flutterRenderer = flutterEngine.getRenderer();
-    didRenderFirstFrame = false;
+//    didRenderFirstFrame = false;
     flutterRenderer.removeOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
     flutterRenderer.detachFromRenderSurface();
     flutterEngine = null;
