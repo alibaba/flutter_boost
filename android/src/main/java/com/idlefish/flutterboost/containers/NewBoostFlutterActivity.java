@@ -466,14 +466,6 @@ public class NewBoostFlutterActivity extends Activity
         return true;
     }
 
-    @Override
-    public void onFirstFrameRendered() {
-
-
-
-
-
-    }
 
 
 
