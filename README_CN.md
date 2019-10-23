@@ -7,13 +7,13 @@
 
 目前已经支持flutter 1.9版本。
 
-    对应的flutter 版本是：v1.9.1-hotfixes
+对应的flutter 版本是：v1.9.1-hotfixes
 
-    flutter boost分支是：feature/flutter_1.9_upgrade
+flutter boost分支是：feature/flutter_1.9_upgrade
 
-    flutter boost androidx  分支是：feature/flutter_1.9_androidx_upgrade
+flutter boost androidx  分支是：feature/flutter_1.9_androidx_upgrade
 
-    代码引入方式：
+代码引入方式：
 
     ```java
 
