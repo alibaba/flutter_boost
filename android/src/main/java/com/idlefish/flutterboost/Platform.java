@@ -8,21 +8,16 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterView;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.view.FlutterMain;
 
 public abstract class Platform {
-
-
-    private FlutterEngine mEngine;
 
     public abstract Application getApplication();
 
     public abstract void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts);
 
     public abstract int whenEngineStart();
+    public abstract int whenEngineDestroy();
 
     public abstract FlutterView.RenderMode renderMode();
 
@@ -35,26 +30,6 @@ public abstract class Platform {
         if (record == null) return;
 
         record.getContainer().finishContainer(result);
-    }
-
-    public FlutterEngine engineProvider() {
-        if (mEngine == null) {
-
-            FlutterMain.startInitialization(getApplication());
-
-            FlutterShellArgs flutterShellArgs = new FlutterShellArgs(new String[0]);
-            FlutterMain.ensureInitializationComplete(
-                    getApplication().getApplicationContext(), flutterShellArgs.toArray());
-
-            mEngine = new FlutterEngine(getApplication().getApplicationContext());
-
-        }
-        return mEngine;
-
-    }
-
-    public FlutterEngine getEngine() {
-        return mEngine;
     }
 
 

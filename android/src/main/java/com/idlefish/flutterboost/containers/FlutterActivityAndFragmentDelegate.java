@@ -77,8 +77,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     void onAttach(@NonNull Context context) {
         ensureAlive();
-
-        initializeFlutter(context);
+        if (NewFlutterBoost.instance().platform().whenEngineStart() == NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
+            NewFlutterBoost.instance().doInitialFlutter();
+        }
 
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
@@ -116,27 +117,12 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         host.configureFlutterEngine(flutterEngine);
     }
 
-    private void initializeFlutter(@NonNull Context context) {
-        FlutterMain.ensureInitializationComplete(
-                context.getApplicationContext(),
-                host.getFlutterShellArgs().toArray()
-        );
-    }
+
 
 
     private void setupFlutterEngine() {
         Log.d(TAG, "Setting up FlutterEngine.");
 
-        // First, check if the host wants to use a cached FlutterEngine.
-//        String cachedEngineId = host.getCachedEngineId();
-//        if (cachedEngineId != null) {
-//            flutterEngine = FlutterEngineCache.getInstance().get(cachedEngineId);
-//            isFlutterEngineFromHost = true;
-//            if (flutterEngine == null) {
-//                throw new IllegalStateException("The requested cached FlutterEngine did not exist in the FlutterEngineCache: '" + cachedEngineId + "'");
-//            }
-//            return;
-//        }
 
         // Second, defer to subclasses for a custom FlutterEngine.
         flutterEngine = host.provideFlutterEngine(host.getContext());
@@ -264,16 +250,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
         Utils.fixInputMethodManagerLeak(host.getActivity());
 
-        // Destroy our FlutterEngine if we're not set to retain it.
-//        if (host.shouldDestroyEngineWithHost()) {
-//            flutterEngine.destroy();
-//
-//            if (host.getCachedEngineId() != null) {
-//                FlutterEngineCache.getInstance().remove(host.getCachedEngineId());
-//            }
-//
-//            flutterEngine = null;
-//        }
     }
 
 
@@ -281,12 +257,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onBackPressed();
 
         ensureAlive();
-//        if (flutterEngine != null) {
-//            Log.v(TAG, "Forwarding onBackPressed() to FlutterEngine.");
-//            flutterEngine.getNavigationChannel().popRoute();
-//        } else {
-//            Log.w(TAG, "Invoked onBackPressed() before NewFlutterFragment was attached to an Activity.");
-//        }
     }
 
 
