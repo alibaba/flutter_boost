@@ -15,13 +15,13 @@ flutter boost androidx  分支是：feature/flutter_1.9_androidx_upgrade
 
 代码引入方式：
 
-    ```java
+```java
 
     flutter_boost:
             git:
                 url: 'https://github.com/alibaba/flutter_boost.git'
                 ref: 'feature/flutter_1.9_upgrade'
-    ```
+```
 
 
 # Release Note
