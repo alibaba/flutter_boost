@@ -18,22 +18,22 @@ FlutterBoost for androidx  branch：feature/flutter_1.9_androidx_upgrade
 
 
 
-    ```java
+```java
 
     flutter_boost:
             git:
                 url: 'https://github.com/alibaba/flutter_boost.git'
                 ref: 'feature/flutter_1.9_upgrade'
-    ```
+```
 
-feedback  group：（ dingding group)
+dingding  group：
 
 <img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
 
 
 # Release Note
 
-Please checkout the release note for the latest 0.1.50 to see changes [0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 0.1.54 to see changes [0.1.54 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
