@@ -2,6 +2,27 @@
   <img src="flutter_boost.png">
 </p>
 
+# 项目最新动态
+
+
+目前已经支持flutter 1.9版本。
+
+    对应的flutter 版本是：v1.9.1-hotfixes
+
+    flutter boost分支是：feature/flutter_1.9_upgrade
+
+    flutter boost androidx  分支是：feature/flutter_1.9_androidx_upgrade
+
+    代码引入方式：
+
+    ```java
+
+    flutter_boost:
+            git:
+                url: 'https://github.com/alibaba/flutter_boost.git'
+                ref: 'feature/flutter_1.9_upgrade'
+    ```
+
 
 # Release Note
 
