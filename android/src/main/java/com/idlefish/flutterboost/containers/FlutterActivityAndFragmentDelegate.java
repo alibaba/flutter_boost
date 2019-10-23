@@ -109,6 +109,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                     host.getActivity(),
                     host.getLifecycle()
             );
+
+            NewFlutterBoost.instance().platform().registerPlugins( NewFlutterBoost.instance().getPluginRegistry());
         }
 
         host.configureFlutterEngine(flutterEngine);
@@ -147,7 +149,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         // FlutterView.
         Log.d(TAG, "No preferred FlutterEngine was provided. Creating a new FlutterEngine for"
                 + " this NewFlutterFragment.");
-        flutterEngine = new FlutterEngine(host.getContext());
         isFlutterEngineFromHost = false;
     }
 

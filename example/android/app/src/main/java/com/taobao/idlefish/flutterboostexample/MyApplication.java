@@ -11,7 +11,7 @@ import java.util.Map;
 import com.idlefish.flutterboost.interfaces.INativeRouter;
 import io.flutter.app.FlutterApplication;
 
-public class MyApplication extends FlutterApplication {
+public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
