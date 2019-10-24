@@ -2,9 +2,11 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import io.flutter.app.FlutterPluginRegistry;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformViewRegistry;
@@ -13,23 +15,24 @@ import io.flutter.view.TextureRegistry;
 
 import java.lang.ref.WeakReference;
 
-public class BoostPluginRegistry extends FlutterPluginRegistry {
+public class BoostPluginRegistry extends ShimPluginRegistry {
     protected WeakReference<Activity> mCurrentActivityRef;
 
     private FlutterEngine mEngine;
-
+    private Context mContext;
         public BoostPluginRegistry(FlutterEngine engine, Context context) {
-            super(engine, context);
+            super(engine);
             mEngine = engine;
+            mContext=context;
         }
 
         public PluginRegistry.Registrar registrarFor(String pluginKey) {
             return new BoostRegistrar(mEngine, super.registrarFor(pluginKey));
         }
 
-
-
-
+    public void currentActivity(@Nullable Activity activity) {
+        mCurrentActivityRef = new WeakReference<>(activity);
+    }
 
     public  class BoostRegistrar implements PluginRegistry.Registrar {
 
@@ -70,12 +73,12 @@ public class BoostPluginRegistry extends FlutterPluginRegistry {
 
         @Override
         public Context context() {
-            return mRegistrar.context();
+            return BoostPluginRegistry.this.mContext;
         }
 
         @Override
         public Context activeContext() {
-            return mRegistrar.activeContext();
+            return BoostPluginRegistry.this.mContext;
         }
 
         @Override
@@ -90,7 +93,7 @@ public class BoostPluginRegistry extends FlutterPluginRegistry {
 
         @Override
         public PlatformViewRegistry platformViewRegistry() {
-            return mRegistrar.platformViewRegistry();
+            return mEngine.getPlatformViewsController().getRegistry();
         }
 
         @Override
