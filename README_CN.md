@@ -13,7 +13,7 @@
 
 
 # 前置条件
-在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要 v1.5.4-hotfixes，否则会编译失败.
+在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要 v1.9.1-hotfixes，否则会编译失败.
 
 # 安装
 

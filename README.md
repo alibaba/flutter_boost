@@ -14,7 +14,7 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 <a name="bf647454"></a>
 
 # Prerequisites
-You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.9.1+hotfix.5, or it will compile error.
+You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.9.1+hotfixes, or it will compile error.
 
 # Getting Started
 
