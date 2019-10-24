@@ -25,6 +25,7 @@ public abstract class Platform {
 
     public abstract String initialRoute();
 
+    public NewFlutterBoost.BoostLifecycleListener lifecycleListener;
 
     public void closeContainer(IContainerRecord record, Map<String, Object> result, Map<String, Object> exts) {
         if (record == null) return;

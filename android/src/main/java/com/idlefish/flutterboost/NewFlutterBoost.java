@@ -64,7 +64,7 @@ public class NewFlutterBoost {
                 if (mCurrentActiveActivity == null) {
                     Debuger.log("Application entry foreground");
 
-                    if (NewFlutterBoost.instance().engineProvider() != null) {
+                    if (createEngine() != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "foreground");
                         channel().sendEvent("lifecycle", map);
@@ -88,7 +88,7 @@ public class NewFlutterBoost {
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
-                    if (engineProvider() != null) {
+                    if (createEngine() != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "background");
                         channel().sendEvent("lifecycle", map);
@@ -107,7 +107,7 @@ public class NewFlutterBoost {
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
-                    if (engineProvider() != null) {
+                    if (createEngine() != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "background");
                         channel().sendEvent("lifecycle", map);
@@ -131,8 +131,10 @@ public class NewFlutterBoost {
 
         if(mEngine!=null) return;
 
-        FlutterEngine flutterEngine = engineProvider();
-
+        FlutterEngine flutterEngine = createEngine();
+        if(mPlatform.lifecycleListener!=null){
+            mPlatform.lifecycleListener.onEngineCreated();
+        }
         if (flutterEngine.getDartExecutor().isExecutingDart()) {
             // No warning is logged because this situation will happen on every config
             // change if the developer does not choose to retain the Fragment instance.
@@ -154,11 +156,15 @@ public class NewFlutterBoost {
         );
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
 
-        mRegistry = new BoostPluginRegistry(engineProvider(),mPlatform.getApplication());
+        mRegistry = new BoostPluginRegistry(createEngine(),mPlatform.getApplication());
 
         ((BoostPluginRegistry) mRegistry).currentActivity(mCurrentActiveActivity);
 
         mPlatform.registerPlugins(mRegistry);
+
+        if(mPlatform.lifecycleListener!=null){
+            mPlatform.lifecycleListener.onPluginsRegistered();
+        }
 
 
     }
@@ -172,12 +178,11 @@ public class NewFlutterBoost {
 
         public static int ANY_ACTIVITY_CREATED = 1; //当有任何Activity创建时,启动引擎
 
-        public static int FLUTTER_ACTIVITY_CREATED = 2; //当有任何Activity创建时,启动引擎
+        public static int FLUTTER_ACTIVITY_CREATED = 2; //当有flutterActivity创建时,启动引擎
 
 
         public static int APP_EXit = 0; //所有flutter Activity destory 时，销毁engine
         public static int All_FLUTTER_ACTIVITY_DESTROY = 1; //所有flutter Activity destory 时，销毁engine
-
 
         private String dartEntrypoint = DEFAULT_DART_ENTRYPOINT;
         private String initialRoute = DEFAULT_INITIAL_ROUTE;
@@ -192,6 +197,8 @@ public class NewFlutterBoost {
         private Application mApp;
 
         private INativeRouter router = null;
+
+        private  BoostLifecycleListener lifecycleListener;
 
         public ConfigBuilder(Application app, INativeRouter router) {
             this.router = router;
@@ -218,12 +225,17 @@ public class NewFlutterBoost {
             return this;
         }
 
-        public ConfigBuilder whenEngineStart(@NonNull int whenEngineStart) {
+        public ConfigBuilder whenEngineStart( int whenEngineStart) {
             this.whenEngineStart = whenEngineStart;
             return this;
         }
-        public ConfigBuilder whenEngineDestory(@NonNull int whenEngineDestory) {
+        public ConfigBuilder whenEngineDestory( int whenEngineDestory) {
             this.whenEngineDestory = whenEngineDestory;
+            return this;
+        }
+
+        public ConfigBuilder lifecycleListener( BoostLifecycleListener lifecycleListener) {
+            this.lifecycleListener = lifecycleListener;
             return this;
         }
         public Platform build() {
@@ -263,6 +275,8 @@ public class NewFlutterBoost {
                 }
             };
 
+            platform.lifecycleListener=this.lifecycleListener;
+
             return platform;
 
         }
@@ -293,8 +307,7 @@ public class NewFlutterBoost {
         return  mRegistry;
     }
 
-
-    public FlutterEngine engineProvider() {
+    private FlutterEngine createEngine(){
         if (mEngine == null) {
 
             FlutterMain.startInitialization(mPlatform.getApplication());
@@ -304,10 +317,13 @@ public class NewFlutterBoost {
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
 
             mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext());
-
         }
         return mEngine;
 
+    }
+
+    public FlutterEngine engineProvider() {
+        return  mEngine;
     }
 
 
@@ -315,12 +331,19 @@ public class NewFlutterBoost {
         if(mEngine!=null){
             mEngine.destroy();
         }
+        if(mPlatform.lifecycleListener!=null){
+            mPlatform.lifecycleListener.onEngineDestroy();
+        }
         mEngine=null;
         mRegistry=null;
         mCurrentActiveActivity=null;
     }
 
 
-
+    public interface BoostLifecycleListener {
+        void onEngineCreated();
+        void onPluginsRegistered();
+        void onEngineDestroy();
+    }
 
 }
