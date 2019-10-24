@@ -111,7 +111,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                     host.getLifecycle()
             );
 
-            NewFlutterBoost.instance().platform().registerPlugins( NewFlutterBoost.instance().getPluginRegistry());
         }
 
         host.configureFlutterEngine(flutterEngine);
