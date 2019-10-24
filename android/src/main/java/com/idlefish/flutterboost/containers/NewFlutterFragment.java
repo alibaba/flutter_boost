@@ -485,7 +485,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
      */
     @Override
     public boolean shouldAttachEngineToActivity() {
-        return getArguments().getBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY);
+        return true;
     }
 
 
