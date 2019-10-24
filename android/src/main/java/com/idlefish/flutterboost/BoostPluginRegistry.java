@@ -2,7 +2,7 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.annotation.Nonable;
+import androidx.annotation.Nullable;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import io.flutter.app.FlutterPluginRegistry;
 import io.flutter.embedding.engine.FlutterEngine;
