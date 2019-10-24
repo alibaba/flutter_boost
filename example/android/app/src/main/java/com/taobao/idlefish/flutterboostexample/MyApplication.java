@@ -5,12 +5,10 @@ import android.content.Context;
 
 import android.util.Log;
 import com.idlefish.flutterboost.*;
-import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
 import java.util.Map;
 
 import com.idlefish.flutterboost.interfaces.INativeRouter;
-import io.flutter.app.FlutterApplication;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MyApplication extends Application {
@@ -36,8 +34,10 @@ public class MyApplication extends Application {
 
             @Override
             public void onPluginsRegistered() {
-                MethodChannel mMethodChannel = new MethodChannel( NewFlutterBoost.instance().engineProvider().getDartExecutor(), "boosttest");
+                MethodChannel mMethodChannel = new MethodChannel( NewFlutterBoost.instance().engineProvider().getDartExecutor(), "methodChannel");
                 Log.e("MyApplication","MethodChannel create");
+                TextPlatformViewPlugin.register(NewFlutterBoost.instance().getPluginRegistry().registrarFor("TextPlatformViewPlugin"));
+
             }
 
             @Override
@@ -53,7 +53,6 @@ public class MyApplication extends Application {
                 .build();
 
         NewFlutterBoost.instance().init(platform);
-
 
 
 
