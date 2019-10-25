@@ -101,11 +101,6 @@
                          arguments:nil];
 }
 
-- (FlutterEngine *)engine
-{
-    return _engine;
-}
-
 - (void)atacheToViewController:(FlutterViewController *)vc
 {
     if(_engine.viewController != vc){
@@ -128,5 +123,15 @@
 //    [self detach];
 }
 
+- (void)dealloc{
+    [self.engine setViewController:nil];
+    [self.engine destroyContext];
+    __weak __typeof__(_engine) weak = _engine;
+    NSLog(@"Retain count is %ld", CFGetRetainCount((__bridge CFTypeRef)weak));
+////    CFRelease((__bridge CFTypeRef)_engine);
+//    _engine = nil;
+//    NSLog(@"after Retain count is %ld", CFGetRetainCount((__bridge CFTypeRef)weak));
+//    NSLog(@"[DEBUG]---dealloc--");
+}
 @end
 

@@ -118,8 +118,8 @@
     __weak __typeof__(self) weakSelf = self;
     dispatch_once(&onceToken, ^{
         __strong __typeof__(weakSelf) self = weakSelf;
-        self.factory = FLBFactory.new;
-        self.application = [self->_factory createApplication:platform];
+        FLBFactory *factory = FLBFactory.new;
+        self.application = [factory createApplication:platform];
         [self.application startFlutterWithPlatform:platform
                                        onStart:callback];
     });
@@ -168,5 +168,10 @@
 + (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
     id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
     [app close:uniqueId result:resultData exts:exts completion:completion];
+}
+
+- (void)destroyEngine{
+    self.methodChannel = nil;
+    self.application = nil;
 }
 @end

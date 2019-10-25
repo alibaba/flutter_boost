@@ -108,4 +108,6 @@
         exts:(NSDictionary *)exts
 onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
+
+- (void)destroyEngine;
 @end

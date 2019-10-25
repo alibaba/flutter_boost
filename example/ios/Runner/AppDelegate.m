@@ -19,12 +19,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    PlatformRouterImp *router = [PlatformRouterImp new];
-    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterEngine *engine) {
-                                                            
-                                                        }];
-    
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
     
@@ -35,16 +29,13 @@
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
    
     
-    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
-    [fvc setName:@"tab" params:@{}];
+    UIViewController *fvc = UIViewController.new;
+//    [fvc setName:@"tab" params:@{}];
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
     
     
     UITabBarController *tabVC = [[UITabBarController alloc] init];
     UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:tabVC];
-    
-   
-    router.navigationController = rvc;
     
     tabVC.viewControllers = @[vc,fvc];
     
@@ -57,14 +48,46 @@
     
     
     UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 50, 200, 100, 45);
+    nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 60, 150, 130, 45);
     nativeButton.backgroundColor = [UIColor redColor];
     [nativeButton setTitle:@"push native" forState:UIControlStateNormal];
     [nativeButton addTarget:self action:@selector(pushNative) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:nativeButton];
     
+    UIButton *startEngine = [UIButton buttonWithType:UIButtonTypeCustom];
+    startEngine.frame = CGRectMake(self.window.frame.size.width * 0.5 - 60, 230, 130, 40);
+    startEngine.backgroundColor = [UIColor redColor];
+    [startEngine setTitle:@"start engine" forState:UIControlStateNormal];
+    [startEngine addTarget:self action:@selector(startFlutter:) forControlEvents:UIControlEventTouchUpInside];
+    [self.window addSubview:startEngine];
+    
+    UIButton *destroyEngine = [UIButton buttonWithType:UIButtonTypeCustom];
+    destroyEngine.frame = CGRectMake(self.window.frame.size.width * 0.5 - 60, 300, 130, 40);
+    destroyEngine.backgroundColor = [UIColor redColor];
+    [destroyEngine setTitle:@"destroy engine" forState:UIControlStateNormal];
+    [destroyEngine addTarget:self action:@selector(destroyFlutter:) forControlEvents:UIControlEventTouchUpInside];
+    [self.window addSubview:destroyEngine];
+    
     
     return YES;
+}
+
+- (void)startFlutter:(id)sender {
+    PlatformRouterImp *router = [PlatformRouterImp new];
+    router.navigationController = (UINavigationController*)self.window.rootViewController;
+    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
+                                                        onStart:^(FlutterEngine *engine) {
+                                                            
+                                                        }];
+}
+
+- (void)destroyFlutter:(id)sender {
+    
+    //切记：在destroyEngine前务必将所有FlutterViewController及其子类的实例销毁。在这里是FLBFlutterViewContainer。否则会异常;以下是全部步骤
+    //1. 首先通过为所有FlutterPlugin的methodChannel属性设为nil来接触其与FlutterEngine的间接强引用
+    //2. 销毁所有的FlutterViewController实例，来解除其与FlutterEngine的强引用
+    //3. 调用FlutterBoostPlugin.destroyEngine函数来解除与FlutterEngine的强引用
+    [FlutterBoostPlugin.sharedInstance destroyEngine];
 }
 
 - (void)pushNative
