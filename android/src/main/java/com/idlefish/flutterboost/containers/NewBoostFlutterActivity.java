@@ -241,7 +241,8 @@ public class NewBoostFlutterActivity extends Activity
             window.setStatusBarColor(Color.TRANSPARENT);
             window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI);
         }
-        Utils.setStatusBarLightMode(this,true);
+
+
 
     }
 
@@ -469,12 +470,6 @@ public class NewBoostFlutterActivity extends Activity
 
 
 
-    @Override
-    public void finishContainer(Map<String, Object> result) {
-        Activity activity= this.getActivity();
-
-        activity.finish();
-    }
 
     @Override
     public String getContainerUrl() {

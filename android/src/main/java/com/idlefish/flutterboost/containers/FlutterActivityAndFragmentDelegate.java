@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -111,6 +112,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                     host.getLifecycle()
             );
 
+
         }
 
         host.configureFlutterEngine(flutterEngine);
@@ -190,16 +192,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onPostResume() {
         Log.v(TAG, "onPostResume()");
         ensureAlive();
-        if (flutterEngine != null) {
-            if (platformPlugin != null) {
-                // TODO(mattcarroll): find a better way to handle the update of UI overlays than calling through
-                //                    to platformPlugin. We're implicitly entangling the Window, Activity, Fragment,
-                //                    and engine all with this one call.
-                platformPlugin.updateSystemUiOverlays();
-            }
-        } else {
-            Log.w(TAG, "onPostResume() invoked before NewFlutterFragment was attached to an Activity.");
-        }
+        Utils.setStatusBarLightMode(host.getActivity(),true);
+
     }
 
 
@@ -372,10 +366,26 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        this.host.finishContainer(result);
+
+        if(result != null) {
+            setBoostResult(this.host.getActivity(),new HashMap<>(result));
+            this.host.getActivity().finish();
+        }else{
+            this.host.getActivity().finish();
+        }
+
 
     }
 
+
+
+    public  void setBoostResult(Activity activity, HashMap result) {
+        Intent intent = new Intent();
+        if (result != null) {
+            intent.putExtra(IFlutterViewContainer.RESULT_KEY, result);
+        }
+        activity.setResult(Activity.RESULT_OK, intent);
+    }
     @Override
     public String getContainerUrl() {
         return   this.host.getContainerUrl();
@@ -473,7 +483,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
 
 
-        void finishContainer(Map<String, Object> result) ;
 
 
         String getContainerUrl() ;

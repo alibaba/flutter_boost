@@ -489,12 +489,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     }
 
 
-    @Override
-    public void finishContainer(Map<String, Object> result) {
-        Activity activity = this.getActivity();
 
-        activity.finish();
-    }
 
     @Override
     public String getContainerUrl() {
