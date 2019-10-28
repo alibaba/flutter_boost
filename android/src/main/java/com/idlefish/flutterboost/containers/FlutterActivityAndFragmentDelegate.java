@@ -75,13 +75,15 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         return flutterEngine;
     }
 
+    XFlutterView getFlutterView(){
+        return  flutterView;
+    }
 
     void onAttach(@NonNull Context context) {
         ensureAlive();
         if (NewFlutterBoost.instance().platform().whenEngineStart() == NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
             NewFlutterBoost.instance().doInitialFlutter();
         }
-
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
         if (flutterEngine == null) {

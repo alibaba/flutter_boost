@@ -21,6 +21,7 @@ import android.view.*;
 import android.widget.*;
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.Utils;
+import com.idlefish.flutterboost.XFlutterView;
 import io.flutter.Log;
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterView;
@@ -243,7 +244,10 @@ public class NewBoostFlutterActivity extends Activity
         }
 
 
+    }
 
+    protected XFlutterView getFlutterView(){
+       return delegate.getFlutterView();
     }
 
     @Override
