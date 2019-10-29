@@ -98,6 +98,8 @@ public class XFlutterView extends FrameLayout {
   @Nullable
   private AccessibilityBridge accessibilityBridge;
 
+  private  boolean hasAddFirstFrameRenderedListener=false;
+
   // Directly implemented View behavior that communicates with Flutter.
   private final FlutterRenderer.ViewportMetrics viewportMetrics = new FlutterRenderer.ViewportMetrics();
 
@@ -566,6 +568,7 @@ public class XFlutterView extends FrameLayout {
    * See {@link #detachFromFlutterEngine()} for information on how to detach from a
    * {@link FlutterEngine}.
    */
+
   public void attachToFlutterEngine(
           @NonNull FlutterEngine flutterEngine
   ) {
@@ -588,8 +591,11 @@ public class XFlutterView extends FrameLayout {
     // Instruct our FlutterRenderer that we are now its designated RenderSurface.
     FlutterRenderer flutterRenderer = this.flutterEngine.getRenderer();
     didRenderFirstFrame = flutterRenderer.hasRenderedFirstFrame();
+    if(!hasAddFirstFrameRenderedListener){
+      flutterRenderer.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
+      hasAddFirstFrameRenderedListener=true;
+    }
     flutterRenderer.attachToRenderSurface(renderSurface);
-    flutterRenderer.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
 
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
@@ -643,9 +649,9 @@ public class XFlutterView extends FrameLayout {
     // If the first frame has already been rendered, notify all first frame listeners.
     // Do this after all other initialization so that listeners don't inadvertently interact
     // with a FlutterView that is only partially attached to a FlutterEngine.
-    if (didRenderFirstFrame) {
-      onFirstFrameRenderedListener.onFirstFrameRendered();
-    }
+//    if (didRenderFirstFrame) {
+//      onFirstFrameRenderedListener.onFirstFrameRendered();
+//    }
   }
 
   /**

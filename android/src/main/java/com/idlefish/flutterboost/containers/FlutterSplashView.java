@@ -54,14 +54,13 @@ public class FlutterSplashView extends FrameLayout {
         public void onFlutterEngineDetachedFromFlutterView() {
         }
     };
-
+    int i=0;
     @NonNull
     private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
         @Override
         public void onFirstFrameRendered() {
-            if (splashScreen != null&&!hasRendered) {
+            if (splashScreen != null) {
                 transitionToFlutter();
-                hasRendered=true;
             }
         }
     };
@@ -72,6 +71,7 @@ public class FlutterSplashView extends FrameLayout {
         public void run() {
             removeView(splashScreenView);
             previousCompletedSplashIsolate = transitioningIsolateId;
+            int i=0;
         }
     };
 
