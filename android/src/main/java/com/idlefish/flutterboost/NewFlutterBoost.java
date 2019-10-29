@@ -192,7 +192,7 @@ public class NewFlutterBoost {
 
         private boolean isDebug = false;
 
-        private FlutterView.RenderMode renderMode = FlutterView.RenderMode.surface;
+        private FlutterView.RenderMode renderMode = FlutterView.RenderMode.texture;
 
         private Application mApp;
 
