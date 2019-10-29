@@ -152,6 +152,12 @@ static NSUInteger kInstanceCounter = 0;
 //    NSLog(@"[DEBUG]- I did nothing, I am innocent");
 }
 
+//- (void)surfaceUpdated:(BOOL)appeared{
+//    
+//    NSLog(@"[JDEBUG]--------surfaceUpdated---%@----%d-", self.name, appeared);
+//    [super surfaceUpdated:appeared];
+//}
+
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -212,6 +218,9 @@ static NSUInteger kInstanceCounter = 0;
                                                  uniqueId:self.uniqueIDString];
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
+//    if([self.name isEqualToString:@"second"]){
+//        self.view.frame = CGRectMake(0, 0, 375, 812);
+//    }
 }
 
 
