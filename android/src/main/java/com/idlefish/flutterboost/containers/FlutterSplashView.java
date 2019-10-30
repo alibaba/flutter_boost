@@ -71,7 +71,6 @@ public class FlutterSplashView extends FrameLayout {
         public void run() {
             removeView(splashScreenView);
             previousCompletedSplashIsolate = transitioningIsolateId;
-            int i=0;
         }
     };
 

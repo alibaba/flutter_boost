@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+import com.idlefish.flutterboost.BoostPluginRegistry;
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
@@ -29,6 +30,7 @@ import io.flutter.app.FlutterActivity;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
 
@@ -98,24 +100,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         //                    use-cases.
         platformPlugin = host.providePlatformPlugin(host.getActivity(), flutterEngine);
 
-        if (host.shouldAttachEngineToActivity()) {
-            // Notify any plugins that are currently attached to our FlutterEngine that they
-            // are now attached to an Activity.
-            //
-            // Passing this Fragment's Lifecycle should be sufficient because as long as this Fragment
-            // is attached to its Activity, the lifecycles should be in sync. Once this Fragment is
-            // detached from its Activity, that Activity will be detached from the FlutterEngine, too,
-            // which means there shouldn't be any possibility for the Fragment Lifecycle to get out of
-            // sync with the Activity. We use the Fragment's Lifecycle because it is possible that the
-            // attached Activity is not a LifecycleOwner.
-            Log.d(TAG, "Attaching FlutterEngine to the Activity that owns this Fragment.");
-            flutterEngine.getActivityControlSurface().attachToActivity(
-                    host.getActivity(),
-                    host.getLifecycle()
-            );
-
-
-        }
 
         host.configureFlutterEngine(flutterEngine);
     }
@@ -188,6 +172,11 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.v(TAG, "onResume()");
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
+
+        flutterEngine.getActivityControlSurface().attachToActivity(
+                host.getActivity(),
+                host.getLifecycle()
+        );
     }
 
 
@@ -211,7 +200,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onStop() {
         Log.v(TAG, "onStop()");
         ensureAlive();
-//        flutterView.detachFromFlutterEngine();
+
+
     }
 
     void onDestroyView() {
@@ -219,6 +209,13 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
+        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
+        if(binding!=null&&(binding.getActivity()==this.host.getActivity())){
+            registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
+            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+
+        }
     }
 
 
@@ -226,15 +223,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.v(TAG, "onDetach()");
         ensureAlive();
 
-        if (host.shouldAttachEngineToActivity()) {
-            // Notify plugins that they are no longer attached to an Activity.
-            Log.d(TAG, "Detaching FlutterEngine from the Activity that owns this Fragment.");
-            if (host.getActivity().isChangingConfigurations()) {
-                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
-            } else {
-                flutterEngine.getActivityControlSurface().detachFromActivity();
-            }
-        }
+
 
         // Null out the platformPlugin to avoid a possible retain cycle between the plugin, this Fragment,
         // and this Fragment's Activity.

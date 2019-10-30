@@ -156,9 +156,9 @@ public class NewFlutterBoost {
         );
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
 
-        mRegistry = new BoostPluginRegistry(createEngine(),mPlatform.getApplication());
+        mRegistry = new BoostPluginRegistry(createEngine());
 
-        ((BoostPluginRegistry) mRegistry).currentActivity(mCurrentActiveActivity);
+//        ((BoostPluginRegistry) mRegistry).currentActivity(mCurrentActiveActivity);
 
         mPlatform.registerPlugins(mRegistry);
 
