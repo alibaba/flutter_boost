@@ -130,6 +130,12 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     @NonNull
     View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v(TAG, "Creating FlutterView.");
+        flutterEngine.getActivityControlSurface().attachToActivity(
+                host.getActivity(),
+                host.getLifecycle()
+        );
+        NewFlutterBoost.instance().registerPlugins();
+
 
         mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
 
@@ -173,10 +179,15 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
 
-        flutterEngine.getActivityControlSurface().attachToActivity(
-                host.getActivity(),
-                host.getLifecycle()
-        );
+        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
+        if(binding!=null&&(binding.getActivity()!=this.host.getActivity())){
+            flutterEngine.getActivityControlSurface().attachToActivity(
+                    host.getActivity(),
+                    host.getLifecycle()
+            );
+        }
+
     }
 
 

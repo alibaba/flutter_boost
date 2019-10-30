@@ -34,15 +34,7 @@ public abstract class Platform {
     }
 
 
-        public void registerPlugins(PluginRegistry registry) {
-        try {
-            Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
-            Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
-            method.invoke(null, registry);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-    }
+
 
 
 }
