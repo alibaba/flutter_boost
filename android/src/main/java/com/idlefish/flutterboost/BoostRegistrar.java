@@ -43,7 +43,13 @@ class BoostRegistrar implements Registrar, FlutterPlugin, ActivityAware {
     }
 
     public Activity activity() {
-        return this.activityPluginBinding != null ? this.activityPluginBinding.getActivity() : null;
+        if(this.activityPluginBinding != null){
+           return this.activityPluginBinding.getActivity();
+        }
+        if(NewFlutterBoost.instance().currentActivity()!=null){
+            return  NewFlutterBoost.instance().currentActivity();
+        }
+        return null;
     }
 
     public Context context() {

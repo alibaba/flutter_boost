@@ -134,7 +134,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
                 host.getActivity(),
                 host.getLifecycle()
         );
-        NewFlutterBoost.instance().registerPlugins();
 
 
         mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);

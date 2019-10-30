@@ -29,8 +29,6 @@ public class NewFlutterBoost {
     private FlutterEngine mEngine;
     private Activity mCurrentActiveActivity;
     private PluginRegistry mRegistry;
-    private boolean hasRegistry=false;
-
     static NewFlutterBoost sInstance = null;
 
     public static NewFlutterBoost instance() {
@@ -159,8 +157,8 @@ public class NewFlutterBoost {
         );
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
-
         mRegistry = new BoostPluginRegistry(createEngine());
+        registerPlugins();
 
     }
 
@@ -317,20 +315,17 @@ public class NewFlutterBoost {
 
     }
 
-    public void registerPlugins() {
-        if(!hasRegistry&&mRegistry!=null){
-            try {
-                Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
-                Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
-                method.invoke(null, mRegistry);
-            } catch (Throwable t) {
-                throw new RuntimeException(t);
-            }
+    private void registerPlugins() {
+        try {
+            Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
+            Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
+            method.invoke(null, mRegistry);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
 
-            if(mPlatform.lifecycleListener!=null){
-                mPlatform.lifecycleListener.onPluginsRegistered();
-            }
-            hasRegistry=true;
+        if(mPlatform.lifecycleListener!=null){
+            mPlatform.lifecycleListener.onPluginsRegistered();
         }
 
 
