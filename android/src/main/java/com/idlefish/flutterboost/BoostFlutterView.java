@@ -221,6 +221,7 @@ public class BoostFlutterView extends FrameLayout {
         super.onDetachedFromWindow();
         getViewTreeObserver().removeOnGlobalLayoutListener(mGlobalLayoutListener);
         onDetach();
+        flutterEngine.getPluginRegistry().getPlatformViewsController().onFlutterViewDestroyed();
     }
 
     public BoostFlutterEngine getEngine(){
