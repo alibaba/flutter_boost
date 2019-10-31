@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/platform_view.dart';
 
 class FirstRouteWidget extends StatelessWidget {
   @override
@@ -68,6 +69,28 @@ class TabRouteWidget extends StatelessWidget {
   }
 }
 
+class PlatformRouteWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title:Text("Platform Route"),
+      ),
+      body: Center(
+        child: RaisedButton(
+          child: TextView(),
+          onPressed: () {
+            print("open second page!");
+            FlutterBoost.singleton.open("second").then((Map value) {
+              print(
+                  "call me when page is finished. did recieve second route result $value");
+            });
+          },
+        ),
+      ),
+    );
+  }
+}
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params,this.message});
   final Map params;
@@ -85,6 +108,10 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     final String message=widget.message;
     return Scaffold(
       appBar: AppBar(
+        brightness:Brightness.light,
+        backgroundColor: Colors.white,
+        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
+
         title: Text('flutter_boost_example'),
       ),
       body: SingleChildScrollView(
@@ -216,6 +243,21 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                         MaterialPageRoute(builder: (_) => PushWidget()));
                   },
                 ),
+
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'push Platform demo',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => PlatformRouteWidget()));
+                },
+              ),
                 InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),

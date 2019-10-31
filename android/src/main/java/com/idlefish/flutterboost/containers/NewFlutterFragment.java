@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.XFlutterView;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -232,6 +233,10 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     // implementation for details about why it exists.
     private FlutterActivityAndFragmentDelegate delegate;
 
+
+    protected XFlutterView getFlutterView(){
+        return delegate.getFlutterView();
+    }
 
     public NewFlutterFragment() {
         // Ensure that we at least have an empty Bundle of arguments so that we don't
@@ -485,16 +490,11 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
      */
     @Override
     public boolean shouldAttachEngineToActivity() {
-        return getArguments().getBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY);
+        return true;
     }
 
 
-    @Override
-    public void finishContainer(Map<String, Object> result) {
-        Activity activity = this.getActivity();
 
-        activity.finish();
-    }
 
     @Override
     public String getContainerUrl() {

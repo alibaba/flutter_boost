@@ -263,7 +263,7 @@ public class Utils {
             return;
         }
 
-        String [] arr = new String[]{"mServedView", "mNextServedView"};
+        String [] arr = new String[]{"mLastSrvView","mServedView", "mNextServedView"};
         Field f = null;
         Object obj_get = null;
         for (int i = 0;i < arr.length;i ++) {
@@ -283,7 +283,7 @@ public class Utils {
                     }
                 }
             }catch(Throwable t){
-                t.printStackTrace();
+//                t.printStackTrace();
             }
         }
     }
