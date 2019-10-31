@@ -54,7 +54,7 @@ public class FlutterSplashView extends FrameLayout {
         public void onFlutterEngineDetachedFromFlutterView() {
         }
     };
-    int i=0;
+
     @NonNull
     private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
         @Override
@@ -290,6 +290,9 @@ public class FlutterSplashView extends FrameLayout {
             out.writeBundle(splashScreenState);
         }
     }
+
+
+
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");

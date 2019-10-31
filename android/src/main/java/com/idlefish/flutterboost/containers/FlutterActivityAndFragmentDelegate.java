@@ -226,6 +226,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
             flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
 
         }
+        flutterView.release();
     }
 
 
