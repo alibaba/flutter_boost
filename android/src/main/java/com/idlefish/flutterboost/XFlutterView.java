@@ -534,7 +534,6 @@ public class XFlutterView extends FrameLayout {
 
     // detach platformviews in page in case memory leak
     flutterEngine.getPluginRegistry().getPlatformViewsController().detach();
-    flutterEngine.getPluginRegistry().getPlatformViewsController().onFlutterViewDestroyed();
 
     // Inform the Android framework that it should retrieve a new InputConnection
     // now that the engine is detached. The new InputConnection will be null, which
