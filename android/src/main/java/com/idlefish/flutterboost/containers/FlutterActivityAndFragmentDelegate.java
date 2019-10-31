@@ -2,7 +2,7 @@ package com.idlefish.flutterboost.containers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import androidx.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifeCycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
