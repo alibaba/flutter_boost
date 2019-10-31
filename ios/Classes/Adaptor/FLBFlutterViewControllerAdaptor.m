@@ -95,6 +95,10 @@
   //Override this to avoid unnecessary splash Screen.
 }
 
+- (BOOL)loadDefaultSplashScreenView {
+    return NO;
+}
+
 - (void)fixed_onAccessibilityStatusChanged:(NSNotification*)notification {
     if(self.accessibilityEnable){
         [self fixed_onAccessibilityStatusChanged:notification];
