@@ -89,7 +89,7 @@
     NSString *channel = @"flutter/lifecycle";
     NSString *message = @"AppLifecycleState.inactive";
     NSData *data = [[FlutterStringCodec sharedInstance] encode:message];
-    [self.viewController sendOnChannel:channel message:data];
+    [self.viewController.binaryMessenger sendOnChannel:channel message:data];
 }
 
 - (void)resumeFlutterOnly
@@ -97,7 +97,7 @@
     NSString *channel = @"flutter/lifecycle";
     NSString *message = @"AppLifecycleState.resumed";
     NSData *data = [[FlutterStringCodec sharedInstance] encode:message];
-    [self.viewController sendOnChannel:channel message:data];
+    [self.viewController.binaryMessenger sendOnChannel:channel message:data];
 }
 
 - (void)setAccessibilityEnable:(BOOL)enable
