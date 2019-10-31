@@ -9,6 +9,7 @@ import com.idlefish.flutterboost.*;
 import java.util.Map;
 
 import com.idlefish.flutterboost.interfaces.INativeRouter;
+import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MyApplication extends Application {
@@ -49,6 +50,7 @@ public class MyApplication extends Application {
                 .ConfigBuilder(this,router)
                 .isDebug(true)
                 .whenEngineStart(NewFlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
+                .renderMode(FlutterView.RenderMode.texture)
                 .lifecycleListener(lifecycleListener)
                 .build();
 

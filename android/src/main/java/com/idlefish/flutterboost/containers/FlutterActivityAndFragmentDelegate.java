@@ -15,9 +15,11 @@ import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 
+import com.idlefish.flutterboost.BoostPluginRegistry;
 import com.idlefish.flutterboost.NewFlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
@@ -28,6 +30,7 @@ import io.flutter.app.FlutterActivity;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
 
@@ -74,13 +77,15 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         return flutterEngine;
     }
 
+    XFlutterView getFlutterView(){
+        return  flutterView;
+    }
 
     void onAttach(@NonNull Context context) {
         ensureAlive();
         if (NewFlutterBoost.instance().platform().whenEngineStart() == NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
             NewFlutterBoost.instance().doInitialFlutter();
         }
-
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
         if (flutterEngine == null) {
@@ -95,23 +100,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         //                    use-cases.
         platformPlugin = host.providePlatformPlugin(host.getActivity(), flutterEngine);
 
-        if (host.shouldAttachEngineToActivity()) {
-            // Notify any plugins that are currently attached to our FlutterEngine that they
-            // are now attached to an Activity.
-            //
-            // Passing this Fragment's Lifecycle should be sufficient because as long as this Fragment
-            // is attached to its Activity, the lifecycles should be in sync. Once this Fragment is
-            // detached from its Activity, that Activity will be detached from the FlutterEngine, too,
-            // which means there shouldn't be any possibility for the Fragment Lifecycle to get out of
-            // sync with the Activity. We use the Fragment's Lifecycle because it is possible that the
-            // attached Activity is not a LifecycleOwner.
-            Log.d(TAG, "Attaching FlutterEngine to the Activity that owns this Fragment.");
-            flutterEngine.getActivityControlSurface().attachToActivity(
-                    host.getActivity(),
-                    host.getLifecycle()
-            );
-
-        }
 
         host.configureFlutterEngine(flutterEngine);
     }
@@ -142,6 +130,11 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     @NonNull
     View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v(TAG, "Creating FlutterView.");
+        flutterEngine.getActivityControlSurface().attachToActivity(
+                host.getActivity(),
+                host.getLifecycle()
+        );
+
 
         mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
 
@@ -184,22 +177,24 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.v(TAG, "onResume()");
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
+
+        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
+        if(binding!=null&&(binding.getActivity()!=this.host.getActivity())){
+            flutterEngine.getActivityControlSurface().attachToActivity(
+                    host.getActivity(),
+                    host.getLifecycle()
+            );
+        }
+
     }
 
 
     void onPostResume() {
         Log.v(TAG, "onPostResume()");
         ensureAlive();
-        if (flutterEngine != null) {
-            if (platformPlugin != null) {
-                // TODO(mattcarroll): find a better way to handle the update of UI overlays than calling through
-                //                    to platformPlugin. We're implicitly entangling the Window, Activity, Fragment,
-                //                    and engine all with this one call.
-                platformPlugin.updateSystemUiOverlays();
-            }
-        } else {
-            Log.w(TAG, "onPostResume() invoked before NewFlutterFragment was attached to an Activity.");
-        }
+        Utils.setStatusBarLightMode(host.getActivity(),true);
+
     }
 
 
@@ -215,7 +210,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onStop() {
         Log.v(TAG, "onStop()");
         ensureAlive();
-//        flutterView.detachFromFlutterEngine();
+
+
     }
 
     void onDestroyView() {
@@ -223,6 +219,14 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
+        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
+        if(binding!=null&&(binding.getActivity()==this.host.getActivity())){
+            registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
+            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+
+        }
+        flutterView.release();
     }
 
 
@@ -230,15 +234,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         Log.v(TAG, "onDetach()");
         ensureAlive();
 
-        if (host.shouldAttachEngineToActivity()) {
-            // Notify plugins that they are no longer attached to an Activity.
-            Log.d(TAG, "Detaching FlutterEngine from the Activity that owns this Fragment.");
-            if (host.getActivity().isChangingConfigurations()) {
-                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
-            } else {
-                flutterEngine.getActivityControlSurface().detachFromActivity();
-            }
-        }
+
 
         // Null out the platformPlugin to avoid a possible retain cycle between the plugin, this Fragment,
         // and this Fragment's Activity.
@@ -372,10 +368,26 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        this.host.finishContainer(result);
+
+        if(result != null) {
+            setBoostResult(this.host.getActivity(),new HashMap<>(result));
+            this.host.getActivity().finish();
+        }else{
+            this.host.getActivity().finish();
+        }
+
 
     }
 
+
+
+    public  void setBoostResult(Activity activity, HashMap result) {
+        Intent intent = new Intent();
+        if (result != null) {
+            intent.putExtra(IFlutterViewContainer.RESULT_KEY, result);
+        }
+        activity.setResult(Activity.RESULT_OK, intent);
+    }
     @Override
     public String getContainerUrl() {
         return   this.host.getContainerUrl();
@@ -473,7 +485,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
 
 
-        void finishContainer(Map<String, Object> result) ;
 
 
         String getContainerUrl() ;

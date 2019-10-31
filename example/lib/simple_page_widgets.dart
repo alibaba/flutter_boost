@@ -108,6 +108,10 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     final String message=widget.message;
     return Scaffold(
       appBar: AppBar(
+        brightness:Brightness.light,
+        backgroundColor: Colors.white,
+        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
+
         title: Text('flutter_boost_example'),
       ),
       body: SingleChildScrollView(

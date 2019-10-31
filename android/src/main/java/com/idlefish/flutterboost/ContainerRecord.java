@@ -175,6 +175,7 @@ public class ContainerRecord implements IContainerRecord {
 
     @Override
     public void onContainerResult(int requestCode, int resultCode, Map<String, Object> result) {
+        mManager.setContainerResult(this, requestCode,resultCode, result);
 
     }
 
@@ -192,41 +193,6 @@ public class ContainerRecord implements IContainerRecord {
     public void onLowMemory() {
 
     }
-//
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        mContainer.getBoostFlutterView().onRequestPermissionsResult(requestCode, permissions, grantResults);
-//    }
-//
-//    @Override
-//    public void onNewIntent(Intent intent) {
-//        mContainer.getBoostFlutterView().onNewIntent(intent);
-//    }
-//
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        mContainer.getBoostFlutterView().onActivityResult(requestCode, resultCode, data);
-//    }
-//
-//    @Override
-//    public void onContainerResult(int requestCode, int resultCode, Map<String, Object> result) {
-//        mManager.setContainerResult(this, requestCode,resultCode, result);
-//    }
-//
-//    @Override
-//    public void onUserLeaveHint() {
-//        mContainer.getBoostFlutterView().onUserLeaveHint();
-//    }
-//
-//    @Override
-//    public void onTrimMemory(int level) {
-//        mContainer.getBoostFlutterView().onTrimMemory(level);
-//    }
-//
-//    @Override
-//    public void onLowMemory() {
-//        mContainer.getBoostFlutterView().onLowMemory();
-//    }
 
 
     private class MethodChannelProxy {

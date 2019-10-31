@@ -12,10 +12,12 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterMain;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +30,6 @@ public class NewFlutterBoost {
     private Activity mCurrentActiveActivity;
     private PluginRegistry mRegistry;
     static NewFlutterBoost sInstance = null;
-
 
     public static NewFlutterBoost instance() {
         if (sInstance == null) {
@@ -154,18 +155,10 @@ public class NewFlutterBoost {
                 FlutterMain.findAppBundlePath(),
                 "main"
         );
+
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
-
-        mRegistry = new BoostPluginRegistry(createEngine(),mPlatform.getApplication());
-
-        ((BoostPluginRegistry) mRegistry).currentActivity(mCurrentActiveActivity);
-
-        mPlatform.registerPlugins(mRegistry);
-
-        if(mPlatform.lifecycleListener!=null){
-            mPlatform.lifecycleListener.onPluginsRegistered();
-        }
-
+        mRegistry = new BoostPluginRegistry(createEngine());
+        registerPlugins();
 
     }
 
@@ -192,7 +185,7 @@ public class NewFlutterBoost {
 
         private boolean isDebug = false;
 
-        private FlutterView.RenderMode renderMode = FlutterView.RenderMode.surface;
+        private FlutterView.RenderMode renderMode = FlutterView.RenderMode.texture;
 
         private Application mApp;
 
@@ -319,6 +312,22 @@ public class NewFlutterBoost {
             mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext());
         }
         return mEngine;
+
+    }
+
+    private void registerPlugins() {
+        try {
+            Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
+            Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
+            method.invoke(null, mRegistry);
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
+        }
+
+        if(mPlatform.lifecycleListener!=null){
+            mPlatform.lifecycleListener.onPluginsRegistered();
+        }
+
 
     }
 

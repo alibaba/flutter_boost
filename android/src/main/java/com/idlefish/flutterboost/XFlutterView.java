@@ -90,13 +90,15 @@ public class XFlutterView extends FrameLayout {
   // These components essentially add some additional behavioral logic on top of
   // existing, stateless system channels, e.g., KeyEventChannel, TextInputChannel, etc.
   @Nullable
-  private TextInputPlugin textInputPlugin;
+  private XTextInputPlugin textInputPlugin;
   @Nullable
-  private AndroidKeyProcessor androidKeyProcessor;
+  private XAndroidKeyProcessor androidKeyProcessor;
   @Nullable
   private AndroidTouchProcessor androidTouchProcessor;
   @Nullable
   private AccessibilityBridge accessibilityBridge;
+
+  private  boolean hasAddFirstFrameRenderedListener=false;
 
   // Directly implemented View behavior that communicates with Flutter.
   private final FlutterRenderer.ViewportMetrics viewportMetrics = new FlutterRenderer.ViewportMetrics();
@@ -566,6 +568,7 @@ public class XFlutterView extends FrameLayout {
    * See {@link #detachFromFlutterEngine()} for information on how to detach from a
    * {@link FlutterEngine}.
    */
+
   public void attachToFlutterEngine(
           @NonNull FlutterEngine flutterEngine
   ) {
@@ -582,27 +585,35 @@ public class XFlutterView extends FrameLayout {
               + " to new engine.");
       detachFromFlutterEngine();
     }
-
+    this.requestFocus();
     this.flutterEngine = flutterEngine;
 
     // Instruct our FlutterRenderer that we are now its designated RenderSurface.
     FlutterRenderer flutterRenderer = this.flutterEngine.getRenderer();
     didRenderFirstFrame = flutterRenderer.hasRenderedFirstFrame();
+    if(!hasAddFirstFrameRenderedListener){
+      flutterRenderer.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
+      hasAddFirstFrameRenderedListener=true;
+    }
     flutterRenderer.attachToRenderSurface(renderSurface);
-    flutterRenderer.addOnFirstFrameRenderedListener(onFirstFrameRenderedListener);
 
     // Initialize various components that know how to process Android View I/O
     // in a way that Flutter understands.
-    if(this.textInputPlugin!=null){
-      this.textInputPlugin.destroy();
-      resolveMemoryLeaks();
 
+
+    if(textInputPlugin==null){
+      textInputPlugin = new XTextInputPlugin(
+              this,
+              flutterEngine.getTextInputChannel(),
+              this.flutterEngine.getPlatformViewsController()
+      );
     }
 
-    this.textInputPlugin = new TextInputPlugin(this, this.flutterEngine.getDartExecutor(), this.flutterEngine.getPlatformViewsController());
+    textInputPlugin.setTextInputMethodHandler();
+    textInputPlugin.getInputMethodManager().restartInput(this);
 
 
-    this.androidKeyProcessor = new AndroidKeyProcessor(
+    this.androidKeyProcessor = new XAndroidKeyProcessor(
             this.flutterEngine.getKeyEventChannel(),
             textInputPlugin
     );
@@ -643,9 +654,9 @@ public class XFlutterView extends FrameLayout {
     // If the first frame has already been rendered, notify all first frame listeners.
     // Do this after all other initialization so that listeners don't inadvertently interact
     // with a FlutterView that is only partially attached to a FlutterEngine.
-    if (didRenderFirstFrame) {
-      onFirstFrameRenderedListener.onFirstFrameRendered();
-    }
+//    if (didRenderFirstFrame) {
+//      onFirstFrameRenderedListener.onFirstFrameRendered();
+//    }
   }
 
   /**
@@ -681,9 +692,8 @@ public class XFlutterView extends FrameLayout {
     // now that the engine is detached. The new InputConnection will be null, which
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-    textInputPlugin.getInputMethodManager().restartInput(this);
-    textInputPlugin.destroy();
-    resolveMemoryLeaks();
+
+//    resolveMemoryLeaks();
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     FlutterRenderer flutterRenderer = flutterEngine.getRenderer();
 //    didRenderFirstFrame = false;
@@ -691,7 +701,9 @@ public class XFlutterView extends FrameLayout {
     flutterRenderer.detachFromRenderSurface();
     flutterEngine = null;
   }
-
+  public void release(){
+    textInputPlugin.release();
+  }
 
   public void resolveMemoryLeaks(){
     try {

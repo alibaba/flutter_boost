@@ -1,144 +1,142 @@
 package com.idlefish.flutterboost;
 
-import android.app.Activity;
-import android.content.Context;
-import androidx.annotation.Nullable;
-import com.idlefish.flutterboost.interfaces.IContainerRecord;
-import io.flutter.app.FlutterPluginRegistry;
+
+import io.flutter.Log;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
-import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugin.platform.PlatformViewRegistry;
-import io.flutter.view.FlutterView;
-import io.flutter.view.TextureRegistry;
 
-import java.lang.ref.WeakReference;
+import java.util.*;
 
-public class BoostPluginRegistry extends ShimPluginRegistry {
-    protected WeakReference<Activity> mCurrentActivityRef;
 
-    private FlutterEngine mEngine;
-    private Context mContext;
-        public BoostPluginRegistry(FlutterEngine engine, Context context) {
-            super(engine);
-            mEngine = engine;
-            mContext=context;
-        }
+public class BoostPluginRegistry implements PluginRegistry {
+    private static final String TAG = "ShimPluginRegistry";
+    private final FlutterEngine flutterEngine;
+    private final Map<String, Object> pluginMap = new HashMap();
+    private final BoostRegistrarAggregate shimRegistrarAggregate;
 
-        public PluginRegistry.Registrar registrarFor(String pluginKey) {
-            return new BoostRegistrar(mEngine, super.registrarFor(pluginKey));
-        }
 
-    public void currentActivity(@Nullable Activity activity) {
-        mCurrentActivityRef = new WeakReference<>(activity);
+    public BoostRegistrarAggregate getRegistrarAggregate() {
+        return shimRegistrarAggregate;
     }
 
-    public  class BoostRegistrar implements PluginRegistry.Registrar {
 
-        private final PluginRegistry.Registrar mRegistrar;
-        private final FlutterEngine mEngine;
+    public BoostPluginRegistry(FlutterEngine flutterEngine) {
+        this.flutterEngine = flutterEngine;
+        this.shimRegistrarAggregate = new BoostRegistrarAggregate();
+        this.flutterEngine.getPlugins().add(this.shimRegistrarAggregate);
+    }
 
-        BoostRegistrar(FlutterEngine engine, PluginRegistry.Registrar registrar) {
-            mRegistrar = registrar;
-            mEngine = engine;
-        }
-
-        @Override
-        public Activity activity() {
-            Activity activity;
-            IContainerRecord record;
-
-            record = NewFlutterBoost.instance().containerManager().getCurrentTopRecord();
-            if (record == null) {
-                record = NewFlutterBoost.instance().containerManager().getLastGenerateRecord();
-            }
-
-            if (record == null) {
-                activity = NewFlutterBoost.instance().currentActivity();
-            } else {
-                activity = record.getContainer().getContextActivity();
-            }
-
-            if (activity == null && mCurrentActivityRef != null) {
-                activity = mCurrentActivityRef.get();
-            }
-
-            if (activity == null) {
-                throw new RuntimeException("current has no valid Activity yet");
-            }
-
-            return activity;
-        }
-
-        @Override
-        public Context context() {
-            return BoostPluginRegistry.this.mContext;
-        }
-
-        @Override
-        public Context activeContext() {
-            return BoostPluginRegistry.this.mContext;
-        }
-
-        @Override
-        public BinaryMessenger messenger() {
-            return mEngine.getDartExecutor();
-        }
-
-        @Override
-        public TextureRegistry textures() {
-            return mEngine.getRenderer();
-        }
-
-        @Override
-        public PlatformViewRegistry platformViewRegistry() {
-            return mEngine.getPlatformViewsController().getRegistry();
-        }
-
-        @Override
-        public FlutterView view() {
-            throw new RuntimeException("should not use!!!");
-        }
-
-        @Override
-        public String lookupKeyForAsset(String s) {
-            return mRegistrar.lookupKeyForAsset(s);
-        }
-
-        @Override
-        public String lookupKeyForAsset(String s, String s1) {
-            return mRegistrar.lookupKeyForAsset(s, s1);
-        }
-
-        @Override
-        public PluginRegistry.Registrar publish(Object o) {
-            return mRegistrar.publish(o);
-        }
-
-        @Override
-        public PluginRegistry.Registrar addRequestPermissionsResultListener(PluginRegistry.RequestPermissionsResultListener requestPermissionsResultListener) {
-            return mRegistrar.addRequestPermissionsResultListener(requestPermissionsResultListener);
-        }
-
-        @Override
-        public PluginRegistry.Registrar addActivityResultListener(PluginRegistry.ActivityResultListener activityResultListener) {
-            return mRegistrar.addActivityResultListener(activityResultListener);
-        }
-
-        @Override
-        public PluginRegistry.Registrar addNewIntentListener(PluginRegistry.NewIntentListener newIntentListener) {
-            return mRegistrar.addNewIntentListener(newIntentListener);
-        }
-
-        @Override
-        public PluginRegistry.Registrar addUserLeaveHintListener(PluginRegistry.UserLeaveHintListener userLeaveHintListener) {
-            return mRegistrar.addUserLeaveHintListener(userLeaveHintListener);
-        }
-
-        @Override
-        public PluginRegistry.Registrar addViewDestroyListener(PluginRegistry.ViewDestroyListener viewDestroyListener) {
-            return mRegistrar.addViewDestroyListener(viewDestroyListener);
+    public Registrar registrarFor(String pluginKey) {
+        Log.v("ShimPluginRegistry", "Creating plugin Registrar for '" + pluginKey + "'");
+        if (this.pluginMap.containsKey(pluginKey)) {
+            throw new IllegalStateException("Plugin key " + pluginKey + " is already in use");
+        } else {
+            this.pluginMap.put(pluginKey, (Object) null);
+            BoostRegistrar registrar = new BoostRegistrar(pluginKey, this.pluginMap);
+            this.shimRegistrarAggregate.addPlugin(registrar);
+            return registrar;
         }
     }
+
+    public boolean hasPlugin(String pluginKey) {
+        return this.pluginMap.containsKey(pluginKey);
     }
+
+    public Object valuePublishedByPlugin(String pluginKey) {
+        return this.pluginMap.get(pluginKey);
+    }
+
+    public static class BoostRegistrarAggregate implements FlutterPlugin, ActivityAware {
+        private final Set<BoostRegistrar> shimRegistrars;
+        private FlutterPluginBinding flutterPluginBinding;
+        private ActivityPluginBinding activityPluginBinding;
+
+        public ActivityPluginBinding getActivityPluginBinding() {
+            return activityPluginBinding;
+        }
+
+        private BoostRegistrarAggregate() {
+            this.shimRegistrars = new HashSet();
+        }
+
+        public void addPlugin(BoostRegistrar shimRegistrar) {
+            this.shimRegistrars.add(shimRegistrar);
+            if (this.flutterPluginBinding != null) {
+                shimRegistrar.onAttachedToEngine(this.flutterPluginBinding);
+            }
+
+            if (this.activityPluginBinding != null) {
+                shimRegistrar.onAttachedToActivity(this.activityPluginBinding);
+            }
+
+        }
+
+        public void onAttachedToEngine(FlutterPluginBinding binding) {
+            this.flutterPluginBinding = binding;
+            Iterator var2 = this.shimRegistrars.iterator();
+
+            while (var2.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var2.next();
+                shimRegistrar.onAttachedToEngine(binding);
+            }
+
+        }
+
+        public void onDetachedFromEngine(FlutterPluginBinding binding) {
+            Iterator var2 = this.shimRegistrars.iterator();
+
+            while (var2.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var2.next();
+                shimRegistrar.onDetachedFromEngine(binding);
+            }
+
+            this.flutterPluginBinding = null;
+        }
+
+        public void onAttachedToActivity(ActivityPluginBinding binding) {
+            this.activityPluginBinding = binding;
+            Iterator var2 = this.shimRegistrars.iterator();
+
+            while (var2.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var2.next();
+                shimRegistrar.onAttachedToActivity(binding);
+            }
+
+        }
+
+        public void onDetachedFromActivityForConfigChanges() {
+            Iterator var1 = this.shimRegistrars.iterator();
+
+            while (var1.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var1.next();
+                shimRegistrar.onDetachedFromActivity();
+            }
+
+            this.activityPluginBinding = null;
+        }
+
+        public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
+            Iterator var2 = this.shimRegistrars.iterator();
+
+            while (var2.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var2.next();
+                shimRegistrar.onReattachedToActivityForConfigChanges(binding);
+            }
+
+        }
+
+        public void onDetachedFromActivity() {
+            Iterator var1 = this.shimRegistrars.iterator();
+
+            while (var1.hasNext()) {
+                BoostRegistrar shimRegistrar = (BoostRegistrar) var1.next();
+                shimRegistrar.onDetachedFromActivity();
+            }
+
+        }
+    }
+}
+
