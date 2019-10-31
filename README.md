@@ -5,9 +5,35 @@
   <a href="https://mp.weixin.qq.com/s?__biz=MzU4MDUxOTI5NA==&mid=2247484367&idx=1&sn=fcbc485f068dae5de9f68d52607ea08f&chksm=fd54d7deca235ec86249a9e3714ec18be8b2d6dc580cae19e4e5113533a6c5b44dfa5813c4c3&scene=0&subscene=131&clicktime=1551942425&ascene=7&devicetype=android-28&version=2700033b&nettype=ctnet&abtest_cookie=BAABAAoACwASABMABAAklx4AVpkeAMSZHgDWmR4AAAA%3D&lang=zh_CN&pass_ticket=1qvHqOsbLBHv3wwAcw577EHhNjg6EKXqTfnOiFbbbaw%3D&wx_header=1">中文介绍</a>
 </p>
 
+
+# Latest News
+
+Currently, version 1.9 of flutter is supported.
+
+flutter branch：v1.9.1-hotfixes
+
+FlutterBoost branch：feature/flutter_1.9_upgrade
+
+FlutterBoost for androidx  branch：feature/flutter_1.9_androidx_upgrade
+
+
+
+```java
+
+    flutter_boost:
+            git:
+                url: 'https://github.com/alibaba/flutter_boost.git'
+                ref: 'feature/flutter_1.9_upgrade'
+```
+
+dingding  group：
+
+<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
+
+
 # Release Note
 
-Please checkout the release note for the latest 0.1.50 to see changes [0.1.50 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 0.1.54 to see changes [0.1.54 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
@@ -288,12 +314,6 @@ Please see the example for details.
 
 # License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-
-# Problem feedback group（ dingding group)
-
-<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
-
 
 
 
