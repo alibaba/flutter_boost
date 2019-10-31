@@ -92,22 +92,21 @@ public class FlutterSplashView extends FrameLayout {
     }
 
     @Nullable
-    @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        SavedState savedState = new SavedState(superState);
-        savedState.previousCompletedSplashIsolate = previousCompletedSplashIsolate;
-        savedState.splashScreenState = splashScreen != null ? splashScreen.saveSplashScreenState() : null;
+        FlutterSplashView.SavedState savedState = new FlutterSplashView.SavedState(superState);
+        savedState.previousCompletedSplashIsolate = this.previousCompletedSplashIsolate;
+        savedState.splashScreenState = this.splashScreen != null ? this.splashScreen.saveSplashScreenState() : null;
         return savedState;
     }
 
-    @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        SavedState savedState = (SavedState) state;
+        FlutterSplashView.SavedState savedState = (FlutterSplashView.SavedState)state;
         super.onRestoreInstanceState(savedState.getSuperState());
-        previousCompletedSplashIsolate = savedState.previousCompletedSplashIsolate;
-        splashScreenState = savedState.splashScreenState;
+        this.previousCompletedSplashIsolate = savedState.previousCompletedSplashIsolate;
+        this.splashScreenState = savedState.splashScreenState;
     }
+
 
     /**
      * Displays the given {@code splashScreen} on top of the given {@code flutterView} until
@@ -259,17 +258,14 @@ public class FlutterSplashView extends FrameLayout {
 
     public static class SavedState extends BaseSavedState {
         public static Creator CREATOR = new Creator() {
-            @Override
-            public SavedState createFromParcel(Parcel source) {
-                return new SavedState(source);
+            public FlutterSplashView.SavedState createFromParcel(Parcel source) {
+                return new FlutterSplashView.SavedState(source);
             }
 
-            @Override
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
+            public FlutterSplashView.SavedState[] newArray(int size) {
+                return new FlutterSplashView.SavedState[size];
             }
         };
-
         private String previousCompletedSplashIsolate;
         private Bundle splashScreenState;
 
@@ -279,15 +275,14 @@ public class FlutterSplashView extends FrameLayout {
 
         SavedState(Parcel source) {
             super(source);
-            previousCompletedSplashIsolate = source.readString();
-            splashScreenState = source.readBundle(getClass().getClassLoader());
+            this.previousCompletedSplashIsolate = source.readString();
+            this.splashScreenState = source.readBundle(this.getClass().getClassLoader());
         }
 
-        @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeString(previousCompletedSplashIsolate);
-            out.writeBundle(splashScreenState);
+            out.writeString(this.previousCompletedSplashIsolate);
+            out.writeBundle(this.splashScreenState);
         }
     }
 
