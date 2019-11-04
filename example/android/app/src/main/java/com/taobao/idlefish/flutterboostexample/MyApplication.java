@@ -43,7 +43,6 @@ public class MyApplication extends FlutterApplication {
                     @Override
                     public BoostFlutterEngine createEngine(Context context) {
                         return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
-                                context.getResources().getAssets(),
                                 FlutterMain.findAppBundlePath(context),
                                 "main2"),"/");
                     }
