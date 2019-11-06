@@ -228,7 +228,7 @@ public class NewBoostFlutterActivity extends Activity
     }
 
     @NonNull
-    private View createFlutterView() {
+    protected View createFlutterView() {
         return delegate.onCreateView(
                 null /* inflater */,
                 null /* container */,
