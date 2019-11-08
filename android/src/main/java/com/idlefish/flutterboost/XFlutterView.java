@@ -202,7 +202,7 @@ public class XFlutterView extends FrameLayout {
         break;
       case texture:
         Log.v(TAG, "Internally using a FlutterTextureView.");
-        FlutterTextureView flutterTextureView = new FlutterTextureView(getContext());
+        XFlutterTextureView flutterTextureView = new XFlutterTextureView(getContext());
         renderSurface = flutterTextureView;
         addView(flutterTextureView);
         break;
