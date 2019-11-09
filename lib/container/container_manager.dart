@@ -363,10 +363,12 @@ class ManagerNavigatorObserver extends BoostNavigatorObserver {
     _boostObservers.remove(observer);
   }
 
+  Set<BoostNavigatorObserver> get boostObservers => Set.from(_boostObservers);
+
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('ManagerNavigatorObserver didPush');
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (BoostNavigatorObserver observer in boostObservers) {
       observer.didPush(route, previousRoute);
     }
   }
@@ -374,7 +376,7 @@ class ManagerNavigatorObserver extends BoostNavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('ManagerNavigatorObserver didPop');
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (BoostNavigatorObserver observer in boostObservers) {
       observer.didPop(route, previousRoute);
     }
   }
@@ -382,7 +384,7 @@ class ManagerNavigatorObserver extends BoostNavigatorObserver {
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('ManagerNavigatorObserver didRemove');
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (BoostNavigatorObserver observer in boostObservers) {
       observer.didRemove(route, previousRoute);
     }
   }
@@ -390,7 +392,7 @@ class ManagerNavigatorObserver extends BoostNavigatorObserver {
   @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     Logger.log('ManagerNavigatorObserver didReplace');
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (BoostNavigatorObserver observer in boostObservers) {
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     }
   }

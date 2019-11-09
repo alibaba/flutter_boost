@@ -33,6 +33,7 @@ import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
 export 'container/container_manager.dart';
+export 'container/boost_lifecycle_state.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
