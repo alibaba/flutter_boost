@@ -302,7 +302,11 @@ public class FlutterSplashView extends FrameLayout {
     }
 
 
-
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
+    }
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");
