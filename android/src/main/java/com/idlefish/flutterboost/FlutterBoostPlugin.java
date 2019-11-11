@@ -1,14 +1,12 @@
 package com.idlefish.flutterboost;
 
+import android.os.Handler;
 import android.support.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -217,6 +215,9 @@ public class FlutterBoostPlugin {
                         }
 
                         result.success(pageInfo);
+                        NewFlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
+
+
                     } catch (Throwable t) {
                         result.error("no flutter page found!", t.getMessage(), t);
                     }
