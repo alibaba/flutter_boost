@@ -91,23 +91,6 @@ public class FlutterSplashView extends FrameLayout {
         }
     }
 
-    @Nullable
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        FlutterSplashView.SavedState savedState = new FlutterSplashView.SavedState(superState);
-        savedState.previousCompletedSplashIsolate = this.previousCompletedSplashIsolate;
-        savedState.splashScreenState = this.splashScreen != null ? this.splashScreen.saveSplashScreenState() : null;
-        return savedState;
-    }
-
-    protected void onRestoreInstanceState(Parcelable state) {
-        FlutterSplashView.SavedState savedState = (FlutterSplashView.SavedState)state;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        this.previousCompletedSplashIsolate = savedState.previousCompletedSplashIsolate;
-        this.splashScreenState = savedState.splashScreenState;
-    }
-
-
     /**
      * Displays the given {@code splashScreen} on top of the given {@code flutterView} until
      * Flutter has rendered its first frame, then the {@code splashScreen} is transitioned away.
