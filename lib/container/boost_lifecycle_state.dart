@@ -58,7 +58,7 @@ abstract class BoostLifeCycleState<T extends StatefulWidget> extends State<T>
       onContainerBackground();
     } else if (lifeCycle == ContainerLifeCycle.Destroy) {
       onContainerDestroy();
-      onWidgetDisposed();
+      dispose();
     }
   }
 
@@ -74,14 +74,14 @@ abstract class BoostLifeCycleState<T extends StatefulWidget> extends State<T>
   @protected
   @mustCallSuper
   void onWidgetDisposed() {
-    if (_disposed) return;
-    _disposed = true;
     FlutterBoost.singleton.observersHolder
         .removeObserver<BoostContainerLifeCycleObserver>(_lifeCycleListener);
   }
 
   @override
   void dispose() {
+    if (_disposed) return;
+    _disposed = true;
     onWidgetDisposed();
     super.dispose();
   }
