@@ -27,7 +27,8 @@ mixin _BoostLifeCycle {
 
 /// In iOS platform, root widget of native container sometimes
 /// do not cal `dispose` when native container was destroyed.
-/// To fix this, add BoostLifeCycleState as parent widget.
+/// To fix this, add BoostLifeCycleState as parent widget and
+/// override onWidgetDisposed function.
 abstract class BoostLifeCycleState<T extends StatefulWidget> extends State<T>
     with _BoostLifeCycle {
   String _boostUniqueId;
@@ -57,7 +58,7 @@ abstract class BoostLifeCycleState<T extends StatefulWidget> extends State<T>
       onContainerBackground();
     } else if (lifeCycle == ContainerLifeCycle.Destroy) {
       onContainerDestroy();
-      dispose();
+      onWidgetDisposed();
     }
   }
 
@@ -69,13 +70,19 @@ abstract class BoostLifeCycleState<T extends StatefulWidget> extends State<T>
     FlutterBoost.singleton.observersHolder
         .addObserver<BoostContainerLifeCycleObserver>(_handleLifeCycle);
   }
-
-  @override
-  void dispose() {
+  
+  @protected
+  @mustCallSuper
+  void onWidgetDisposed() {
     if (_disposed) return;
     _disposed = true;
     FlutterBoost.singleton.observersHolder
-        .removeObserver<BoostContainerLifeCycleObserver>(_handleLifeCycle);
+        .removeObserver<BoostContainerLifeCycleObserver>(_lifeCycleListener);
+  }
+
+  @override
+  void dispose() {
+    onWidgetDisposed();
     super.dispose();
   }
 }
