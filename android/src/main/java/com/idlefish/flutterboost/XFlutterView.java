@@ -692,7 +692,6 @@ public class XFlutterView extends FrameLayout {
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
 
-//    resolveMemoryLeaks();
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     FlutterRenderer flutterRenderer = flutterEngine.getRenderer();
 //    didRenderFirstFrame = false;
@@ -701,30 +700,10 @@ public class XFlutterView extends FrameLayout {
     flutterEngine = null;
   }
   public void release(){
-    textInputPlugin.release();
-  }
-
-  public void resolveMemoryLeaks(){
-    try {
-    Class clazz = TextInputPlugin.class;
-
-    for (Field f : clazz.getDeclaredFields()) {
-      System.out.println(f.isAccessible());
-      f.setAccessible(true);
-
-        if(f.get(this.textInputPlugin) instanceof TextInputChannel){
-          System.out.println( "xxxxxx:" +f.getName());
-
-          TextInputChannel channel=(TextInputChannel)f.get(this.textInputPlugin);
-          channel.setTextInputMethodHandler(null);
-        }
-    }
-    } catch (Throwable e) {
-      e.printStackTrace();
+    if(textInputPlugin!=null){
+      textInputPlugin.release();
     }
   }
-
-
 
 
   /**
