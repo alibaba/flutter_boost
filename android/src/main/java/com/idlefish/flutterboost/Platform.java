@@ -2,6 +2,7 @@ package com.idlefish.flutterboost;
 
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
 import java.lang.reflect.Method;
@@ -43,7 +44,7 @@ public abstract class Platform {
             Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
             method.invoke(null, mRegistry);
         } catch (Throwable t) {
-            throw new RuntimeException(t);
+            Log.i("flutterboost.platform",t.toString());
         }
 
         if(pluginsRegister!=null){
