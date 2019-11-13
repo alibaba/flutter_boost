@@ -3,6 +3,7 @@ package com.idlefish.flutterboost.containers;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
@@ -17,6 +18,8 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
+
+import java.util.Date;
 
 /**
  * {@code View} that displays a {@link SplashScreen} until a given {@link FlutterView}
@@ -39,7 +42,7 @@ public class FlutterSplashView extends FrameLayout {
     @Nullable
     private String previousCompletedSplashIsolate;
 
-    private boolean hasRendered=false;
+    private Handler handler = new Handler();
 
     @NonNull
     private final FlutterView.FlutterEngineAttachmentListener flutterEngineAttachmentListener = new FlutterView.FlutterEngineAttachmentListener() {
@@ -57,11 +60,40 @@ public class FlutterSplashView extends FrameLayout {
 
     @NonNull
     private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
+        int i=0;
         @Override
         public void onFirstFrameRendered() {
-            if (splashScreen != null) {
-                transitionToFlutter();
+
+            if(NewFlutterBoost.instance().platform().whenEngineStart()== NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED){
+                long now=new Date().getTime();
+                long flutterPostFrameCallTime=NewFlutterBoost.instance().getFlutterPostFrameCallTime();
+
+                if(flutterPostFrameCallTime!=0&& (now-flutterPostFrameCallTime)>800){
+                    if (splashScreen != null) {
+                        transitionToFlutter();
+                    }
+                    return;
+                }
+
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        onFirstFrameRenderedListener.onFirstFrameRendered();
+                    }
+                }, 200);
+
+
+            }else{
+                if (splashScreen != null) {
+                    transitionToFlutter();
+                }
             }
+
+
+
+
+
+
         }
     };
 
@@ -89,24 +121,6 @@ public class FlutterSplashView extends FrameLayout {
         if (mFlutterEngine == null) {
             mFlutterEngine = NewFlutterBoost.instance().engineProvider();
         }
-    }
-
-    @Nullable
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        SavedState savedState = new SavedState(superState);
-        savedState.previousCompletedSplashIsolate = previousCompletedSplashIsolate;
-        savedState.splashScreenState = splashScreen != null ? splashScreen.saveSplashScreenState() : null;
-        return savedState;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        SavedState savedState = (SavedState) state;
-        super.onRestoreInstanceState(savedState.getSuperState());
-        previousCompletedSplashIsolate = savedState.previousCompletedSplashIsolate;
-        splashScreenState = savedState.splashScreenState;
     }
 
     /**
@@ -259,17 +273,14 @@ public class FlutterSplashView extends FrameLayout {
 
     public static class SavedState extends BaseSavedState {
         public static Creator CREATOR = new Creator() {
-            @Override
-            public SavedState createFromParcel(Parcel source) {
-                return new SavedState(source);
+            public FlutterSplashView.SavedState createFromParcel(Parcel source) {
+                return new FlutterSplashView.SavedState(source);
             }
 
-            @Override
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
+            public FlutterSplashView.SavedState[] newArray(int size) {
+                return new FlutterSplashView.SavedState[size];
             }
         };
-
         private String previousCompletedSplashIsolate;
         private Bundle splashScreenState;
 
@@ -279,20 +290,23 @@ public class FlutterSplashView extends FrameLayout {
 
         SavedState(Parcel source) {
             super(source);
-            previousCompletedSplashIsolate = source.readString();
-            splashScreenState = source.readBundle(getClass().getClassLoader());
+            this.previousCompletedSplashIsolate = source.readString();
+            this.splashScreenState = source.readBundle(this.getClass().getClassLoader());
         }
 
-        @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeString(previousCompletedSplashIsolate);
-            out.writeBundle(splashScreenState);
+            out.writeString(this.previousCompletedSplashIsolate);
+            out.writeBundle(this.splashScreenState);
         }
     }
 
 
-
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        handler.removeCallbacksAndMessages(null);
+    }
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");

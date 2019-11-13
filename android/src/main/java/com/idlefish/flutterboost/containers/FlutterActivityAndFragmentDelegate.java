@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -102,6 +103,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
 
         host.configureFlutterEngine(flutterEngine);
+
+        host.getActivity().getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
 
 

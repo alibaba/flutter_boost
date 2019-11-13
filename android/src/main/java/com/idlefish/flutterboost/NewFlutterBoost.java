@@ -31,6 +31,15 @@ public class NewFlutterBoost {
     private PluginRegistry mRegistry;
     static NewFlutterBoost sInstance = null;
 
+    private  long FlutterPostFrameCallTime=0;
+
+    public long getFlutterPostFrameCallTime(){
+        return FlutterPostFrameCallTime;
+    }
+
+    public void setFlutterPostFrameCallTime(long FlutterPostFrameCallTime){
+         this.FlutterPostFrameCallTime=FlutterPostFrameCallTime;
+    }
     public static NewFlutterBoost instance() {
         if (sInstance == null) {
             sInstance = new NewFlutterBoost();

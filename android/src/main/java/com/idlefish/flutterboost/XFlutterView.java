@@ -202,7 +202,7 @@ public class XFlutterView extends FrameLayout {
         break;
       case texture:
         Log.v(TAG, "Internally using a FlutterTextureView.");
-        FlutterTextureView flutterTextureView = new FlutterTextureView(getContext());
+        XFlutterTextureView flutterTextureView = new XFlutterTextureView(getContext());
         renderSurface = flutterTextureView;
         addView(flutterTextureView);
         break;
@@ -585,7 +585,6 @@ public class XFlutterView extends FrameLayout {
               + " to new engine.");
       detachFromFlutterEngine();
     }
-    this.requestFocus();
     this.flutterEngine = flutterEngine;
 
     // Instruct our FlutterRenderer that we are now its designated RenderSurface.
@@ -693,7 +692,6 @@ public class XFlutterView extends FrameLayout {
     // signifies that this View does not process input (until a new engine is attached).
     // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
 
-//    resolveMemoryLeaks();
     // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
     FlutterRenderer flutterRenderer = flutterEngine.getRenderer();
 //    didRenderFirstFrame = false;
@@ -702,30 +700,10 @@ public class XFlutterView extends FrameLayout {
     flutterEngine = null;
   }
   public void release(){
-    textInputPlugin.release();
-  }
-
-  public void resolveMemoryLeaks(){
-    try {
-    Class clazz = TextInputPlugin.class;
-
-    for (Field f : clazz.getDeclaredFields()) {
-      System.out.println(f.isAccessible());
-      f.setAccessible(true);
-
-        if(f.get(this.textInputPlugin) instanceof TextInputChannel){
-          System.out.println( "xxxxxx:" +f.getName());
-
-          TextInputChannel channel=(TextInputChannel)f.get(this.textInputPlugin);
-          channel.setTextInputMethodHandler(null);
-        }
-    }
-    } catch (Throwable e) {
-      e.printStackTrace();
+    if(textInputPlugin!=null){
+      textInputPlugin.release();
     }
   }
-
-
 
 
   /**

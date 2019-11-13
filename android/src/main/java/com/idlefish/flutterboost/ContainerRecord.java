@@ -91,9 +91,10 @@ public class ContainerRecord implements IContainerRecord {
 
         mManager.pushRecord(this);
 
+        mProxy.appear();
+
         mContainer.getBoostFlutterView().onAttach();
 
-        mProxy.appear();
     }
 
     @Override
