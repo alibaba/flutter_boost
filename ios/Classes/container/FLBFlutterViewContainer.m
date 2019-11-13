@@ -149,7 +149,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)setEnableForRunnersBatch:(BOOL)enable{
     //dummy function
-//    NSLog(@"[DEBUG]- I did nothing, I am innocent");
+    NSLog(@"[DEBUG]- I did nothing, I am innocent");
 }
 
 #pragma mark - Life circle methods
@@ -177,7 +177,7 @@ static NSUInteger kInstanceCounter = 0;
     }
  
     [super viewWillAppear:animated];
-//    //instead of calling [super viewWillAppear:animated];, call super's super
+    //instead of calling [super viewWillAppear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),
 //        .receiver = self,
@@ -222,7 +222,7 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
-////  instead of calling [super viewDidDisappear:animated];, call super's super
+//  instead of calling [super viewDidDisappear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),
 //        .receiver = self,

@@ -3,66 +3,60 @@ package com.taobao.idlefish.flutterboostexample;
 import android.app.Application;
 import android.content.Context;
 
-import com.idlefish.flutterboost.BoostChannel;
-import com.idlefish.flutterboost.BoostEngineProvider;
-import com.idlefish.flutterboost.BoostFlutterEngine;
-import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.Platform;
-import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
+import android.util.Log;
+import com.idlefish.flutterboost.*;
 
 import java.util.Map;
 
-import io.flutter.app.FlutterApplication;
-import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.view.FlutterMain;
+import com.idlefish.flutterboost.interfaces.INativeRouter;
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.plugin.common.MethodChannel;
 
-public class MyApplication extends FlutterApplication {
+public class MyApplication extends Application {
+
+
     @Override
     public void onCreate() {
         super.onCreate();
-
-        FlutterBoost.init(new Platform() {
-
-            @Override
-            public Application getApplication() {
-                return MyApplication.this;
-            }
-
-            @Override
-            public boolean isDebug() {
-                return true;
-            }
-
+        INativeRouter router =new INativeRouter() {
             @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
-                PageRouter.openPageByUrl(context, url, urlParams, requestCode);
+               String  assembleUrl=Utils.assembleUrl(url,urlParams);
+                PageRouter.openPageByUrl(context,assembleUrl, urlParams);
+            }
+
+        };
+
+        NewFlutterBoost.BoostLifecycleListener lifecycleListener= new NewFlutterBoost.BoostLifecycleListener() {
+            @Override
+            public void onEngineCreated() {
+
             }
 
             @Override
-            public IFlutterEngineProvider engineProvider() {
-                return new BoostEngineProvider() {
-                    @Override
-                    public BoostFlutterEngine createEngine(Context context) {
-                        return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
-                                context.getResources().getAssets(),
-                                FlutterMain.findAppBundlePath(context),
-                                "main"), "/");
-                    }
-                };
+            public void onPluginsRegistered() {
+                MethodChannel mMethodChannel = new MethodChannel( NewFlutterBoost.instance().engineProvider().getDartExecutor(), "methodChannel");
+                Log.e("MyApplication","MethodChannel create");
+                TextPlatformViewPlugin.register(NewFlutterBoost.instance().getPluginRegistry().registrarFor("TextPlatformViewPlugin"));
+
             }
 
             @Override
-            public int whenEngineStart() {
-                return ANY_ACTIVITY_CREATED;
-            }
-        });
+            public void onEngineDestroy() {
 
-        BoostChannel.addActionAfterRegistered(new BoostChannel.ActionAfterRegistered() {
-            @Override
-            public void onChannelRegistered(BoostChannel channel) {
-                //platform view register should use FlutterPluginRegistry instread of BoostPluginRegistry
-                TextPlatformViewPlugin.register(FlutterBoost.singleton().engineProvider().tryGetEngine().getPluginRegistry());
             }
-        });
+        };
+        Platform platform= new NewFlutterBoost
+                .ConfigBuilder(this,router)
+                .isDebug(true)
+                .whenEngineStart(NewFlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
+                .renderMode(FlutterView.RenderMode.texture)
+                .lifecycleListener(lifecycleListener)
+                .build();
+
+        NewFlutterBoost.instance().init(platform);
+
+
+
     }
 }

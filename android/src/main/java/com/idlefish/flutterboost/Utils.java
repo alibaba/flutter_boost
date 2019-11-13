@@ -35,14 +35,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import com.alibaba.fastjson.JSON;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
 
 public class Utils {
 
@@ -263,7 +263,7 @@ public class Utils {
             return;
         }
 
-        String [] arr = new String[]{"mLastSrvView", "mServedView", "mNextServedView"};
+        String [] arr = new String[]{"mLastSrvView","mServedView", "mNextServedView"};
         Field f = null;
         Object obj_get = null;
         for (int i = 0;i < arr.length;i ++) {
@@ -272,21 +272,71 @@ public class Utils {
                 f = imm.getClass().getDeclaredField(param);
                 if (f.isAccessible() == false) {
                     f.setAccessible(true);
-                } // author: sodino mail:sodino@qq.com
+                }
                 obj_get = f.get(imm);
                 if (obj_get != null && obj_get instanceof View) {
                     View v_get = (View) obj_get;
-                    if (v_get.getContext() == destContext) { // 被InputMethodManager持有引用的context是想要目标销毁的
-                        f.set(imm, null); // 置空，破坏掉path to gc节点
+                    if (v_get.getContext() == destContext) {
+                        f.set(imm, null);
                     } else {
-                        // 不是想要目标销毁的，即为又进了另一层界面了，不要处理，避免影响原逻辑,也就不用继续for循环了
                         break;
                     }
                 }
             }catch(Throwable t){
-                t.printStackTrace();
+//                t.printStackTrace();
             }
         }
     }
+
+
+
+
+    public static String assembleUrl(String url,Map<String, Object> urlParams){
+
+        StringBuilder targetUrl = new StringBuilder(url);
+        if(urlParams != null && !urlParams.isEmpty()) {
+            if(!targetUrl.toString().contains("?")){
+                targetUrl.append("?");
+            }
+
+
+            for(Map.Entry entry:urlParams.entrySet()) {
+                if(entry.getValue() instanceof Map ) {
+                    Map<String,Object> params = (Map<String,Object> )entry.getValue();
+
+                    for(Map.Entry param:params.entrySet()) {
+                        String key = (String)param.getKey();
+                        String value = null;
+                        if(param.getValue() instanceof Map || param.getValue() instanceof List) {
+                            try {
+                                value = URLEncoder.encode(JSON.toJSONString(param.getValue()), "UTF-8");
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            value = (param.getValue()==null?null:URLEncoder.encode( String.valueOf(param.getValue())));
+                        }
+
+                        if(value==null){
+                            continue;
+                        }
+                        if(targetUrl.toString().endsWith("?")){
+                            targetUrl.append(key).append("=").append(value);
+                        }else{
+                            targetUrl.append("&").append(key).append("=").append(value);
+                        }
+
+                    }
+                }
+
+            }
+
+
+        }
+        return  targetUrl.toString();
+    }
+
+
+
 
 }

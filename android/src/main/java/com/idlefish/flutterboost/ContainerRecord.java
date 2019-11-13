@@ -69,14 +69,13 @@ public class ContainerRecord implements IContainerRecord {
     @Override
     public void onCreate() {
         Utils.assertCallOnMainThread();
-        BoostEngineProvider.assertEngineRunning();
 
         if (mState != STATE_UNKNOW) {
             Debuger.exception("state error");
         }
 
         mState = STATE_CREATED;
-        mContainer.getBoostFlutterView().onResume();
+//        mContainer.getBoostFlutterView().onResume();
         mProxy.create();
     }
 
@@ -92,9 +91,10 @@ public class ContainerRecord implements IContainerRecord {
 
         mManager.pushRecord(this);
 
+        mProxy.appear();
+
         mContainer.getBoostFlutterView().onAttach();
 
-        mProxy.appear();
     }
 
     @Override
@@ -129,15 +129,15 @@ public class ContainerRecord implements IContainerRecord {
 
         mProxy.destroy();
 
-        mContainer.getBoostFlutterView().onDestroy();
+//        mContainer.getBoostFlutterView().onDestroy();
 
         mManager.removeRecord(this);
 
         mManager.setContainerResult(this,-1,-1,null);
 
         if (!mManager.hasContainerAppear()) {
-            mContainer.getBoostFlutterView().onPause();
-            mContainer.getBoostFlutterView().onStop();
+//            mContainer.getBoostFlutterView().onPause();
+//            mContainer.getBoostFlutterView().onStop();
         }
     }
 
@@ -154,44 +154,45 @@ public class ContainerRecord implements IContainerRecord {
         map.put("name", mContainer.getContainerUrl());
         map.put("uniqueId", mUniqueId);
 
-        FlutterBoost.singleton().channel().sendEvent("lifecycle", map);
+        NewFlutterBoost.instance().channel().sendEvent("lifecycle", map);
 
-        mContainer.getBoostFlutterView().onBackPressed();
+//        mContainer.getBoostFlutterView().onBackPressed();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        mContainer.getBoostFlutterView().onRequestPermissionsResult(requestCode, permissions, grantResults);
+
     }
 
     @Override
     public void onNewIntent(Intent intent) {
-        mContainer.getBoostFlutterView().onNewIntent(intent);
+
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mContainer.getBoostFlutterView().onActivityResult(requestCode, resultCode, data);
+
     }
 
     @Override
     public void onContainerResult(int requestCode, int resultCode, Map<String, Object> result) {
         mManager.setContainerResult(this, requestCode,resultCode, result);
+
     }
 
     @Override
     public void onUserLeaveHint() {
-        mContainer.getBoostFlutterView().onUserLeaveHint();
+
     }
 
     @Override
     public void onTrimMemory(int level) {
-        mContainer.getBoostFlutterView().onTrimMemory(level);
+
     }
 
     @Override
     public void onLowMemory() {
-        mContainer.getBoostFlutterView().onLowMemory();
+
     }
 
 
@@ -252,7 +253,7 @@ public class ContainerRecord implements IContainerRecord {
             args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoost.singleton().channel().invokeMethod(method, args);
+            NewFlutterBoost.instance().channel().invokeMethod(method, args);
         }
 
         public void invokeChannelUnsafe(String method, String url, Map params, String uniqueId) {
@@ -260,7 +261,7 @@ public class ContainerRecord implements IContainerRecord {
             args.put("pageName", url);
             args.put("params", params);
             args.put("uniqueId", uniqueId);
-            FlutterBoost.singleton().channel().invokeMethodUnsafe(method, args);
+            NewFlutterBoost.instance().channel().invokeMethodUnsafe(method, args);
         }
     }
 
