@@ -150,7 +150,7 @@ public class FlutterBoost {
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
         mRegistry = new BoostPluginRegistry(createEngine());
-        registerPlugins();
+        mPlatform.registerPlugins(mRegistry);
 
     }
 
@@ -184,6 +184,10 @@ public class FlutterBoost {
         private INativeRouter router = null;
 
         private BoostLifecycleListener lifecycleListener;
+
+        private BoostPluginsRegister boostPluginsRegister;
+
+
 
         public ConfigBuilder(Application app, INativeRouter router) {
             this.router = router;
@@ -224,7 +228,10 @@ public class FlutterBoost {
             this.lifecycleListener = lifecycleListener;
             return this;
         }
-
+        public ConfigBuilder pluginsRegister(BoostPluginsRegister boostPluginsRegister) {
+            this.boostPluginsRegister = boostPluginsRegister;
+            return this;
+        }
         public Platform build() {
 
             Platform platform = new Platform() {
@@ -263,7 +270,7 @@ public class FlutterBoost {
             };
 
             platform.lifecycleListener = this.lifecycleListener;
-
+            platform.pluginsRegister=this.boostPluginsRegister;
             return platform;
 
         }
@@ -309,22 +316,6 @@ public class FlutterBoost {
 
     }
 
-    private void registerPlugins() {
-        try {
-            Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
-            Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
-            method.invoke(null, mRegistry);
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
-        }
-
-        if (mPlatform.lifecycleListener != null) {
-            mPlatform.lifecycleListener.onPluginsRegistered();
-        }
-
-
-    }
-
     public FlutterEngine engineProvider() {
         return mEngine;
     }
@@ -349,6 +340,12 @@ public class FlutterBoost {
         void onPluginsRegistered();
 
         void onEngineDestroy();
+    }
+
+
+    public interface BoostPluginsRegister {
+
+        void registerPlugins(PluginRegistry mRegistry);
     }
 
 }

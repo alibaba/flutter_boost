@@ -11,6 +11,8 @@ import java.util.Map;
 import com.idlefish.flutterboost.interfaces.INativeRouter;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MyApplication extends Application {
 
@@ -18,6 +20,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         INativeRouter router =new INativeRouter() {
             @Override
             public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
@@ -27,31 +30,21 @@ public class MyApplication extends Application {
 
         };
 
-        FlutterBoost.BoostLifecycleListener lifecycleListener= new FlutterBoost.BoostLifecycleListener() {
-            @Override
-            public void onEngineCreated() {
-
-            }
+        FlutterBoost.BoostPluginsRegister pluginsRegister= new FlutterBoost.BoostPluginsRegister(){
 
             @Override
-            public void onPluginsRegistered() {
-                MethodChannel mMethodChannel = new MethodChannel( FlutterBoost.instance().engineProvider().getDartExecutor(), "methodChannel");
-                Log.e("MyApplication","MethodChannel create");
-                TextPlatformViewPlugin.register(FlutterBoost.instance().getPluginRegistry().registrarFor("TextPlatformViewPlugin"));
-
-            }
-
-            @Override
-            public void onEngineDestroy() {
-
+            public void registerPlugins(PluginRegistry mRegistry) {
+                GeneratedPluginRegistrant.registerWith(mRegistry);
+                TextPlatformViewPlugin.register(mRegistry.registrarFor("TextPlatformViewPlugin"));
             }
         };
+
         Platform platform= new FlutterBoost
                 .ConfigBuilder(this,router)
                 .isDebug(true)
                 .whenEngineStart(FlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
                 .renderMode(FlutterView.RenderMode.texture)
-                .lifecycleListener(lifecycleListener)
+                .pluginsRegister(pluginsRegister)
                 .build();
 
         FlutterBoost.instance().init(platform);
