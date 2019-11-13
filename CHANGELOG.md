@@ -9,6 +9,12 @@ The main changes are as following:
 4. We did some code refactoring, the main logic became more straightforward.
 
 
+## 0.1.60
+
+ The version of the flutter SDK requires v1.9.1+hotfixes, or it will compile error.
+
+
+
 ### API changes
 From the point of API changes, we did some refactoring as following:
 #### iOS API changes
