@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -29,15 +28,16 @@ public class FlutterBoost {
     private PluginRegistry mRegistry;
     static FlutterBoost sInstance = null;
 
-    private  long FlutterPostFrameCallTime=0;
+    private long FlutterPostFrameCallTime = 0;
 
-    public long getFlutterPostFrameCallTime(){
+    public long getFlutterPostFrameCallTime() {
         return FlutterPostFrameCallTime;
     }
 
-    public void setFlutterPostFrameCallTime(long FlutterPostFrameCallTime){
-         this.FlutterPostFrameCallTime=FlutterPostFrameCallTime;
+    public void setFlutterPostFrameCallTime(long FlutterPostFrameCallTime) {
+        this.FlutterPostFrameCallTime = FlutterPostFrameCallTime;
     }
+
     public static FlutterBoost instance() {
         if (sInstance == null) {
             sInstance = new FlutterBoost();
@@ -51,19 +51,13 @@ public class FlutterBoost {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
 
-
-
         platform.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
 
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-                Log.e("bbbb1", "xxxxx");
-                mCurrentActiveActivity=activity;
+                mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
-                    Log.e("bbbb2", "xxxxx");
-
                     doInitialFlutter();
-
                 }
             }
 
@@ -131,33 +125,24 @@ public class FlutterBoost {
         }
 
 
-
     }
 
     public void doInitialFlutter() {
 
 
-        if(mEngine!=null) return;
+        if (mEngine != null) return;
 
         FlutterEngine flutterEngine = createEngine();
-        if(mPlatform.lifecycleListener!=null){
+        if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.onEngineCreated();
         }
         if (flutterEngine.getDartExecutor().isExecutingDart()) {
-            // No warning is logged because this situation will happen on every config
-            // change if the developer does not choose to retain the Fragment instance.
-            // So this is expected behavior in many cases.
             return;
         }
 
-
-
-        // The engine needs to receive the Flutter app's initial route before executing any
-        // Dart code to ensure that the initial route arrives in time to be applied.
         if (mPlatform.initialRoute() != null) {
             flutterEngine.getNavigationChannel().setInitialRoute(mPlatform.initialRoute());
         }
-        // Configure the Dart entrypoint and execute it.
         DartExecutor.DartEntrypoint entrypoint = new DartExecutor.DartEntrypoint(
                 FlutterMain.findAppBundlePath(),
                 "main"
@@ -198,7 +183,7 @@ public class FlutterBoost {
 
         private INativeRouter router = null;
 
-        private  BoostLifecycleListener lifecycleListener;
+        private BoostLifecycleListener lifecycleListener;
 
         public ConfigBuilder(Application app, INativeRouter router) {
             this.router = router;
@@ -225,19 +210,21 @@ public class FlutterBoost {
             return this;
         }
 
-        public ConfigBuilder whenEngineStart( int whenEngineStart) {
+        public ConfigBuilder whenEngineStart(int whenEngineStart) {
             this.whenEngineStart = whenEngineStart;
             return this;
         }
-        public ConfigBuilder whenEngineDestory( int whenEngineDestory) {
+
+        public ConfigBuilder whenEngineDestory(int whenEngineDestory) {
             this.whenEngineDestory = whenEngineDestory;
             return this;
         }
 
-        public ConfigBuilder lifecycleListener( BoostLifecycleListener lifecycleListener) {
+        public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
             this.lifecycleListener = lifecycleListener;
             return this;
         }
+
         public Platform build() {
 
             Platform platform = new Platform() {
@@ -275,7 +262,7 @@ public class FlutterBoost {
                 }
             };
 
-            platform.lifecycleListener=this.lifecycleListener;
+            platform.lifecycleListener = this.lifecycleListener;
 
             return platform;
 
@@ -303,11 +290,11 @@ public class FlutterBoost {
         return mManager.findContainerById(id);
     }
 
-    public PluginRegistry getPluginRegistry(){
-        return  mRegistry;
+    public PluginRegistry getPluginRegistry() {
+        return mRegistry;
     }
 
-    private FlutterEngine createEngine(){
+    private FlutterEngine createEngine() {
         if (mEngine == null) {
 
             FlutterMain.startInitialization(mPlatform.getApplication());
@@ -331,7 +318,7 @@ public class FlutterBoost {
             throw new RuntimeException(t);
         }
 
-        if(mPlatform.lifecycleListener!=null){
+        if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.onPluginsRegistered();
         }
 
@@ -339,26 +326,28 @@ public class FlutterBoost {
     }
 
     public FlutterEngine engineProvider() {
-        return  mEngine;
+        return mEngine;
     }
 
 
-    public void boostDestroy(){
-        if(mEngine!=null){
+    public void boostDestroy() {
+        if (mEngine != null) {
             mEngine.destroy();
         }
-        if(mPlatform.lifecycleListener!=null){
+        if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.onEngineDestroy();
         }
-        mEngine=null;
-        mRegistry=null;
-        mCurrentActiveActivity=null;
+        mEngine = null;
+        mRegistry = null;
+        mCurrentActiveActivity = null;
     }
 
 
     public interface BoostLifecycleListener {
         void onEngineCreated();
+
         void onPluginsRegistered();
+
         void onEngineDestroy();
     }
 

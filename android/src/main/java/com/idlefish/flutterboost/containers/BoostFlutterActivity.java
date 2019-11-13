@@ -73,25 +73,21 @@ public class BoostFlutterActivity extends Activity
         private Map params = new HashMap();
 
 
-
         protected NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
             this.activityClass = activityClass;
         }
 
 
-
-
-        public NewEngineIntentBuilder url (@NonNull String url) {
+        public NewEngineIntentBuilder url(@NonNull String url) {
             this.url = url;
             return this;
         }
 
 
-        public NewEngineIntentBuilder params (@NonNull Map params) {
+        public NewEngineIntentBuilder params(@NonNull Map params) {
             this.params = params;
             return this;
         }
-
 
 
         public NewEngineIntentBuilder backgroundMode(@NonNull BackgroundMode backgroundMode) {
@@ -102,7 +98,7 @@ public class BoostFlutterActivity extends Activity
 
         public Intent build(@NonNull Context context) {
 
-            SerializableMap serializableMap=new SerializableMap();
+            SerializableMap serializableMap = new SerializableMap();
             serializableMap.setMap(params);
 
             return new Intent(context, activityClass)
@@ -115,7 +111,7 @@ public class BoostFlutterActivity extends Activity
 
     public static class SerializableMap implements Serializable {
 
-        private Map<String,Object> map;
+        private Map<String, Object> map;
 
         public Map<String, Object> getMap() {
             return map;
@@ -173,7 +169,7 @@ public class BoostFlutterActivity extends Activity
     public SplashScreen provideSplashScreen() {
         Drawable manifestSplashDrawable = getSplashScreenFromManifest();
         if (manifestSplashDrawable != null) {
-            return new DrawableSplashScreen(manifestSplashDrawable, ImageView.ScaleType.CENTER,500L);
+            return new DrawableSplashScreen(manifestSplashDrawable, ImageView.ScaleType.CENTER, 500L);
         } else {
             return null;
         }
@@ -244,8 +240,8 @@ public class BoostFlutterActivity extends Activity
 
     }
 
-    protected XFlutterView getFlutterView(){
-       return delegate.getFlutterView();
+    protected XFlutterView getFlutterView() {
+        return delegate.getFlutterView();
     }
 
     @Override
@@ -370,7 +366,6 @@ public class BoostFlutterActivity extends Activity
     }
 
 
-
     /**
      * Returns true if Flutter is running in "debug mode", and false otherwise.
      * <p>
@@ -470,9 +465,6 @@ public class BoostFlutterActivity extends Activity
     }
 
 
-
-
-
     @Override
     public String getContainerUrl() {
         if (getIntent().hasExtra(EXTRA_URL)) {
@@ -486,11 +478,11 @@ public class BoostFlutterActivity extends Activity
     public Map getContainerUrlParams() {
 
         if (getIntent().hasExtra(EXTRA_PARAMS)) {
-            SerializableMap serializableMap= (SerializableMap)getIntent().getSerializableExtra(EXTRA_PARAMS);
+            SerializableMap serializableMap = (SerializableMap) getIntent().getSerializableExtra(EXTRA_PARAMS);
             return serializableMap.getMap();
         }
 
-        Map<String,String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
 
         return params;
     }

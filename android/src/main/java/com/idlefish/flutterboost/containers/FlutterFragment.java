@@ -115,6 +115,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         private boolean shouldAttachEngineToActivity = true;
         private String url = "";
         private Map params = new HashMap();
+
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
          * {@code NewFlutterFragment}.
@@ -130,7 +131,6 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         public NewEngineFragmentBuilder(@NonNull Class<? extends FlutterFragment> subclass) {
             fragmentClass = subclass;
         }
-
 
 
         /**
@@ -155,16 +155,18 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
             this.renderMode = renderMode;
             return this;
         }
-        public NewEngineFragmentBuilder url (@NonNull String url) {
+
+        public NewEngineFragmentBuilder url(@NonNull String url) {
             this.url = url;
             return this;
         }
 
 
-        public NewEngineFragmentBuilder params (@NonNull Map params) {
+        public NewEngineFragmentBuilder params(@NonNull Map params) {
             this.params = params;
             return this;
         }
+
         /**
          * Support a {@link FlutterView.TransparencyMode#transparent} background within {@link FlutterView},
          * or force an {@link FlutterView.TransparencyMode#opaque} background.
@@ -178,7 +180,6 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         }
 
 
-
         @NonNull
         protected Bundle createArgs() {
             Bundle args = new Bundle();
@@ -188,7 +189,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
                 args.putStringArray(ARG_FLUTTER_INITIALIZATION_ARGS, shellArgs.toArray());
             }
 
-            BoostFlutterActivity.SerializableMap serializableMap=new BoostFlutterActivity.SerializableMap();
+            BoostFlutterActivity.SerializableMap serializableMap = new BoostFlutterActivity.SerializableMap();
             serializableMap.setMap(params);
 
             args.putString(EXTRA_URL, url);
@@ -232,7 +233,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     private FlutterActivityAndFragmentDelegate delegate;
 
 
-    protected XFlutterView getFlutterView(){
+    protected XFlutterView getFlutterView() {
         return delegate.getFlutterView();
     }
 
@@ -492,8 +493,6 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
 
-
-
     @Override
     public String getContainerUrl() {
 
@@ -505,7 +504,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public Map getContainerUrlParams() {
 
-        BoostFlutterActivity.SerializableMap serializableMap= (BoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
+        BoostFlutterActivity.SerializableMap serializableMap = (BoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
 
         return serializableMap.getMap();
     }

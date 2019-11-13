@@ -46,13 +46,6 @@ public class FlutterBoostPlugin {
             a.onChannelRegistered(sInstance);
         }
 
-//        if (NewFlutterBoost.instance() != null) {
-//            final IStateListener stateListener = NewFlutterBoost.instance().mStateListener;
-//            if (stateListener != null) {
-//                stateListener.onChannelRegistered(registrar, sInstance);
-//            }
-//        }
-
         sActions.clear();
     }
 

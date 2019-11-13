@@ -15,6 +15,7 @@ public abstract class Platform {
     public abstract void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts);
 
     public abstract int whenEngineStart();
+
     public abstract int whenEngineDestroy();
 
     public abstract FlutterView.RenderMode renderMode();
@@ -30,9 +31,6 @@ public abstract class Platform {
 
         record.getContainer().finishContainer(result);
     }
-
-
-
 
 
 }
