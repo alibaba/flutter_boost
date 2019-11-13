@@ -64,9 +64,9 @@ public class FlutterSplashView extends FrameLayout {
         @Override
         public void onFirstFrameRendered() {
 
-            if(NewFlutterBoost.instance().platform().whenEngineStart()== NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED){
+            if(FlutterBoost.instance().platform().whenEngineStart()== FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED){
                 long now=new Date().getTime();
-                long flutterPostFrameCallTime=NewFlutterBoost.instance().getFlutterPostFrameCallTime();
+                long flutterPostFrameCallTime= FlutterBoost.instance().getFlutterPostFrameCallTime();
 
                 if(flutterPostFrameCallTime!=0&& (now-flutterPostFrameCallTime)>800){
                     if (splashScreen != null) {
@@ -119,7 +119,7 @@ public class FlutterSplashView extends FrameLayout {
 
         setSaveEnabled(true);
         if (mFlutterEngine == null) {
-            mFlutterEngine = NewFlutterBoost.instance().engineProvider();
+            mFlutterEngine = FlutterBoost.instance().engineProvider();
         }
     }
 

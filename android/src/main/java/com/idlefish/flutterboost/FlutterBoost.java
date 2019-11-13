@@ -12,8 +12,6 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterMain;
 
@@ -21,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewFlutterBoost {
+public class FlutterBoost {
 
     private Platform mPlatform;
 
@@ -29,7 +27,7 @@ public class NewFlutterBoost {
     private FlutterEngine mEngine;
     private Activity mCurrentActiveActivity;
     private PluginRegistry mRegistry;
-    static NewFlutterBoost sInstance = null;
+    static FlutterBoost sInstance = null;
 
     private  long FlutterPostFrameCallTime=0;
 
@@ -40,9 +38,9 @@ public class NewFlutterBoost {
     public void setFlutterPostFrameCallTime(long FlutterPostFrameCallTime){
          this.FlutterPostFrameCallTime=FlutterPostFrameCallTime;
     }
-    public static NewFlutterBoost instance() {
+    public static FlutterBoost instance() {
         if (sInstance == null) {
-            sInstance = new NewFlutterBoost();
+            sInstance = new FlutterBoost();
         }
         return sInstance;
     }

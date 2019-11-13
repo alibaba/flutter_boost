@@ -27,7 +27,7 @@ public class MyApplication extends Application {
 
         };
 
-        NewFlutterBoost.BoostLifecycleListener lifecycleListener= new NewFlutterBoost.BoostLifecycleListener() {
+        FlutterBoost.BoostLifecycleListener lifecycleListener= new FlutterBoost.BoostLifecycleListener() {
             @Override
             public void onEngineCreated() {
 
@@ -35,9 +35,9 @@ public class MyApplication extends Application {
 
             @Override
             public void onPluginsRegistered() {
-                MethodChannel mMethodChannel = new MethodChannel( NewFlutterBoost.instance().engineProvider().getDartExecutor(), "methodChannel");
+                MethodChannel mMethodChannel = new MethodChannel( FlutterBoost.instance().engineProvider().getDartExecutor(), "methodChannel");
                 Log.e("MyApplication","MethodChannel create");
-                TextPlatformViewPlugin.register(NewFlutterBoost.instance().getPluginRegistry().registrarFor("TextPlatformViewPlugin"));
+                TextPlatformViewPlugin.register(FlutterBoost.instance().getPluginRegistry().registrarFor("TextPlatformViewPlugin"));
 
             }
 
@@ -46,15 +46,15 @@ public class MyApplication extends Application {
 
             }
         };
-        Platform platform= new NewFlutterBoost
+        Platform platform= new FlutterBoost
                 .ConfigBuilder(this,router)
                 .isDebug(true)
-                .whenEngineStart(NewFlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
+                .whenEngineStart(FlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
                 .renderMode(FlutterView.RenderMode.texture)
                 .lifecycleListener(lifecycleListener)
                 .build();
 
-        NewFlutterBoost.instance().init(platform);
+        FlutterBoost.instance().init(platform);
 
 
 

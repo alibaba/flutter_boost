@@ -2,9 +2,8 @@ package com.taobao.idlefish.flutterboostexample;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
-import com.idlefish.flutterboost.containers.NewBoostFlutterActivity;
+import com.idlefish.flutterboost.containers.BoostFlutterActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,8 +36,8 @@ public class PageRouter {
 
         try {
             if (pageName.containsKey(path)) {
-                Intent intent = NewBoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
-                        .backgroundMode(NewBoostFlutterActivity.BackgroundMode.opaque).build(context);
+                Intent intent = BoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
+                        .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque).build(context);
 
                 context.startActivity(intent);
 

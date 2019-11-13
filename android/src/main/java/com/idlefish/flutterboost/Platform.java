@@ -4,11 +4,9 @@ import android.app.Application;
 import android.content.Context;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
-import java.lang.reflect.Method;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterView;
-import io.flutter.plugin.common.PluginRegistry;
 
 public abstract class Platform {
 
@@ -25,7 +23,7 @@ public abstract class Platform {
 
     public abstract String initialRoute();
 
-    public NewFlutterBoost.BoostLifecycleListener lifecycleListener;
+    public FlutterBoost.BoostLifecycleListener lifecycleListener;
 
     public void closeContainer(IContainerRecord record, Map<String, Object> result, Map<String, Object> exts) {
         if (record == null) return;

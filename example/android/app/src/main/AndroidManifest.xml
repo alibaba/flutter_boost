@@ -36,7 +36,7 @@
 
 
         <activity
-                android:name="com.idlefish.flutterboost.containers.NewBoostFlutterActivity"
+                android:name="com.idlefish.flutterboost.containers.BoostFlutterActivity"
                 android:theme="@style/Theme.AppCompat"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
                 android:hardwareAccelerated="true"

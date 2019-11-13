@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
@@ -46,8 +45,8 @@ class BoostRegistrar implements Registrar, FlutterPlugin, ActivityAware {
         if(this.activityPluginBinding != null){
            return this.activityPluginBinding.getActivity();
         }
-        if(NewFlutterBoost.instance().currentActivity()!=null){
-            return  NewFlutterBoost.instance().currentActivity();
+        if(FlutterBoost.instance().currentActivity()!=null){
+            return  FlutterBoost.instance().currentActivity();
         }
         return null;
     }

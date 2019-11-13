@@ -19,8 +19,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.*;
 import android.widget.*;
-import com.idlefish.flutterboost.NewFlutterBoost;
-import com.idlefish.flutterboost.Utils;
+import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.XFlutterView;
 import io.flutter.Log;
 import io.flutter.embedding.android.DrawableSplashScreen;
@@ -29,13 +28,12 @@ import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewBoostFlutterActivity extends Activity
+public class BoostFlutterActivity extends Activity
         implements FlutterActivityAndFragmentDelegate.Host,
         LifecycleOwner {
 
@@ -64,19 +62,19 @@ public class NewBoostFlutterActivity extends Activity
 
 
     public static NewEngineIntentBuilder withNewEngine() {
-        return new NewEngineIntentBuilder(NewBoostFlutterActivity.class);
+        return new NewEngineIntentBuilder(BoostFlutterActivity.class);
     }
 
 
     public static class NewEngineIntentBuilder {
-        private final Class<? extends NewBoostFlutterActivity> activityClass;
+        private final Class<? extends BoostFlutterActivity> activityClass;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url = "";
         private Map params = new HashMap();
 
 
 
-        protected NewEngineIntentBuilder(@NonNull Class<? extends NewBoostFlutterActivity> activityClass) {
+        protected NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
             this.activityClass = activityClass;
         }
 
@@ -133,7 +131,7 @@ public class NewBoostFlutterActivity extends Activity
     @NonNull
     private LifecycleRegistry lifecycle;
 
-    public NewBoostFlutterActivity() {
+    public BoostFlutterActivity() {
         lifecycle = new LifecycleRegistry(this);
     }
 
@@ -432,7 +430,7 @@ public class NewBoostFlutterActivity extends Activity
     @Override
     public FlutterEngine provideFlutterEngine(@NonNull Context context) {
         // No-op. Hook for subclasses.
-        return NewFlutterBoost.instance().engineProvider();
+        return FlutterBoost.instance().engineProvider();
     }
 
     /**

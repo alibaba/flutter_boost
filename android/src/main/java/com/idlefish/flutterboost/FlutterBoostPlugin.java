@@ -1,6 +1,5 @@
 package com.idlefish.flutterboost;
 
-import android.os.Handler;
 import android.support.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
@@ -196,7 +195,7 @@ public class FlutterBoostPlugin {
         @Override
         public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
 
-            FlutterViewContainerManager mManager = (FlutterViewContainerManager) NewFlutterBoost.instance().containerManager();
+            FlutterViewContainerManager mManager = (FlutterViewContainerManager) FlutterBoost.instance().containerManager();
             switch (methodCall.method) {
                 case "pageOnStart": {
                     Map<String, Object> pageInfo = new HashMap<>();
@@ -215,7 +214,7 @@ public class FlutterBoostPlugin {
                         }
 
                         result.success(pageInfo);
-                        NewFlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
+                        FlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
 
 
                     } catch (Throwable t) {

@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 import com.idlefish.flutterboost.BoostPluginRegistry;
-import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
@@ -33,7 +33,6 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 
 import static android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW;
 
@@ -84,8 +83,8 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     void onAttach(@NonNull Context context) {
         ensureAlive();
-        if (NewFlutterBoost.instance().platform().whenEngineStart() == NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
-            NewFlutterBoost.instance().doInitialFlutter();
+        if (FlutterBoost.instance().platform().whenEngineStart() == FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
+            FlutterBoost.instance().doInitialFlutter();
         }
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
@@ -139,10 +138,10 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         );
 
 
-        mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
+        mSyncer = FlutterBoost.instance().containerManager().generateSyncer(this);
 
         ensureAlive();
-        flutterView = new XFlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
+        flutterView = new XFlutterView(host.getActivity(), FlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
 
 
         flutterSplashView = new FlutterSplashView(host.getContext());
@@ -181,7 +180,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
 
-        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        BoostPluginRegistry registry= (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
         ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
         if(binding!=null&&(binding.getActivity()!=this.host.getActivity())){
             flutterEngine.getActivityControlSurface().attachToActivity(
@@ -222,7 +221,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
-        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
+        BoostPluginRegistry registry= (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
         ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
         if(binding!=null&&(binding.getActivity()==this.host.getActivity())){
             registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
@@ -413,7 +412,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     }
 
     /**
-     * The {@link FlutterActivity} or {@link NewFlutterFragment} that owns this
+     * The {@link FlutterActivity} or {@link FlutterFragment} that owns this
      * {@code FlutterActivityAndFragmentDelegate}.
      */
     /* package */ interface Host extends SplashScreenProvider, FlutterEngineProvider, FlutterEngineConfigurator {
