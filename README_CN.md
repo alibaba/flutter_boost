@@ -5,7 +5,7 @@
 
 # Release Note
 
- 请查看最新版本0.1.54的release note 确认变更，[0.1.54 release note](https://github.com/alibaba/flutter_boost/releases)。
+ 请查看最新版本0.1.60的release note 确认变更，[0.1.60 release note](https://github.com/alibaba/flutter_boost/releases)。
 
 # FlutterBoost
 
@@ -24,10 +24,12 @@
 
 support分支
 ```json
+
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'feature/flutter_1.9_upgrade'
+        ref: '0.1.60'
+
 ```
 
 androidx分支
