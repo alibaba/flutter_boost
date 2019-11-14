@@ -13,7 +13,9 @@ The main changes are as following:
 
  The version of the flutter SDK requires v1.9.1+hotfixes, or it will compile error.
 
+## 0.1.61
 
+  bug fix
 
 ### API changes
 From the point of API changes, we did some refactoring as following:
