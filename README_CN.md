@@ -21,21 +21,21 @@
 
 1. 0.1.50 是基于flutter v1.5.4-hotfixes 分支，android 如果其他flutter版本或者分支 会编译错误
 
-0.1.51--0.1.54 是对0.1.50的bugfix
+2. 0.1.51--0.1.54 是对0.1.50的bugfix
 
 
-2. 0.1.60 是基于flutter v1.9.1-hotfixes 分支，android如果其他flutter分支会编译错误,该版本不支持andriodx
+3. 0.1.60 是基于flutter v1.9.1-hotfixes 分支，android如果其他flutter分支会编译错误,该版本不支持andriodx
 
-0.1.61 是对0.1.60 的bugfix
+4. 0.1.61 是对0.1.60 的bugfix
 
 
-3.关于androidx 的支持声明
+5 .关于androidx 的支持声明
 
-3.1. 目前androidx 分支为 feature/flutter_1.9_androidx_upgrade
+ 目前androidx 分支为 feature/flutter_1.9_androidx_upgrade
 
-3.2. 是基于flutter v1.9.1-hotfixes 分支，如果其他分支会编译错误
+ 是基于flutter v1.9.1-hotfixes 分支，如果其他分支会编译错误
 
-3.3. 和0.1.60代码同步，同时0.1.61的 bugfix 也会合入该分支。
+ 和0.1.60代码同步，同时0.1.61的 bugfix 也会合入该分支。
 
 
 
