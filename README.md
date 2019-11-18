@@ -16,6 +16,30 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 # Prerequisites
 You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.9.1+hotfixes, or it will compile error.
 
+
+
+#boost version description
+
+1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
+
+0.1.51--0.1.54 is a bugfix for 0.1.50
+
+
+2. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
+
+0.1.61 is a bugfix for 0.1.60
+
+
+3. Statement of support for androidx
+
+3.1. Current androidx branch is feature/flutter_1.9_androidx_upgrade
+
+3.2. Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
+
+3.3. Synchronize with the 0.1.60 code, and bugfix of 0.1.61 also merge to this branch.
+
+
+
 # Getting Started
 
 
