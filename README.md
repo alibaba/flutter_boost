@@ -18,7 +18,7 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 
 
-#boost version description
+# boost version description
 
 1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
 

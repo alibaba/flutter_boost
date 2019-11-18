@@ -17,7 +17,7 @@
 在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要 v1.9.1-hotfixes，否则会编译失败.
 
 
-#boost 版本说明
+# boost 版本说明
 
 1. 0.1.50 是基于flutter v1.5.4-hotfixes 分支，android 如果其他flutter版本或者分支 会编译错误
 
