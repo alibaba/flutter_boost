@@ -29,7 +29,7 @@
 4. 0.1.61 是对0.1.60 的bugfix
 
 
-5 .关于androidx 的支持声明
+5. 关于androidx 的支持声明
 
  目前androidx 分支为 feature/flutter_1.9_androidx_upgrade
 
