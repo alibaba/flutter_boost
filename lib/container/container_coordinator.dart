@@ -206,6 +206,18 @@ class ContainerCoordinator {
           ?.pushContainer(_createContainerSettings(name, params, pageId));
     }
 
+    //TODO, 需要验证android代码是否也可以移到这里
+    if (Platform.isIOS) {
+      try {
+        final SemanticsOwner owner =
+            WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+        final SemanticsNode root = owner?.rootSemanticsNode;
+        root?.detach();
+        root?.attach(owner);
+      } catch (e) {
+        assert(false, e.toString());
+      }
+    }
     return true;
   }
 
