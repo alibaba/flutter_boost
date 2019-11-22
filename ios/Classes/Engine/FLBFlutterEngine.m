@@ -91,14 +91,14 @@
 
 - (void)didEnterBackground
 {
-    [BoostMessageChannel sendEvent:@"background"
-                         arguments:nil];
+    [BoostMessageChannel sendEvent:@"lifecycle"
+                         arguments:@{@"type":@"background"}];
 }
 
 - (void)willEnterForeground
 {
-    [BoostMessageChannel sendEvent:@"foreground"
-                         arguments:nil];
+    [BoostMessageChannel sendEvent:@"lifecycle"
+                         arguments:@{@"type":@"foreground"}];
 }
 
 - (FlutterEngine *)engine
