@@ -171,8 +171,14 @@ class ContainerCoordinator implements NativePageContainerEventHandler {
 
   @override
   bool nativeContainerWillDealloc(String name, Map params, String pageId) {
+    try{
+
     performContainerLifeCycle(_createContainerSettings(name, params, pageId),
         ContainerLifeCycle.Destroy);
+    } catch (e){
+      Logger.log(
+          'nativeContainerWillDealloc error: ${e}' );
+    }
 
     FlutterBoost.containerManager?.remove(pageId);
 
