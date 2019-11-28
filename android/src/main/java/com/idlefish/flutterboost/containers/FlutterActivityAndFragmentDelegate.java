@@ -217,11 +217,15 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
         ensureAlive();
         BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
-        ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
-        if (binding != null && (binding.getActivity() == this.host.getActivity())) {
-            registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
-            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+        if (registry != null) {
+            ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
+            if (binding != null && (binding.getActivity() == this.host.getActivity())) {
 
+                registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
+
+                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+
+            }
         }
         flutterView.release();
     }
