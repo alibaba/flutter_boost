@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/web_page.dart';
 import 'simple_page_widgets.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       'first': (pageName, params, _) => FirstRouteWidget(),
       'second': (pageName, params, _) => SecondRouteWidget(),
       'tab': (pageName, params, _) => TabRouteWidget(),
-      'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
+      'flutterFragment': (pageName, params, _) =>  FlutterWebPage(),
 
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (pageName, params, _) {

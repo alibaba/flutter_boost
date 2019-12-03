@@ -27,7 +27,7 @@ dev_dependencies:
 
   flutter_boost:
     path: ../
-
+  webview_flutter: ^0.2.0
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
 

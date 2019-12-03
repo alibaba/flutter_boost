@@ -243,7 +243,7 @@ public class BoostFlutterEngine extends FlutterEngine {
 
         @Override
         public PlatformViewRegistry platformViewRegistry() {
-            return mRegistrar.platformViewRegistry();
+            return  mEngine.getPluginRegistry().getPlatformViewsController().getRegistry();
         }
 
         @Override

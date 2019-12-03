@@ -82,6 +82,6 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
     @Override
     protected void onResume() {
         super.onResume();
-        mTab1.performClick();
+//        mTab1.performClick();
     }
 }
