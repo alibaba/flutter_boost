@@ -482,7 +482,7 @@ public class XFlutterView extends FrameLayout {
               getContext().getContentResolver(),
               // TODO(mattcaroll): plumb the platform views controller to the accessibility bridge.
               // https://github.com/flutter/flutter/issues/29618
-              null
+              this.flutterEngine.getPluginRegistry().getPlatformViewsController()
       );
       accessibilityBridge.setOnAccessibilityChangeListener(onAccessibilityChangeListener);
       resetWillNotDraw(
