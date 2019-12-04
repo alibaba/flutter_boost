@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 import com.idlefish.flutterboost.BoostPluginRegistry;
-import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
@@ -33,11 +33,10 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 
 import static android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW;
 
-public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContainer {
+public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer {
 
 
     private static final String TAG = "FlutterActivityAndFragmentDelegate";
@@ -59,8 +58,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     protected IOperateSyncer mSyncer;
 
 
-
-
     FlutterActivityAndFragmentDelegate(@NonNull Host host) {
         this.host = host;
     }
@@ -78,14 +75,14 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         return flutterEngine;
     }
 
-    XFlutterView getFlutterView(){
-        return  flutterView;
+    XFlutterView getFlutterView() {
+        return flutterView;
     }
 
     void onAttach(@NonNull Context context) {
         ensureAlive();
-        if (NewFlutterBoost.instance().platform().whenEngineStart() == NewFlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
-            NewFlutterBoost.instance().doInitialFlutter();
+        if (FlutterBoost.instance().platform().whenEngineStart() == FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
+            FlutterBoost.instance().doInitialFlutter();
         }
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
@@ -106,8 +103,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
         host.getActivity().getWindow().setFormat(PixelFormat.TRANSLUCENT);
     }
-
-
 
 
     private void setupFlutterEngine() {
@@ -139,10 +134,10 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         );
 
 
-        mSyncer = NewFlutterBoost.instance().containerManager().generateSyncer(this);
+        mSyncer = FlutterBoost.instance().containerManager().generateSyncer(this);
 
         ensureAlive();
-        flutterView = new XFlutterView(host.getActivity(), NewFlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
+        flutterView = new XFlutterView(host.getActivity(), FlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
 
 
         flutterSplashView = new FlutterSplashView(host.getContext());
@@ -173,7 +168,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     }
 
 
-
     void onResume() {
         mSyncer.onAppear();
 
@@ -181,9 +175,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
 
-        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
-        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
-        if(binding!=null&&(binding.getActivity()!=this.host.getActivity())){
+        BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
+        ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
+        if (binding != null && (binding.getActivity() != this.host.getActivity())) {
             flutterEngine.getActivityControlSurface().attachToActivity(
                     host.getActivity(),
                     host.getLifecycle()
@@ -196,7 +190,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onPostResume() {
         Log.v(TAG, "onPostResume()");
         ensureAlive();
-        Utils.setStatusBarLightMode(host.getActivity(),true);
+        Utils.setStatusBarLightMode(host.getActivity(), true);
 
     }
 
@@ -222,12 +216,16 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         mSyncer.onDestroy();
 
         ensureAlive();
-        BoostPluginRegistry registry= (BoostPluginRegistry)NewFlutterBoost.instance().getPluginRegistry();
-        ActivityPluginBinding  binding=registry.getRegistrarAggregate().getActivityPluginBinding();
-        if(binding!=null&&(binding.getActivity()==this.host.getActivity())){
-            registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
-            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+        BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
+        if (registry != null) {
+            ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
+            if (binding != null && (binding.getActivity() == this.host.getActivity())) {
 
+                registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
+
+                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+
+            }
         }
         flutterView.release();
     }
@@ -236,7 +234,6 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     void onDetach() {
         Log.v(TAG, "onDetach()");
         ensureAlive();
-
 
 
         // Null out the platformPlugin to avoid a possible retain cycle between the plugin, this Fragment,
@@ -288,16 +285,16 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
 
     void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mSyncer.onActivityResult(requestCode,resultCode,data);
-        Map<String,Object> result = null;
-        if(data != null) {
+        mSyncer.onActivityResult(requestCode, resultCode, data);
+        Map<String, Object> result = null;
+        if (data != null) {
             Serializable rlt = data.getSerializableExtra(RESULT_KEY);
-            if(rlt instanceof Map) {
-                result = (Map<String,Object>)rlt;
+            if (rlt instanceof Map) {
+                result = (Map<String, Object>) rlt;
             }
         }
 
-        mSyncer.onContainerResult(requestCode,resultCode,result);
+        mSyncer.onContainerResult(requestCode, resultCode, result);
 
 
         ensureAlive();
@@ -361,7 +358,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
 
     @Override
     public Activity getContextActivity() {
-        return (Activity)this.host.getActivity();
+        return (Activity) this.host.getActivity();
     }
 
     @Override
@@ -372,10 +369,10 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     @Override
     public void finishContainer(Map<String, Object> result) {
 
-        if(result != null) {
-            setBoostResult(this.host.getActivity(),new HashMap<>(result));
+        if (result != null) {
+            setBoostResult(this.host.getActivity(), new HashMap<>(result));
             this.host.getActivity().finish();
-        }else{
+        } else {
             this.host.getActivity().finish();
         }
 
@@ -383,17 +380,17 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     }
 
 
-
-    public  void setBoostResult(Activity activity, HashMap result) {
+    public void setBoostResult(Activity activity, HashMap result) {
         Intent intent = new Intent();
         if (result != null) {
             intent.putExtra(IFlutterViewContainer.RESULT_KEY, result);
         }
         activity.setResult(Activity.RESULT_OK, intent);
     }
+
     @Override
     public String getContainerUrl() {
-        return   this.host.getContainerUrl();
+        return this.host.getContainerUrl();
     }
 
     @Override
@@ -413,7 +410,7 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
     }
 
     /**
-     * The {@link FlutterActivity} or {@link NewFlutterFragment} that owns this
+     * The {@link FlutterActivity} or {@link FlutterFragment} that owns this
      * {@code FlutterActivityAndFragmentDelegate}.
      */
     /* package */ interface Host extends SplashScreenProvider, FlutterEngineProvider, FlutterEngineConfigurator {
@@ -487,12 +484,9 @@ public class FlutterActivityAndFragmentDelegate  implements IFlutterViewContaine
         boolean shouldAttachEngineToActivity();
 
 
+        String getContainerUrl();
 
-
-
-        String getContainerUrl() ;
-
-        Map getContainerUrlParams() ;
+        Map getContainerUrlParams();
 
 
     }

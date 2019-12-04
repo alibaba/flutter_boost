@@ -1,10 +1,10 @@
 package com.taobao.idlefish.flutterboostexample;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
-import com.idlefish.flutterboost.containers.NewBoostFlutterActivity;
+import com.idlefish.flutterboost.containers.BoostFlutterActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,11 +13,9 @@ public class PageRouter {
 
     public final static Map<String, String> pageName = new HashMap<String, String>() {{
 
-
         put("first", "first");
         put("second", "second");
         put("tab", "tab");
-
         put("sample://flutterPage", "flutterPage");
     }};
 
@@ -37,23 +35,27 @@ public class PageRouter {
 
         try {
             if (pageName.containsKey(path)) {
-                Intent intent = NewBoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
-                        .backgroundMode(NewBoostFlutterActivity.BackgroundMode.opaque).build(context);
-
-                context.startActivity(intent);
-
+                Intent intent = BoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
+                        .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque).build(context);
+                if(context instanceof Activity){
+                    Activity activity=(Activity)context;
+                    activity.startActivityForResult(intent,requestCode);
+                }else{
+                    context.startActivity(intent);
+                }
+                return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
                 context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
                 return true;
             } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));
                 return true;
-            } else {
-                return false;
             }
+
+            return false;
+
         } catch (Throwable t) {
             return false;
         }
-        return false;
     }
 }

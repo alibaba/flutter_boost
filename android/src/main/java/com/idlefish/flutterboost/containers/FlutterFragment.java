@@ -14,20 +14,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.idlefish.flutterboost.NewFlutterBoost;
+import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.XFlutterView;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class NewFlutterFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
+public class FlutterFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
 
     private static final String TAG = "NewFlutterFragment";
 
@@ -94,7 +92,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
      * To use a cached {@link FlutterEngine} instead of creating a new one, use
      */
     @NonNull
-    public static NewFlutterFragment createDefault() {
+    public static FlutterFragment createDefault() {
         return new NewEngineFragmentBuilder().build();
     }
 
@@ -109,7 +107,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
 
 
     public static class NewEngineFragmentBuilder {
-        private final Class<? extends NewFlutterFragment> fragmentClass;
+        private final Class<? extends FlutterFragment> fragmentClass;
 
         private FlutterShellArgs shellArgs = null;
         private FlutterView.RenderMode renderMode = FlutterView.RenderMode.surface;
@@ -117,22 +115,22 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
         private boolean shouldAttachEngineToActivity = true;
         private String url = "";
         private Map params = new HashMap();
+
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
          * {@code NewFlutterFragment}.
          */
         public NewEngineFragmentBuilder() {
-            fragmentClass = NewFlutterFragment.class;
+            fragmentClass = FlutterFragment.class;
         }
 
         /**
          * Constructs a {@code NewEngineFragmentBuilder} that is configured to construct an instance of
          * {@code subclass}, which extends {@code NewFlutterFragment}.
          */
-        public NewEngineFragmentBuilder(@NonNull Class<? extends NewFlutterFragment> subclass) {
+        public NewEngineFragmentBuilder(@NonNull Class<? extends FlutterFragment> subclass) {
             fragmentClass = subclass;
         }
-
 
 
         /**
@@ -157,16 +155,18 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
             this.renderMode = renderMode;
             return this;
         }
-        public NewEngineFragmentBuilder url (@NonNull String url) {
+
+        public NewEngineFragmentBuilder url(@NonNull String url) {
             this.url = url;
             return this;
         }
 
 
-        public NewEngineFragmentBuilder params (@NonNull Map params) {
+        public NewEngineFragmentBuilder params(@NonNull Map params) {
             this.params = params;
             return this;
         }
+
         /**
          * Support a {@link FlutterView.TransparencyMode#transparent} background within {@link FlutterView},
          * or force an {@link FlutterView.TransparencyMode#opaque} background.
@@ -180,7 +180,6 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
         }
 
 
-
         @NonNull
         protected Bundle createArgs() {
             Bundle args = new Bundle();
@@ -190,7 +189,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
                 args.putStringArray(ARG_FLUTTER_INITIALIZATION_ARGS, shellArgs.toArray());
             }
 
-            NewBoostFlutterActivity.SerializableMap serializableMap=new NewBoostFlutterActivity.SerializableMap();
+            BoostFlutterActivity.SerializableMap serializableMap = new BoostFlutterActivity.SerializableMap();
             serializableMap.setMap(params);
 
             args.putString(EXTRA_URL, url);
@@ -208,7 +207,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
          * properties set on this {@code Builder}.
          */
         @NonNull
-        public <T extends NewFlutterFragment> T build() {
+        public <T extends FlutterFragment> T build() {
             try {
                 @SuppressWarnings("unchecked")
                 T frag = (T) fragmentClass.getDeclaredConstructor().newInstance();
@@ -234,11 +233,11 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     private FlutterActivityAndFragmentDelegate delegate;
 
 
-    protected XFlutterView getFlutterView(){
+    protected XFlutterView getFlutterView() {
         return delegate.getFlutterView();
     }
 
-    public NewFlutterFragment() {
+    public FlutterFragment() {
         // Ensure that we at least have an empty Bundle of arguments so that we don't
         // need to continually check for null arguments before grabbing one.
         setArguments(new Bundle());
@@ -435,7 +434,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     @Nullable
     public FlutterEngine provideFlutterEngine(@NonNull Context context) {
 
-        return NewFlutterBoost.instance().engineProvider();
+        return FlutterBoost.instance().engineProvider();
     }
 
     /**
@@ -494,8 +493,6 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     }
 
 
-
-
     @Override
     public String getContainerUrl() {
 
@@ -507,7 +504,7 @@ public class NewFlutterFragment extends Fragment implements FlutterActivityAndFr
     @Override
     public Map getContainerUrlParams() {
 
-        NewBoostFlutterActivity.SerializableMap serializableMap= (NewBoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
+        BoostFlutterActivity.SerializableMap serializableMap = (BoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
 
         return serializableMap.getMap();
     }

@@ -39,7 +39,7 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return child;
+    return super.buildTransitions(context, animation, secondaryAnimation, child);
   }
 
   BoostPageRoute(

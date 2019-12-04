@@ -111,26 +111,16 @@
     return _instance;
 }
 
-
-- (id<FLBFlutterApplicationInterface>)application
-{
-    return _application;
-}
-
-
-- (id<FLBAbstractFactory>)factory
-{
-    return _factory;
-}
-
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
     static dispatch_once_t onceToken;
+    __weak __typeof__(self) weakSelf = self;
     dispatch_once(&onceToken, ^{
-        self->_factory = FLBFactory.new;
-        self->_application = [self->_factory createApplication:platform];
-        [self->_application startFlutterWithPlatform:platform
+        __strong __typeof__(weakSelf) self = weakSelf;
+        self.factory = FLBFactory.new;
+        self.application = [self->_factory createApplication:platform];
+        [self.application startFlutterWithPlatform:platform
                                        onStart:callback];
     });
 }

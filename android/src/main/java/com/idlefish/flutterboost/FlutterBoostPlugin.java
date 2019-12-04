@@ -47,13 +47,6 @@ public class FlutterBoostPlugin {
             a.onChannelRegistered(sInstance);
         }
 
-//        if (NewFlutterBoost.instance() != null) {
-//            final IStateListener stateListener = NewFlutterBoost.instance().mStateListener;
-//            if (stateListener != null) {
-//                stateListener.onChannelRegistered(registrar, sInstance);
-//            }
-//        }
-
         sActions.clear();
     }
 
@@ -196,7 +189,7 @@ public class FlutterBoostPlugin {
         @Override
         public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
 
-            FlutterViewContainerManager mManager = (FlutterViewContainerManager) NewFlutterBoost.instance().containerManager();
+            FlutterViewContainerManager mManager = (FlutterViewContainerManager) FlutterBoost.instance().containerManager();
             switch (methodCall.method) {
                 case "pageOnStart": {
                     Map<String, Object> pageInfo = new HashMap<>();
@@ -215,7 +208,7 @@ public class FlutterBoostPlugin {
                         }
 
                         result.success(pageInfo);
-                        NewFlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
+                        FlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
 
 
                     } catch (Throwable t) {

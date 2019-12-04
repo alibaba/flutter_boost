@@ -60,7 +60,7 @@ public class Debuger {
 
     public static boolean isDebug(){
         try {
-            return NewFlutterBoost.instance().platform().isDebug();
+            return FlutterBoost.instance().platform().isDebug();
         }catch (Throwable t){
             return false;
         }
