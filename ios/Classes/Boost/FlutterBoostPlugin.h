@@ -26,6 +26,7 @@
 #import "FLBPlatform.h"
 #import "FLBTypes.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface FlutterBoostPlugin : NSObject<FlutterPlugin>
 #pragma mark - Initializer
 + (instancetype)sharedInstance;
@@ -37,6 +38,16 @@
  * @param callback 启动之后回调
  */
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                         onStart:(void (^)(FlutterEngine *engine))callback;
+/**
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
+ *
+ * @param platform 平台层实现FLBPlatform的对象
+ * @param engine   外部实例化engine后传入
+ * @param callback 启动之后回调
+ */
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                          engine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback;
 
 #pragma mark - Some properties.
@@ -109,3 +120,4 @@
 onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
 @end
+NS_ASSUME_NONNULL_END
