@@ -28,6 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,8 +80,13 @@ abstract public class BoostFlutterActivity extends FlutterActivity implements IF
 
     @Override
     protected void onDestroy() {
-        FlutterBoostPlugin.containerManager().onContainerDestroy(this);
-        mFlutterContent.destroy();
+        try{
+            FlutterBoostPlugin.containerManager().onContainerDestroy(this);
+            mFlutterContent.destroy();
+        }catch (Throwable e){
+            Log.e("BoostFlutterActivity","onDestroy error");
+        }
+
         super.onDestroy();
     }
 
