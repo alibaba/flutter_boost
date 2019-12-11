@@ -163,7 +163,6 @@ public class FlutterBoost {
     }
 
     public void boostPluginRegistry(){
-        mPlatform.getApplication().unregisterActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
         if(mRegistry!=null&& !mRegistry.hasPlugin("boostPluginRegistry")){
             mPlatform.registerPlugins(mRegistry);
             mRegistry.registrarFor("boostPluginRegistry");
@@ -235,10 +234,7 @@ public class FlutterBoost {
             return this;
         }
 
-        public ConfigBuilder whenEngineDestory(int whenEngineDestory) {
-            this.whenEngineDestory = whenEngineDestory;
-            return this;
-        }
+
 
         public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
             this.lifecycleListener = lifecycleListener;
@@ -275,10 +271,6 @@ public class FlutterBoost {
                     return ConfigBuilder.this.whenEngineStart;
                 }
 
-                @Override
-                public int whenEngineDestroy() {
-                    return ConfigBuilder.this.whenEngineDestory;
-                }
 
                 public FlutterView.RenderMode renderMode() {
                     return ConfigBuilder.this.renderMode;

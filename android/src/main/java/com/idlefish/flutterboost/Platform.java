@@ -19,7 +19,6 @@ public abstract class Platform {
 
     public abstract int whenEngineStart();
 
-    public abstract int whenEngineDestroy();
 
     public abstract FlutterView.RenderMode renderMode();
 
