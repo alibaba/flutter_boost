@@ -37,6 +37,8 @@
 @interface FLBFlutterViewContainer  ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
+@property (nonatomic, copy) NSString *flbNibName;
+@property (nonatomic, strong) NSBundle *flbNibBundle;
 @end
 
 #pragma clang diagnostic push
@@ -47,19 +49,28 @@
 {
     [FLUTTER_APP.flutterProvider prepareEngineIfNeeded];
     if(self = [super initWithEngine:FLUTTER_APP.flutterProvider.engine
-                            nibName:nil
-                             bundle:nil]){
+                            nibName:_flbNibName
+                            bundle:_flbNibBundle]){
         [self _setup];
     }
     return self;
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 - (instancetype)initWithCoder:(NSCoder *)aDecoder{
     if (self = [super initWithCoder: aDecoder]) {
         NSAssert(NO, @"unsupported init method!");
         [self _setup];
     }
     return self;
+}
+#pragma pop
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    _flbNibName = nibNameOrNil;
+    _flbNibBundle = nibBundleOrNil;
+    return [self init];
 }
 
 - (void)setName:(NSString *)name params:(NSDictionary *)params
@@ -149,7 +160,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)setEnableForRunnersBatch:(BOOL)enable{
     //dummy function
-//    NSLog(@"[DEBUG]- I did nothing, I am innocent");
+    NSLog(@"[DEBUG]- I did nothing, I am innocent");
 }
 
 #pragma mark - Life circle methods
@@ -177,7 +188,7 @@ static NSUInteger kInstanceCounter = 0;
     }
  
     [super viewWillAppear:animated];
-//    //instead of calling [super viewWillAppear:animated];, call super's super
+    //instead of calling [super viewWillAppear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),
 //        .receiver = self,
@@ -222,7 +233,7 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
-////  instead of calling [super viewDidDisappear:animated];, call super's super
+//  instead of calling [super viewDidDisappear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),
 //        .receiver = self,

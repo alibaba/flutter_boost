@@ -35,13 +35,17 @@
 
 @implementation FLBFlutterEngine
     
-- (instancetype)initWithPlatform:(id<FLBPlatform> _Nullable)platform
+- (instancetype)initWithPlatform:(id<FLBPlatform> _Nullable)platform engine:(FlutterEngine * _Nullable)engine
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     
     if (self = [super init]) {
-        _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+        if(!engine){
+            _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+        }else{
+            _engine = engine;
+        }
         if(platform &&
            [platform respondsToSelector: @selector(entryForDart)] &&
            platform.entryForDart){
@@ -69,7 +73,7 @@
 
 - (instancetype)init
 {
-    return [self initWithPlatform:nil];
+    return [self initWithPlatform:nil engine:nil];
 }
 
 - (void)pause
@@ -91,14 +95,14 @@
 
 - (void)didEnterBackground
 {
-    [BoostMessageChannel sendEvent:@"background"
-                         arguments:nil];
+    [BoostMessageChannel sendEvent:@"lifecycle"
+                         arguments:@{@"type":@"background"}];
 }
 
 - (void)willEnterForeground
 {
-    [BoostMessageChannel sendEvent:@"foreground"
-                         arguments:nil];
+    [BoostMessageChannel sendEvent:@"lifecycle"
+                         arguments:@{@"type":@"foreground"}];
 }
 
 - (FlutterEngine *)engine

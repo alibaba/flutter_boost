@@ -1,102 +1,218 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2019 Alibaba Group
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package com.idlefish.flutterboost.containers;
 
+
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LifecycleRegistry;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
-import com.idlefish.flutterboost.BoostFlutterEngine;
-import com.idlefish.flutterboost.BoostFlutterView;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.*;
+import android.widget.*;
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.Utils;
-import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.idlefish.flutterboost.interfaces.IOperateSyncer;
+import com.idlefish.flutterboost.XFlutterView;
+import io.flutter.Log;
+import io.flutter.embedding.android.DrawableSplashScreen;
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.android.SplashScreen;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.embedding.android.FlutterView;
-import io.flutter.plugin.platform.PlatformPlugin;
+public class BoostFlutterActivity extends Activity
+        implements FlutterActivityAndFragmentDelegate.Host,
+        LifecycleOwner {
 
-public abstract class BoostFlutterActivity extends Activity implements IFlutterViewContainer {
+    private static final String TAG = "NewBoostFlutterActivity";
 
-    protected BoostFlutterEngine mFlutterEngine;
-    protected BoostFlutterView mFlutterView;
-    protected IOperateSyncer mSyncer;
+    // Meta-data arguments, processed from manifest XML.
+    protected static final String SPLASH_SCREEN_META_DATA_KEY = "io.flutter.embedding.android.SplashScreenDrawable";
+    protected static final String NORMAL_THEME_META_DATA_KEY = "io.flutter.embedding.android.NormalTheme";
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    // Intent extra arguments.
+    protected static final String EXTRA_DART_ENTRYPOINT = "dart_entrypoint";
+    protected static final String EXTRA_BACKGROUND_MODE = "background_mode";
+    protected static final String EXTRA_DESTROY_ENGINE_WITH_ACTIVITY = "destroy_engine_with_activity";
+
+    protected static final String EXTRA_URL = "url";
+    protected static final String EXTRA_PARAMS = "params";
+
+
+    // Default configuration.
+    protected static final String DEFAULT_BACKGROUND_MODE = BackgroundMode.opaque.name();
+
+
+    public static Intent createDefaultIntent(@NonNull Context launchContext) {
+        return withNewEngine().build(launchContext);
+    }
+
+
+    public static NewEngineIntentBuilder withNewEngine() {
+        return new NewEngineIntentBuilder(BoostFlutterActivity.class);
+    }
+
+
+    public static class NewEngineIntentBuilder {
+        private final Class<? extends BoostFlutterActivity> activityClass;
+        private String backgroundMode = DEFAULT_BACKGROUND_MODE;
+        private String url = "";
+        private Map params = new HashMap();
+
+
+        protected NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
+            this.activityClass = activityClass;
+        }
+
+
+        public NewEngineIntentBuilder url(@NonNull String url) {
+            this.url = url;
+            return this;
+        }
+
+
+        public NewEngineIntentBuilder params(@NonNull Map params) {
+            this.params = params;
+            return this;
+        }
+
+
+        public NewEngineIntentBuilder backgroundMode(@NonNull BackgroundMode backgroundMode) {
+            this.backgroundMode = backgroundMode.name();
+            return this;
+        }
+
+
+        public Intent build(@NonNull Context context) {
+
+            SerializableMap serializableMap = new SerializableMap();
+            serializableMap.setMap(params);
+
+            return new Intent(context, activityClass)
+                    .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
+                    .putExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, false)
+                    .putExtra(EXTRA_URL, url)
+                    .putExtra(EXTRA_PARAMS, serializableMap);
+        }
+    }
+
+    public static class SerializableMap implements Serializable {
+
+        private Map<String, Object> map;
+
+        public Map<String, Object> getMap() {
+            return map;
+        }
+
+        public void setMap(Map<String, Object> map) {
+            this.map = map;
+        }
+    }
+
+    private FlutterActivityAndFragmentDelegate delegate;
+
+    @NonNull
+    private LifecycleRegistry lifecycle;
+
+    public BoostFlutterActivity() {
+        lifecycle = new LifecycleRegistry(this);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        switchLaunchThemeForNormalTheme();
+
         super.onCreate(savedInstanceState);
 
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
+
+        delegate = new FlutterActivityAndFragmentDelegate(this);
+        delegate.onAttach(this);
+
         configureWindowForTransparency();
-
-        mSyncer = FlutterBoost.singleton().containerManager().generateSyncer(this);
-
-
-        mFlutterEngine = createFlutterEngine();
-        mFlutterView = createFlutterView(mFlutterEngine);
-
-        setContentView(mFlutterView);
-
-        mSyncer.onCreate();
-
+        setContentView(createFlutterView());
         configureStatusBarForFullscreenFlutterExperience();
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                configureStatusBarForFullscreenFlutterExperience();
+
+    private void switchLaunchThemeForNormalTheme() {
+        try {
+            ActivityInfo activityInfo = getPackageManager().getActivityInfo(getComponentName(), PackageManager.GET_META_DATA);
+            if (activityInfo.metaData != null) {
+                int normalThemeRID = activityInfo.metaData.getInt(NORMAL_THEME_META_DATA_KEY, -1);
+                if (normalThemeRID != -1) {
+                    setTheme(normalThemeRID);
+                }
+            } else {
+                Log.d(TAG, "Using the launch theme as normal theme.");
             }
-        });
+        } catch (PackageManager.NameNotFoundException exception) {
+            Log.e(TAG, "Could not read meta-data for FlutterActivity. Using the launch theme as normal theme.");
+        }
     }
 
-    protected void configureWindowForTransparency() {
-        if (isBackgroundTransparent()) {
+    @Nullable
+    @Override
+    public SplashScreen provideSplashScreen() {
+        Drawable manifestSplashDrawable = getSplashScreenFromManifest();
+        if (manifestSplashDrawable != null) {
+            return new DrawableSplashScreen(manifestSplashDrawable, ImageView.ScaleType.CENTER, 500L);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Returns a {@link Drawable} to be used as a splash screen as requested by meta-data in the
+     * {@code AndroidManifest.xml} file, or null if no such splash screen is requested.
+     * <p>
+     * See {@link #SPLASH_SCREEN_META_DATA_KEY} for the meta-data key to be used in a
+     * manifest file.
+     */
+    @Nullable
+    @SuppressWarnings("deprecation")
+    private Drawable getSplashScreenFromManifest() {
+        try {
+            ActivityInfo activityInfo = getPackageManager().getActivityInfo(
+                    getComponentName(),
+                    PackageManager.GET_META_DATA | PackageManager.GET_ACTIVITIES
+            );
+            Bundle metadata = activityInfo.metaData;
+            Integer splashScreenId = metadata != null ? metadata.getInt(SPLASH_SCREEN_META_DATA_KEY) : null;
+            return splashScreenId != null
+                    ? Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
+                    ? getResources().getDrawable(splashScreenId, getTheme())
+                    : getResources().getDrawable(splashScreenId)
+                    : null;
+        } catch (PackageManager.NameNotFoundException e) {
+            // This is never expected to happen.
+            return null;
+        }
+    }
+
+    /**
+     * Sets this {@code Activity}'s {@code Window} background to be transparent, and hides the status
+     * bar, if this {@code Activity}'s desired {@link BackgroundMode} is {@link BackgroundMode#transparent}.
+     * <p>
+     * For {@code Activity} transparency to work as expected, the theme applied to this {@code Activity}
+     * must include {@code <item name="android:windowIsTranslucent">true</item>}.
+     */
+    private void configureWindowForTransparency() {
+        BackgroundMode backgroundMode = getBackgroundMode();
+        if (backgroundMode == BackgroundMode.transparent) {
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             getWindow().setFlags(
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
@@ -105,7 +221,15 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
         }
     }
 
-    protected void configureStatusBarForFullscreenFlutterExperience() {
+    @NonNull
+    protected View createFlutterView() {
+        return delegate.onCreateView(
+                null /* inflater */,
+                null /* container */,
+                null /* savedInstanceState */);
+    }
+
+    private void configureStatusBarForFullscreenFlutterExperience() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -113,158 +237,269 @@ public abstract class BoostFlutterActivity extends Activity implements IFlutterV
             window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI);
         }
 
-        Utils.setStatusBarLightMode(this,true);
+
     }
 
-    protected BoostFlutterEngine createFlutterEngine(){
-        return FlutterBoost.singleton().engineProvider().provideEngine(this);
+    protected XFlutterView getFlutterView() {
+        return delegate.getFlutterView();
     }
 
-    protected BoostFlutterView createFlutterView(BoostFlutterEngine engine){
-        BoostFlutterView.Builder builder = new BoostFlutterView.Builder(this);
-
-        return builder.flutterEngine(engine)
-                .renderMode(FlutterView.RenderMode.texture)
-                .transparencyMode(isBackgroundTransparent() ?
-                        FlutterView.TransparencyMode.transparent :
-                        FlutterView.TransparencyMode.opaque)
-                .renderingProgressCoverCreator(new BoostFlutterView.RenderingProgressCoverCreator() {
-                    @Override
-                    public View createRenderingProgressCover(Context context) {
-                        return BoostFlutterActivity.this.createRenderingProgressCover();
-                    }
-                })
-                .build();
-    }
-
-    protected boolean isBackgroundTransparent(){
-        return false;
-    }
-
-    protected View createRenderingProgressCover(){
-        FrameLayout frameLayout = new FrameLayout(this);
-
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        frameLayout.addView(linearLayout,layoutParams);
-
-        ProgressBar progressBar = new ProgressBar(this);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        linearLayout.addView(progressBar,params);
-
-        TextView textView = new TextView(this);
-        params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        textView.setText("Frame Rendering...");
-        linearLayout.addView(textView,params);
-
-        return frameLayout;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START);
+        delegate.onStart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSyncer.onAppear();
-        mFlutterEngine.getLifecycleChannel().appIsResumed();
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        delegate.onResume();
+    }
 
+    @Override
+    public void onPostResume() {
+        super.onPostResume();
+        delegate.onPostResume();
     }
 
     @Override
     protected void onPause() {
-        mSyncer.onDisappear();
         super.onPause();
-        mFlutterEngine.getLifecycleChannel().appIsInactive();
+        delegate.onPause();
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        delegate.onStop();
     }
 
     @Override
     protected void onDestroy() {
-        Utils.fixInputMethodManagerLeak(this);
-        mSyncer.onDestroy();
         super.onDestroy();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        mSyncer.onBackPressed();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        mSyncer.onNewIntent(intent);
+        delegate.onDestroyView();
+        delegate.onDetach();
+//        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        mSyncer.onActivityResult(requestCode,resultCode,data);
-
-        Map<String,Object> result = null;
-        if(data != null) {
-            Serializable rlt = data.getSerializableExtra(RESULT_KEY);
-            if(rlt instanceof Map) {
-                result = (Map<String,Object>)rlt;
-            }
-        }
-
-        mSyncer.onContainerResult(requestCode,resultCode,result);
+        delegate.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        mSyncer.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    protected void onNewIntent(@NonNull Intent intent) {
+        // TODO(mattcarroll): change G3 lint rule that forces us to call super
+        super.onNewIntent(intent);
+        delegate.onNewIntent(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        delegate.onBackPressed();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        delegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onUserLeaveHint() {
+        delegate.onUserLeaveHint();
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
-        mSyncer.onTrimMemory(level);
+        delegate.onTrimMemory(level);
     }
 
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain a {@code Context} reference as
+     * needed.
+     */
     @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        mSyncer.onLowMemory();
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        mSyncer.onUserLeaveHint();
-    }
-
-    @Override
-    public Activity getContextActivity() {
+    @NonNull
+    public Context getContext() {
         return this;
     }
 
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain an {@code Activity} reference as
+     * needed. This reference is used by the delegate to instantiate a {@link FlutterView},
+     * a {@link PlatformPlugin}, and to determine if the {@code Activity} is changing
+     * configurations.
+     */
     @Override
-    public BoostFlutterView getBoostFlutterView() {
-        return mFlutterView;
+    @NonNull
+    public Activity getActivity() {
+        return this;
     }
 
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain a {@code Lifecycle} reference as
+     * needed. This reference is used by the delegate to provide Flutter plugins with access
+     * to lifecycle events.
+     */
     @Override
-    public void finishContainer(Map<String,Object> result) {
-        if(result != null) {
-            FlutterBoost.setBoostResult(this,new HashMap<>(result));
-            finish();
-        }else{
-            finish();
+    @NonNull
+    public Lifecycle getLifecycle() {
+        return lifecycle;
+    }
+
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain Flutter shell arguments when
+     * initializing Flutter.
+     */
+    @NonNull
+    @Override
+    public FlutterShellArgs getFlutterShellArgs() {
+        return FlutterShellArgs.fromIntent(getIntent());
+    }
+
+
+    /**
+     * Returns true if Flutter is running in "debug mode", and false otherwise.
+     * <p>
+     * Debug mode allows Flutter to operate with hot reload and hot restart. Release mode does not.
+     */
+    private boolean isDebuggable() {
+        return (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    }
+
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain the desired {@link FlutterView.RenderMode}
+     * that should be used when instantiating a {@link FlutterView}.
+     */
+    @NonNull
+    @Override
+    public FlutterView.RenderMode getRenderMode() {
+        return getBackgroundMode() == BackgroundMode.opaque
+                ? FlutterView.RenderMode.surface
+                : FlutterView.RenderMode.texture;
+    }
+
+    /**
+     * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by
+     * {@link FlutterActivityAndFragmentDelegate} to obtain the desired
+     * {@link FlutterView.TransparencyMode} that should be used when instantiating a
+     * {@link FlutterView}.
+     */
+    @NonNull
+    @Override
+    public FlutterView.TransparencyMode getTransparencyMode() {
+        return getBackgroundMode() == BackgroundMode.opaque
+                ? FlutterView.TransparencyMode.opaque
+                : FlutterView.TransparencyMode.transparent;
+    }
+
+    /**
+     * The desired window background mode of this {@code Activity}, which defaults to
+     * {@link BackgroundMode#opaque}.
+     */
+    @NonNull
+    protected BackgroundMode getBackgroundMode() {
+        if (getIntent().hasExtra(EXTRA_BACKGROUND_MODE)) {
+            return BackgroundMode.valueOf(getIntent().getStringExtra(EXTRA_BACKGROUND_MODE));
+        } else {
+            return BackgroundMode.opaque;
         }
     }
 
+    /**
+     * Hook for subclasses to easily provide a custom {@link FlutterEngine}.
+     * <p>
+     * This hook is where a cached {@link FlutterEngine} should be provided, if a cached
+     * {@link FlutterEngine} is desired.
+     */
+    @Nullable
     @Override
-    public void onContainerShown() {}
+    public FlutterEngine provideFlutterEngine(@NonNull Context context) {
+        // No-op. Hook for subclasses.
+        return FlutterBoost.instance().engineProvider();
+    }
+
+    /**
+     * Hook for subclasses to obtain a reference to the {@link FlutterEngine} that is owned
+     * by this {@code FlutterActivity}.
+     */
+    @Nullable
+    protected FlutterEngine getFlutterEngine() {
+        return delegate.getFlutterEngine();
+    }
+
+    @Nullable
+    @Override
+    public PlatformPlugin providePlatformPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+        if (activity != null) {
+            return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Hook for subclasses to easily configure a {@code FlutterEngine}, e.g., register
+     * plugins.
+     * <p>
+     * This method is called after {@link #provideFlutterEngine(Context)}.
+     */
+    @Override
+    public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+        // No-op. Hook for subclasses.
+    }
+
 
     @Override
-    public void onContainerHidden() {}
+    public boolean shouldAttachEngineToActivity() {
+        return true;
+    }
+
+
+    @Override
+    public String getContainerUrl() {
+        if (getIntent().hasExtra(EXTRA_URL)) {
+            return getIntent().getStringExtra(EXTRA_URL);
+        }
+        return "";
+
+    }
+
+    @Override
+    public Map getContainerUrlParams() {
+
+        if (getIntent().hasExtra(EXTRA_PARAMS)) {
+            SerializableMap serializableMap = (SerializableMap) getIntent().getSerializableExtra(EXTRA_PARAMS);
+            return serializableMap.getMap();
+        }
+
+        Map<String, String> params = new HashMap<>();
+
+        return params;
+    }
+
+    /**
+     * The mode of the background of a {@code FlutterActivity}, either opaque or transparent.
+     */
+    public enum BackgroundMode {
+        /**
+         * Indicates a FlutterActivity with an opaque background. This is the default.
+         */
+        opaque,
+        /**
+         * Indicates a FlutterActivity with a transparent background.
+         */
+        transparent
+    }
+
+
 }
