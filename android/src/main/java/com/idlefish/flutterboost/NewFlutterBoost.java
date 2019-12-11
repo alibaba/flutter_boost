@@ -32,6 +32,7 @@ public class NewFlutterBoost {
     static NewFlutterBoost sInstance = null;
 
     private  long FlutterPostFrameCallTime=0;
+    private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks;
 
     public long getFlutterPostFrameCallTime(){
         return FlutterPostFrameCallTime;
@@ -55,7 +56,7 @@ public class NewFlutterBoost {
 
 
 
-        platform.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+        mActivityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
 
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -125,7 +126,8 @@ public class NewFlutterBoost {
                     mCurrentActiveActivity = null;
                 }
             }
-        });
+        };
+        platform.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
 
         if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
 
@@ -346,6 +348,7 @@ public class NewFlutterBoost {
 
 
     public void boostDestroy(){
+        mPlatform.getApplication().unregisterActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
         if(mEngine!=null){
             mEngine.destroy();
         }
