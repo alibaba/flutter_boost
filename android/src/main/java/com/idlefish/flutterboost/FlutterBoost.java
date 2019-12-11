@@ -58,7 +58,13 @@ public class FlutterBoost {
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
+                    boostPluginRegistry();
                 }
+                if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
+                    boostPluginRegistry();
+
+                }
+
             }
 
             @Override
@@ -150,10 +156,16 @@ public class FlutterBoost {
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
         mRegistry = new BoostPluginRegistry(createEngine());
-        mPlatform.registerPlugins(mRegistry);
 
     }
 
+    public void boostPluginRegistry(){
+        if(mRegistry!=null&& !mRegistry.hasPlugin("boostPluginRegistry")){
+            mPlatform.registerPlugins(mRegistry);
+            mRegistry.registrarFor("boostPluginRegistry");
+        }
+
+    }
 
     public static class ConfigBuilder {
 
