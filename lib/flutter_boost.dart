@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'container/boost_container.dart';
@@ -60,6 +61,26 @@ class FlutterBoost {
         PrePushRoute prePush,
         PostPushRoute postPush}) {
 
+    if(Platform.isAndroid){
+
+      WidgetsBinding.instance.addPostFrameCallback((_){
+
+        singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo){
+
+          if (pageInfo == null || pageInfo.isEmpty) return;
+
+          if (pageInfo.containsKey("name") &&
+              pageInfo.containsKey("params") &&
+              pageInfo.containsKey("uniqueId")) {
+
+            ContainerCoordinator.singleton.nativeContainerDidShow(
+                pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+          }
+        });
+      });
+    }
+
+    
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 

@@ -84,7 +84,7 @@ public class FlutterViewContainerManager implements IContainerManager {
     void removeRecord(IContainerRecord record) {
         mRecordStack.remove(record);
         mRecordMap.remove(record.getContainer());
-        if(mRecordStack.empty()){
+        if(mRecordMap.isEmpty()){
             if( NewFlutterBoost.instance().platform().whenEngineDestroy()== NewFlutterBoost.ConfigBuilder.All_FLUTTER_ACTIVITY_DESTROY){
                 NewFlutterBoost.instance().boostDestroy();
             }
@@ -135,8 +135,10 @@ public class FlutterViewContainerManager implements IContainerManager {
 
         final String uniqueId = ContainerRecord.genUniqueId(url);
         urlParams.put(IContainerRecord.UNIQ_KEY,uniqueId);
+
+        IContainerRecord currentTopRecord = getCurrentTopRecord();
         if(onResult != null) {
-            mOnResults.put(uniqueId,onResult);
+            mOnResults.put(currentTopRecord.uniqueId(),onResult);
         }
 
         NewFlutterBoost.instance().platform().openContainer(context,url,urlParams,requestCode,exts);
