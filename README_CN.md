@@ -26,16 +26,16 @@
 
 3. 0.1.60 是基于flutter v1.9.1-hotfixes 分支，android如果其他flutter分支会编译错误,该版本不支持andriodx
 
-4. 0.1.61 是对0.1.60 的bugfix
+4. 0.1.61-- 0.1.62 是对0.1.60 的bugfix
 
 
 5. 关于androidx 的支持声明
 
- 目前androidx 分支为 feature/flutter_1.9_androidx_upgrade
+ 目前androidx 分支为 v0.1.61-androidx-hotfixes
 
  是基于flutter v1.9.1-hotfixes 分支，如果其他分支会编译错误
 
- 和0.1.60代码同步，同时0.1.61的 bugfix 也会合入该分支。
+ 和0.1.62代码同步，同时0.1.62的 bugfix 也会合入该分支。
 
 
 

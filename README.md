@@ -27,16 +27,16 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
 
-4. 0.1.61 is a bugfix for 0.1.60
+4. 0.1.61--0.1.62  is a bugfix for 0.1.60
 
 
 5. Statement of support for androidx
 
- Current androidx branch is feature/flutter_1.9_androidx_upgrade
+ Current androidx branch is v0.1.61-androidx-hotfixes
 
  Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
 
- Synchronize with the 0.1.60 code, and bugfix of 0.1.61 also merge to this branch.
+ Synchronize with the 0.1.62 code, and bugfix of 0.1.62 also merge to this branch.
 
 
 
