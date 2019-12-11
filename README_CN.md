@@ -5,7 +5,7 @@
 
 # Release Note
 
- 请查看最新版本0.1.61的release note 确认变更，[0.1.61 release note](https://github.com/alibaba/flutter_boost/releases)。
+ 请查看最新版本0.1.63的release note 确认变更，[0.1.63 release note](https://github.com/alibaba/flutter_boost/releases)。
 
 # FlutterBoost
 
@@ -26,7 +26,7 @@
 
 3. 0.1.60 是基于flutter v1.9.1-hotfixes 分支，android如果其他flutter分支会编译错误,该版本不支持andriodx
 
-4. 0.1.61-- 0.1.62 是对0.1.60 的bugfix
+4. 0.1.61-- 0.1.63 是对0.1.60 的bugfix
 
 
 5. 关于androidx 的支持声明
@@ -35,7 +35,7 @@
 
  是基于flutter v1.9.1-hotfixes 分支，如果其他分支会编译错误
 
- 和0.1.62代码同步，同时0.1.62的 bugfix 也会合入该分支。
+ 和0.1.60代码同步， bugfix 也会合入该分支。
 
 
 
@@ -52,7 +52,7 @@ support分支
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.62'
+        ref: '0.1.63'
 
 ```
 
