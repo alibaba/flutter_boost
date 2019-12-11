@@ -52,7 +52,7 @@ support分支
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.61'
+        ref: '0.1.62'
 
 ```
 
@@ -61,7 +61,7 @@ androidx分支
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'feature/flutter_1.9_androidx_upgrade'
+        ref: 'v0.1.61-androidx-hotfixes'
 ```
 
 
