@@ -44,7 +44,7 @@ class BoostChannel {
         if (list != null) {
           for (EventListener l in list) {
             l(name, arg);
-          }
+           }
         }
       }else{
         for(MethodHandler handler in _methodHandlers) {
