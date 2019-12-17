@@ -68,7 +68,9 @@ flutter_boost:
 
 Please see the boost example for details.
 
-
+# FAQ
+please read this document:
+<a href="Frequently Asked Question.md">FAQ</a>
 
 
 # License

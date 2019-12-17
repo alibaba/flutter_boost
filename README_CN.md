@@ -16,6 +16,10 @@
 
 在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要 v1.9.1-hotfixes，否则会编译失败.
 
+# FAQ
+请阅读这篇文章:
+<a href="Frequently Asked Question.md">FAQ</a>
+
 
 # boost 版本说明
 
