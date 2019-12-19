@@ -1,3 +1,17 @@
+### 在FlutterBoost下如何管理Flutter页面的生命周期？原生的Flutter的AppLifecycleState事件会不一致，比如ViewAppear会导致app状态suspending或者paused。混合栈怎么处理？
+回答：在混合栈下，页面事件基于以下自定义的事件：
+```dart
+enum ContainerLifeCycle {
+  Init,
+  Appear,
+  WillDisappear,
+  Disappear,
+  Destroy,
+  Background,
+  Foreground
+}
+```
+对于页面事件重复，请参考下面的FAQ。
 ### 如何判断flutter的widget或者container是当前可见的？
 回答：有个api可以判断当前页面是否可见：
 ```dart
