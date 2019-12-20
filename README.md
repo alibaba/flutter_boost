@@ -20,26 +20,12 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 # boost version description
 
-1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
+1. 只适用于androidx
 
-2. 0.1.51--0.1.54 is a bugfix for 0.1.50
+1. flutter1.9 适用于flutter1.9
 
-
-3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
-
-4. 0.1.61--0.1.62  is a bugfix for 0.1.60
-
-
-5. Statement of support for androidx
-
- Current androidx branch is v0.1.61-androidx-hotfixes
-
- Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
-
- Synchronize with the 0.1.63 code, and bugfix also merge to this branch.
-
-
-
+2. flutter1.12 适用于flutter1.12
+ 
 # Getting Started
 
 
@@ -52,17 +38,9 @@ support branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.63'
+        ref: 'flutter1.12'
 ```
-androidx branch
-```json
-flutter_boost:
-    git:
-        url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v0.1.61-androidx-hotfixes'
-```
-
-
+ 
 
 # Boost  Integration
 
