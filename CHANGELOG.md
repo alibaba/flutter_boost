@@ -9,6 +9,43 @@ The main changes are as following:
 4. We did some code refactoring, the main logic became more straightforward.
 
 
+## 0.1.60
+
+A better implementation to support Flutter v1.9.1+hotfixes
+
+Change the content
+android:
+
+1. based on the v1.9.1+hotfixes branch of flutter
+2. Solve major bugs, such as page parameter passing
+3. Support platformview
+4. Support androidx branch :feature/flutter_1.9_androidx_upgrade
+5. Resolve memory leaks
+6. Rewrite part of the code
+7. API changes
+8. Improved demo and added many demo cases
+
+ios:
+
+1.based on the v1.9.1+hotfixes branch of flutter
+2.bugfixed
+
+## 0.1.61
+
+  android:
+  Fixed bugs
+
+  iOS:
+  no change
+
+## 0.1.63
+
+  android:
+  Fixed bugs
+
+  iOS:
+  no change
+
 ### API changes
 From the point of API changes, we did some refactoring as following:
 #### iOS API changes

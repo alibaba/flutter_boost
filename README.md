@@ -5,42 +5,40 @@
   <a href="https://mp.weixin.qq.com/s?__biz=MzU4MDUxOTI5NA==&mid=2247484367&idx=1&sn=fcbc485f068dae5de9f68d52607ea08f&chksm=fd54d7deca235ec86249a9e3714ec18be8b2d6dc580cae19e4e5113533a6c5b44dfa5813c4c3&scene=0&subscene=131&clicktime=1551942425&ascene=7&devicetype=android-28&version=2700033b&nettype=ctnet&abtest_cookie=BAABAAoACwASABMABAAklx4AVpkeAMSZHgDWmR4AAAA%3D&lang=zh_CN&pass_ticket=1qvHqOsbLBHv3wwAcw577EHhNjg6EKXqTfnOiFbbbaw%3D&wx_header=1">中文介绍</a>
 </p>
 
-
-# Latest News
-
-Currently, version 1.9 of flutter is supported.
-
-flutter branch：v1.9.1-hotfixes
-
-FlutterBoost branch：feature/flutter_1.9_upgrade
-
-FlutterBoost for androidx  branch：feature/flutter_1.9_androidx_upgrade
-
-
-
-```java
-
-    flutter_boost:
-            git:
-                url: 'https://github.com/alibaba/flutter_boost.git'
-                ref: 'feature/flutter_1.9_upgrade'
-```
-
-dingding  group：
-
-<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
-
-
 # Release Note
 
-Please checkout the release note for the latest 0.1.54 to see changes [0.1.54 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 0.1.63 to see changes [0.1.63 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
 <a name="bf647454"></a>
 
 # Prerequisites
-You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.5.4-hotfixes, or it will compile error.
+You need to add Flutter to your project before moving on.The version of the flutter SDK requires v1.9.1+hotfixes, or it will compile error.
+
+
+
+# boost version description
+
+1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
+
+2. 0.1.51--0.1.54 is a bugfix for 0.1.50
+
+
+3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
+
+4. 0.1.61--0.1.62  is a bugfix for 0.1.60
+
+
+5. Statement of support for androidx
+
+ Current androidx branch is v0.1.61-androidx-hotfixes
+
+ Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
+
+ Synchronize with the 0.1.63 code, and bugfix also merge to this branch.
+
+
 
 # Getting Started
 
@@ -49,275 +47,45 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-```java
-flutter_boost: ^0.1.54
-```
-
-or you could rely directly on a Github project tag, for example(recommended)
-
-```java
+support branch
+```json
 flutter_boost:
-        git:
-            url: 'https://github.com/alibaba/flutter_boost.git'
-            ref: '0.1.54'
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: '0.1.63'
+```
+androidx branch
+```json
+flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'v0.1.61-androidx-hotfixes'
 ```
 
 
 
-## Integration with Flutter code.
-Add init code to you App
+# Boost  Integration
 
-```dart
-void main() => runApp(MyApp());
+Please see the boost example for details.
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-
-    ///register page widget builders,the key is pageName
-    FlutterBoost.singleton.registerPageBuilders({
-      'sample://firstPage': (pageName, params, _) => FirstRouteWidget(),
-      'sample://secondPage': (pageName, params, _) => SecondRouteWidget(),
-    });
-
-  }
-
-  @override
-  Widget build(BuildContext context) => MaterialApp(
-      title: 'Flutter Boost example',
-      builder: FlutterBoost.init(), ///init container manager
-      home: Container());
-}
-```
-
-
-## Integration with iOS code.
-
-Note: You need to add libc++ into "Linked Frameworks and Libraries" 
-
-Use FLBFlutterAppDelegate as the superclass of your AppDelegate
-
-```objc
-@interface AppDelegate : FLBFlutterAppDelegate <UIApplicationDelegate>
-@end
-```
-
-
-Implement FLBPlatform protocol methods for your App.
-
-```objc
-@interface PlatformRouterImp : NSObject<FLBPlatform>
-
-@property (nonatomic,strong) UINavigationController *navigationController;
-
-+ (PlatformRouterImp *)sharedRouter;
-
-@end
-
-
-@implementation PlatformRouterImp
-
-- (void)openPage:(NSString *)name
-          params:(NSDictionary *)params
-        animated:(BOOL)animated
-      completion:(void (^)(BOOL))completion
-{
-    if([params[@"present"] boolValue]){
-        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
-        [vc setName:name params:params];
-        [self.navigationController presentViewController:vc animated:animated completion:^{}];
-    }else{
-        FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
-        [vc setName:name params:params];
-        [self.navigationController pushViewController:vc animated:animated];
-    }
-}
-
-
-- (void)closePage:(NSString *)uid animated:(BOOL)animated params:(NSDictionary *)params completion:(void (^)(BOOL))completion
-{
-    FLBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
-    if([vc isKindOfClass:FLBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uid]){
-        [vc dismissViewControllerAnimated:animated completion:^{}];
-    }else{
-        [self.navigationController popViewControllerAnimated:animated];
-    }
-}
-
-@end
-```
-
-
-
-Initialize FlutterBoost with FLBPlatform at the beginning of your App, such as AppDelegate.
-
-```objc
- PlatformRouterImp *router = [PlatformRouterImp new];
- [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterEngine *engine) {
-                                                            
-                                                        }];
-```
-
-## Integration with Android code.
-
-Init FlutterBoost in Application.onCreate() 
-
-```java
-public class MyApplication extends FlutterApplication {
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        FlutterBoostPlugin.init(new IPlatform() {
-
-        @Override
-            public Application getApplication() {
-                return MyApplication.this;
-            }
-
-            @Override
-            public boolean isDebug() {
-                return true;
-            }
-
-            @Override
-            public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
-            		//native open url 
-            }
-
-            @Override
-            public IFlutterEngineProvider engineProvider() {
-                return new BoostEngineProvider(){
-                    @Override
-                    public BoostFlutterEngine createEngine(Context context) {
-                        return new BoostFlutterEngine(context, new DartExecutor.DartEntrypoint(
-                                context.getResources().getAssets(),
-                                FlutterMain.findAppBundlePath(context),
-                                "main"),"/");
-                    }
-                };
-            }
-
-            @Override
-            public int whenEngineStart() {
-                return ANY_ACTIVITY_CREATED;
-            }
-
-        });
-    }
-```
-
-
-# Basic Usage
-## Concepts
-
-All page routing requests are being sent to the native router. Native router communicates with Native Container Manager, Native Container Manager takes care of building and destroying of Native Containers. 
-
-
-## Use Flutter Boost Native Container to show a Flutter page in native code.
-
-iOS
-
-```objc
- FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
-        [vc setName:name params:params];
-        [self.navigationController presentViewController:vc animated:animated completion:^{}];
-```
-However, in this way, you cannot get the page data result after the page finished. We suggest you implement the platform page router like the way mentioned above. And finally open/close the VC as following:
-```objc
-//push the page
-[FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
-        NSLog(@"page is opened");
-    }];
-//prsent the page
-[FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
-        NSLog(@"page is presented");
-    }];
-//close the page
-[FlutterBoostPlugin close:yourUniqueId result:yourdata exts:exts completion:nil];
-```
-
-Android
-
-```java
-public class FlutterPageActivity extends BoostFlutterActivity {
-
-
-    @Override
-    public String getContainerUrl() {
-     	//specify the page name register in FlutterBoost
-       return "sample://firstPage";
-    }
-
-    @Override
-    public Map getContainerUrlParams() {
-    	//params of the page
-        Map<String,String> params = new HashMap<>();
-        params.put("key","value");
-        return params;
-    }
-}
-```
-
-or
-
-```java
-
-public class FlutterFragment extends BoostFlutterFragment {
-	  @Override
-     public String getContainerUrl() {
-        return "flutterFragment";
-    }
-
-    @Override
-     public Map getContainerUrlParams() {
-        Map<String,String> params = new HashMap<>();
-        params.put("tag",getArguments().getString("tag"));
-        return params;
-    }
-}
-```
-
-
-## Use Flutter Boost to open a page in dart code.
-
-Dart
-
-```objc
-
-FlutterBoost.singleton
-                .open("pagename")
-
-```
-
-## Use Flutter Boost to close a page in dart code.
-
-```objc
-
-FlutterBoost.singleton.close(uniqueId);
-
-```
-
-# Running the Demo
-Please see the example for details.
+# FAQ
+please read this document:
+<a href="Frequently Asked Question.md">FAQ</a>
 
 
 # License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 
+# Problem feedback group（ dingding group)
+
+<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
+
+
+
 
 ## 关于我们
+
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。
 
 我们在公众号中为你精选了Flutter独家干货，全面而深入。

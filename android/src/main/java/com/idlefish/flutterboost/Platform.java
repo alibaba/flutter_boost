@@ -1,46 +1,50 @@
 package com.idlefish.flutterboost;
 
+import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
-import com.idlefish.flutterboost.interfaces.IPlatform;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.common.PluginRegistry;
 
-public abstract class Platform implements IPlatform {
+public abstract class Platform {
 
-    @Override
-    public boolean isDebug() {
-        return false;
-    }
+    public abstract Application getApplication();
 
-    @Override
+    public abstract void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts);
+
+    public abstract int whenEngineStart();
+
+
+    public abstract FlutterView.RenderMode renderMode();
+
+    public abstract boolean isDebug();
+
+    public abstract String initialRoute();
+
+    public FlutterBoost.BoostLifecycleListener lifecycleListener;
+
+    public FlutterBoost.BoostPluginsRegister pluginsRegister;
+
     public void closeContainer(IContainerRecord record, Map<String, Object> result, Map<String, Object> exts) {
-        if(record == null) return;
+        if (record == null) return;
 
         record.getContainer().finishContainer(result);
     }
 
-    @Override
-    public IFlutterEngineProvider engineProvider() {
-        return new BoostEngineProvider();
-    }
 
-    @Override
-    public void registerPlugins(PluginRegistry registry) {
-        try {
-            Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
-            Method method = clz.getDeclaredMethod("registerWith",PluginRegistry.class);
-            method.invoke(null,registry);
-        }catch (Throwable t){
-            throw new RuntimeException(t);
+    public void registerPlugins(PluginRegistry mRegistry) {
+
+        if(pluginsRegister!=null){
+            pluginsRegister.registerPlugins(mRegistry);
         }
-    }
 
-    @Override
-    public int whenEngineStart() {
-        return ANY_ACTIVITY_CREATED;
+        if (lifecycleListener!= null) {
+            lifecycleListener.onPluginsRegistered();
+        }
     }
 }

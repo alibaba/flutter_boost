@@ -1,111 +1,300 @@
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2019 Alibaba Group
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package com.idlefish.flutterboost;
+
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import com.idlefish.flutterboost.interfaces.*;
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.view.FlutterMain;
 
-import com.idlefish.flutterboost.interfaces.IContainerManager;
-import com.idlefish.flutterboost.interfaces.IContainerRecord;
-import com.idlefish.flutterboost.interfaces.IFlutterEngineProvider;
-import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
-import com.idlefish.flutterboost.interfaces.IPlatform;
-import com.idlefish.flutterboost.interfaces.IStateListener;
-
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-
 public class FlutterBoost {
 
+    private Platform mPlatform;
+
+    private FlutterViewContainerManager mManager;
+    private FlutterEngine mEngine;
+    private Activity mCurrentActiveActivity;
+    private PluginRegistry mRegistry;
     static FlutterBoost sInstance = null;
 
-    public static synchronized void init(IPlatform platform) {
-        if (sInstance == null) {
-            sInstance = new FlutterBoost(platform);
-        }
+    private long FlutterPostFrameCallTime = 0;
+    private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks;
 
-        if (platform.whenEngineStart() == IPlatform.IMMEDIATELY) {
-            sInstance.mEngineProvider
-                    .provideEngine(platform.getApplication())
-                    .startRun(null);
-        }
+    public long getFlutterPostFrameCallTime() {
+        return FlutterPostFrameCallTime;
     }
 
-    public static FlutterBoost singleton() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoost not init yet");
-        }
+    public void setFlutterPostFrameCallTime(long FlutterPostFrameCallTime) {
+        this.FlutterPostFrameCallTime = FlutterPostFrameCallTime;
+    }
 
+    public static FlutterBoost instance() {
+        if (sInstance == null) {
+            sInstance = new FlutterBoost();
+        }
         return sInstance;
     }
 
-    private final IPlatform mPlatform;
-    private final FlutterViewContainerManager mManager;
-    private final IFlutterEngineProvider mEngineProvider;
+    public void init(Platform platform) {
 
-    IStateListener mStateListener;
-    Activity mCurrentActiveActivity;
 
-    private FlutterBoost(IPlatform platform) {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
 
-        IFlutterEngineProvider provider = platform.engineProvider();
-        if(provider == null) {
-            provider = new BoostEngineProvider();
-        }
-        mEngineProvider = provider;
-        platform.getApplication().registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks());
+        mActivityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
 
-        BoostChannel.addActionAfterRegistered(new BoostChannel.ActionAfterRegistered() {
             @Override
-            public void onChannelRegistered(BoostChannel channel) {
-                channel.addMethodCallHandler(new BoostMethodHandler());
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                mCurrentActiveActivity = activity;
+                if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
+                    doInitialFlutter();
+                    boostPluginRegistry();
+                }
+                if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
+                    boostPluginRegistry();
+
+                }
+
             }
-        });
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+                if (mCurrentActiveActivity == null) {
+                    Debuger.log("Application entry foreground");
+
+                    if (createEngine() != null) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("type", "foreground");
+                        channel().sendEvent("lifecycle", map);
+                    }
+                }
+                mCurrentActiveActivity = activity;
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                mCurrentActiveActivity = activity;
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+                if (mCurrentActiveActivity == activity) {
+                    Debuger.log("Application entry background");
+
+                    if (createEngine() != null) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("type", "background");
+                        channel().sendEvent("lifecycle", map);
+                    }
+                    mCurrentActiveActivity = null;
+                }
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+                if (mCurrentActiveActivity == activity) {
+                    Debuger.log("Application entry background");
+
+                    if (createEngine() != null) {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("type", "background");
+                        channel().sendEvent("lifecycle", map);
+                    }
+                    mCurrentActiveActivity = null;
+                }
+            }
+        };
+        platform.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+
+
+        if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
+
+            doInitialFlutter();
+        }
+
+
     }
 
-    public IFlutterEngineProvider engineProvider() {
-        return sInstance.mEngineProvider;
+    public void doInitialFlutter() {
+
+
+        if (mEngine != null) return;
+
+        FlutterEngine flutterEngine = createEngine();
+        if (mPlatform.lifecycleListener != null) {
+            mPlatform.lifecycleListener.onEngineCreated();
+        }
+        if (flutterEngine.getDartExecutor().isExecutingDart()) {
+            return;
+        }
+
+        if (mPlatform.initialRoute() != null) {
+            flutterEngine.getNavigationChannel().setInitialRoute(mPlatform.initialRoute());
+        }
+        DartExecutor.DartEntrypoint entrypoint = new DartExecutor.DartEntrypoint(
+                FlutterMain.findAppBundlePath(),
+                "main"
+        );
+
+        flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
+        mRegistry = new BoostPluginRegistry(createEngine());
+
+    }
+
+    public void boostPluginRegistry(){
+        if(mRegistry!=null&& !mRegistry.hasPlugin("boostPluginRegistry")){
+            mPlatform.registerPlugins(mRegistry);
+            mRegistry.registrarFor("boostPluginRegistry");
+        }
+
+    }
+
+    public static class ConfigBuilder {
+
+        public static final String DEFAULT_DART_ENTRYPOINT = "main";
+        public static final String DEFAULT_INITIAL_ROUTE = "/";
+        public static int IMMEDIATELY = 0;          //立即启动引擎
+
+        public static int ANY_ACTIVITY_CREATED = 1; //当有任何Activity创建时,启动引擎
+
+        public static int FLUTTER_ACTIVITY_CREATED = 2; //当有flutterActivity创建时,启动引擎
+
+
+        public static int APP_EXit = 0; //所有flutter Activity destory 时，销毁engine
+        public static int All_FLUTTER_ACTIVITY_DESTROY = 1; //所有flutter Activity destory 时，销毁engine
+
+        private String dartEntrypoint = DEFAULT_DART_ENTRYPOINT;
+        private String initialRoute = DEFAULT_INITIAL_ROUTE;
+        private int whenEngineStart = ANY_ACTIVITY_CREATED;
+        private int whenEngineDestory = APP_EXit;
+
+
+        private boolean isDebug = false;
+
+        private FlutterView.RenderMode renderMode = FlutterView.RenderMode.texture;
+
+        private Application mApp;
+
+        private INativeRouter router = null;
+
+        private BoostLifecycleListener lifecycleListener;
+
+        private BoostPluginsRegister boostPluginsRegister;
+
+
+
+        public ConfigBuilder(Application app, INativeRouter router) {
+            this.router = router;
+            this.mApp = app;
+        }
+
+        public ConfigBuilder renderMode(FlutterView.RenderMode renderMode) {
+            this.renderMode = renderMode;
+            return this;
+        }
+
+        public ConfigBuilder dartEntrypoint(@NonNull String dartEntrypoint) {
+            this.dartEntrypoint = dartEntrypoint;
+            return this;
+        }
+
+        public ConfigBuilder initialRoute(@NonNull String initialRoute) {
+            this.initialRoute = initialRoute;
+            return this;
+        }
+
+        public ConfigBuilder isDebug(boolean isDebug) {
+            this.isDebug = isDebug;
+            return this;
+        }
+
+        public ConfigBuilder whenEngineStart(int whenEngineStart) {
+            this.whenEngineStart = whenEngineStart;
+            return this;
+        }
+
+
+
+        public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
+            this.lifecycleListener = lifecycleListener;
+            return this;
+        }
+        public ConfigBuilder pluginsRegister(BoostPluginsRegister boostPluginsRegister) {
+            this.boostPluginsRegister = boostPluginsRegister;
+            return this;
+        }
+        public Platform build() {
+
+            Platform platform = new Platform() {
+
+                public Application getApplication() {
+                    return ConfigBuilder.this.mApp;
+                }
+
+                public boolean isDebug() {
+
+                    return ConfigBuilder.this.isDebug;
+                }
+
+                @Override
+                public String initialRoute() {
+                    return ConfigBuilder.this.initialRoute;
+                }
+
+                public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
+                    router.openContainer(context, url, urlParams, requestCode, exts);
+                }
+
+
+                public int whenEngineStart() {
+                    return ConfigBuilder.this.whenEngineStart;
+                }
+
+
+                public FlutterView.RenderMode renderMode() {
+                    return ConfigBuilder.this.renderMode;
+                }
+            };
+
+            platform.lifecycleListener = this.lifecycleListener;
+            platform.pluginsRegister=this.boostPluginsRegister;
+            return platform;
+
+        }
+
     }
 
     public IContainerManager containerManager() {
         return sInstance.mManager;
     }
 
-    public IPlatform platform() {
+    public Platform platform() {
         return sInstance.mPlatform;
     }
 
-    public BoostChannel channel() {
-        return BoostChannel.singleton();
+    public FlutterBoostPlugin channel() {
+        return FlutterBoostPlugin.singleton();
     }
 
     public Activity currentActivity() {
@@ -116,168 +305,55 @@ public class FlutterBoost {
         return mManager.findContainerById(id);
     }
 
-    public void setStateListener(@Nullable IStateListener listener){
-        mStateListener = listener;
+    public PluginRegistry getPluginRegistry() {
+        return mRegistry;
     }
 
-    class ActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            if (platform().whenEngineStart() == IPlatform.ANY_ACTIVITY_CREATED) {
-                sInstance.mEngineProvider
-                        .provideEngine(activity)
-                        .startRun(activity);
-            }
+    private FlutterEngine createEngine() {
+        if (mEngine == null) {
+
+            FlutterMain.startInitialization(mPlatform.getApplication());
+
+            FlutterShellArgs flutterShellArgs = new FlutterShellArgs(new String[0]);
+            FlutterMain.ensureInitializationComplete(
+                    mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
+
+            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext());
         }
+        return mEngine;
 
-        @Override
-        public void onActivityStarted(Activity activity) {
-            if (mCurrentActiveActivity == null) {
-                Debuger.log("Application entry foreground");
-
-                if (mEngineProvider.tryGetEngine() != null) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("type", "foreground");
-                    channel().sendEvent("lifecycle",map);
-                }
-            }
-            mCurrentActiveActivity = activity;
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-            mCurrentActiveActivity = activity;
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-            if (mCurrentActiveActivity == activity) {
-                Debuger.log("Application entry background");
-
-                if (mEngineProvider.tryGetEngine() != null) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("type", "background");
-                    channel().sendEvent("lifecycle",map);
-                }
-                mCurrentActiveActivity = null;
-            }
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (mCurrentActiveActivity == activity) {
-                Debuger.log("Application entry background");
-
-                if (mEngineProvider.tryGetEngine() != null) {
-                    HashMap<String, String> map = new HashMap<>();
-                    map.put("type", "background");
-                    channel().sendEvent("lifecycle",map);
-                }
-                mCurrentActiveActivity = null;
-            }
-        }
     }
 
-    class BoostMethodHandler implements MethodChannel.MethodCallHandler {
-
-        @Override
-        public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
-            switch (methodCall.method) {
-                case "pageOnStart":
-                {
-                    Map<String, Object> pageInfo = new HashMap<>();
-
-                    try {
-                        IContainerRecord record = mManager.getCurrentTopRecord();
-
-                        if (record == null) {
-                            record = mManager.getLastGenerateRecord();
-                        }
-
-                        if(record != null) {
-                            pageInfo.put("name", record.getContainer().getContainerUrl());
-                            pageInfo.put("params", record.getContainer().getContainerUrlParams());
-                            pageInfo.put("uniqueId", record.uniqueId());
-                        }
-
-                        result.success(pageInfo);
-                    } catch (Throwable t) {
-                        result.error("no flutter page found!",t.getMessage(),t);
-                    }
-                }
-                break;
-                case "openPage":
-                {
-                    try {
-                        Map<String,Object> params = methodCall.argument("urlParams");
-                        Map<String,Object> exts = methodCall.argument("exts");
-                        String url = methodCall.argument("url");
-
-                        mManager.openContainer(url, params, exts, new FlutterViewContainerManager.OnResult() {
-                            @Override
-                            public void onResult(Map<String, Object> rlt) {
-                                if (result != null) {
-                                    result.success(rlt);
-                                }
-                            }
-                        });
-                    }catch (Throwable t){
-                        result.error("open page error",t.getMessage(),t);
-                    }
-                }
-                break;
-                case "closePage":
-                {
-                    try {
-                        String uniqueId = methodCall.argument("uniqueId");
-                        Map<String,Object> resultData = methodCall.argument("result");
-                        Map<String,Object> exts = methodCall.argument("exts");
-
-                        mManager.closeContainer(uniqueId, resultData,exts);
-                        result.success(true);
-                    }catch (Throwable t){
-                        result.error("close page error",t.getMessage(),t);
-                    }
-                }
-                break;
-                case "onShownContainerChanged":
-                {
-                    try {
-                        String newId = methodCall.argument("newName");
-                        String oldId = methodCall.argument("oldName");
-
-                        mManager.onShownContainerChanged(newId,oldId);
-                        result.success(true);
-                    }catch (Throwable t){
-                        result.error("onShownContainerChanged",t.getMessage(),t);
-                    }
-                }
-                break;
-                default:
-                {
-                    result.notImplemented();
-                }
-            }
-        }
+    public FlutterEngine engineProvider() {
+        return mEngine;
     }
 
-    public static void setBoostResult(Activity activity, HashMap result) {
-        Intent intent = new Intent();
-        if (result != null) {
-            intent.putExtra(IFlutterViewContainer.RESULT_KEY, result);
+
+    public void boostDestroy() {
+        if (mEngine != null) {
+            mEngine.destroy();
         }
-        activity.setResult(Activity.RESULT_OK, intent);
+        if (mPlatform.lifecycleListener != null) {
+            mPlatform.lifecycleListener.onEngineDestroy();
+        }
+        mEngine = null;
+        mRegistry = null;
+        mCurrentActiveActivity = null;
     }
+
+
+    public interface BoostLifecycleListener {
+        void onEngineCreated();
+
+        void onPluginsRegistered();
+
+        void onEngineDestroy();
+    }
+
+
+    public interface BoostPluginsRegister {
+
+        void registerPlugins(PluginRegistry mRegistry);
+    }
+
 }
-
-

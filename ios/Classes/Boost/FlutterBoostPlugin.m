@@ -114,6 +114,13 @@
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
+    [self startFlutterWithPlatform:platform engine:nil onStart:callback];
+}
+
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                         engine:(FlutterEngine* _Nullable)engine
+                         onStart:(void (^)(FlutterEngine *engine))callback;
+{
     static dispatch_once_t onceToken;
     __weak __typeof__(self) weakSelf = self;
     dispatch_once(&onceToken, ^{
@@ -121,6 +128,7 @@
         self.factory = FLBFactory.new;
         self.application = [self->_factory createApplication:platform];
         [self.application startFlutterWithPlatform:platform
+                                     withEngine:engine
                                        onStart:callback];
     });
 }
