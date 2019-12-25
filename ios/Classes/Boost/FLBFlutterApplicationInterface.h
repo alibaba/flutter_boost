@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addUniqueViewController:(id<FLBFlutterContainer>)vc;
 - (void)removeViewController:(id<FLBFlutterContainer>)vc;
 - (BOOL)isTop:(NSString *)pageId;
+- (NSInteger)pageCount;
 
 #pragma mark - App Control
 - (void)pause;

@@ -32,6 +32,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 /**
+ * 获取当前管理的页面栈中页面的个数
+ *
+ */
++ (NSInteger)pageCount;
+
+/**
  * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
  *
  * @param platform 平台层实现FLBPlatform的对象

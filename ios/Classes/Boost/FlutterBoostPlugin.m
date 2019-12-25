@@ -111,6 +111,11 @@
     return _instance;
 }
 
++ (NSInteger)pageCount{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    return [app pageCount];
+}
+
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
