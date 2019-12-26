@@ -34,6 +34,7 @@
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+    //注意这行代码不可缺少
     [self.flutterContainer.view setNeedsLayout];
 //    [self.flutterContainer.view layoutIfNeeded];
 }
