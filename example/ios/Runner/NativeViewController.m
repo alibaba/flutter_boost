@@ -27,9 +27,22 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor grayColor];
-    self.flutterContainer.view.frame = CGRectInset(self.view.bounds, 30, 50);
+    self.flutterContainer.view.frame = CGRectInset(self.view.bounds, 30, 100);
     [self.view addSubview:self.flutterContainer.view];
     [self addChildViewController:self.flutterContainer];
+    
+    UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    nativeButton.frame = CGRectMake(50,self.view.bounds.size.height-50,200,40);
+    nativeButton.backgroundColor = [UIColor blueColor];
+    [nativeButton setTitle:@"Button in Native" forState:UIControlStateNormal];
+    [nativeButton addTarget:self action:@selector(pushMe) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:nativeButton];
+}
+
+- (void)pushMe
+{
+    UIViewController *vc = [[UIViewController alloc] init];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
