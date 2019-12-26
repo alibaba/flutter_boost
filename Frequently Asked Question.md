@@ -56,3 +56,7 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 |是否已经支持到View级别混合	|N	|N	|N|
 
 同时FlutterBoost也提供了一次性创建混合工程的命令：flutterboot。代码参考：https://github.com/alibaba-flutter/flutter-boot
+
+### 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
+回答：如果不加处理会遇到window大小变化的问题，但可以解决。具体可以参考这个issue：https://github.com/alibaba/flutter_boost/issues/435
+
