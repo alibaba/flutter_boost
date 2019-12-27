@@ -183,6 +183,7 @@ static NSUInteger kInstanceCounter = 0;
     }
  
     [super viewWillAppear:animated];
+    [self.view setNeedsLayout];
     //instead of calling [super viewWillAppear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),
