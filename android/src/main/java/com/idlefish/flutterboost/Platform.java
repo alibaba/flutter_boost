@@ -41,6 +41,14 @@ public abstract class Platform {
 
         if(pluginsRegister!=null){
             pluginsRegister.registerPlugins(mRegistry);
+        }else{
+            try {
+                Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
+                Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
+                method.invoke(null, mRegistry);
+            } catch (Throwable t) {
+                Log.i("flutterboost.platform",t.toString());
+            }
         }
 
         if (lifecycleListener!= null) {
