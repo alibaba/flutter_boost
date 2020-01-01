@@ -26,6 +26,26 @@ class FirstRouteWidget extends StatelessWidget {
   }
 }
 
+class EmbededFirstRouteWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: RaisedButton(
+          child: Text('Open second route'),
+          onPressed: () {
+            print("open second page!");
+            FlutterBoost.singleton.open("second").then((Map value) {
+              print(
+                  "call me when page is finished. did recieve second route result $value");
+            });
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class SecondRouteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

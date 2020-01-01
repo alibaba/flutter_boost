@@ -158,11 +158,6 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP.flutterProvider detach];
 }
 
-- (void)setEnableForRunnersBatch:(BOOL)enable{
-    //dummy function
-    NSLog(@"[DEBUG]- I did nothing, I am innocent");
-}
-
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -188,6 +183,7 @@ static NSUInteger kInstanceCounter = 0;
     }
  
     [super viewWillAppear:animated];
+    [self.view setNeedsLayout];
     //instead of calling [super viewWillAppear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),

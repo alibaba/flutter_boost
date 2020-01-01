@@ -29,6 +29,7 @@ public class FlutterBoost {
     static FlutterBoost sInstance = null;
 
     private long FlutterPostFrameCallTime = 0;
+    private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks;
 
     public long getFlutterPostFrameCallTime() {
         return FlutterPostFrameCallTime;
@@ -51,14 +52,20 @@ public class FlutterBoost {
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
 
-        platform.getApplication().registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
+        mActivityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
 
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
+                    boostPluginRegistry();
                 }
+                if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
+                    boostPluginRegistry();
+
+                }
+
             }
 
             @Override
@@ -117,7 +124,9 @@ public class FlutterBoost {
                     mCurrentActiveActivity = null;
                 }
             }
-        });
+        };
+        platform.getApplication().registerActivityLifecycleCallbacks(mActivityLifecycleCallbacks);
+
 
         if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
 
@@ -150,10 +159,16 @@ public class FlutterBoost {
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
         mRegistry = new BoostPluginRegistry(createEngine());
-        mPlatform.registerPlugins(mRegistry);
 
     }
 
+    public void boostPluginRegistry(){
+        if(mRegistry!=null&& !mRegistry.hasPlugin("boostPluginRegistry")){
+            mPlatform.registerPlugins(mRegistry);
+            mRegistry.registrarFor("boostPluginRegistry");
+        }
+
+    }
 
     public static class ConfigBuilder {
 
@@ -219,10 +234,7 @@ public class FlutterBoost {
             return this;
         }
 
-        public ConfigBuilder whenEngineDestory(int whenEngineDestory) {
-            this.whenEngineDestory = whenEngineDestory;
-            return this;
-        }
+
 
         public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
             this.lifecycleListener = lifecycleListener;
@@ -259,10 +271,6 @@ public class FlutterBoost {
                     return ConfigBuilder.this.whenEngineStart;
                 }
 
-                @Override
-                public int whenEngineDestroy() {
-                    return ConfigBuilder.this.whenEngineDestory;
-                }
 
                 public FlutterView.RenderMode renderMode() {
                     return ConfigBuilder.this.renderMode;

@@ -83,6 +83,8 @@ class ContainerManagerState extends State<BoostContainerManager> {
   //Number of containers.
   int get containerCounts => _offstage.length;
 
+  List<BoostContainer> get offstage => _offstage;
+
   //Setting for current visible container.
   BoostContainerSettings get onstageSettings => _onstage.settings;
 

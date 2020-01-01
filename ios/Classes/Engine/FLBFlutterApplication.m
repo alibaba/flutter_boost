@@ -50,12 +50,13 @@
 }
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                      withEngine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.platform = platform;
-        self.viewProvider = [[FLBFlutterEngine alloc] initWithPlatform:platform];
+        self.viewProvider = [[FLBFlutterEngine alloc] initWithPlatform:platform engine:engine];
         self.isRunning = YES;
         if(callback) callback(self.viewProvider.engine);
     });
@@ -115,6 +116,9 @@
     return [_manager remove:vc];
 }
 
+- (NSInteger)pageCount{
+    return [_manager pageCount];
+}
 
 - (BOOL)isTop:(NSString *)pageId
 {

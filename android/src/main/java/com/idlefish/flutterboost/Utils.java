@@ -185,7 +185,8 @@ public class Utils {
                 }
             }
         }catch (Throwable t){
-            Debuger.exception(t);
+//            Debuger.exception(t);
+            t.printStackTrace();
         }
     }
 

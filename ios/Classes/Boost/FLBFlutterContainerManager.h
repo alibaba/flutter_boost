@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)addUnique:(id<FLBFlutterContainer>)vc;
 - (void)remove:(id<FLBFlutterContainer>)vc;
 - (BOOL)contains:(id<FLBFlutterContainer>)vc;
+- (NSInteger)pageCount;
 
 @end
 NS_ASSUME_NONNULL_END

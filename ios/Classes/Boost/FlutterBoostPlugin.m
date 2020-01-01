@@ -111,16 +111,29 @@
     return _instance;
 }
 
++ (NSInteger)pageCount{
+    id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
+    return [app pageCount];
+}
+
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                         onStart:(void (^)(FlutterEngine *engine))callback;
+{
+    [self startFlutterWithPlatform:platform engine:nil onStart:callback];
+}
+
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                         engine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
     static dispatch_once_t onceToken;
     __weak __typeof__(self) weakSelf = self;
     dispatch_once(&onceToken, ^{
         __strong __typeof__(weakSelf) self = weakSelf;
-        self.factory = FLBFactory.new;
-        self.application = [self->_factory createApplication:platform];
+        FLBFactory *factory = FLBFactory.new;
+        self.application = [factory createApplication:platform];
         [self.application startFlutterWithPlatform:platform
+                                     withEngine:engine
                                        onStart:callback];
     });
 }
@@ -168,5 +181,10 @@
 + (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData exts:(NSDictionary *)exts completion:(void (^)(BOOL))completion{
     id<FLBFlutterApplicationInterface> app = [[FlutterBoostPlugin sharedInstance] application];
     [app close:uniqueId result:resultData exts:exts completion:completion];
+}
+
+- (void)destroyPluginContext{
+    self.methodChannel = nil;
+    self.application = nil;
 }
 @end

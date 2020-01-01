@@ -83,6 +83,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         ensureAlive();
         if (FlutterBoost.instance().platform().whenEngineStart() == FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
             FlutterBoost.instance().doInitialFlutter();
+            FlutterBoost.instance().boostPluginRegistry();
         }
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
@@ -217,11 +218,15 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
         ensureAlive();
         BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
-        ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
-        if (binding != null && (binding.getActivity() == this.host.getActivity())) {
-            registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
-            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+        if (registry != null) {
+            ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
+            if (binding != null && (binding.getActivity() == this.host.getActivity())) {
 
+                registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
+
+                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+
+            }
         }
         flutterView.release();
     }
