@@ -7,7 +7,7 @@
 
 # Release Note
 
-Please checkout the release note for the latest 0.1.61 to see changes [0.1.61 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 0.1.63 to see changes [0.1.63 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
@@ -27,16 +27,16 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
 
-4. 0.1.61 is a bugfix for 0.1.60
+4. 0.1.61--0.1.62  is a bugfix for 0.1.60
 
 
 5. Statement of support for androidx
 
- Current androidx branch is feature/flutter_1.9_androidx_upgrade
+ Current androidx branch is v0.1.61-androidx-hotfixes
 
  Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
 
- Synchronize with the 0.1.60 code, and bugfix of 0.1.61 also merge to this branch.
+ Synchronize with the 0.1.63 code, and bugfix also merge to this branch.
 
 
 
@@ -52,14 +52,14 @@ support branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.61'
+        ref: '0.1.63'
 ```
 androidx branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'feature/flutter_1.9_androidx_upgrade'
+        ref: 'v0.1.61-androidx-hotfixes'
 ```
 
 
@@ -68,7 +68,9 @@ flutter_boost:
 
 Please see the boost example for details.
 
-
+# FAQ
+please read this document:
+<a href="Frequently Asked Question.md">FAQ</a>
 
 
 # License

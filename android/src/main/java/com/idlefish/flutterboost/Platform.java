@@ -19,7 +19,6 @@ public abstract class Platform {
 
     public abstract int whenEngineStart();
 
-    public abstract int whenEngineDestroy();
 
     public abstract FlutterView.RenderMode renderMode();
 
@@ -39,7 +38,7 @@ public abstract class Platform {
 
 
     public void registerPlugins(PluginRegistry mRegistry) {
-        
+
         if(pluginsRegister!=null){
             pluginsRegister.registerPlugins(mRegistry);
         }else{

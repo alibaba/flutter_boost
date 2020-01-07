@@ -240,6 +240,8 @@ static NSUInteger kInstanceCounter = 0;
 //    };
 //    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
 //    callSuper(&target, @selector(viewDidDisappear:), animated);
+    
+    [self detatchFlutterEngine];
 }
 
 - (void)installSplashScreenViewIfNecessary {

@@ -38,6 +38,14 @@ ios:
   iOS:
   no change
 
+## 0.1.63
+
+  android:
+  Fixed bugs
+
+  iOS:
+  no change
+
 ### API changes
 From the point of API changes, we did some refactoring as following:
 #### iOS API changes
