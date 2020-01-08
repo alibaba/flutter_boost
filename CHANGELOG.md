@@ -1,3 +1,7 @@
+## 0.1.66
+
+  Fixed bugs
+
 ## 0.1.64
 
   Fixed bugs
