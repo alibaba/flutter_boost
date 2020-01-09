@@ -93,7 +93,7 @@ public class ContainerRecord implements IContainerRecord {
 
         mProxy.appear();
 
-        mContainer.getBoostFlutterView().onAttach();
+//        mContainer.getBoostFlutterView().onAttach();
 
     }
 
@@ -112,7 +112,7 @@ public class ContainerRecord implements IContainerRecord {
             mProxy.destroy();
         }
 
-        mContainer.getBoostFlutterView().onDetach();
+//        mContainer.getBoostFlutterView().onDetach();
 
         mManager.popRecord(this);
     }

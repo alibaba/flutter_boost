@@ -6,14 +6,15 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import com.idlefish.flutterboost.containers.FlutterFragment;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import com.idlefish.flutterboost.containers.BoostFlutterFragment;
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.android.SplashScreenProvider;
@@ -22,7 +23,7 @@ import io.flutter.plugin.platform.PlatformPlugin;
 public class FlutterFragmentPageActivity extends AppCompatActivity implements View.OnClickListener, SplashScreenProvider {
     protected static final String SPLASH_SCREEN_META_DATA_KEY = "io.flutter.embedding.android.SplashScreenDrawable";
 
-    private FlutterFragment mFragment;
+    private BoostFlutterFragment mFragment;
 
     private View mTab1;
     private View mTab2;
@@ -70,17 +71,17 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
         if(mTab1 == v) {
             mTab1.setBackgroundColor(Color.YELLOW);
 
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+            mFragment=  new BoostFlutterFragment.BoostEngineFragmentBuilder().url("flutterFragment").build();
 
         }else if(mTab2 == v) {
             mTab2.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+            mFragment= new BoostFlutterFragment.BoostEngineFragmentBuilder().url("flutterFragment").build();
         }else if(mTab3 == v) {
             mTab3.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+            mFragment= new BoostFlutterFragment.BoostEngineFragmentBuilder().url("flutterFragment").build();
         }else{
             mTab4.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+            mFragment= new BoostFlutterFragment.BoostEngineFragmentBuilder().url("flutterFragment").build();
         }
 
         getSupportFragmentManager()
@@ -110,7 +111,7 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
         try {
             ActivityInfo activityInfo = getPackageManager().getActivityInfo(
                     getComponentName(),
-                    PackageManager.GET_META_DATA | PackageManager.GET_ACTIVITIES
+                    PackageManager.GET_META_DATA
             );
             Bundle metadata = activityInfo.metaData;
             Integer splashScreenId = metadata != null ? metadata.getInt(SPLASH_SCREEN_META_DATA_KEY) : null;

@@ -61,5 +61,9 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
 
+
+        <meta-data android:name="flutterEmbedding"
+                   android:value="2">
+        </meta-data>
     </application>
 </manifest>

@@ -1,10 +1,9 @@
 package com.taobao.idlefish.flutterboostexample;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +15,7 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
     private TextView mOpenFlutterFragment;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate( Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.native_page);

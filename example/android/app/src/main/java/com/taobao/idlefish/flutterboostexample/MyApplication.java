@@ -30,21 +30,21 @@ public class MyApplication extends Application {
 
         };
 
-        FlutterBoost.BoostPluginsRegister pluginsRegister= new FlutterBoost.BoostPluginsRegister(){
-
-            @Override
-            public void registerPlugins(PluginRegistry mRegistry) {
-                GeneratedPluginRegistrant.registerWith(mRegistry);
-                TextPlatformViewPlugin.register(mRegistry.registrarFor("TextPlatformViewPlugin"));
-            }
-        };
+//        FlutterBoost.BoostPluginsRegister pluginsRegister= new FlutterBoost.BoostPluginsRegister(){
+//
+//            @Override
+//            public void registerPlugins(PluginRegistry mRegistry) {
+//                GeneratedPluginRegistrant.registerWith(mRegistry);
+//                TextPlatformViewPlugin.register(mRegistry.registrarFor("TextPlatformViewPlugin"));
+//            }
+//        };
 
         Platform platform= new FlutterBoost
                 .ConfigBuilder(this,router)
                 .isDebug(true)
                 .whenEngineStart(FlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
                 .renderMode(FlutterView.RenderMode.texture)
-                .pluginsRegister(pluginsRegister)
+//                .pluginsRegister(pluginsRegister)
                 .build();
 
         FlutterBoost.instance().init(platform);

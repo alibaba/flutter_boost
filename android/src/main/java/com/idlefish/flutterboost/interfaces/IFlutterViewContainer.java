@@ -25,7 +25,6 @@ package com.idlefish.flutterboost.interfaces;
 
 import android.app.Activity;
 
-import com.idlefish.flutterboost.containers.FlutterSplashView;
 
 import java.util.Map;
 
@@ -37,11 +36,6 @@ public interface IFlutterViewContainer {
 
     Activity getContextActivity();
 
-    /**
-     * provide a flutter view
-     * @return
-     */
-    FlutterSplashView getBoostFlutterView();
 
     /**
      * call to destroy the container
