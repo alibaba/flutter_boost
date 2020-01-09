@@ -114,13 +114,26 @@
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
-    [self startFlutterWithPlatform:platform engine:nil onStart:callback];
+    [self startFlutterWithPlatform:platform
+                            engine:nil
+             pluginRegisterred:YES
+                           onStart:callback];
 }
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          engine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback;
 {
+    [self startFlutterWithPlatform:platform
+                                 engine:engine
+                                  pluginRegisterred:YES
+                                   onStart:callback];
+}
+
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                          engine:(FlutterEngine *)engine
+           pluginRegisterred:(BOOL)registerPlugin
+                         onStart:(void (^)(FlutterEngine * _Nonnull))callback{
     static dispatch_once_t onceToken;
     __weak __typeof__(self) weakSelf = self;
     dispatch_once(&onceToken, ^{
@@ -129,6 +142,7 @@
         self.application = [self->_factory createApplication:platform];
         [self.application startFlutterWithPlatform:platform
                                      withEngine:engine
+                                      withPluginRegisterred:registerPlugin
                                        onStart:callback];
     });
 }

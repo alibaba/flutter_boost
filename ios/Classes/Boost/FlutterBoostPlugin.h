@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 /**
- * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数默认需要flutter boost来注册所有插件。
  *
  * @param platform 平台层实现FLBPlatform的对象
  * @param callback 启动之后回调
@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 /**
- * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数默认需要flutter boost来注册所有插件。
  *
  * @param platform 平台层实现FLBPlatform的对象
  * @param engine   外部实例化engine后传入
@@ -50,6 +50,17 @@ NS_ASSUME_NONNULL_BEGIN
                           engine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback;
 
+/**
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数可以控制是否需要flutter boost来注册所有插件
+ *
+ * @param platform 平台层实现FLBPlatform的对象
+ * @param engine   外部实例化engine后传入
+ * @param callback 启动之后回调
+ */
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                          engine:(FlutterEngine* _Nullable)engine
+                          pluginRegisterred:(BOOL)registerPlugin
+                         onStart:(void (^)(FlutterEngine *engine))callback;
 #pragma mark - Some properties.
 - (BOOL)isRunning;
 
