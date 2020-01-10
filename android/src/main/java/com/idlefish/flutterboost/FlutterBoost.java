@@ -200,7 +200,6 @@ public class FlutterBoost {
 
         private BoostLifecycleListener lifecycleListener;
 
-        private BoostPluginsRegister boostPluginsRegister;
 
 
 
@@ -235,15 +234,11 @@ public class FlutterBoost {
         }
 
 
-
         public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
             this.lifecycleListener = lifecycleListener;
             return this;
         }
-        public ConfigBuilder pluginsRegister(BoostPluginsRegister boostPluginsRegister) {
-            this.boostPluginsRegister = boostPluginsRegister;
-            return this;
-        }
+
         public Platform build() {
 
             Platform platform = new Platform() {
@@ -278,7 +273,6 @@ public class FlutterBoost {
             };
 
             platform.lifecycleListener = this.lifecycleListener;
-            platform.pluginsRegister=this.boostPluginsRegister;
             return platform;
 
         }
