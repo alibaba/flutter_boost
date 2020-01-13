@@ -189,8 +189,8 @@ class FlutterBoost {
       _observersHolder.addObserver<BoostContainerLifeCycleObserver>(observer);
 
   ///register callbacks for Navigators push & pop
-  VoidCallback addBoostNavigatorObserver(BoostNavigatorObserver observer) =>
-      _observersHolder.addObserver<BoostNavigatorObserver>(observer);
+  void addBoostNavigatorObserver(NavigatorObserver observer) =>
+      ContainerNavigatorObserver.boostObservers.add(observer);
 
 
 }
