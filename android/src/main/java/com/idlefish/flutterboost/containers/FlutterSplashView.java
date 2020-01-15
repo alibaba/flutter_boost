@@ -182,7 +182,7 @@ public class FlutterSplashView extends FrameLayout {
 
     public void onAttach() {
         Debuger.log("BoostFlutterView onAttach");
-        mFlutterEngine.getPlatformViewsController().attachToView(flutterView);
+
         flutterView.attachToFlutterEngine(mFlutterEngine);
 
     }
@@ -190,7 +190,7 @@ public class FlutterSplashView extends FrameLayout {
 
     public void onDetach() {
         Debuger.log("BoostFlutterView onDetach");
-        mFlutterEngine.getPlatformViewsController().detachFromView();
+
         flutterView.detachFromFlutterEngine();
 
     }
