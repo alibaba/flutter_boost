@@ -28,7 +28,6 @@
 #import "FlutterBoostPlugin.h"
 @interface FlutterBoostPlugin()
 @property (nonatomic,strong) id<FLBFlutterApplicationInterface> application;
-@property (nonatomic,strong) id<FLBAbstractFactory> factory;
 @property (nonatomic,strong) FlutterMethodChannel *methodChannel;
 @property (nonatomic,copy) NSString *fPageId;
 @property (nonatomic,copy) NSString *fPagename;

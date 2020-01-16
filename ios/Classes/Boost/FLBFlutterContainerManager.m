@@ -79,6 +79,10 @@
     return _idStk.lastObject;
 }
 
+- (NSInteger)pageCount{
+    return _idStk.count;
+}
+
 #if DEBUG
 - (void)dump:(NSString*)flag{
     NSMutableString *log = [[NSMutableString alloc]initWithFormat:@"[DEBUG]--%@--PageStack uid/name", flag];

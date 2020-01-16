@@ -127,6 +127,9 @@
     return [_manager remove:vc];
 }
 
+- (NSInteger)pageCount{
+    return [_manager pageCount];
+}
 
 - (BOOL)isTop:(NSString *)pageId
 {
