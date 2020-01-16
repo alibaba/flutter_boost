@@ -606,6 +606,7 @@ public class XFlutterView extends FrameLayout {
     isFlutterUiDisplayed = flutterRenderer.isDisplayingFlutterUi();
     renderSurface.attachToRenderer(flutterRenderer);
     flutterRenderer.addIsDisplayingFlutterUiListener(flutterUiDisplayListener);
+    this.flutterEngine.getPlatformViewsController().attachToView(this);
 
 
 
@@ -691,7 +692,7 @@ public class XFlutterView extends FrameLayout {
 
     // Disconnect the FlutterEngine's PlatformViewsController from the AccessibilityBridge.
     flutterEngine.getPlatformViewsController().detachAccessibiltyBridge();
-
+    flutterEngine.getPlatformViewsController().detachFromView();
     // Disconnect and clean up the AccessibilityBridge.
     accessibilityBridge.release();
     accessibilityBridge = null;
