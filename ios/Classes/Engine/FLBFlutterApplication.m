@@ -51,6 +51,7 @@
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                       withEngine:(FlutterEngine* _Nullable)engine
+                        withPluginRegisterred:(BOOL)registerPlugin
                          onStart:(void (^)(FlutterEngine *engine))callback
 {
     static dispatch_once_t onceToken;
@@ -58,6 +59,16 @@
         self.platform = platform;
         self.viewProvider = [[FLBFlutterEngine alloc] initWithPlatform:platform engine:engine];
         self.isRunning = YES;
+        if(registerPlugin){
+            Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
+            FlutterEngine *myengine = [self.viewProvider engine];
+            if (clazz && myengine) {
+                if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
+                    [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
+                                withObject:myengine];
+                }
+            }
+        }
         if(callback) callback(self.viewProvider.engine);
     });
 }
