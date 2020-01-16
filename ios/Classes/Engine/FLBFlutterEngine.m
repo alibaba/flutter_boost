@@ -118,8 +118,8 @@
 
 - (void)prepareEngineIfNeeded
 {
-    [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
-    NSLog(@"[XDEBUG]---surface changed--reset-");
+//    [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
+//    NSLog(@"[XDEBUG]---surface changed--reset-");
 //    [self detach];
 }
 
