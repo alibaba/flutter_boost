@@ -73,7 +73,7 @@ public class BoostFlutterActivity extends Activity
         private Map params = new HashMap();
 
 
-        protected NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
+        public NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
             this.activityClass = activityClass;
         }
 

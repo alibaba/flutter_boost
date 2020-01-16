@@ -97,11 +97,6 @@
                          arguments:@{@"type":@"foreground"}];
 }
 
-- (FlutterEngine *)engine
-{
-    return _engine;
-}
-
 - (void)atacheToViewController:(FlutterViewController *)vc
 {
     if(_engine.viewController != vc){
@@ -124,5 +119,8 @@
 //    [self detach];
 }
 
+- (void)dealloc{
+    [self.engine setViewController:nil];
+}
 @end
 

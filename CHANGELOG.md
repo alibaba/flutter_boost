@@ -1,13 +1,26 @@
-## 0.0.1
+## 0.1.66
 
-* TODO: Describe initial release.
-## 0.1.5
-The main changes are as following:
-1. The new version do the page jump (URL route) based on the inherited FlutterViewController or Activity. The jump procedure will create new instance of FlutterView, while the old version just reuse the underlying FlutterView
-2. Avoiding keeping and reusing the FlutterView, there is no screenshot and complex attach&detach logical any more. As a result, memory is saved and black or white-screen issue occured in old version all are solved.
-3. This version also solved the app life cycle observation issue, we recommend you to use ContainerLifeCycle observer to listen the app enter background or foreground notification instead of WidgetBinding.
-4. We did some code refactoring, the main logic became more straightforward.
+  Fixed bugs
 
+## 0.1.64
+
+  Fixed bugs
+
+## 0.1.63
+
+  android:
+  Fixed bugs
+
+  iOS:
+  no change
+
+## 0.1.61
+
+  android:
+  Fixed bugs
+
+  iOS:
+  no change
 
 ## 0.1.60
 
@@ -30,21 +43,19 @@ ios:
 1.based on the v1.9.1+hotfixes branch of flutter
 2.bugfixed
 
-## 0.1.61
 
-  android:
-  Fixed bugs
 
-  iOS:
-  no change
+## 0.1.5
+The main changes are as following:
+1. The new version do the page jump (URL route) based on the inherited FlutterViewController or Activity. The jump procedure will create new instance of FlutterView, while the old version just reuse the underlying FlutterView
+2. Avoiding keeping and reusing the FlutterView, there is no screenshot and complex attach&detach logical any more. As a result, memory is saved and black or white-screen issue occured in old version all are solved.
+3. This version also solved the app life cycle observation issue, we recommend you to use ContainerLifeCycle observer to listen the app enter background or foreground notification instead of WidgetBinding.
+4. We did some code refactoring, the main logic became more straightforward.
 
-## 0.1.63
+## 0.0.1
 
-  android:
-  Fixed bugs
+* TODO: Describe initial release.
 
-  iOS:
-  no change
 
 ### API changes
 From the point of API changes, we did some refactoring as following:
