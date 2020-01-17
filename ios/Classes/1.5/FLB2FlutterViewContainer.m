@@ -155,16 +155,6 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    if([FLUTTER_APP contains:self]){
-        [self surfaceUpdated:NO];
-        [self detatchFlutterEngine];
-    }else{
-        [self attatchFlutterEngine];
-        [self surfaceUpdated:YES];
-    }
-  
-    [FLUTTER_APP resume];
-    
     //For new page we should attach flutter view in view will appear
     //for better performance.
  
@@ -188,13 +178,13 @@ static NSUInteger kInstanceCounter = 0;
     
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
-    [FLUTTER_APP resume];
  
     [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
-    
+    //NOTES：务必在show之后再update，否则有闪烁
+    [self surfaceUpdated:YES];
     [super viewDidAppear:animated];
 }
 
@@ -211,13 +201,11 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidDisappear:(BOOL)animated
 {
-    [FLUTTER_APP resume];
     [BoostMessageChannel didDisappearPageContainer:^(NSNumber *result) {}
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
-    [FLUTTER_APP resume];
     
 }
 

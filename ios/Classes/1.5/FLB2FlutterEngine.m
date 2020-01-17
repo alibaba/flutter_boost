@@ -49,10 +49,11 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-        _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
-                                                          nibName:nil
-                                                           bundle:nil];
-        _dummy.name = kIgnoreMessageWithName;
+        _dummy = nil;
+//        _dummy = [[FLB2FlutterViewContainer alloc] initWithEngine:_engine
+//                                                          nibName:nil
+//                                                           bundle:nil];
+//        _dummy.name = kIgnoreMessageWithName;
         
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         if (clazz) {
@@ -81,7 +82,7 @@
 - (void)resume
 {
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
-    [(FLB2FlutterViewContainer *)_engine.viewController surfaceUpdated:YES];
+//    [(FLB2FlutterViewContainer *)_engine.viewController surfaceUpdated:YES];
 }
 
 - (void)inactive
@@ -126,9 +127,12 @@
 //    if ([_dummy respondsToSelector:@selector(setEnableForRunnersBatch:)]) {
 //        [_dummy setEnableForRunnersBatch:YES];
 //    }
-    [self detach];
-    [_dummy surfaceUpdated:YES];
+//    [self detach];
+//    [_dummy surfaceUpdated:YES];
 }
 
+- (void)dealloc{
+    [self.engine setViewController:nil];
+}
 @end
 
