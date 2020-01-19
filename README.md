@@ -22,12 +22,12 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
 
-2. 0.1.51--0.1.54 is a bugfix for 0.1.50
+2. 0.1.51--0.1.59 is a bugfix for 0.1.50
 
 
 3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
 
-4. 0.1.61--0.1.64  is a bugfix for 0.1.60
+4. 0.1.61--0.1.69  is a bugfix for 0.1.60
 
 
 5. Statement of support for androidx
