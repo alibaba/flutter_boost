@@ -20,28 +20,16 @@
 请阅读这篇文章:
 <a href="Frequently Asked Question.md">FAQ</a>
 
-
 # boost 版本说明
 
-1. 0.1.50 是基于flutter v1.5.4-hotfixes 分支，android 如果其他flutter版本或者分支 会编译错误
-
-2. 0.1.51--0.1.54 是对0.1.50的bugfix
-
-
-3. 0.1.60 是基于flutter v1.9.1-hotfixes 分支，android如果其他flutter分支会编译错误,该版本不支持andriodx
-
-4. 0.1.61-- 0.1.64 是对0.1.60 的bugfix
-
-
-5. 关于androidx 的支持声明
-
- 目前androidx 分支为 v0.1.61-androidx-hotfixes
-
- 是基于flutter v1.9.1-hotfixes 分支，如果其他分支会编译错误
-
- 和0.1.60代码同步， bugfix 也会合入该分支。
-
-
+| Flutter Boost 分支/版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
+| ----------------------- | ----------------------- | ------------------------------------------------------------ | ------------------- |
+| 0.1.50                  | 1.5.4-hotfixes          | android 如果其他 flutter 版本或者分支会编译错误。            | No                  |
+| 0.1.51-0.1.59           | 1.5.4-hotfixes          | 0.1.50 的 bugfix。                                           | No                  |
+| 0.1.60                  | 1.9.1-hotfixes          | android 如果其他 flutter 分支会编译错误。                    | No                  |
+| 0.1.61-0.1.69           | 1.9.1-hotfixes          | 0.1.60 的 bugfix。                                           | No                  |
+| 0.1.63                  | 1.9.1-hotfixes          | 和 0.1.60 代码同步， bugfix 也会合入该分支，如果其他分支会编译错误。 | No                  |
+| v1.9.1-hotfixes         | 1.9.1-hotfixes          | Current androidx branch.Please use git to bring in this branch. | Yes                 |
 
 
 # 安装

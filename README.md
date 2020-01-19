@@ -20,23 +20,14 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 # boost version description
 
-1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
-
-2. 0.1.51--0.1.59 is a bugfix for 0.1.50
-
-
-3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
-
-4. 0.1.61--0.1.69  is a bugfix for 0.1.60
-
-
-5. Statement of support for androidx
-
- Current androidx branch is v0.1.61-androidx-hotfixes
-
- Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
-
- Synchronize with the 0.1.63 code, and bugfix also merge to this branch.
+| Flutter Boost Version | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
+| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
+| 0.1.50                | 1.5.4-hotfixes              | android if other flutter versions or branches will compile incorrectly. | No                 |
+| 0.1.51-0.1.59         | 1.5.4-hotfixes              | bugfix for 0.1.50.                                           | No                 |
+| 0.1.60                | 1.9.1-hotfixes              | Android does not support andriodx if other flutter branches will compile incorrectly. | No                 |
+| 0.1.61-0.1.69         | 1.9.1-hotfixes              | bugfix for 0.1.60.                                           | No                 |
+| 0.1.63                | 1.9.1-hotfixes              | If other branches will compile incorrectly. Synchronize with the 0.1.60 code, and bugfix also merge to this branch. | No                 |
+| v1.9.1-hotfixes       | 1.9.1-hotfixes              | Current androidx branch. Please use git to bring in this branch. | Yes                |
 
 
 
