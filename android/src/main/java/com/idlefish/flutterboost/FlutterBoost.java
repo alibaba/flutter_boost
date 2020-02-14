@@ -162,6 +162,9 @@ public class FlutterBoost {
 
         if (mEngine != null) return;
 
+        if (mPlatform.lifecycleListener != null) {
+            mPlatform.lifecycleListener.beforeCreateEngine();
+        }
         FlutterEngine flutterEngine = createEngine();
         if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.onEngineCreated();
@@ -364,6 +367,9 @@ public class FlutterBoost {
 
 
     public interface BoostLifecycleListener {
+
+        void beforeCreateEngine();
+
         void onEngineCreated();
 
         void onPluginsRegistered();
