@@ -155,14 +155,11 @@ class BoostContainerState extends NavigatorState {
   @override
   void didUpdateWidget(Navigator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    findContainerNavigatorObserver(oldWidget)?.removeBoostNavigatorObserver(
-        FlutterBoost.containerManager.navigatorObserver);
+
   }
 
   @override
   void dispose() {
-    findContainerNavigatorObserver(widget)?.removeBoostNavigatorObserver(
-        FlutterBoost.containerManager.navigatorObserver);
     routerHistory.clear();
     super.dispose();
   }
@@ -261,63 +258,52 @@ class ContainerElement extends StatefulElement {
 }
 
 class ContainerNavigatorObserver extends NavigatorObserver {
-  BoostNavigatorObserver observer;
 
-  final Set<BoostNavigatorObserver> _boostObservers =
-      Set<BoostNavigatorObserver>();
+  static final Set<NavigatorObserver> boostObservers =
+      Set<NavigatorObserver>();
 
   ContainerNavigatorObserver();
 
+
   factory ContainerNavigatorObserver.bindContainerManager() =>
-      ContainerNavigatorObserver()
-        ..addBoostNavigatorObserver(
-            FlutterBoost.containerManager.navigatorObserver);
+      ContainerNavigatorObserver();
 
-  VoidCallback addBoostNavigatorObserver(BoostNavigatorObserver observer) {
-    _boostObservers.add(observer);
+  VoidCallback addBoostNavigatorObserver(NavigatorObserver observer) {
+    boostObservers.add(observer);
 
-    return () => _boostObservers.remove(observer);
+    return () => boostObservers.remove(observer);
   }
 
-  void removeBoostNavigatorObserver(BoostNavigatorObserver observer) {
-    _boostObservers.remove(observer);
+  void removeBoostNavigatorObserver(NavigatorObserver observer) {
+    boostObservers.remove(observer);
   }
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (NavigatorObserver observer in boostObservers) {
       observer.didPush(route, previousRoute);
     }
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (NavigatorObserver observer in boostObservers) {
       observer.didPop(route, previousRoute);
     }
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (NavigatorObserver observer in boostObservers) {
       observer.didRemove(route, previousRoute);
     }
   }
 
   @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    for (BoostNavigatorObserver observer in _boostObservers) {
+    for (NavigatorObserver observer in boostObservers) {
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     }
   }
 }
 
-class BoostNavigatorObserver {
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {}
-
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {}
-
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {}
-
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {}
-}

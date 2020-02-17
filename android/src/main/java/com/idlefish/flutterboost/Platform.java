@@ -19,6 +19,7 @@ public abstract class Platform {
 
     public abstract int whenEngineStart();
 
+    public abstract int whenEngineDestroy();
 
     public abstract FlutterView.RenderMode renderMode();
 
@@ -38,9 +39,17 @@ public abstract class Platform {
 
 
     public void registerPlugins(PluginRegistry mRegistry) {
-
+        
         if(pluginsRegister!=null){
             pluginsRegister.registerPlugins(mRegistry);
+        }else{
+            try {
+                Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
+                Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
+                method.invoke(null, mRegistry);
+            } catch (Throwable t) {
+                Log.i("flutterboost.platform",t.toString());
+            }
         }
 
         if (lifecycleListener!= null) {
