@@ -46,19 +46,19 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-support branch
-```json
-flutter_boost:
-    git:
-        url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.64'
-```
 androidx branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v1.9.1-hotfixes'
+        ref: ' 1.9.1+1'
+```
+support branch
+```json
+flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'task/task_v1.9.1_support_hotfixes'
 ```
 
 

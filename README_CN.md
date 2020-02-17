@@ -48,22 +48,19 @@
 
 打开pubspec.yaml并将以下行添加到依赖项：
 
-support分支
+androidx branch
 ```json
-
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.64'
-
+        ref: ' 1.9.1+1'
 ```
-
-androidx分支
+support branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v1.9.1-hotfixes'
+        ref: 'task/task_v1.9.1_support_hotfixes'
 ```
 
 
