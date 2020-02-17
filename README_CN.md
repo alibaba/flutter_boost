@@ -22,15 +22,25 @@
 
 # boost 版本说明
 
-| Flutter Boost 分支/版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
+| Flutter Boost 版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
 | ----------------------- | ----------------------- | ------------------------------------------------------------ | ------------------- |
 | 0.1.50                  | 1.5.4-hotfixes          | android 如果其他 flutter 版本或者分支会编译错误。            | No                  |
 | 0.1.51-0.1.59           | 1.5.4-hotfixes          | 0.1.50 的 bugfix。                                           | No                  |
 | 0.1.60                  | 1.9.1-hotfixes          | android 如果其他 flutter 分支会编译错误。                    | No                  |
-| 0.1.61-0.1.69           | 1.9.1-hotfixes          | 0.1.60 的 bugfix。                                           | No                  |
 | 0.1.63                  | 1.9.1-hotfixes          | 和 0.1.60 代码同步， bugfix 也会合入该分支，如果其他分支会编译错误。 | No                  |
-| v1.9.1-hotfixes         | 1.9.1-hotfixes          | Current androidx branch.Please use git to bring in this branch. | Yes                 |
+| 0.1.61-0.1.69           | 1.9.1-hotfixes          | 0.1.60 的 bugfix。                                           | No                  |
+| 1.9.1+1              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
 
+
+
+| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
+
+| v1.9.1-hotfixes         | 1.9.1-hotfixes          | 支持androidx，修复bug后会定期发布新版本 | Yes                 |
+| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | 支持support包，不支持androidx | NO                 |
+| v1.12.13-hotfixes       | 1.12.13-hotfixes         | 支持androidx，目前还没发布的版本，用分支形式引入                                                        | Yes                 |
+| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | 支持support包，不支持androidx | NO                 |
+
+.
 
 # 安装
 
@@ -53,7 +63,7 @@ androidx分支
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v0.1.61-androidx-hotfixes'
+        ref: 'v1.9.1-hotfixes'
 ```
 
 
