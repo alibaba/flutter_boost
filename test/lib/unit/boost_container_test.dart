@@ -39,7 +39,7 @@ class SecondWidgetState extends State<SecondWidget> {
 typedef ExceptionCallback = void Function(dynamic exception);
 
 class ThirdWidget extends StatelessWidget {
-  const ThirdWidget({ this.targetKey, this.onException });
+  const ThirdWidget({this.targetKey, this.onException});
 
   final Key targetKey;
   final ExceptionCallback onException;
@@ -61,7 +61,7 @@ class ThirdWidget extends StatelessWidget {
 }
 
 class OnTapPage extends StatelessWidget {
-  const OnTapPage({ Key key, this.id, this.onTap }) : super(key: key);
+  const OnTapPage({Key key, this.id, this.onTap}) : super(key: key);
 
   final String id;
   final VoidCallback onTap;
@@ -86,8 +86,8 @@ class OnTapPage extends StatelessWidget {
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Can navigator navigate to and from a stateful widget', (
-      WidgetTester tester) async {
+  testWidgets('Can navigator navigate to and from a stateful widget',
+      (WidgetTester tester) async {
     final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
       '/': (BuildContext context) => FirstWidget(), // X
       '/second': (BuildContext context) => SecondWidget(), // Y
@@ -137,8 +137,8 @@ void main() {
     expect(find.text('Y', skipOffstage: false), findsNothing);
   });
 //
-  testWidgets('Navigator.of fails gracefully when not found in context', (
-      WidgetTester tester) async {
+  testWidgets('Navigator.of fails gracefully when not found in context',
+      (WidgetTester tester) async {
     const Key targetKey = Key('foo');
     dynamic exception;
     final Widget widget = ThirdWidget(
@@ -154,71 +154,71 @@ void main() {
         startsWith('Navigator operation requested with a context'));
   });
 //
-  testWidgets('Navigator.of rootNavigator finds root Navigator', (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(
-      home: Material(
-        child: Column(
-          children: <Widget>[
-            const SizedBox(
-              height: 300.0,
-              child: Text('Root page'),
-            ),
-            SizedBox(
-              height: 300.0,
-              child: BoostContainer(
-                onGenerateRoute: (RouteSettings settings) {
-                  if (settings.isInitialRoute) {
-                    return MaterialPageRoute<void>(
-                      builder: (BuildContext context) {
-                        return RaisedButton(
-                          child: const Text('Next'),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                  builder: (BuildContext context) {
-                                    return RaisedButton(
-                                      child: const Text('Inner page'),
-                                      onPressed: () {
-                                        Navigator.of(context, rootNavigator: true).push(
-                                          MaterialPageRoute<void>(
-                                              builder: (BuildContext context) {
-                                                return const Text('Dialog');
-                                              }
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  }
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    );
-                  }
-                  return null;
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    ));
-
-    await tester.tap(find.text('Next'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // Both elements are on screen.
-    expect(tester.getTopLeft(find.text('Root page')).dy, 0.0);
-    expect(tester.getTopLeft(find.text('Inner page')).dy, greaterThan(300.0));
-
-    await tester.tap(find.text('Inner page'));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-
-    // Dialog is pushed to the whole page and is at the top of the screen, not
-    // inside the inner page.
-    expect(tester.getTopLeft(find.text('Dialog')).dy, 0.0);
-  });
+//  testWidgets('Navigator.of rootNavigator finds root Navigator',
+//      (WidgetTester tester) async {
+//    await tester.pumpWidget(MaterialApp(
+//      home: Material(
+//        child: Column(
+//          children: <Widget>[
+//            const SizedBox(
+//              height: 300.0,
+//              child: Text('Root page'),
+//            ),
+//            SizedBox(
+//              height: 300.0,
+//              child: BoostContainer(
+//                onGenerateRoute: (RouteSettings settings) {
+//                  if (settings.isInitialRoute) {
+//                    return MaterialPageRoute<void>(
+//                      builder: (BuildContext context) {
+//                        return RaisedButton(
+//                          child: const Text('Next'),
+//                          onPressed: () {
+//                            Navigator.of(context).push(
+//                              MaterialPageRoute<void>(
+//                                  builder: (BuildContext context) {
+//                                return RaisedButton(
+//                                  child: const Text('Inner page'),
+//                                  onPressed: () {
+//                                    Navigator.of(context, rootNavigator: true)
+//                                        .push(
+//                                      MaterialPageRoute<void>(
+//                                          builder: (BuildContext context) {
+//                                        return const Text('Dialog');
+//                                      }),
+//                                    );
+//                                  },
+//                                );
+//                              }),
+//                            );
+//                          },
+//                        );
+//                      },
+//                    );
+//                  }
+//                  return null;
+//                },
+//              ),
+//            ),
+//          ],
+//        ),
+//      ),
+//    ));
+//
+//    await tester.tap(find.text('Next'));
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 300));
+//
+//    // Both elements are on screen.
+//    expect(tester.getTopLeft(find.text('Root page')).dy, 0.0);
+//    expect(tester.getTopLeft(find.text('Inner page')).dy, greaterThan(300.0));
+//
+//    await tester.tap(find.text('Inner page'));
+//    await tester.pump();
+//    await tester.pump(const Duration(milliseconds: 300));
+//
+//    // Dialog is pushed to the whole page and is at the top of the screen, not
+//    // inside the inner page.
+//    expect(tester.getTopLeft(find.text('Dialog')).dy, 0.0);
+//  });
 }

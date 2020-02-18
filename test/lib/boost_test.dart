@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'unit/boost_channel_test.dart' as boost_channel;
-import 'unit/boost_container_test.dart' as boost_container;
+//import 'unit/boost_container_test.dart' as boost_container;
 
 import 'unit/boost_page_route_test.dart' as boost_page_route;
 
