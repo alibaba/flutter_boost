@@ -1,3 +1,5 @@
+<img width="120" height="30" src="https://travis-ci.com/alibaba/flutter_boost.svg?branch=master">
+
 <p align="center">
   <img src="flutter_boost.png">
    <b></b><br>
