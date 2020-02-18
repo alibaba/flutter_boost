@@ -166,7 +166,7 @@ void main() {
 //            ),
 //            SizedBox(
 //              height: 300.0,
-//              child: BoostContainer(
+//              child: Navigator(
 //                onGenerateRoute: (RouteSettings settings) {
 //                  if (settings.isInitialRoute) {
 //                    return MaterialPageRoute<void>(
@@ -174,13 +174,13 @@ void main() {
 //                        return RaisedButton(
 //                          child: const Text('Next'),
 //                          onPressed: () {
-//                            Navigator.of(context).push(
+//                            BoostContainer.of(context).push(
 //                              MaterialPageRoute<void>(
 //                                  builder: (BuildContext context) {
 //                                return RaisedButton(
 //                                  child: const Text('Inner page'),
 //                                  onPressed: () {
-//                                    Navigator.of(context, rootNavigator: true)
+//                                    BoostContainer.of(context)
 //                                        .push(
 //                                      MaterialPageRoute<void>(
 //                                          builder: (BuildContext context) {
@@ -204,21 +204,21 @@ void main() {
 //        ),
 //      ),
 //    ));
-//
-//    await tester.tap(find.text('Next'));
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 300));
+////
+////    await tester.tap(find.text('Next'));
+////    await tester.pump();
+////    await tester.pump(const Duration(milliseconds: 300));
 //
 //    // Both elements are on screen.
-//    expect(tester.getTopLeft(find.text('Root page')).dy, 0.0);
-//    expect(tester.getTopLeft(find.text('Inner page')).dy, greaterThan(300.0));
-//
-//    await tester.tap(find.text('Inner page'));
-//    await tester.pump();
-//    await tester.pump(const Duration(milliseconds: 300));
-//
-//    // Dialog is pushed to the whole page and is at the top of the screen, not
-//    // inside the inner page.
-//    expect(tester.getTopLeft(find.text('Dialog')).dy, 0.0);
+//    expect(find.text('Next'), findsOneWidget);
+////    expect(tester.getTopLeft(find.text('Inner page')).dy, greaterThan(300.0));
+////
+////    await tester.tap(find.text('Inner page'));
+////    await tester.pump();
+////    await tester.pump(const Duration(milliseconds: 300));
+////
+////    // Dialog is pushed to the whole page and is at the top of the screen, not
+////    // inside the inner page.
+////    expect(tester.getTopLeft(find.text('Dialog')).dy, 0.0);
 //  });
 }
