@@ -1,4 +1,4 @@
-<img width="120" height="30" src="https://travis-ci.com/alibaba/flutter_boost.svg?branch=master">
+[![Build Status](https://travis-ci.org/alibaba/flutter_boost.svg?branch=master)](https://travis-ci.org/alibaba/flutter_boost) [![pub package](https://img.shields.io/pub/v/flutter_boost.svg)](https://pub.dartlang.org/packages/flutter_boost) [![codecov](https://codecov.io/gh/alibaba/flutter_boost/branch/master/graph/badge.svg)](https://codecov.io/gh/alibaba/flutter_boost)
 
 <p align="center">
   <img src="flutter_boost.png">
