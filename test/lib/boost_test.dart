@@ -14,12 +14,12 @@ import 'unit/flutter_boost_test.dart' as flutter_boost;
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('all_test', () {
-    boost_channel.main();
-//    boost_container.main();
-    boost_page_route.main();
-    container_coordinator.main();
-    container_manager.main();
-    flutter_boost.main();
-  });
+//  group('all_test', () {
+//    boost_channel.main();
+////    boost_container.main();
+//    boost_page_route.main();
+//    container_coordinator.main();
+//    container_manager.main();
+//    flutter_boost.main();
+//  });
 }

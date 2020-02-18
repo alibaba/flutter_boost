@@ -109,8 +109,6 @@ void main() {
       (WidgetTester tester) async {
     await tester.pumpWidget(MyApp());
 
-//    Navigator.pushNamed(scaffoldKey.currentContext, "first");
-
     expect(find.text('First'), findsNothing);
   });
 }
