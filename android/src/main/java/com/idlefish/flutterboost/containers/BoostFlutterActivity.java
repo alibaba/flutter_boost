@@ -267,7 +267,7 @@ public class BoostFlutterActivity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        delegate.onPause();
+        delegate.onPause(true);
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     }
 

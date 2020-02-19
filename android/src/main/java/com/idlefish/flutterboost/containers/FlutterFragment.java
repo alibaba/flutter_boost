@@ -1,28 +1,33 @@
 package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
-import androidx.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
+
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.XFlutterView;
-import io.flutter.embedding.android.*;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.plugin.platform.PlatformPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.flutter.embedding.android.FlutterEngineConfigurator;
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.android.SplashScreen;
+import io.flutter.embedding.android.SplashScreenProvider;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 
 public class FlutterFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
@@ -277,7 +282,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onPause() {
         super.onPause();
-        delegate.onPause();
+        delegate.onPause(getUserVisibleHint());
     }
 
     @Override
