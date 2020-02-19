@@ -29,4 +29,6 @@ public interface IOperateSyncer {
     void onTrimMemory(int level);
 
     void onLowMemory();
+
+    boolean isAppear();
 }

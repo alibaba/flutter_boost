@@ -39,6 +39,8 @@ public class ContainerRecord implements IContainerRecord {
     private int mState = STATE_UNKNOW;
     private MethodChannelProxy mProxy = new MethodChannelProxy();
 
+    private boolean isAppear = false;
+
     ContainerRecord(FlutterViewContainerManager manager, IFlutterViewContainer container) {
         final Map params = container.getContainerUrlParams();
         if(params != null && params.containsKey(IContainerRecord.UNIQ_KEY)) {
@@ -95,6 +97,7 @@ public class ContainerRecord implements IContainerRecord {
 
         mContainer.getBoostFlutterView().onAttach();
 
+        isAppear = true;
     }
 
     @Override
@@ -115,6 +118,8 @@ public class ContainerRecord implements IContainerRecord {
         mContainer.getBoostFlutterView().onDetach();
 
         mManager.popRecord(this);
+
+        isAppear = false;
     }
 
     @Override
@@ -193,6 +198,11 @@ public class ContainerRecord implements IContainerRecord {
     @Override
     public void onLowMemory() {
 
+    }
+
+    @Override
+    public boolean isAppear() {
+        return isAppear;
     }
 
 
