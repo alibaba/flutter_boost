@@ -17,6 +17,8 @@ import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityManager;
@@ -24,6 +26,7 @@ import android.view.accessibility.AccessibilityNodeProvider;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -104,6 +107,10 @@ public class XFlutterView extends FrameLayout {
   private  boolean hasAddFirstFrameRenderedListener=false;
 
   private boolean isFlutterUiDisplayed;
+
+  // surface view 模式不支持
+  private ImageView currentImageView;
+  private TextureView currentTexture;
 
 
   // Directly implemented View behavior that communicates with Flutter.
@@ -219,8 +226,29 @@ public class XFlutterView extends FrameLayout {
         Log.v(TAG, "Internally using a FlutterTextureView.");
         FlutterTextureView flutterTextureView = new FlutterTextureView(getContext());
         renderSurface = flutterTextureView;
+        currentTexture = flutterTextureView;
         addView(flutterTextureView);
         break;
+    }
+
+    if (renderMode == FlutterView.RenderMode.texture) {
+      currentImageView = new ImageView(getContext());
+      currentImageView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+      addView(currentImageView);
+      currentImageView.setVisibility(View.GONE);
+      addOnFirstFrameRenderedListener(new FlutterUiDisplayListener() {
+
+        @Override
+        public void onFlutterUiDisplayed() {
+          currentImageView.setImageResource(android.R.color.transparent);
+          currentImageView.setVisibility(View.GONE);
+        }
+
+        @Override
+        public void onFlutterUiNoLongerDisplayed() {
+
+        }
+      });
     }
 
     // FlutterView needs to be focusable so that the InputMethodManager can interact with it.
@@ -688,6 +716,11 @@ public class XFlutterView extends FrameLayout {
     // Notify engine attachment listeners of the detachment.
     for (FlutterView.FlutterEngineAttachmentListener listener : flutterEngineAttachmentListeners) {
       listener.onFlutterEngineDetachedFromFlutterView();
+    }
+
+    if (renderMode == FlutterView.RenderMode.texture) {
+      currentImageView.setImageBitmap(currentTexture.getBitmap());
+      currentImageView.setVisibility(View.VISIBLE);
     }
 
     // Disconnect the FlutterEngine's PlatformViewsController from the AccessibilityBridge.
