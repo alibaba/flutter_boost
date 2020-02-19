@@ -202,13 +202,11 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     }
 
 
-    void onPause(boolean isDisAppear) {
+    void onPause() {
         Log.v(TAG, "onPause()");
 
         ensureAlive();
-        if (isDisAppear) {
-            mSyncer.onDisappear();
-        }
+        mSyncer.onDisappear();
         flutterEngine.getLifecycleChannel().appIsInactive();
     }
 
