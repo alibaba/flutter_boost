@@ -1,55 +1,100 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'page_widgets.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
+
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    FlutterBoost.singleton.registerPageBuilders({
+      'embeded': (pageName, params, _) => EmbededFirstRouteWidget(),
+      'first': (pageName, params, _) => FirstRouteWidget(),
+      'second': (pageName, params, _) => SecondRouteWidget(),
+      'tab': (pageName, params, _) => TabRouteWidget(),
+      'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
+      'flutterPage': (pageName, params, _) {
+        print("flutterPage params:$params");
+
+        return FlutterRouteWidget(params: params);
+      },
+    });
+    FlutterBoost.singleton
+        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Flutter Boost example',
+        builder: FlutterBoost.init(postPush: _onRoutePushed),
+        home: Container());
+  }
+
+  void _onRoutePushed(
+      String pageName, String uniqueId, Map params, Route route, Future _) {}
+}
+
+class TestBoostNavigatorObserver extends NavigatorObserver {
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print("flutterboost#didPush");
+  }
+
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print("flutterboost#didPop");
+  }
+
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print("flutterboost#didRemove");
+  }
+
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    print("flutterboost#didReplace");
+  }
+}
 
 void main() {
-  const MethodChannel channel = MethodChannel('flutter_boost');
-  final List<MethodCall> log = <MethodCall>[];
-  dynamic response;
-
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    print(methodCall);
-    log.add(methodCall);
-    return response;
-  });
-
-  tearDown(() {
-    log.clear();
-  });
-
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('flutter_boost', () {
-    response = null;
+  testWidgets('test iOS edge swipe then drop back at starting point works',
+      (WidgetTester tester) async {
+    //push app
+    await tester.pumpWidget(
+      MyApp(),
+    );
 
-    test('init successfully', () async {
-      Function builder = FlutterBoost.init();
+    //open firt page
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("first", {}, "1000000");
 
-      expect(
-        builder.runtimeType,
-        TransitionBuilder,
-      );
-    });
+    await tester.pump(const Duration(seconds: 1));
 
-    test('open successfully', () async {
-      Future<Map<dynamic, dynamic>> result = FlutterBoost.singleton.open("url");
+    expect(find.text('First'), findsOneWidget);
 
-      expect(
-        result,
-        isInstanceOf<Future<Map<dynamic, dynamic>>>(),
-      );
-    });
+    //open second page
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("second", {}, "2000000");
 
+    await tester.pump(const Duration(seconds: 1));
 
-//    test('close successfully', () async {
-//      Future<bool> result = FlutterBoost.singleton.close("id");
-//
-//      expect(
-//        result,
-//        isInstanceOf<bool>(),
-//      );
-//    });
+    expect(find.text('Second'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 1));
+
+    //close sencod page
+    FlutterBoost.containerManager?.remove("2000000");
+
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('First'), findsOneWidget);
 
 
   });
