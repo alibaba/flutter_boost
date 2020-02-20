@@ -220,6 +220,9 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
     void onDestroyView() {
         Log.v(TAG, "onDestroyView()");
+        if (mSyncer.isAppear()) {
+            mSyncer.onDisappear();
+        }
         mSyncer.onDestroy();
 
         ensureAlive();
