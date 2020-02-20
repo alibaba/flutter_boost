@@ -51,6 +51,9 @@
     if(self = [super initWithEngine:FLUTTER_APP.flutterProvider.engine
                             nibName:_flbNibName
                             bundle:_flbNibBundle]){
+        //NOTES:在present页面时，默认是全屏，如此可以触发底层VC的页面事件。否则不会触发而导致异常
+        self.modalPresentationStyle = UIModalPresentationFullScreen;
+
         [self _setup];
     }
     return self;
@@ -219,6 +222,13 @@ static NSUInteger kInstanceCounter = 0;
                                                  uniqueId:self.uniqueIDString];
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
+    
+    //NOTES：因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，从而让当前engine持有的vc inactive，此处可驱使其重新resume
+    if (![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
+    {
+        [FLUTTER_APP resume];
+    }
+
 }
 
 
@@ -229,6 +239,14 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
+    
+    //NOTES:因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，导致当前engine持有的VC被surfaceUpdate(NO)，从而销毁底层的raster。此处是考虑到这种情形，重建surface
+    if (FLUTTER_VC.beingPresented || self.beingDismissed || ![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
+    {
+        [FLUTTER_APP resume];
+        [(FLBFlutterViewContainer*)FLUTTER_VC surfaceUpdated:YES];
+    }
+
 //  instead of calling [super viewDidDisappear:animated];, call super's super
 //    struct objc_super target = {
 //        .super_class = class_getSuperclass([FlutterViewController class]),

@@ -2,7 +2,7 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;

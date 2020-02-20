@@ -1,3 +1,8 @@
+## 1.9.1+1
+
+  Rename the version number and start supporting androidx by default, Based on the flutter 1.9.1 - hotfixs。
+  fixed bugs
+
 ## 0.1.66
 
   Fixed bugs

@@ -1,6 +1,7 @@
 package com.idlefish.flutterboost;
 
-import android.support.annotation.Nullable;
+import android.os.Handler;
+import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 

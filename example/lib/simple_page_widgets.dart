@@ -11,15 +11,33 @@ class FirstRouteWidget extends StatelessWidget {
         title: Text('First Route'),
       ),
       body: Center(
-        child: RaisedButton(
-          child: Text('Open second route'),
-          onPressed: () {
-            print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map value) {
-              print(
-                  "call me when page is finished. did recieve second route result $value");
-            });
-          },
+        child:
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: 
+          <Widget>[
+            RaisedButton(
+                child: Text('Open second route'),
+                onPressed: () {
+                  print("open second page!");
+                  FlutterBoost.singleton.open("second").then((Map value) {
+                    print(
+                        "call me when page is finished. did recieve second route result $value");
+                  });
+                },
+              ),
+
+              RaisedButton(
+                  child: Text('Present second route'),
+                  onPressed: () {
+                    print("Present second page!");
+                    FlutterBoost.singleton.open("second",urlParams:{"present":true}).then((Map value) {
+                      print(
+                          "call me when page is finished. did recieve second route result $value");
+                    });
+                  },
+                ),
+            ],
         ),
       ),
     );
