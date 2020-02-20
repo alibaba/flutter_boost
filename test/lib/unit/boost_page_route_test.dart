@@ -44,4 +44,131 @@ void main() {
     expect(find.text('Page 1'), findsNothing);
     expect(find.text('Page 2'), isOnstage);
   });
+
+  group('Try to get the BoostPageRoute in the ancestor node', () {
+    testWidgets(
+        'obtain BoostPageRoute through the `BoostPageRoute.of(context)` method',
+        (WidgetTester tester) async {
+      var boostPageRoute;
+      var boostPageRouteFindByOfMethod;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          onGenerateRoute: (RouteSettings settings) {
+            boostPageRoute = BoostPageRoute<void>(
+              settings: settings,
+              builder: (BuildContext context) => Builder(
+                builder: (context) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      boostPageRouteFindByOfMethod = BoostPageRoute.of(context);
+                    },
+                  );
+                },
+              ),
+            );
+            return boostPageRoute;
+          },
+        ),
+      );
+
+      await tester.tap(find.byType(FloatingActionButton));
+
+      // The route obtained from the ancestor node through the `of` method should be the same BoostPageRoute
+      // as the originally created BoostPageRoute
+      expect(boostPageRoute, boostPageRouteFindByOfMethod);
+    });
+
+    testWidgets(
+        'try to find BoostPageRoute through the `BoostPageRoute.of(context)` method, '
+        'but it doesn\'t exist, the method should throw an Exception',
+        (WidgetTester tester) async {
+      var contextCache;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          onGenerateRoute: (RouteSettings settings) {
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (context) => Builder(
+                builder: (context) => FloatingActionButton(
+                  onPressed: () {
+                    contextCache = context;
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+      await tester.tap(find.byType(FloatingActionButton));
+
+      expect(() => BoostPageRoute.of(contextCache), throwsException);
+    });
+
+    testWidgets(
+        'obtain BoostPageRoute through the `BoostPageRoute.tryOf(context)` method',
+        (WidgetTester tester) async {
+      var boostPageRoute;
+      var boostPageRouteFindByOfMethod;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          onGenerateRoute: (RouteSettings settings) {
+            boostPageRoute = BoostPageRoute<void>(
+              settings: settings,
+              builder: (BuildContext context) => Builder(
+                builder: (context) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      boostPageRouteFindByOfMethod =
+                          BoostPageRoute.tryOf(context);
+                    },
+                  );
+                },
+              ),
+            );
+            return boostPageRoute;
+          },
+        ),
+      );
+
+      await tester.tap(find.byType(FloatingActionButton));
+
+      // The route obtained from the ancestor node through the `tryOf` method should be the same BoostPageRoute
+      // as the originally created BoostPageRoute
+      expect(boostPageRoute, boostPageRouteFindByOfMethod);
+    });
+  });
+
+  testWidgets(
+      'try to find BoostPageRoute through the `BoostPageRoute.tryOf(context)` method, '
+      'but it doesn\'t exist, the method should return null',
+      (WidgetTester tester) async {
+    var boostPageRouteFindByOfMethod;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        onGenerateRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (BuildContext context) => Builder(
+              builder: (context) {
+                return FloatingActionButton(
+                  onPressed: () {
+                    boostPageRouteFindByOfMethod =
+                        BoostPageRoute.tryOf(context);
+                  },
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+
+    await tester.tap(find.byType(FloatingActionButton));
+
+    expect(boostPageRouteFindByOfMethod, null);
+  });
 }
