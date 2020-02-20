@@ -71,6 +71,7 @@ void main() {
       MyApp(),
     );
 
+
     //open firt page
     ContainerCoordinator.singleton
         .nativeContainerDidShow("first", {}, "1000000");
@@ -78,6 +79,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('First'), findsOneWidget);
+
 
     //open second page
     ContainerCoordinator.singleton
@@ -89,12 +91,48 @@ void main() {
 
     await tester.pump(const Duration(seconds: 1));
 
+
+
     //close sencod page
     FlutterBoost.containerManager?.remove("2000000");
 
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('First'), findsOneWidget);
+
+
+    // second page ,but pageId is 2000001
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("second", {}, "2000001");
+
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('Second'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 1));
+
+
+    //reopen firt page
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("first", {}, "1000000");
+
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('First'), findsOneWidget);
+
+
+
+
+    // close second page and  pageId is 2000001
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("second", {}, "2000001");
+
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('Second'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 1));
+
 
 
   });
