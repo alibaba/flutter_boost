@@ -94,9 +94,6 @@ class _MyAppState extends State<MyApp> {
         },
         home: Container());
   }
-
-  void _onRoutePushed(
-      String pageName, String uniqueId, Map params, Route route, Future _) {}
 }
 
 void main() {
@@ -108,4 +105,75 @@ void main() {
 
     expect(find.text('First'), findsNothing);
   });
+
+  group(
+    'Try to get the ContainerManagerState in the ancestor node',
+    () {
+      testWidgets(
+        'through the `BoostContainerManager.of(context)` method',
+        (WidgetTester tester) async {
+          var findBoostContainerManagerByOfMethod;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              builder: (BuildContext context, Widget child) {
+                final BoostContainerManager manager = BoostContainerManager(
+                  initNavigator: child,
+                );
+
+                return manager;
+              },
+              home: Builder(
+                builder: (BuildContext context) {
+                  return FloatingActionButton(onPressed: () {
+                    findBoostContainerManagerByOfMethod = context;
+                  });
+                },
+              ),
+            ),
+          );
+
+          await tester.tap(find.byType(FloatingActionButton));
+
+          expect(
+            BoostContainerManager.of(findBoostContainerManagerByOfMethod),
+            const TypeMatcher<ContainerManagerState>(),
+          );
+        },
+      );
+
+      testWidgets(
+        'through the `BoostContainerManager.tryOf(context)` method',
+        (WidgetTester tester) async {
+          var findBoostContainerManagerByOfMethod;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              builder: (BuildContext context, Widget child) {
+                final BoostContainerManager manager = BoostContainerManager(
+                  initNavigator: child,
+                );
+
+                return manager;
+              },
+              home: Builder(
+                builder: (BuildContext context) {
+                  return FloatingActionButton(onPressed: () {
+                    findBoostContainerManagerByOfMethod = context;
+                  });
+                },
+              ),
+            ),
+          );
+
+          await tester.tap(find.byType(FloatingActionButton));
+
+          expect(
+            BoostContainerManager.tryOf(findBoostContainerManagerByOfMethod),
+            const TypeMatcher<ContainerManagerState>(),
+          );
+        },
+      );
+    },
+  );
 }
