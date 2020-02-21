@@ -71,7 +71,6 @@ void main() {
       MyApp(),
     );
 
-
     //open firt page
     ContainerCoordinator.singleton
         .nativeContainerDidShow("first", {}, "1000000");
@@ -80,8 +79,7 @@ void main() {
 
     expect(find.text('First'), findsOneWidget);
 
-
-    //open second page
+    //open second page  firt(1000000)->second(2000000)
     ContainerCoordinator.singleton
         .nativeContainerDidShow("second", {}, "2000000");
 
@@ -91,17 +89,14 @@ void main() {
 
     await tester.pump(const Duration(seconds: 1));
 
-
-
-    //close sencod page
+    //close sencod page  firt(1000000)
     FlutterBoost.containerManager?.remove("2000000");
 
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('First'), findsOneWidget);
 
-
-    // second page ,but pageId is 2000001
+    // second page ,but pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
         .nativeContainerDidShow("second", {}, "2000001");
 
@@ -111,8 +106,7 @@ void main() {
 
     await tester.pump(const Duration(seconds: 1));
 
-
-    //reopen firt page
+    //reopen firt page   second(2000001)->firt(1000000)
     ContainerCoordinator.singleton
         .nativeContainerDidShow("first", {}, "1000000");
 
@@ -120,10 +114,9 @@ void main() {
 
     expect(find.text('First'), findsOneWidget);
 
+    //reopen firt page   second(2000001)->firt(1000000)
 
-
-
-    // close second page and  pageId is 2000001
+    // reopen second page and  pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
         .nativeContainerDidShow("second", {}, "2000001");
 
@@ -132,6 +125,24 @@ void main() {
     expect(find.text('Second'), findsOneWidget);
 
     await tester.pump(const Duration(seconds: 1));
+
+    //close firt(1000000) page  second(2000001)
+    FlutterBoost.containerManager?.remove("1000000");
+
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text('Second'), findsOneWidget);
+
+
+    // open  second(2000003)
+    ContainerCoordinator.singleton
+        .nativeContainerDidShow("second", {}, "2000003");
+
+    await tester.idle();
+
+    expect(find.text('Second'), findsOneWidget);
+
+
 
 
 
