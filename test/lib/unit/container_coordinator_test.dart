@@ -82,7 +82,20 @@ void main() {
       expect(e, isNoSuchMethodError);
     }
 
+    MethodCall call6 = MethodCall('didDisappearPageContainer', arguments);
 
+    try {
+      boostChannel.testHandler(call6);
+    } catch (e) {
+      expect(e, isNoSuchMethodError);
+    }
+    MethodCall call7 = MethodCall('willDeallocPageContainer', arguments);
+
+    try {
+      boostChannel.testHandler(call7);
+    } catch (e) {
+      expect(e, isNoSuchMethodError);
+    }
 
     Map arg = {'type': 'backPressedCallback'};
     try {
