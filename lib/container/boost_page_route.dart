@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -36,23 +37,14 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
 
   final Set<VoidCallback> backPressedListeners = Set<VoidCallback>();
 
-  @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
-    return super.buildTransitions(context, animation, secondaryAnimation, child);
-  }
-
   BoostPageRoute(
-      {Key stubKey,
-      this.pageName,
+      {this.pageName,
       this.params,
       this.uniqueId,
       this.animated,
       this.builder,
       this.settings})
-      : super(
-            builder: (BuildContext context) => Stub(stubKey, builder(context)),
-            settings: settings);
+      : super(builder: builder, settings: settings);
 
   static BoostPageRoute<T> of<T>(BuildContext context) {
     final Route<T> route = ModalRoute.of(context);
@@ -71,19 +63,4 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
       return null;
     }
   }
-}
-
-@immutable
-class Stub extends StatefulWidget {
-  final Widget child;
-
-  const Stub(Key key, this.child) : super(key: key);
-
-  @override
-  _StubState createState() => _StubState();
-}
-
-class _StubState extends State<Stub> {
-  @override
-  Widget build(BuildContext context) => widget.child;
 }

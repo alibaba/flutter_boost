@@ -26,6 +26,7 @@ public class FlutterBoost {
     private FlutterEngine mEngine;
     private Activity mCurrentActiveActivity;
     private PluginRegistry mRegistry;
+    private boolean mEnterActivityCreate =false;
     static FlutterBoost sInstance = null;
 
     private long FlutterPostFrameCallTime = 0;
@@ -56,6 +57,10 @@ public class FlutterBoost {
 
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                //fix crash：'FlutterBoostPlugin not register yet'
+                //case: initFlutter after Activity.OnCreate method，and then called start/stop crash
+                // In SplashActivity ,showDialog(in OnCreate method) to check permission, if authorized, then init sdk and jump homePage)
+                mEnterActivityCreate = true;
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
@@ -70,6 +75,9 @@ public class FlutterBoost {
 
             @Override
             public void onActivityStarted(Activity activity) {
+                if (!mEnterActivityCreate){
+                    return;
+                }
                 if (mCurrentActiveActivity == null) {
                     Debuger.log("Application entry foreground");
 
@@ -84,16 +92,24 @@ public class FlutterBoost {
 
             @Override
             public void onActivityResumed(Activity activity) {
+                if (!mEnterActivityCreate){
+                    return;
+                }
                 mCurrentActiveActivity = activity;
             }
 
             @Override
             public void onActivityPaused(Activity activity) {
-
+                if (!mEnterActivityCreate){
+                    return;
+                }
             }
 
             @Override
             public void onActivityStopped(Activity activity) {
+                if (!mEnterActivityCreate){
+                    return;
+                }
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
@@ -108,11 +124,16 @@ public class FlutterBoost {
 
             @Override
             public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-
+                if (!mEnterActivityCreate){
+                    return;
+                }
             }
 
             @Override
             public void onActivityDestroyed(Activity activity) {
+                if (!mEnterActivityCreate){
+                    return;
+                }
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
@@ -141,6 +162,9 @@ public class FlutterBoost {
 
         if (mEngine != null) return;
 
+        if (mPlatform.lifecycleListener != null) {
+            mPlatform.lifecycleListener.beforeCreateEngine();
+        }
         FlutterEngine flutterEngine = createEngine();
         if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.onEngineCreated();
@@ -337,6 +361,9 @@ public class FlutterBoost {
 
 
     public interface BoostLifecycleListener {
+
+        void beforeCreateEngine();
+
         void onEngineCreated();
 
         void onPluginsRegistered();

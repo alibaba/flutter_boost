@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost_example/platform_view.dart';
 
 class FirstRouteWidget extends StatelessWidget {
   @override
@@ -17,7 +16,7 @@ class FirstRouteWidget extends StatelessWidget {
           children: 
           <Widget>[
             RaisedButton(
-                child: Text('Open second route'),
+                child: Text('First'),
                 onPressed: () {
                   print("open second page!");
                   FlutterBoost.singleton.open("second").then((Map value) {
@@ -69,7 +68,7 @@ class SecondRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Second Route"),
+        title: Text("Second"),
       ),
       body: Center(
         child: RaisedButton(
@@ -107,28 +106,6 @@ class TabRouteWidget extends StatelessWidget {
   }
 }
 
-class PlatformRouteWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:Text("Platform Route"),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: TextView(),
-          onPressed: () {
-            print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map value) {
-              print(
-                  "call me when page is finished. did recieve second route result $value");
-            });
-          },
-        ),
-      ),
-    );
-  }
-}
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params,this.message});
   final Map params;
@@ -292,8 +269,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => PlatformRouteWidget()));
                 },
               ),
                 InkWell(
