@@ -33,6 +33,11 @@ public class MyApplication extends Application {
         FlutterBoost.BoostLifecycleListener boostLifecycleListener= new FlutterBoost.BoostLifecycleListener(){
 
             @Override
+            public void beforeCreateEngine() {
+
+            }
+
+            @Override
             public void onEngineCreated() {
 
             }
