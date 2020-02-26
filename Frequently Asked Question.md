@@ -65,6 +65,7 @@ VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方�
 1. dart层的SystemChrome.setPreferredOrientations函数并非直接设置转向，而是设置页面优先使用的转向(preferred)
 2. app的转向控制除了info.plist的设置外，主要受UIWindow.rootViewController控制。大概过程是这样的：硬件检测到转向，就会调用UIWindow的转向函数，然后调用其rootViewController的shouldAutorotate判断是否需要自动转，然后取supportedInterfaceOrientations和info.plist中设置的交集来判断可否转
 3. 对于UIViewController中的转向，也只在rootviewcontroller中才有效
+
 举例如下，实现步骤可以这样：
 1. 重写NavigationController：
 ```objc
@@ -89,4 +90,4 @@ VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方�
     return UIInterfaceOrientationMaskAll;
 }
 ```
-2，改dart层：因为SystemChrome.setPreferredOrientations的设置是全局的，但混合栈是多页面，所以在main函数中设置，后面在新建一个FlutterViewController时会被冲掉。为了解决这个问题，需要在每个dart页面的build处都加上这语句来设置每个页面能支持哪些转向类型
+2. 改dart层：因为SystemChrome.setPreferredOrientations的设置是全局的，但混合栈是多页面，所以在main函数中设置，后面在新建一个FlutterViewController时会被冲掉。为了解决这个问题，需要在每个dart页面的build处都加上这语句来设置每个页面能支持哪些转向类型
