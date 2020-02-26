@@ -57,10 +57,10 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 
 同时FlutterBoost也提供了一次性创建混合工程的命令：flutterboot。代码参考：https://github.com/alibaba-flutter/flutter-boot
 
-### 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
+### 7. 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
 回答：如果不加处理会遇到window大小变化的问题，但可以解决。具体可以参考这个issue：https://github.com/alibaba/flutter_boost/issues/435
 
-### Flutter ViewController如何设置横屏
+### 8. Flutter ViewController如何设置横屏
 VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方式来设置：
 1. dart层的SystemChrome.setPreferredOrientations函数并非直接设置转向，而是设置页面优先使用的转向(preferred)
 2. app的转向控制除了info.plist的设置外，主要受UIWindow.rootViewController控制。大概过程是这样的：硬件检测到转向，就会调用UIWindow的转向函数，然后调用其rootViewController的shouldAutorotate判断是否需要自动转，然后取supportedInterfaceOrientations和info.plist中设置的交集来判断可否转
