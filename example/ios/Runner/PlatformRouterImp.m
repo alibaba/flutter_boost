@@ -7,6 +7,7 @@
 //
 
 #import "PlatformRouterImp.h"
+#import "UIViewControllerDemo.h"
 #import <flutter_boost/FlutterBoost.h>
 
 @interface PlatformRouterImp()
@@ -14,12 +15,30 @@
 
 @implementation PlatformRouterImp
 
+- (void)openNativeVC:(NSString *)name
+           urlParams:(NSDictionary *)params
+                exts:(NSDictionary *)exts{
+    UIViewController *vc = UIViewControllerDemo.new;
+    BOOL animated = [exts[@"animated"] boolValue];
+    if([params[@"present"] boolValue]){
+        [self.navigationController presentViewController:vc animated:animated completion:^{
+        }];
+    }else{
+        [self.navigationController pushViewController:vc animated:animated];
+    }
+}
+
 #pragma mark - Boost 1.5
 - (void)open:(NSString *)name
    urlParams:(NSDictionary *)params
         exts:(NSDictionary *)exts
   completion:(void (^)(BOOL))completion
 {
+    if ([name isEqualToString:@"native"]) {//模拟打开native页面
+        [self openNativeVC:name urlParams:params exts:exts];
+        return;
+    }
+    
     BOOL animated = [exts[@"animated"] boolValue];
     FLBFlutterViewContainer *vc = FLBFlutterViewContainer.new;
     [vc setName:name params:params];
