@@ -17,6 +17,17 @@ class FirstRouteWidget extends StatelessWidget {
           children: 
           <Widget>[
             RaisedButton(
+                child: Text('Open native page'),
+                onPressed: () {
+                  print("open natve page!");
+                  FlutterBoost.singleton.open("native").then((Map value) {
+                    print(
+                        "call me when page is finished. did recieve second route result $value");
+                  });
+                },
+              ),
+
+            RaisedButton(
                 child: Text('Open second route'),
                 onPressed: () {
                   print("open second page!");
