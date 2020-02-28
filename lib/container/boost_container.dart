@@ -87,7 +87,8 @@ class BoostContainer extends Navigator {
             }
           },
           observers: <NavigatorObserver>[
-            ContainerNavigatorObserver.bindContainerManager()
+            ContainerNavigatorObserver.bindContainerManager(),
+            HeroController(),
           ],
           onUnknownRoute: navigator.onUnknownRoute);
 
