@@ -20,12 +20,12 @@ class MockBoostChannel extends BoostChannel implements Mock {
   VoidCallback addEventListener(String name, EventListener listener) {
     _testEventListener = listener;
 
-    super.addEventListener(name, listener);
+    return super.addEventListener(name, listener);
   }
 
   VoidCallback addMethodHandler(MethodHandler handler) {
     _testHandler = handler;
-    super.addMethodHandler(handler);
+    return  super.addMethodHandler(handler);
   }
 }
 
@@ -39,9 +39,9 @@ void main() {
     MockBoostChannel boostChannel = MockBoostChannel();
     ContainerCoordinator(boostChannel);
 
-    final Map arguments = {};
+    final Map arguments =<dynamic,dynamic> {};
     arguments["pageName"] = "pageName";
-    arguments["params"] = {};
+    arguments["params"] = <dynamic,dynamic>{};
     arguments["uniqueId"] = "xxxxx";
 
     MethodCall call = MethodCall('didInitPageContainer', arguments);
@@ -97,7 +97,7 @@ void main() {
       expect(e, isNoSuchMethodError);
     }
 
-    Map arg = {'type': 'backPressedCallback'};
+    Map arg = <dynamic,dynamic>{'type': 'backPressedCallback'};
     try {
       boostChannel.testEventListener("lifecycle", arg);
     } catch (e) {
@@ -106,21 +106,21 @@ void main() {
 
 
 
-    Map arg2 = {'type': 'foreground'};
+    Map arg2 = <dynamic,dynamic>{'type': 'foreground'};
     try {
       boostChannel.testEventListener("lifecycle", arg2);
     } catch (e) {
       expect(e, isNoSuchMethodError);
     }
 
-    Map arg3 = {'type': 'background'};
+    Map arg3 = <dynamic,dynamic>{'type': 'background'};
     try {
       boostChannel.testEventListener("lifecycle", arg3);
     } catch (e) {
       expect(e, isNoSuchMethodError);
     }
 
-    Map arg4 = {'type': 'scheduleFrame'};
+    Map arg4 = <dynamic,dynamic>{'type': 'scheduleFrame'};
     try {
       boostChannel.testEventListener("lifecycle", arg4);
     } catch (e) {

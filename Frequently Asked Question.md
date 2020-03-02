@@ -23,6 +23,9 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 ### 3. 您好，我想请教一下flutter_boost有关的问题：ABC三个都是flutter页面，从 A页面 -> B页面 -> C页面，当打开C页面时希望自动关掉B页面，当从C页面返回时直接返回A页面，可有什么方法？
 回答：你只需要操作Native层的UINavigationController里的vc数组就可以了。就如同平时你操作普通的UIViewController一样。因为FlutterBoost对Native层的FlutterViewController和Dart层的flutter page的生命周期管理是一致的，当FlutterViewController被销毁，其在dart层管理的flutter page也会自动被销毁。
 
+### 3.1如果我进了若干个flutter页或native页面，想实现点一个按钮直接返回到首页。如何做？
+回答：同第3条，flutter页面由混合容器管理。上层实现不需要过多考虑。通过操作Native层的UINavigationController里的vc数组就可以了。清除部分或全部这个数组，就能实现你返回到什么页。底层flutter页面的资源会自动按需释放
+
 ### 4. 在ios中voice over打开，demo在点击交互会crash;
 回答：无障碍模式下目前Flutter Engine有bug，已经提交issue和PR给flutter啦。请参考这个issue：https://github.com/alibaba/flutter_boost/issues/488及其分析。提交给flutter的PR见这里：https://github.com/flutter/engine/pull/14155
 
@@ -57,6 +60,37 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 
 同时FlutterBoost也提供了一次性创建混合工程的命令：flutterboot。代码参考：https://github.com/alibaba-flutter/flutter-boot
 
-### 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
+### 7. 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
 回答：如果不加处理会遇到window大小变化的问题，但可以解决。具体可以参考这个issue：https://github.com/alibaba/flutter_boost/issues/435
 
+### 8. Flutter ViewController如何设置横屏
+VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方式来设置：
+1. dart层的SystemChrome.setPreferredOrientations函数并非直接设置转向，而是设置页面优先使用的转向(preferred)
+2. app的转向控制除了info.plist的设置外，主要受UIWindow.rootViewController控制。大概过程是这样的：硬件检测到转向，就会调用UIWindow的转向函数，然后调用其rootViewController的shouldAutorotate判断是否需要自动转，然后取supportedInterfaceOrientations和info.plist中设置的交集来判断可否转
+3. 对于UIViewController中的转向，也只在rootviewcontroller中才有效
+
+举例如下，实现步骤可以这样：
+1. 重写NavigationController：
+```objc
+-(BOOL)shouldAutorotate
+{
+//    id currentViewController = self.topViewController;
+//
+//
+//     if ([currentViewController isKindOfClass:[FlutterViewController class]])
+//        return [currentViewController shouldAutorotate];
+
+    return YES;
+}
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    id currentViewController = self.topViewController;
+    if ([currentViewController isKindOfClass:[FlutterViewController class]]){
+        NSLog(@"[XDEBUG]----fvc supported:%ld\n",[currentViewController supportedInterfaceOrientations]);
+         return [currentViewController supportedInterfaceOrientations];
+    }
+    return UIInterfaceOrientationMaskAll;
+}
+```
+2. 改dart层：因为SystemChrome.setPreferredOrientations的设置是全局的，但混合栈是多页面，所以在main函数中设置，后面在新建一个FlutterViewController时会被冲掉。为了解决这个问题，需要在每个dart页面的build处都加上这语句来设置每个页面能支持哪些转向类型

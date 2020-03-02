@@ -29,18 +29,20 @@
 | 0.1.60                  | 1.9.1-hotfixes          | android 如果其他 flutter 分支会编译错误。                    | No                  |
 | 0.1.63                  | 1.9.1-hotfixes          | 和 0.1.60 代码同步， bugfix 也会合入该分支，如果其他分支会编译错误。 | No                  |
 | 0.1.61-0.1.69           | 1.9.1-hotfixes          | 0.1.60 的 bugfix。                                           | No                  |
-| 1.9.1+1              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
+| 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
 
 
 
-| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
 
-| v1.9.1-hotfixes         | 1.9.1-hotfixes          | 支持androidx，修复bug后会定期发布新版本 | Yes                 |
-| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | 支持support包，不支持androidx | NO                 |
-| v1.12.13-hotfixes       | 1.12.13-hotfixes         | 支持androidx，目前还没发布的版本，用分支形式引入                                                        | Yes                 |
-| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | 支持support包，不支持androidx | NO                 |
 
-.
+| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | Support AndroidX？ |
+| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
+| v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
+| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | for support  | NO                 |
+| v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
+| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | for support  | NO                 |
+
+
 
 # 安装
 
@@ -53,7 +55,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: ' 1.9.1+1'
+        ref: ' 1.9.1+2'
 ```
 support branch
 ```json
