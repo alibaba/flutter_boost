@@ -55,37 +55,24 @@ class FlutterBoost {
   static ContainerManagerState get containerManager =>
       _instance.containerManagerKey.currentState;
 
-  static void onPageStart() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo) {
-        if (pageInfo == null || pageInfo.isEmpty) return;
-
-        if (pageInfo.containsKey("name") &&
-            pageInfo.containsKey("params") &&
-            pageInfo.containsKey("uniqueId")) {
-          ContainerCoordinator.singleton.nativeContainerDidShow(
-              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
-        }
-      });
-    });
-  }
-
   static TransitionBuilder init(
       {TransitionBuilder builder,
       PrePushRoute prePush,
       PostPushRoute postPush}) {
     if (Platform.isAndroid) {
-      onPageStart();
-    }
-    assert(() {
-      () async {
-        if (Platform.isIOS) {
-          onPageStart();
-        }
-      }();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo) {
+          if (pageInfo == null || pageInfo.isEmpty) return;
 
-      return true;
-    }());
+          if (pageInfo.containsKey("name") &&
+              pageInfo.containsKey("params") &&
+              pageInfo.containsKey("uniqueId")) {
+            ContainerCoordinator.singleton.nativeContainerDidShow(
+                pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+          }
+        });
+      });
+    }
 
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
@@ -198,6 +185,4 @@ class FlutterBoost {
   ///register callbacks for Navigators push & pop
   void addBoostNavigatorObserver(NavigatorObserver observer) =>
       ContainerNavigatorObserver.boostObservers.add(observer);
-
-
 }

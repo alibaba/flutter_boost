@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost_example/platform_view.dart';
 
 class FirstRouteWidget extends StatelessWidget {
   @override
@@ -17,18 +16,7 @@ class FirstRouteWidget extends StatelessWidget {
           children: 
           <Widget>[
             RaisedButton(
-                child: Text('Open native page'),
-                onPressed: () {
-                  print("open natve page!");
-                  FlutterBoost.singleton.open("native").then((Map value) {
-                    print(
-                        "call me when page is finished. did recieve second route result $value");
-                  });
-                },
-              ),
-
-            RaisedButton(
-                child: Text('Open second route'),
+                child: Text('First'),
                 onPressed: () {
                   print("open second page!");
                   FlutterBoost.singleton.open("second").then((Map value) {
@@ -80,7 +68,7 @@ class SecondRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Second Route"),
+        title: Text("Second"),
       ),
       body: Center(
         child: RaisedButton(
@@ -90,7 +78,7 @@ class SecondRouteWidget extends StatelessWidget {
             BoostContainerSettings settings =
                 BoostContainer.of(context).settings;
             FlutterBoost.singleton.close(settings.uniqueId,
-                result: <dynamic,dynamic>{"result": "data from second"});
+                result:<dynamic,dynamic>{"result": "data from second"});
           },
           child: Text('Go back with result!'),
         ),
@@ -118,28 +106,6 @@ class TabRouteWidget extends StatelessWidget {
   }
 }
 
-class PlatformRouteWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title:Text("Platform Route"),
-      ),
-      body: Center(
-        child: RaisedButton(
-          child: TextView(),
-          onPressed: () {
-            print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map value) {
-              print(
-                  "call me when page is finished. did recieve second route result $value");
-            });
-          },
-        ),
-      ),
-    );
-  }
-}
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params,this.message});
   final Map params;
@@ -240,7 +206,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("second", urlParams:<dynamic,dynamic> {
+                      .open("second", urlParams: <dynamic,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -257,7 +223,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("tab", urlParams:<dynamic,dynamic> {
+                      .open("tab", urlParams: <dynamic,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -288,7 +254,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () {
-                  Navigator.push<dynamic>(context,
+                    Navigator.push<dynamic>(context,
                         MaterialPageRoute<dynamic>(builder: (_) => PushWidget()));
                   },
                 ),
@@ -303,8 +269,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  Navigator.push<dynamic>(context,
-                      MaterialPageRoute<dynamic>(builder: (_) => PlatformRouteWidget()));
                 },
               ),
                 InkWell(
