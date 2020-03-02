@@ -22,10 +22,10 @@ void main() {
     response = null;
 
     test('sendEvent successfully', () async {
-      Map msg1 = Map();
+      Map msg1 = Map<dynamic,dynamic>();
       BoostChannel().sendEvent("name", msg1);
 
-      Map msg = Map();
+      Map msg = Map<dynamic,dynamic>();
       msg["name"] = "name";
       msg["arguments"] = msg1;
 
@@ -38,9 +38,9 @@ void main() {
 
 
     test('invokeMethod successfully', () async {
-      Map msg = {};
+      Map msg = <dynamic,dynamic>{};
       msg["test"] = "test";
-      BoostChannel().invokeMethod("__event__1", msg);
+      BoostChannel().invokeMethod<dynamic>("__event__1", msg);
 
 //       expect(e, isException);
 
@@ -52,9 +52,9 @@ void main() {
 
 
     test('invokeListMethod successfully', () async {
-      Map msg = {};
+      Map msg = <dynamic,dynamic>{};
       msg["test"] = "test";
-      var bb = await BoostChannel().invokeListMethod("__event__1", msg);
+      var bb = await BoostChannel().invokeListMethod<dynamic>("__event__1", msg);
 
       expect(
         log,
@@ -64,9 +64,9 @@ void main() {
 
 
     test('invokeMapMethod successfully', () async {
-      Map msg = {};
+      Map msg = <dynamic,dynamic>{};
       msg["test"] = "test";
-      BoostChannel().invokeMapMethod("__event__1", msg);
+      BoostChannel().invokeMapMethod<dynamic,dynamic>("__event__1", msg);
 
       expect(
         log,
@@ -75,9 +75,9 @@ void main() {
     });
 
     test('invokeMapMethod successfully', () async {
-      Map msg = {};
+      Map msg = <dynamic,dynamic>{};
       msg["test"] = "test";
-      BoostChannel().invokeMapMethod("__event__1", msg);
+      BoostChannel().invokeMapMethod<dynamic,dynamic>("__event__1", msg);
 
       expect(
         log,

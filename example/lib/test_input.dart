@@ -134,7 +134,7 @@ class _TestTextFieldState extends State<TestTextField> {
       if (_node.hasFocus) {
         print('showBottomSheet');
         _controller = Scaffold.of(context)
-            .showBottomSheet((BuildContext ctx) => Container(
+            .showBottomSheet<dynamic>((BuildContext ctx) => Container(
                   width: double.infinity,
                   height: 36.0,
                   color: Colors.deepPurple,
