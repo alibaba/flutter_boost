@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost/container/container_coordinator.dart';
 
 final GlobalKey scaffoldKey = GlobalKey();
 
@@ -112,66 +113,86 @@ void main() {
       testWidgets(
         'through the `BoostContainerManager.of(context)` method',
         (WidgetTester tester) async {
-          var findBoostContainerManagerByOfMethod;
+          var builderContext;
+
+          FlutterBoost.singleton.registerPageBuilders({
+            'context': (pageName, params, _) => Builder(
+                  builder: (context) {
+                    return FloatingActionButton(
+                      onPressed: () {
+                        builderContext = context;
+                      },
+                    );
+                  },
+                ),
+          });
 
           await tester.pumpWidget(
             MaterialApp(
-              builder: (BuildContext context, Widget child) {
-                final BoostContainerManager manager = BoostContainerManager(
-                  initNavigator: child,
-                );
-
-                return manager;
-              },
-              home: Builder(
-                builder: (BuildContext context) {
-                  return FloatingActionButton(onPressed: () {
-                    findBoostContainerManagerByOfMethod = context;
-                  });
-                },
-              ),
+              builder: FlutterBoost.init(),
+              home: Container(),
             ),
           );
 
+          //open context page
+          ContainerCoordinator.singleton
+              .nativeContainerDidShow("context", {}, "1000000");
+
+          await tester.pump(Duration(seconds: 1));
+
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+
+          //get the context of the Builder
           await tester.tap(find.byType(FloatingActionButton));
 
-          expect(
-            BoostContainerManager.of(findBoostContainerManagerByOfMethod),
-            const TypeMatcher<ContainerManagerState>(),
-          );
+          final isFind = BoostContainerManager.of(builderContext) != null;
+
+          expect(isFind, true,
+              reason: '`BoostContainerManager.of` should be able to '
+                  'find `ContainerManagerState` in `FlutterBoost.init()` based on the context of the `Builder`');
         },
       );
 
       testWidgets(
         'through the `BoostContainerManager.tryOf(context)` method',
         (WidgetTester tester) async {
-          var findBoostContainerManagerByOfMethod;
+          var builderContext;
+
+          FlutterBoost.singleton.registerPageBuilders({
+            'context': (pageName, params, _) => Builder(
+                  builder: (context) {
+                    return FloatingActionButton(
+                      onPressed: () {
+                        builderContext = context;
+                      },
+                    );
+                  },
+                ),
+          });
 
           await tester.pumpWidget(
             MaterialApp(
-              builder: (BuildContext context, Widget child) {
-                final BoostContainerManager manager = BoostContainerManager(
-                  initNavigator: child,
-                );
-
-                return manager;
-              },
-              home: Builder(
-                builder: (BuildContext context) {
-                  return FloatingActionButton(onPressed: () {
-                    findBoostContainerManagerByOfMethod = context;
-                  });
-                },
-              ),
+              builder: FlutterBoost.init(),
+              home: Container(),
             ),
           );
 
+          //open context page
+          ContainerCoordinator.singleton
+              .nativeContainerDidShow("context", {}, "1000000");
+
+          await tester.pump(Duration(seconds: 1));
+
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+
+          //get the context of the Builder
           await tester.tap(find.byType(FloatingActionButton));
 
-          expect(
-            BoostContainerManager.tryOf(findBoostContainerManagerByOfMethod),
-            const TypeMatcher<ContainerManagerState>(),
-          );
+          final isFind = BoostContainerManager.tryOf(builderContext) != null;
+
+          expect(isFind, true,
+              reason: '`BoostContainerManager.tryOf` should be able to '
+                  'find `ContainerManagerState` in `FlutterBoost.init()` based on the context of the `Builder`');
         },
       );
     },
