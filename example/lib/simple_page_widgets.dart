@@ -31,7 +31,7 @@ class FirstRouteWidget extends StatelessWidget {
                   child: Text('Present second route'),
                   onPressed: () {
                     print("Present second page!");
-                    FlutterBoost.singleton.open("second",urlParams:{"present":true}).then((Map value) {
+                    FlutterBoost.singleton.open("second",urlParams:<dynamic,dynamic>{"present":true}).then((Map value) {
                       print(
                           "call me when page is finished. did recieve second route result $value");
                     });
@@ -79,7 +79,7 @@ class SecondRouteWidget extends StatelessWidget {
             BoostContainerSettings settings =
                 BoostContainer.of(context).settings;
             FlutterBoost.singleton.close(settings.uniqueId,
-                result: {"result": "data from second"});
+                result: <dynamic,dynamic>{"result": "data from second"});
           },
           child: Text('Go back with result!'),
         ),
@@ -195,7 +195,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://nativePage", urlParams: {
+                      .open("sample://nativePage", urlParams: <dynamic,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -212,7 +212,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("first", urlParams: {
+                      .open("first", urlParams: <dynamic,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -229,7 +229,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("second", urlParams: {
+                      .open("second", urlParams:<dynamic,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -246,7 +246,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("tab", urlParams: {
+                      .open("tab", urlParams:<dynamic,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -263,7 +263,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage", urlParams: {
+                      .open("sample://flutterPage", urlParams:<dynamic,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -277,8 +277,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => PushWidget()));
+                  Navigator.push<dynamic>(context,
+                        MaterialPageRoute<dynamic>(builder: (_) => PushWidget()));
                   },
                 ),
 
@@ -292,8 +292,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => PlatformRouteWidget()));
+                  Navigator.push<dynamic>(context,
+                      MaterialPageRoute<dynamic>(builder: (_) => PlatformRouteWidget()));
                 },
               ),
                 InkWell(

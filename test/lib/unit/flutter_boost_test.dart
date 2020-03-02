@@ -34,13 +34,13 @@ void main() {
       expect(e, isNoSuchMethodError);
     }
     try {
-      FlutterBoost.singleton.closeCurrent(result: {}, exts: {});
+      FlutterBoost.singleton.closeCurrent(result: <String,dynamic>{}, exts: <String,dynamic>{});
     } catch (e) {
       expect(e, isNoSuchMethodError);
     }
 
     try {
-      FlutterBoost.singleton.closeByContext(null, result: {}, exts: {});
+      FlutterBoost.singleton.closeByContext(null, result: <String,dynamic>{}, exts: <String,dynamic>{});
     } catch (e) {
       expect(e, isNoSuchMethodError);
     }
