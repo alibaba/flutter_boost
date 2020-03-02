@@ -30,6 +30,7 @@
 | 0.1.63                  | 1.9.1-hotfixes          | 和 0.1.60 代码同步， bugfix 也会合入该分支，如果其他分支会编译错误。 | No                  |
 | 0.1.61-0.1.69           | 1.9.1-hotfixes          | 0.1.60 的 bugfix。                                           | No                  |
 | 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
+| 1.12.13               | 1.12.13 -hotfixes              | 支持androidx  | Yes                 |
 
 
 
@@ -55,14 +56,15 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: ' 1.9.1+2'
+        ref: '1.12.13'
 ```
 support branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'task/task_v1.9.1_support_hotfixes'
+        ref: 'task/task_v1.12.13_support_hotfixes'
+
 ```
 
 

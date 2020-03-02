@@ -100,13 +100,13 @@ class BoostContainer extends Navigator {
 
   static BoostContainerState tryOf(BuildContext context) {
     final BoostContainerState container =
-        context.ancestorStateOfType(const TypeMatcher<BoostContainerState>());
+        context.findAncestorStateOfType<BoostContainerState>();
     return container;
   }
 
   static BoostContainerState of(BuildContext context) {
     final BoostContainerState container =
-        context.ancestorStateOfType(const TypeMatcher<BoostContainerState>());
+        context.findAncestorStateOfType<BoostContainerState>();
     assert(container != null, 'not in flutter boost');
     return container;
   }

@@ -270,7 +270,7 @@ class ContainerCoordinator {
       performContainerLifeCycle(_createContainerSettings(name, params, pageId),
           ContainerLifeCycle.Destroy);
     } catch (e) {
-      Logger.log('nativeContainerWillDealloc error: ${e}');
+      Logger.log('nativeContainerWillDealloc error: $e');
     }
     FlutterBoost.containerManager?.remove(pageId);
 

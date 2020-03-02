@@ -47,13 +47,13 @@ class BoostContainerManager extends StatefulWidget {
 
   static ContainerManagerState tryOf(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     return manager;
   }
 
   static ContainerManagerState of(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     assert(manager != null, 'not in flutter boost');
     return manager;
   }
