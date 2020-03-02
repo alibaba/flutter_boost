@@ -33,14 +33,16 @@
 
 
 
-| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
 
-| v1.9.1-hotfixes         | 1.9.1-hotfixes          | 支持androidx，修复bug后会定期发布新版本 | Yes                 |
-| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | 支持support包，不支持androidx | NO                 |
-| v1.12.13-hotfixes       | 1.12.13-hotfixes         | 支持androidx，目前还没发布的版本，用分支形式引入                                                        | Yes                 |
-| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | 支持support包，不支持androidx | NO                 |
 
-.
+| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | Support AndroidX？ |
+| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
+| v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
+| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | for support  | NO                 |
+| v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
+| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | for support  | NO                 |
+
+
 
 # 安装
 
