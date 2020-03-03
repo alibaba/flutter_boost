@@ -27,7 +27,7 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 回答：无障碍模式下目前Flutter Engine有bug，已经提交issue和PR给flutter啦。请参考这个issue：https://github.com/alibaba/flutter_boost/issues/488及其分析。提交给flutter的PR见这里：https://github.com/flutter/engine/pull/14155
 
 ### 5. 在ios模拟器下运行最新的flutter boost会闪退
-回答：因为模拟器下flutter默认会将voice over模式打开，所以其实就是辅助模式，这回触发上面的bug：“在ios中voice over打开，demo在点击交互会crash”。
+回答：如上面第4条所说的，最新的flutter engine在voice over下有bug，会导致crash。因为模拟器下flutter默认会将voice over模式打开，所以其实就是辅助模式，这回触发上面的bug：“在ios中voice over打开，demo在点击交互会crash”。
 可参考Engine的代码注释：
 ```c++
 #if TARGET_OS_SIMULATOR
