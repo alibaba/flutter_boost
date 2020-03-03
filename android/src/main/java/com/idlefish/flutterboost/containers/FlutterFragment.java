@@ -482,6 +482,11 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         }
     }
 
+    @Override
+    public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+
+    }
+
     /**
      * See {@link NewEngineFragmentBuilder#shouldAttachEngineToActivity()} and
      * <p>

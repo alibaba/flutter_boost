@@ -458,6 +458,11 @@ public class BoostFlutterActivity extends Activity
         // No-op. Hook for subclasses.
     }
 
+    @Override
+    public void cleanUpFlutterEngine(@NonNull FlutterEngine flutterEngine) {
+
+    }
+
 
     @Override
     public boolean shouldAttachEngineToActivity() {

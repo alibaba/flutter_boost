@@ -29,7 +29,10 @@ You need to add Flutter to your project before moving on.The version of the flut
 | 0.1.60                | 1.9.1-hotfixes              | Android does not support andriodx if other flutter branches will compile incorrectly. | No                 |
 | 0.1.61-0.1.69         | 1.9.1-hotfixes              | bugfix for 0.1.60.                                           | No                 |
 | 0.1.63                | 1.9.1-hotfixes              | If other branches will compile incorrectly. Synchronize with the 0.1.60 code, and bugfix also merge to this branch. | No                 |
-| 1.9.1+1              | 1.9.1-hotfixes              | Rename the version number and start supporting androidx by default | Yes                 |
+| 1.9.1+2              | 1.9.1-hotfixes              | Rename the version number and start supporting androidx by default | Yes                 |
+| 1.12.13             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
+
+
 
 
 
@@ -53,14 +56,14 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: ' 1.9.1+1'
+        ref: ' 1.12.13'
 ```
 support branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'task/task_v1.9.1_support_hotfixes'
+        ref: 'task/task_v1.12.13_support_hotfixes'
 ```
 
 

@@ -47,13 +47,13 @@ class BoostContainerManager extends StatefulWidget {
 
   static ContainerManagerState tryOf(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     return manager;
   }
 
   static ContainerManagerState of(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     assert(manager != null, 'not in flutter boost');
     return manager;
   }
@@ -75,7 +75,6 @@ class ContainerManagerState extends State<BoostContainerManager> {
   PostPushRoute get postPushRoute => widget.postPushRoute;
 
   bool get foreground => _foreground;
-
 
   //Number of containers.
   int get containerCounts => _offstage.length;
@@ -138,7 +137,8 @@ class ContainerManagerState extends State<BoostContainerManager> {
     properties['newName'] = now;
     properties['oldName'] = old;
 
-    FlutterBoost.singleton.channel.invokeMethod('onShownContainerChanged',properties);
+    FlutterBoost.singleton.channel
+        .invokeMethod<dynamic>('onShownContainerChanged', properties);
   }
 
   void _refreshOverlayEntries() {
@@ -345,4 +345,3 @@ class _ContainerOverlayEntry extends OverlayEntry {
     super.remove();
   }
 }
-

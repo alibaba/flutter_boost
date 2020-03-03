@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-import com.idlefish.flutterboost.BoostPluginRegistry;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
@@ -83,7 +82,6 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         ensureAlive();
         if (FlutterBoost.instance().platform().whenEngineStart() == FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
             FlutterBoost.instance().doInitialFlutter();
-            FlutterBoost.instance().boostPluginRegistry();
         }
         // When "retain instance" is true, the FlutterEngine will survive configuration
         // changes. Therefore, we create a new one only if one does not already exist.
@@ -176,14 +174,13 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
 
-        BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
-        ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
-        if (binding != null && (binding.getActivity() != this.host.getActivity())) {
-            flutterEngine.getActivityControlSurface().attachToActivity(
-                    host.getActivity(),
-                    host.getLifecycle()
-            );
-        }
+        flutterEngine.getActivityControlSurface().attachToActivity(
+                host.getActivity(),
+                host.getLifecycle()
+        );
+
+
+
 
     }
 
@@ -217,17 +214,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         mSyncer.onDestroy();
 
         ensureAlive();
-        BoostPluginRegistry registry = (BoostPluginRegistry) FlutterBoost.instance().getPluginRegistry();
-        if (registry != null) {
-            ActivityPluginBinding binding = registry.getRegistrarAggregate().getActivityPluginBinding();
-            if (binding != null && (binding.getActivity() == this.host.getActivity())) {
 
-                registry.getRegistrarAggregate().onDetachedFromActivityForConfigChanges();
-
-                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
-
-            }
-        }
         flutterView.release();
     }
 
