@@ -18,7 +18,8 @@
 - (void)openNativeVC:(NSString *)name
            urlParams:(NSDictionary *)params
                 exts:(NSDictionary *)exts{
-    UIViewController *vc = UIViewControllerDemo.new;
+  UIViewController *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
+
     BOOL animated = [exts[@"animated"] boolValue];
     if([params[@"present"] boolValue]){
         [self.navigationController presentViewController:vc animated:animated completion:^{

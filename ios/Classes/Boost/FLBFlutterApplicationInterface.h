@@ -45,6 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)contains:(id<FLBFlutterContainer>)vc;
 - (void)addUniqueViewController:(id<FLBFlutterContainer>)vc;
 - (void)removeViewController:(id<FLBFlutterContainer>)vc;
+- (id<FLBFlutterContainer>)peakViewController;
 - (BOOL)isTop:(NSString *)pageId;
 - (NSInteger)pageCount;
 

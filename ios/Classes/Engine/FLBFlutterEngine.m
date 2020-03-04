@@ -29,8 +29,9 @@
 
 
 @interface FLBFlutterEngine()
+
 @property (nonatomic,strong) FlutterEngine *engine;
-@property (nonatomic,strong)  FLBFlutterViewContainer *dummy;
+
 @end
 
 @implementation FLBFlutterEngine
@@ -42,7 +43,9 @@
     
     if (self = [super init]) {
         if(!engine){
-            _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+            _engine = [[FlutterEngine alloc] initWithName:@"io.flutter"
+                                                  project:nil
+                                   allowHeadlessExecution:YES];
         }else{
             _engine = engine;
         }
@@ -51,12 +54,8 @@
            platform.entryForDart){
             [_engine runWithEntrypoint:platform.entryForDart];
         }else{
-            [_engine runWithEntrypoint:nil];
+            [_engine run];
         }
-        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
-                                                          nibName:nil
-                                                           bundle:nil];
-        _dummy.name = kIgnoreMessageWithName;
     }
     
     return self;
@@ -71,7 +70,6 @@
 - (void)pause
 {
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
-    [self detach];
 }
 
 - (void)resume
@@ -99,16 +97,20 @@
 
 - (void)atacheToViewController:(FlutterViewController *)vc
 {
-    if(_engine.viewController != vc){
-//        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
+    NSLog(@"enter atacheToViewController: %@", vc);
+    if(_engine.viewController != vc && vc != nil){
+        NSLog(@"atacheToViewController: %@", vc);
         _engine.viewController = vc;
+        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
     }
 }
 
-- (void)detach
+- (void)detachViewController:(FlutterViewController * _Nullable)vc
 {
-    if(_engine.viewController != _dummy){
-        _engine.viewController = _dummy;
+    NSLog(@"enter detachViewController: %@", vc);
+    if(_engine.viewController && _engine.viewController != vc){
+        NSLog(@"detachViewController: %@", vc);
+        _engine.viewController = vc;
     }
 }
 
@@ -120,7 +122,11 @@
 }
 
 - (void)dealloc{
-    [self.engine setViewController:nil];
+  if (_engine) {
+    _engine.viewController = nil;
+    [_engine destroyContext];
+    _engine = nil;
+  }
 }
 @end
 

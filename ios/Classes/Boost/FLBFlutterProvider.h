@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 - (FlutterEngine *)engine;
 - (void)atacheToViewController:(FlutterViewController *)vc;
-- (void)detach;
+- (void)detachViewController:(FlutterViewController * _Nullable)vc;
 - (void)prepareEngineIfNeeded;
 - (void)pause;
 - (void)resume;

@@ -35,10 +35,12 @@
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
 @interface FLBFlutterViewContainer  ()
+
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
+
 @end
 
 #pragma clang diagnostic push
@@ -151,16 +153,6 @@ static NSUInteger kInstanceCounter = 0;
     return FLUTTER_VIEW.superview == self.view;
 }
 
-- (void)attatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider atacheToViewController:self];
-}
-
-- (void)detatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider detach];
-}
-
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -199,18 +191,19 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidAppear:(BOOL)animated
 {
     [FLUTTER_APP addUniqueViewController:self];
-    
+      
     //Ensure flutter view is attached.
-    [self attatchFlutterEngine];
- 
+    [FLUTTER_APP.flutterProvider atacheToViewController:self];
+
     [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
-                                           pageName:_name
-                                             params:_params
-                                           uniqueId:self.uniqueIDString];
+                                     pageName:_name
+                                       params:_params
+                                     uniqueId:self.uniqueIDString];
     
     //NOTES：务必在show之后再update，否则有闪烁
-    [self surfaceUpdated:YES];
-    
+//    [self surfaceUpdated:YES];
+    NSLog(@"viewDidAppear: %@", self);
+
     [super viewDidAppear:animated];
 }
 
@@ -224,10 +217,10 @@ static NSUInteger kInstanceCounter = 0;
     [super viewWillDisappear:animated];
     
     //NOTES：因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，从而让当前engine持有的vc inactive，此处可驱使其重新resume
-    if (![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
-    {
-        [FLUTTER_APP resume];
-    }
+//    if (![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
+//    {
+//        [FLUTTER_APP resume];
+//    }
 
 }
 
@@ -255,7 +248,17 @@ static NSUInteger kInstanceCounter = 0;
 //    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
 //    callSuper(&target, @selector(viewDidDisappear:), animated);
     
-    [self detatchFlutterEngine];
+    if (!(self.navigationController || self.presentingViewController))
+    {
+        [FLUTTER_APP removeViewController:self];
+
+        FLBFlutterViewContainer *vc = (FLBFlutterViewContainer*)[FLUTTER_APP peakViewController];
+        if (vc) {
+            [FLUTTER_APP.flutterProvider detachViewController:vc];
+        } else {
+            [FLUTTER_APP.flutterProvider detachViewController:nil];
+        }
+    }
 }
 
 - (void)installSplashScreenViewIfNecessary {
