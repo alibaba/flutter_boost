@@ -199,7 +199,7 @@ class BoostContainerState extends NavigatorState {
     }
 
     if (canPop()) {
-      return super.pop(result);
+        return super.pop<T>(result);
     } else {
       if (T is Map<String, dynamic>) {
         FlutterBoost.singleton
