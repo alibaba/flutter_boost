@@ -401,7 +401,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
      * The {@link FlutterActivity} or {@link FlutterFragment} that owns this
      * {@code FlutterActivityAndFragmentDelegate}.
      */
-    /* package */ interface Host extends SplashScreenProvider, FlutterEngineProvider, FlutterEngineConfigurator {
+    public interface Host extends SplashScreenProvider, FlutterEngineProvider, FlutterEngineConfigurator {
         /**
          * Returns the {@link Context} that backs the host {@link Activity} or {@code Fragment}.
          */
