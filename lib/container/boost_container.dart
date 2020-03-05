@@ -87,7 +87,8 @@ class BoostContainer extends Navigator {
             }
           },
           observers: <NavigatorObserver>[
-            ContainerNavigatorObserver.bindContainerManager()
+            ContainerNavigatorObserver.bindContainerManager(),
+            HeroController(),
           ],
           onUnknownRoute: navigator.onUnknownRoute);
 
@@ -99,13 +100,13 @@ class BoostContainer extends Navigator {
 
   static BoostContainerState tryOf(BuildContext context) {
     final BoostContainerState container =
-        context.ancestorStateOfType(const TypeMatcher<BoostContainerState>());
+        context.findAncestorStateOfType<BoostContainerState>();
     return container;
   }
 
   static BoostContainerState of(BuildContext context) {
     final BoostContainerState container =
-        context.ancestorStateOfType(const TypeMatcher<BoostContainerState>());
+        context.findAncestorStateOfType<BoostContainerState>();
     assert(container != null, 'not in flutter boost');
     return container;
   }
@@ -155,7 +156,6 @@ class BoostContainerState extends NavigatorState {
   @override
   void didUpdateWidget(Navigator oldWidget) {
     super.didUpdateWidget(oldWidget);
-
   }
 
   @override
@@ -189,6 +189,7 @@ class BoostContainerState extends NavigatorState {
           break;
       }
     }
+    return false;
   }
 
   @override
@@ -258,12 +259,9 @@ class ContainerElement extends StatefulElement {
 }
 
 class ContainerNavigatorObserver extends NavigatorObserver {
-
-  static final Set<NavigatorObserver> boostObservers =
-      Set<NavigatorObserver>();
+  static final Set<NavigatorObserver> boostObservers = Set<NavigatorObserver>();
 
   ContainerNavigatorObserver();
-
 
   factory ContainerNavigatorObserver.bindContainerManager() =>
       ContainerNavigatorObserver();
@@ -306,4 +304,3 @@ class ContainerNavigatorObserver extends NavigatorObserver {
     }
   }
 }
-

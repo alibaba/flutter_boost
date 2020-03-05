@@ -23,7 +23,6 @@ public class FlutterBoost {
     private FlutterViewContainerManager mManager;
     private FlutterEngine mEngine;
     private Activity mCurrentActiveActivity;
-    private PluginRegistry mRegistry;
     private boolean mEnterActivityCreate =false;
     static FlutterBoost sInstance = null;
 
@@ -62,10 +61,6 @@ public class FlutterBoost {
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
-                    boostPluginRegistry();
-                }
-                if (mPlatform.whenEngineStart() == ConfigBuilder.IMMEDIATELY) {
-                    boostPluginRegistry();
                 }
             }
 
@@ -178,16 +173,8 @@ public class FlutterBoost {
         );
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
-        mRegistry = new BoostPluginRegistry(mEngine);
     }
 
-    public void boostPluginRegistry(){
-        if(mRegistry!=null&& !mRegistry.hasPlugin("boostPluginRegistry")){
-            mPlatform.registerPlugins(mRegistry);
-            mRegistry.registrarFor("boostPluginRegistry");
-        }
-
-    }
 
     public static class ConfigBuilder {
 
@@ -318,9 +305,6 @@ public class FlutterBoost {
         return mManager.findContainerById(id);
     }
 
-    public PluginRegistry getPluginRegistry() {
-        return mRegistry;
-    }
 
     private FlutterEngine createEngine() {
         if (mEngine == null) {
@@ -349,7 +333,6 @@ public class FlutterBoost {
             mPlatform.lifecycleListener.onEngineDestroy();
         }
         mEngine = null;
-        mRegistry = null;
         mCurrentActiveActivity = null;
     }
 
@@ -365,10 +348,5 @@ public class FlutterBoost {
         void onEngineDestroy();
     }
 
-
-    public interface BoostPluginsRegister {
-
-        void registerPlugins(PluginRegistry mRegistry);
-    }
 
 }

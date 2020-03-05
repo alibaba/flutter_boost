@@ -11,6 +11,20 @@ import java.util.Map;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.plugin.common.PluginRegistry;
 
+/**
+ * 插件注册方式 不在使用老的注册方式
+ *
+ *  AndroidManifest.xml 中必须要添加 flutterEmbedding 版本设置
+ *    <meta-data android:name="flutterEmbedding"
+ *       android:value="2">
+ *   </meta-data>
+ *
+ *  GeneratedPluginRegistrant 会自动生成 新的插件方式　
+ *
+ *  插件注册方式请使用
+ *  FlutterBoost.instance().engineProvider().getPlugins().add(new FlutterPlugin());
+ *  GeneratedPluginRegistrant.registerWith()，是在engine 创建后马上执行，放射形式调用
+ */
 public abstract class Platform {
 
     public abstract Application getApplication();
@@ -28,7 +42,6 @@ public abstract class Platform {
 
     public FlutterBoost.BoostLifecycleListener lifecycleListener;
 
-    public FlutterBoost.BoostPluginsRegister pluginsRegister;
 
     public void closeContainer(IContainerRecord record, Map<String, Object> result, Map<String, Object> exts) {
         if (record == null) return;
@@ -37,22 +50,4 @@ public abstract class Platform {
     }
 
 
-    public void registerPlugins(PluginRegistry mRegistry) {
-
-        if(pluginsRegister!=null){
-            pluginsRegister.registerPlugins(mRegistry);
-        }else{
-            try {
-                Class clz = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
-                Method method = clz.getDeclaredMethod("registerWith", PluginRegistry.class);
-                method.invoke(null, mRegistry);
-            } catch (Throwable t) {
-                Log.i("flutterboost.platform",t.toString());
-            }
-        }
-
-        if (lifecycleListener!= null) {
-            lifecycleListener.onPluginsRegistered();
-        }
-    }
 }

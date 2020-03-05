@@ -266,13 +266,11 @@ class ContainerCoordinator {
   }
 
   bool _nativeContainerWillDealloc(String name, Map params, String pageId) {
-    try{
-
+    try {
       performContainerLifeCycle(_createContainerSettings(name, params, pageId),
           ContainerLifeCycle.Destroy);
-    } catch (e){
-      Logger.log(
-          'nativeContainerWillDealloc error: ${e}' );
+    } catch (e) {
+      Logger.log('nativeContainerWillDealloc error: $e');
     }
     FlutterBoost.containerManager?.remove(pageId);
 

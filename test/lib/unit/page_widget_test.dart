@@ -72,7 +72,7 @@ void main() {
     );
     //open firt page
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("first", {}, "1000000");
+        .nativeContainerDidShow("first", <dynamic,dynamic>{}, "1000000");
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -80,7 +80,7 @@ void main() {
 
     //open second page  firt(1000000)->second(2000000)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", {}, "2000000");
+        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000000");
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -97,7 +97,7 @@ void main() {
 
     // second page ,but pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", {}, "2000001");
+        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000001");
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -107,7 +107,7 @@ void main() {
 
     //reopen firt page   second(2000001)->firt(1000000)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("first", {}, "1000000");
+        .nativeContainerDidShow("first",<dynamic,dynamic> {}, "1000000");
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -117,7 +117,7 @@ void main() {
 
     // reopen second page and  pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", {}, "2000001");
+        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000001");
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -135,7 +135,7 @@ void main() {
 
     // open  second(2000003)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", {}, "2000003");
+        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000003");
 
     await tester.idle();
 

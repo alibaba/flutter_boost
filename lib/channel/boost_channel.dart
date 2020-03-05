@@ -36,7 +36,7 @@ class BoostChannel {
   final Set<MethodHandler> _methodHandlers = Set();
 
   BoostChannel() {
-    _methodChannel.setMethodCallHandler((MethodCall call){
+    _methodChannel.setMethodCallHandler((MethodCall call) {
       if (call.method == "__event__") {
         String name = call.arguments["name"];
         Map arg = call.arguments["arguments"];
@@ -46,13 +46,13 @@ class BoostChannel {
             l(name, arg);
           }
         }
-      }else{
-        for(MethodHandler handler in _methodHandlers) {
+      } else {
+        for (MethodHandler handler in _methodHandlers) {
           handler(call);
         }
       }
 
-      return Future.value();
+      return Future<dynamic>.value();
     });
   }
 
@@ -62,31 +62,33 @@ class BoostChannel {
     }
 
     if (arguments == null) {
-      arguments = Map();
+      arguments = Map<dynamic, dynamic>();
     }
 
-    Map msg = Map();
+    Map msg = Map<dynamic, dynamic>();
     msg["name"] = name;
     msg["arguments"] = arguments;
-    _methodChannel.invokeMethod("__event__", msg);
+    _methodChannel.invokeMethod<dynamic>("__event__", msg);
   }
 
-  Future<T> invokeMethod<T>(String method, [ dynamic arguments ]) async {
+  Future<T> invokeMethod<T>(String method, [dynamic arguments]) async {
     assert(method != "__event__");
 
-    return _methodChannel.invokeMethod<T>(method,arguments);
+    return _methodChannel.invokeMethod<T>(method, arguments);
   }
 
-  Future<List<T>> invokeListMethod<T>(String method, [ dynamic arguments ]) async {
+  Future<List<T>> invokeListMethod<T>(String method,
+      [dynamic arguments]) async {
     assert(method != "__event__");
 
-    return _methodChannel.invokeListMethod<T>(method,arguments);
+    return _methodChannel.invokeListMethod<T>(method, arguments);
   }
 
-  Future<Map<K, V>> invokeMapMethod<K, V>(String method, [ dynamic arguments ]) async {
+  Future<Map<K, V>> invokeMapMethod<K, V>(String method,
+      [dynamic arguments]) async {
     assert(method != "__event__");
 
-    return _methodChannel.invokeMapMethod<K, V>(method,arguments);
+    return _methodChannel.invokeMapMethod<K, V>(method, arguments);
   }
 
   VoidCallback addEventListener(String name, EventListener listener) {
@@ -110,7 +112,7 @@ class BoostChannel {
 
     _methodHandlers.add(handler);
 
-    return (){
+    return () {
       _methodHandlers.remove(handler);
     };
   }
