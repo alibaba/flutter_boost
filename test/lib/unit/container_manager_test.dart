@@ -113,7 +113,7 @@ void main() {
       testWidgets(
         'through the `BoostContainerManager.of(context)` method',
         (WidgetTester tester) async {
-          var builderContext;
+          BuildContext builderContext;
 
           FlutterBoost.singleton.registerPageBuilders({
             'context': (pageName, params, _) => Builder(
@@ -153,38 +153,39 @@ void main() {
         },
       );
 
-//      testWidgets(
-//        'through the `BoostContainerManager.of(context)` method',
-//        (WidgetTester tester) async {
-//          var builderContext;
-//
-//          await tester.pumpWidget(
-//            MaterialApp(
-//              home: Builder(
-//                builder: (context) {
-//                  return FloatingActionButton(
-//                    onPressed: () {
-//                      builderContext = context;
-//                    },
-//                  );
-//                },
-//              ),
-//            ),
-//          );
-//
-//          expect(find.byType(FloatingActionButton), findsOneWidget);
-//
-//          //get the context of the Builder
-//          await tester.tap(find.byType(FloatingActionButton));
-//
-//          expect(BoostContainerManager.of(builderContext), isAssertionError);
-//        },
-//      );
+      testWidgets(
+        'through the `BoostContainerManager.of(context)` method, but ancestor dosen\'t contains any ContainerManagerState, so it should throw a assertion error',
+        (WidgetTester tester) async {
+          BuildContext builderContext;
+
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Builder(
+                builder: (context) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      builderContext = context;
+                    },
+                  );
+                },
+              ),
+            ),
+          );
+
+          expect(find.byType(FloatingActionButton), findsOneWidget);
+
+          //get the context of the Builder
+          await tester.tap(find.byType(FloatingActionButton));
+
+          expect(() => BoostContainerManager.of(builderContext),
+              throwsAssertionError);
+        },
+      );
 
       testWidgets(
         'through the `BoostContainerManager.tryOf(context)` method',
         (WidgetTester tester) async {
-          var builderContext;
+          BuildContext builderContext;
 
           FlutterBoost.singleton.registerPageBuilders({
             'context': (pageName, params, _) => Builder(
@@ -230,7 +231,7 @@ void main() {
     testWidgets(
       'containerCounts should change based on the number of pages',
       (WidgetTester tester) async {
-        var builderContext;
+        BuildContext builderContext;
 
         FlutterBoost.singleton.registerPageBuilders({
           'context': (pageName, params, _) => Builder(
