@@ -7,10 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('test iOS edge swipe then drop back at starting point works',
-      (WidgetTester tester) async {
-    //push app
-  });
 
   test('test onMethodCall', () async {
     FlutterBoost.singleton
@@ -26,7 +22,7 @@ void main() {
     try {
       FlutterBoost.singleton.open("url");
     } catch (e) {
-      expect(e, isNoSuchMethodError);
+      expect(e, isException);
     }
     try {
       FlutterBoost.singleton.close("url");
