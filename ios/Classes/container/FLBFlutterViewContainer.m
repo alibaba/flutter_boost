@@ -179,11 +179,10 @@ static NSUInteger kInstanceCounter = 0;
                                               params:_params
                                             uniqueId:self.uniqueIDString];
     //Save some first time page info.
-    if(![FlutterBoostPlugin sharedInstance].fPagename){
-        [FlutterBoostPlugin sharedInstance].fPagename = _name;
-        [FlutterBoostPlugin sharedInstance].fPageId = self.uniqueIDString;
-        [FlutterBoostPlugin sharedInstance].fParams = _params;
-    }
+    [FlutterBoostPlugin sharedInstance].fPagename = _name;
+    [FlutterBoostPlugin sharedInstance].fPageId = self.uniqueIDString;
+    [FlutterBoostPlugin sharedInstance].fParams = _params;
+    
  
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
