@@ -89,15 +89,31 @@ class FlutterBoost {
     });
   }
 
-  static TransitionBuilder init({
-    TransitionBuilder builder,
-    PrePushRoute prePush,
-    PostPushRoute postPush,
-  }) {
+  static ContainerManagerState get containerManager =>
+      _instance.containerManagerKey.currentState;
+
+  static void onPageStart() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo) {
+        if (pageInfo == null || pageInfo.isEmpty) return;
+
+        if (pageInfo.containsKey("name") &&
+            pageInfo.containsKey("params") &&
+            pageInfo.containsKey("uniqueId")) {
+          ContainerCoordinator.singleton.nativeContainerDidShow(
+              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+        }
+      });
+    });
+  }
+
+  static TransitionBuilder init(
+      {TransitionBuilder builder,
+      PrePushRoute prePush,
+      PostPushRoute postPush}) {
     if (Platform.isAndroid) {
       onPageStart();
     } else if (Platform.isIOS) {
-      // TODO(AlexVincent525): 未解之谜
       assert(() {
         () async {
           onPageStart();
