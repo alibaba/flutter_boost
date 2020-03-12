@@ -45,6 +45,9 @@
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation FLBFlutterViewContainer
 
+/**
+ * 目前此类的DESIGNATED INITIALIZER写的有问题，https://developer.apple.com/library/archive/documentation/General/Conceptual/CocoaEncyclopedia/Initialization/Initialization.html
+ */
 - (instancetype)init
 {
     [FLUTTER_APP.flutterProvider prepareEngineIfNeeded];
@@ -145,20 +148,17 @@ static NSUInteger kInstanceCounter = 0;
     self.view.backgroundColor = UIColor.whiteColor;
 }
 
-#pragma mark - ScreenShots
-- (BOOL)isFlutterViewAttatched
-{
-    return FLUTTER_VIEW.superview == self.view;
+#pragma mark - Flutter Engine 相关
+
+- (void)makeSurfaceUpdate{
+    if (self.engine.viewController != self) {
+        self.engine.viewController = self;
+    }
+    [self surfaceUpdated:YES];
 }
 
-- (void)attatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider atacheToViewController:self];
-}
-
-- (void)detatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider detach];
+- (void)makeFlutterResume {
+    [FLUTTER_APP resume];
 }
 
 #pragma mark - Life circle methods
@@ -166,13 +166,11 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    [FLUTTER_APP resume];
+    [self makeFlutterResume];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    //For new page we should attach flutter view in view will appear
-    //for better performance.
  
     [BoostMessageChannel willShowPageContainer:^(NSNumber *result) {}
                                             pageName:_name
@@ -187,31 +185,21 @@ static NSUInteger kInstanceCounter = 0;
  
     [super viewWillAppear:animated];
     [self.view setNeedsLayout];
-    
-    [self surfaceUpdated:YES];
-    //instead of calling [super viewWillAppear:animated];, call super's super
-//    struct objc_super target = {
-//        .super_class = class_getSuperclass([FlutterViewController class]),
-//        .receiver = self,
-//    };
-//    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
-//    callSuper(&target, @selector(viewWillAppear:), animated);
+    if (!self.displayingFlutterUI) {
+        [self makeSurfaceUpdate];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [FLUTTER_APP addUniqueViewController:self];
-    
-    //Ensure flutter view is attached.
-    [self attatchFlutterEngine];
  
     [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
     
-    //NOTES：务必在show之后再update，否则有闪烁
-    [self surfaceUpdated:YES];
+    [self makeSurfaceUpdate];
     
     [super viewDidAppear:animated];
 }
@@ -228,7 +216,7 @@ static NSUInteger kInstanceCounter = 0;
     //NOTES：因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，从而让当前engine持有的vc inactive，此处可驱使其重新resume
     if (![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
     {
-        [FLUTTER_APP resume];
+        [self makeFlutterResume];
     }
 
 }
@@ -241,23 +229,13 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super viewDidDisappear:animated];
-    
+
     //NOTES:因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，导致当前engine持有的VC被surfaceUpdate(NO)，从而销毁底层的raster。此处是考虑到这种情形，重建surface
     if (FLUTTER_VC.beingPresented || self.beingDismissed || ![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
     {
-        [FLUTTER_APP resume];
-        [(FLBFlutterViewContainer*)FLUTTER_VC surfaceUpdated:YES];
+        [(FLBFlutterViewContainer*)FLUTTER_VC makeFlutterResume];
+        [(FLBFlutterViewContainer*)FLUTTER_VC makeSurfaceUpdate];
     }
-
-//  instead of calling [super viewDidDisappear:animated];, call super's super
-//    struct objc_super target = {
-//        .super_class = class_getSuperclass([FlutterViewController class]),
-//        .receiver = self,
-//    };
-//    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
-//    callSuper(&target, @selector(viewDidDisappear:), animated);
-    
-    [self detatchFlutterEngine];
 }
 
 - (void)installSplashScreenViewIfNecessary {
