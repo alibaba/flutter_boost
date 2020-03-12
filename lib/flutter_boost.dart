@@ -121,8 +121,8 @@ class FlutterBoost {
   }
 
   Future<Map<dynamic, dynamic>> open(String url,
-      {Map<dynamic, dynamic> urlParams, Map<dynamic, dynamic> exts}) {
-    Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
+      {Map<String, dynamic> urlParams, Map<String, dynamic> exts}) {
+    Map<dynamic, dynamic> properties = new Map<String, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
@@ -130,14 +130,14 @@ class FlutterBoost {
   }
 
   Future<bool> close(String id,
-      {Map<dynamic, dynamic> result, Map<dynamic, dynamic> exts}) {
+      {Map<String, dynamic> result, Map<String, dynamic> exts}) {
     assert(id != null);
 
     BoostContainerSettings settings = containerManager?.onstageSettings;
-    Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
+    Map<dynamic, dynamic> properties = new Map<String, dynamic>();
 
     if (exts == null) {
-      exts = Map<dynamic, dynamic>();
+      exts = Map<String, dynamic>();
     }
 
     exts["params"] = settings.params;
