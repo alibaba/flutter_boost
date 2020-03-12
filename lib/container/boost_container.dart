@@ -198,7 +198,7 @@ class BoostContainerState extends NavigatorState {
     }
 
     if (canPop()) {
-      return super.pop(result);
+         super.pop<T>(result);
     } else {
       if (T is Map<String, dynamic>) {
         FlutterBoost.singleton
@@ -207,7 +207,7 @@ class BoostContainerState extends NavigatorState {
         FlutterBoost.singleton.close(uniqueId);
       }
     }
-    return false;
+    return true;
   }
 
   @override
