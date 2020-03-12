@@ -42,7 +42,7 @@ class FirstRouteWidget extends StatelessWidget {
                   child: Text('Present second route'),
                   onPressed: () {
                     print("Present second page!");
-                    FlutterBoost.singleton.open("second",urlParams:<dynamic,dynamic>{"present":true}).then((Map value) {
+                    FlutterBoost.singleton.open("second",urlParams:<String,dynamic>{"present":true}).then((Map value) {
                       print(
                           "call me when page is finished. did recieve second route result $value");
                     });
@@ -90,7 +90,7 @@ class SecondRouteWidget extends StatelessWidget {
             BoostContainerSettings settings =
                 BoostContainer.of(context).settings;
             FlutterBoost.singleton.close(settings.uniqueId,
-                result: <dynamic,dynamic>{"result": "data from second"});
+                result: <String,dynamic>{"result": "data from second"});
           },
           child: Text('Go back with result!'),
         ),
@@ -206,7 +206,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://nativePage", urlParams: <dynamic,dynamic>{
+                      .open("sample://nativePage", urlParams: <String,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -223,7 +223,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("first", urlParams: <dynamic,dynamic>{
+                      .open("first", urlParams: <String,dynamic>{
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -240,7 +240,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("second", urlParams:<dynamic,dynamic> {
+                      .open("second", urlParams:<String,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -257,7 +257,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("tab", urlParams:<dynamic,dynamic> {
+                      .open("tab", urlParams:<String,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
@@ -274,7 +274,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage", urlParams:<dynamic,dynamic> {
+                      .open("sample://flutterPage", urlParams:<String,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
