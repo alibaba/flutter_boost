@@ -94,3 +94,6 @@ VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方�
 }
 ```
 2. 改dart层：因为SystemChrome.setPreferredOrientations的设置是全局的，但混合栈是多页面，所以在main函数中设置，后面在新建一个FlutterViewController时会被冲掉。为了解决这个问题，需要在每个dart页面的build处都加上这语句来设置每个页面能支持哪些转向类型
+
+### 9. FlutterBoost for flutter1.12出现和surface相关的crash。可以参考这个issue：https://github.com/flutter/flutter/issues/52455
+可能flutter engine的bug引起
