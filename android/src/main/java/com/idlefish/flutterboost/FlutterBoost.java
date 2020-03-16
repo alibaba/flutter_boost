@@ -14,12 +14,10 @@ import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterMain;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FlutterBoost {
-
     private Platform mPlatform;
 
     private FlutterViewContainerManager mManager;
@@ -64,7 +62,6 @@ public class FlutterBoost {
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
                 }
-
             }
 
             @Override
@@ -75,7 +72,7 @@ public class FlutterBoost {
                 if (mCurrentActiveActivity == null) {
                     Debuger.log("Application entry foreground");
 
-                    if (createEngine() != null) {
+                    if (mEngine != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "foreground");
                         channel().sendEvent("lifecycle", map);
@@ -107,7 +104,7 @@ public class FlutterBoost {
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
-                    if (createEngine() != null) {
+                    if (mEngine != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "background");
                         channel().sendEvent("lifecycle", map);
@@ -131,7 +128,7 @@ public class FlutterBoost {
                 if (mCurrentActiveActivity == activity) {
                     Debuger.log("Application entry background");
 
-                    if (createEngine() != null) {
+                    if (mEngine != null) {
                         HashMap<String, String> map = new HashMap<>();
                         map.put("type", "background");
                         channel().sendEvent("lifecycle", map);
@@ -152,9 +149,9 @@ public class FlutterBoost {
     }
 
     public void doInitialFlutter() {
-
-
-        if (mEngine != null) return;
+        if (mEngine != null) {
+            return;
+        }
 
         if (mPlatform.lifecycleListener != null) {
             mPlatform.lifecycleListener.beforeCreateEngine();
@@ -176,7 +173,6 @@ public class FlutterBoost {
         );
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
-
     }
 
 
@@ -312,7 +308,6 @@ public class FlutterBoost {
 
     private FlutterEngine createEngine() {
         if (mEngine == null) {
-
             FlutterMain.startInitialization(mPlatform.getApplication());
 
             FlutterShellArgs flutterShellArgs = new FlutterShellArgs(new String[0]);
