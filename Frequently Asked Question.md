@@ -51,7 +51,7 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 |一致的页面生命周期管理(多Flutter页面)	|Y	|N	|?|
 |是否支持页面间数据传递(回传等)	|Y	|N	|N|
 |是否支持测滑手势	|Y	|Y	|Y|
-|是否支持跨页的hero动画	|N	|Y	|N|
+|是否支持跨页的hero动画	|Y	|Y	|N|
 |内存等资源占用是否可控	|Y	|Y	|Y|
 |是否提供一致的页面route方案	|Y	|Y	|N|
 |iOS和Android能力及接口是否一致	|Y	|N	|N|
