@@ -45,7 +45,7 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 回答：官方的解决方案仅仅是在native侧对FlutterViewController和Flutterengine进行解耦，如此可以一个FlutterEngine切换不同的FlutterViewController或者Activity进行渲染。但其并未解决Native和Flutter页面混合的问题，无法保证两侧的页面生命周期一致。即使是Flutter官方针对这个问题也是建议使用FlutterBoost。
 其差别主要有：
 
-|*|FlutterBoost1.5	|Flutter官方方案	|其他框架|
+|*|FlutterBoost2.0	|Flutter官方方案	|其他框架|
 |----|----|----|----|
 |是否支持混合页面之间随意跳转	|Y	|N	|Y|
 |一致的页面生命周期管理(多Flutter页面)	|Y	|N	|?|
