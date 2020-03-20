@@ -35,14 +35,17 @@
 
 @implementation FLBFlutterEngine
     
-- (instancetype)initWithPlatform:(id<FLBPlatform> _Nullable)platform engine:(FlutterEngine * _Nullable)engine
+- (instancetype)initWithPlatform:(id<FLBPlatform> _Nullable)platform
+                          engine:(FlutterEngine * _Nullable)engine
 {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
     
     if (self = [super init]) {
         if(!engine){
-            _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+            _engine = [[FlutterEngine alloc] initWithName:@"io.flutter"
+                                                  project:nil
+                                   allowHeadlessExecution:YES];
         }else{
             _engine = engine;
         }
@@ -53,10 +56,6 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
-                                                          nibName:nil
-                                                           bundle:nil];
-        _dummy.name = kIgnoreMessageWithName;
     }
     
     return self;
@@ -71,7 +70,6 @@
 - (void)pause
 {
     [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
-    [self detach];
 }
 
 - (void)resume
@@ -99,16 +97,16 @@
 
 - (void)atacheToViewController:(FlutterViewController *)vc
 {
-    if(_engine.viewController != vc){
-//        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
+    if(_engine.viewController != vc && vc != nil){
         _engine.viewController = vc;
+        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
     }
 }
 
-- (void)detach
+- (void)detachViewController:(FlutterViewController * _Nullable)vc
 {
-    if(_engine.viewController != _dummy){
-        _engine.viewController = _dummy;
+    if(_engine.viewController && _engine.viewController != vc){
+        _engine.viewController = vc;
     }
 }
 
@@ -120,7 +118,8 @@
 }
 
 - (void)dealloc{
-    [self.engine setViewController:nil];
+    _engine.viewController = nil;
+    [_engine destroyContext];
 }
 @end
 

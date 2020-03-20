@@ -151,16 +151,6 @@ static NSUInteger kInstanceCounter = 0;
     return FLUTTER_VIEW.superview == self.view;
 }
 
-- (void)attatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider atacheToViewController:self];
-}
-
-- (void)detatchFlutterEngine
-{
-    [FLUTTER_APP.flutterProvider detach];
-}
-
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -201,8 +191,8 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP addUniqueViewController:self];
     
     //Ensure flutter view is attached.
-    [self attatchFlutterEngine];
- 
+    [FLUTTER_APP.flutterProvider atacheToViewController:self];
+
     [BoostMessageChannel didShowPageContainer:^(NSNumber *result) {}
                                            pageName:_name
                                              params:_params
@@ -255,7 +245,16 @@ static NSUInteger kInstanceCounter = 0;
 //    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
 //    callSuper(&target, @selector(viewDidDisappear:), animated);
     
-    [self detatchFlutterEngine];
+    
+    if ([self isMovingFromParentViewController]) {
+        [FLUTTER_APP removeViewController:self];
+        FLBFlutterViewContainer *container = (FLBFlutterViewContainer*)[FLUTTER_APP peakViewController];
+        if (container) {
+            [FLUTTER_APP.flutterProvider detachViewController:container];
+        } else {
+            [FLUTTER_APP.flutterProvider detachViewController:nil];
+        }
+    }
 }
 
 - (void)installSplashScreenViewIfNecessary {

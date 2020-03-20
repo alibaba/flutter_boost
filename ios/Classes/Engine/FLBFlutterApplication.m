@@ -127,6 +127,10 @@
     return [_manager remove:vc];
 }
 
+- (id<FLBFlutterContainer>)peakViewController {
+  return [_manager peak];
+}
+
 - (NSInteger)pageCount{
     return [_manager pageCount];
 }

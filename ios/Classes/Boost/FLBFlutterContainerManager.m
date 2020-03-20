@@ -27,6 +27,7 @@
 @interface FLBFlutterContainerManager()
 @property (nonatomic,strong) NSMutableArray *idStk;
 @property (nonatomic,strong) NSMutableDictionary *existedID;
+@property (nonatomic, strong) NSMapTable *containers; // 弱引用缓存所有的FlutterViewController
 @end
 
 @implementation FLBFlutterContainerManager
@@ -36,6 +37,7 @@
     if (self = [super init]) {
         _idStk= [NSMutableArray new];
         _existedID = [NSMutableDictionary dictionary];
+        _containers = [NSMapTable weakToWeakObjectsMapTable];
     }
     
     return self;
@@ -57,6 +59,7 @@
             [_idStk addObject:vc.uniqueIDString];
         }
         _existedID[vc.uniqueIDString] = vc.name;
+        [_containers setObject:vc forKey:vc.uniqueIDString];
     }
 #if DEBUG
     [self dump:@"ADD"];
@@ -68,15 +71,16 @@
     if (vc) {
         [_existedID removeObjectForKey:vc.uniqueIDString];
         [_idStk removeObject:vc.uniqueIDString];
+        [_containers removeObjectForKey:vc.uniqueIDString];
     }
 #if DEBUG
     [self dump:@"REMOVE"];
 #endif
 }
 
-- (NSString *)peak
+- (id<FLBFlutterContainer>)peak
 {
-    return _idStk.lastObject;
+    return [_containers objectForKey:_idStk.lastObject];
 }
 
 - (NSInteger)pageCount{

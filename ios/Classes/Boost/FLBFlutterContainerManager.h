@@ -28,7 +28,7 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterContainerManager : NSObject
 
-- (NSString *)peak;
+- (id<FLBFlutterContainer>)peak;
 - (void)addUnique:(id<FLBFlutterContainer>)vc;
 - (void)remove:(id<FLBFlutterContainer>)vc;
 - (BOOL)contains:(id<FLBFlutterContainer>)vc;
