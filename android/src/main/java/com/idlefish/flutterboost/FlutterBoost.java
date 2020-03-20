@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Debug;
+
 import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
 import io.flutter.embedding.android.FlutterView;
@@ -27,6 +29,7 @@ public class FlutterBoost {
     private Activity mCurrentActiveActivity;
     private boolean mEnterActivityCreate =false;
     static FlutterBoost sInstance = null;
+    private static boolean sInit;
 
     private long FlutterPostFrameCallTime = 0;
     private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks;
@@ -47,7 +50,10 @@ public class FlutterBoost {
     }
 
     public void init(Platform platform) {
-
+        if (sInit){
+            Debuger.log("FlutterBoost is alread inited. Do not init twice");
+            return;
+        }
 
         mPlatform = platform;
         mManager = new FlutterViewContainerManager();
@@ -147,7 +153,7 @@ public class FlutterBoost {
 
             doInitialFlutter();
         }
-
+        sInit = true;
 
     }
 
