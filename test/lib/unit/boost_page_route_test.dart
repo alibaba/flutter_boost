@@ -47,7 +47,7 @@ void main() {
 
   group('Try to get the BoostPageRoute in the ancestor node', () {
     testWidgets(
-        'obtain BoostPageRoute through the `BoostPageRoute.of(context)` method',
+        'obtain BoostPageRoute through the BoostPageRoute.of(context) method',
         (WidgetTester tester) async {
       dynamic boostPageRoute;
       dynamic boostPageRouteFindByOfMethod;
@@ -74,13 +74,15 @@ void main() {
 
       await tester.tap(find.byType(FloatingActionButton));
 
+      await tester.pump(Duration(seconds: 1));
+
       // The route obtained from the ancestor node through the `of` method should be the same BoostPageRoute
       // as the originally created BoostPageRoute
       expect(boostPageRoute, boostPageRouteFindByOfMethod);
     });
 
     testWidgets(
-        'try to find BoostPageRoute through the `BoostPageRoute.of(context)` method, '
+        'try to find BoostPageRoute through the BoostPageRoute.of(context) method, '
         'but it doesn\'t exist, the method should throw an Exception',
         (WidgetTester tester) async {
       dynamic contextCache;
@@ -102,12 +104,13 @@ void main() {
         ),
       );
       await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump(Duration(seconds: 1));
 
       expect(() => BoostPageRoute.of<dynamic>(contextCache), throwsException);
     });
 
     testWidgets(
-        'obtain BoostPageRoute through the `BoostPageRoute.tryOf(context)` method',
+        'obtain BoostPageRoute through the BoostPageRoute.tryOf(context) method',
         (WidgetTester tester) async {
       dynamic boostPageRoute;
       dynamic boostPageRouteFindByOfMethod;
@@ -134,6 +137,7 @@ void main() {
       );
 
       await tester.tap(find.byType(FloatingActionButton));
+      await tester.pump(Duration(seconds: 1));
 
       // The route obtained from the ancestor node through the `tryOf` method should be the same BoostPageRoute
       // as the originally created BoostPageRoute
@@ -142,7 +146,7 @@ void main() {
   });
 
   testWidgets(
-      'try to find BoostPageRoute through the `BoostPageRoute.tryOf(context)` method, '
+      'try to find BoostPageRoute through the BoostPageRoute.tryOf(context) method, '
       'but it doesn\'t exist, the method should return null',
       (WidgetTester tester) async {
         dynamic boostPageRouteFindByOfMethod;
@@ -168,6 +172,7 @@ void main() {
     );
 
     await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump(Duration(seconds: 1));
 
     expect(boostPageRouteFindByOfMethod, null);
   });

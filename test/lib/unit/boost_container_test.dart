@@ -137,7 +137,7 @@ void main() {
     expect(find.text('Y', skipOffstage: false), findsNothing);
   });
 //
-  testWidgets('Navigator.of fails gracefully when not found in context',
+  testWidgets('Navigator.of  gracefully when not found in context',
       (WidgetTester tester) async {
     const Key targetKey = Key('foo');
     dynamic exception;
@@ -148,7 +148,13 @@ void main() {
       },
     );
     await tester.pumpWidget(widget);
+
+    await tester.pump(Duration(seconds: 1));
+
     await tester.tap(find.byKey(targetKey));
+
+    await tester.pump(Duration(seconds: 1));
+
     expect(exception, isInstanceOf<FlutterError>());
     expect('$exception',
         startsWith('Navigator operation requested with a context'));
