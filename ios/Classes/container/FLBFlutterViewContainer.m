@@ -36,7 +36,8 @@
 
 @interface FlutterViewController (bridgeToviewDidDisappear)
 - (void)flushOngoingTouches;
-- (void)override_viewDidDisappear:(BOOL)animated;
+- (void)bridge_viewDidDisappear:(BOOL)animated;
+- (void)bridge_viewWillAppear:(BOOL)animated;
 @end
 
 #pragma clang diagnostic push
@@ -48,7 +49,20 @@
 
     [super viewDidDisappear:animated];
 }
+- (void)bridge_viewWillAppear:(BOOL)animated{
+//    TRACE_EVENT0("flutter", "viewWillAppear");
+
+//    if (_engineNeedsLaunch) {
+//      [_engine.get() launchEngine:nil libraryURI:nil];
+//      [_engine.get() setViewController:self];
+//      _engineNeedsLaunch = NO;
+//    }
+    [FLUTTER_APP inactive];
+    
+    [super viewWillAppear:animated];
+}
 @end
+#pragma pop
 
 @interface FLBFlutterViewContainer  ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
@@ -73,6 +87,13 @@
         [self _setup];
     }
     return self;
+}
+
+- (instancetype)initWithProject:(FlutterDartProject*)projectOrNil
+                        nibName:(NSString*)nibNameOrNil
+                         bundle:(NSBundle*)nibBundleOrNil {
+    NSAssert(NO, @"unsupported init method!");
+    return nil;
 }
 
 #pragma clang diagnostic push
@@ -190,6 +211,8 @@ static NSUInteger kInstanceCounter = 0;
     //For new page we should attach flutter view in view will appear
     //for better performance.
  
+    [self attatchFlutterEngine];
+    
     [BoostMessageChannel willShowPageContainer:^(NSNumber *result) {}
                                             pageName:_name
                                               params:_params
@@ -200,8 +223,8 @@ static NSUInteger kInstanceCounter = 0;
     [FlutterBoostPlugin sharedInstance].fParams = _params;
     
  
-    [self attatchFlutterEngine];
-    [super viewWillAppear:animated];
+    
+    [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
 }
 
@@ -216,6 +239,8 @@ static NSUInteger kInstanceCounter = 0;
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
+    //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
+    [self surfaceUpdated:YES];
     
     [super viewDidAppear:animated];
 }
@@ -228,13 +253,6 @@ static NSUInteger kInstanceCounter = 0;
                                                  uniqueId:self.uniqueIDString];
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
-    
-    //NOTES：因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，从而让当前engine持有的vc inactive，此处可驱使其重新resume
-    if (![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
-    {
-        [FLUTTER_APP resume];
-    }
-
 }
 
 
@@ -244,14 +262,6 @@ static NSUInteger kInstanceCounter = 0;
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-
-    //NOTES:因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，导致当前engine持有的VC被surfaceUpdate(NO)，从而销毁底层的raster。此处是考虑到这种情形，重建surface
-    if (FLUTTER_VC.beingPresented || self.beingDismissed /*|| ![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]]*/)
-    {
-        [FLUTTER_APP resume];
-        [(FLBFlutterViewContainer*)FLUTTER_VC surfaceUpdated:YES];
-    }
-    
     [self bridge_viewDidDisappear:animated];
 }
 
