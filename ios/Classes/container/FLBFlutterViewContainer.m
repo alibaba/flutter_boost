@@ -34,6 +34,22 @@
 #define FLUTTER_VIEW FLUTTER_APP.flutterViewController.view
 #define FLUTTER_VC FLUTTER_APP.flutterViewController
 
+@interface FlutterViewController (bridgeToviewDidDisappear)
+- (void)flushOngoingTouches;
+- (void)override_viewDidDisappear:(BOOL)animated;
+@end
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
+@implementation FlutterViewController (bridgeToviewDidDisappear)
+- (void)bridge_viewDidDisappear:(BOOL)animated{
+//    TRACE_EVENT0("flutter", "viewDidDisappear");
+    [self flushOngoingTouches];
+
+    [super viewDidDisappear:animated];
+}
+@end
+
 @interface FLBFlutterViewContainer  ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
 @property (nonatomic,assign) long long identifier;
@@ -184,15 +200,9 @@ static NSUInteger kInstanceCounter = 0;
     [FlutterBoostPlugin sharedInstance].fParams = _params;
     
  
+    [self attatchFlutterEngine];
     [super viewWillAppear:animated];
-    [self.view setNeedsLayout];
-    //instead of calling [super viewWillAppear:animated];, call super's super
-//    struct objc_super target = {
-//        .super_class = class_getSuperclass([FlutterViewController class]),
-//        .receiver = self,
-//    };
-//    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
-//    callSuper(&target, @selector(viewWillAppear:), animated);
+    [self.view setNeedsLayout];//TODO:通过param来设定
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -206,9 +216,6 @@ static NSUInteger kInstanceCounter = 0;
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
-    
-    //NOTES：务必在show之后再update，否则有闪烁
-    [self surfaceUpdated:YES];
     
     [super viewDidAppear:animated];
 }
@@ -237,24 +244,15 @@ static NSUInteger kInstanceCounter = 0;
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-    [super viewDidDisappear:animated];
-    
+
     //NOTES:因为UIViewController在present view后dismiss其页面的view disappear会发生在下一个页面view appear之后，导致当前engine持有的VC被surfaceUpdate(NO)，从而销毁底层的raster。此处是考虑到这种情形，重建surface
-    if (FLUTTER_VC.beingPresented || self.beingDismissed || ![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]])
+    if (FLUTTER_VC.beingPresented || self.beingDismissed /*|| ![self.uniqueIDString isEqualToString:[(FLBFlutterViewContainer*)FLUTTER_VC uniqueIDString]]*/)
     {
         [FLUTTER_APP resume];
         [(FLBFlutterViewContainer*)FLUTTER_VC surfaceUpdated:YES];
     }
-
-//  instead of calling [super viewDidDisappear:animated];, call super's super
-//    struct objc_super target = {
-//        .super_class = class_getSuperclass([FlutterViewController class]),
-//        .receiver = self,
-//    };
-//    NSMethodSignature * (*callSuper)(struct objc_super *, SEL, BOOL animated) = (__typeof__(callSuper))objc_msgSendSuper;
-//    callSuper(&target, @selector(viewDidDisappear:), animated);
     
-    [self detatchFlutterEngine];
+    [self bridge_viewDidDisappear:animated];
 }
 
 - (void)installSplashScreenViewIfNecessary {
