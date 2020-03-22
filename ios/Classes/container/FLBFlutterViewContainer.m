@@ -262,7 +262,13 @@ static NSUInteger kInstanceCounter = 0;
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-    [self bridge_viewDidDisappear:animated];
+    //如果当前不可见vc和engine所持有的vc一致。在FlutterVC在混合栈中是最后一张页面，如tab中的页面
+    if (self == FLUTTER_VC)
+    {
+        [self surfaceUpdated:NO];
+        [self detatchFlutterEngine];
+    }
+    [super bridge_viewDidDisappear:animated];
 }
 
 - (void)installSplashScreenViewIfNecessary {
