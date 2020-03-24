@@ -259,13 +259,17 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onStart() {
         super.onStart();
-        delegate.onStart();
+        if (!isHidden()) {
+            delegate.onStart();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        delegate.onResume();
+        if (!isHidden()) {
+            delegate.onResume();
+        }
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if possible.
@@ -277,13 +281,17 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onPause() {
         super.onPause();
-        delegate.onPause();
+        if (!isHidden()) {
+            delegate.onPause();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        delegate.onStop();
+        if (!isHidden()) {
+            delegate.onStop();
+        }
     }
 
     @Override
@@ -300,6 +308,15 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         delegate = null;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            delegate.onPause();
+        } else {
+            delegate.onResume();
+        }
+    }
 
     @ActivityCallThrough
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
