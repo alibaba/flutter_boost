@@ -6,18 +6,14 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.os.Debug;
 
-import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.loader.FlutterLoader;
-import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterMain;
 
 import java.lang.reflect.Method;
