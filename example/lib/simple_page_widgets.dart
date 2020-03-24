@@ -20,7 +20,7 @@ class FirstRouteWidget extends StatelessWidget {
                 child: Text('Open native page'),
                 onPressed: () {
                   print("open natve page!");
-                  FlutterBoost.singleton.open("native").then((Map<String,dynamic> value) {
+                  FlutterBoost.singleton.open("native").then((Map<dynamic,dynamic> value) {
                     print(
                         "call me when page is finished. did recieve second route result $value");
                   });
@@ -31,7 +31,7 @@ class FirstRouteWidget extends StatelessWidget {
                 child: Text('Open second route'),
                 onPressed: () {
                   print("open second page!");
-                  FlutterBoost.singleton.open("second").then((Map<String,dynamic> value) {
+                  FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
                     print(
                         "call me when page is finished. did recieve second route result $value");
                   });
@@ -42,7 +42,7 @@ class FirstRouteWidget extends StatelessWidget {
                   child: Text('Present second route'),
                   onPressed: () {
                     print("Present second page!");
-                    FlutterBoost.singleton.open("second",urlParams:<String,dynamic>{"present":true}).then((Map<String,dynamic> value) {
+                    FlutterBoost.singleton.open("second",urlParams:<String,dynamic>{"present":true}).then((Map<dynamic,dynamic> value) {
                       print(
                           "call me when page is finished. did recieve second route result $value");
                     });
@@ -64,7 +64,7 @@ class EmbededFirstRouteWidget extends StatelessWidget {
           child: Text('Open second route'),
           onPressed: () {
             print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map<String,dynamic> value) {
+            FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
               print(
                   "call me when page is finished. did recieve second route result $value");
             });
@@ -130,7 +130,7 @@ class PlatformRouteWidget extends StatelessWidget {
           child: TextView(),
           onPressed: () {
             print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map<String,dynamic> value) {
+            FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
               print(
                   "call me when page is finished. did recieve second route result $value");
             });
