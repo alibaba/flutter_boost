@@ -266,7 +266,6 @@ static NSUInteger kInstanceCounter = 0;
     if (self == FLUTTER_VC)
     {
         [self surfaceUpdated:NO];
-        [self detatchFlutterEngine];
     }
     [super bridge_viewDidDisappear:animated];
 }
