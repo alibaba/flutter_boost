@@ -75,6 +75,9 @@ NS_ASSUME_NONNULL_BEGIN
                           params:(NSDictionary *)params
                         uniqueId:(NSString *)uniqueId;
 
+- (void)onShownContainerChanged:(NSString *)uniqueId
+                         params:(NSDictionary *)params;
+
 @end
 NS_ASSUME_NONNULL_END
 
