@@ -67,8 +67,15 @@
                                                         result(@(r));
                                                     }];
     }else if([@"onShownContainerChanged" isEqualToString:call.method]){
-        NSString *newName = call.arguments[@"newName"];
+        NSDictionary *args = [FLBCollectionHelper deepCopyNSDictionary:call.arguments
+        filter:^bool(id  _Nonnull value) {
+            return ![value isKindOfClass:NSNull.class];
+        }];
+        
+        NSString *newName = args[@"newName"];
+        NSString *uid = args[@"uniqueId"];
         if(newName){
+            [[FlutterBoostPlugin2 sharedInstance].application onShownContainerChanged:uid params:args];
             [NSNotificationCenter.defaultCenter postNotificationName:@"flutter_boost_container_showed"
                                                               object:newName];
         }
