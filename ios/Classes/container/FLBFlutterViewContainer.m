@@ -268,7 +268,6 @@ static NSUInteger kInstanceCounter = 0;
     //     [self surfaceUpdated:NO];
     // }
     [super bridge_viewDidDisappear:animated];
-    [FLUTTER_APP resume];
 }
 
 - (void)installSplashScreenViewIfNecessary {
