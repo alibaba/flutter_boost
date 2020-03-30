@@ -75,7 +75,7 @@
         NSString *newName = args[@"newName"];
         NSString *uid = args[@"uniqueId"];
         if(newName){
-            [[FlutterBoostPlugin2 sharedInstance].application onShownContainerChanged:uid params:args];
+            [[FlutterBoostPlugin sharedInstance].application onShownContainerChanged:uid params:args];
             [NSNotificationCenter.defaultCenter postNotificationName:@"flutter_boost_container_showed"
                                                               object:newName];
         }
