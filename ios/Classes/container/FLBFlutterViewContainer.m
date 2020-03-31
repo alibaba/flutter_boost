@@ -118,10 +118,6 @@
     if(!_name && name){
         _name = name;
         _params = params;
-        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
-                                               pageName:name
-                                                 params:params
-                                               uniqueId:[self uniqueIDString]];
     }
 }
 
@@ -160,9 +156,28 @@ static NSUInteger kInstanceCounter = 0;
     [self.class instanceCounterIncrease];
 }
 
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+    if (parent) {
+        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
+               pageName:_name
+                 params:_params
+               uniqueId:[self uniqueIDString]];
+    }
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    if (!parent) {
+        [self notifyWillDealloc];
+    }
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    [self notifyWillDealloc];
+    [super dismissViewControllerAnimated:flag completion:completion];
+}
+
 - (void)dealloc
 {
-    [self notifyWillDealloc];
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -262,11 +277,11 @@ static NSUInteger kInstanceCounter = 0;
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-    //如果当前不可见vc和engine所持有的vc一致。在FlutterVC在混合栈中是最后一张页面，如tab中的页面
-    // if (self == FLUTTER_VC)
-    // {
-    //     [self surfaceUpdated:NO];
-    // }
+//    如果当前不可见vc和engine所持有的vc一致。在FlutterVC在混合栈中是最后一张页面，如tab中的页面
+//     if (self == FLUTTER_VC)
+//     {
+//         [self surfaceUpdated:NO];
+//     }
     [super bridge_viewDidDisappear:animated];
 }
 

@@ -26,6 +26,7 @@
 #import "FlutterBoost.h"
 #import "FLBFlutterContainerManager.h"
 #import "FLBFlutterEngine.h"
+#import "FLBFlutterViewContainer.h"
 
 @interface FLBFlutterApplication()
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
@@ -231,7 +232,8 @@
     NSString *oldName = params[@"oldName"];
     NSString *newName = params[@"newName"];
     if (oldName!=nil && [newName isEqualToString:@"default"]) {
-        [self.flutterProvider detach];
+        FLBFlutterViewContainer *viewController = (FLBFlutterViewContainer *)self.flutterProvider.engine.viewController;
+        [viewController surfaceUpdated:NO];
     }
 }
 
