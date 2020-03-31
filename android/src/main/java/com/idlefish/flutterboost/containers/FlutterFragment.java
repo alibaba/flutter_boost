@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.graphics.Color;
 import android.view.*;
-import androidx.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;

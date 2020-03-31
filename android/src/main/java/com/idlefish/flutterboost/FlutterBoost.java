@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
 
 import android.support.annotation.NonNull;
 
@@ -18,6 +17,7 @@ import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.view.FlutterMain;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
