@@ -3,7 +3,45 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/platform_view.dart';
 
-class FirstRouteWidget extends StatelessWidget {
+class FirstRouteWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _FirstRouteWidgetState();
+  }
+}
+class _FirstRouteWidgetState extends State<FirstRouteWidget>{
+  _FirstRouteWidgetState();
+
+  @override
+  void initState() {
+    print('initState');
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('didChangeDependencies');
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(FirstRouteWidget oldWidget) {
+    print('didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void deactivate() {
+    print('deactivate');
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print('[XDEBUG] - FirstRouteWidget is disposing~');
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,9 +64,18 @@ class FirstRouteWidget extends StatelessWidget {
                   });
                 },
               ),
-
-            RaisedButton(
-                child: Text('Open second route'),
+              RaisedButton(
+                child: Text('Open FF route'),
+                onPressed: () {
+                  print("open FF page!");
+                  FlutterBoost.singleton.open("firstFirst").then((Map value) {
+                    print(
+                        "call me when page is finished. did recieve FF route result $value");
+                  });
+                },
+              ),
+              RaisedButton(
+                child: Text('Open second route1'),
                 onPressed: () {
                   print("open second page!");
                   FlutterBoost.singleton.open("second").then((Map value) {
@@ -54,14 +101,87 @@ class FirstRouteWidget extends StatelessWidget {
     );
   }
 }
+class FirstFirstRouteWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new _FirstFirstRouteWidgetState();
+  }
+}
 
-class EmbededFirstRouteWidget extends StatelessWidget {
+class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget>{
+  _FirstFirstRouteWidgetState();
+
+  @override
+  void initState() {
+    print('initState');
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('didChangeDependencies');
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(FirstFirstRouteWidget oldWidget) {
+    print('didUpdateWidget');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void deactivate() {
+    print('deactivate');
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
+    print('[XDEBUG] - FirstFirstRouteWidget is disposing~');
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('First Route'),
+      ),
       body: Center(
         child: RaisedButton(
-          child: Text('Open second route'),
+          child: Text('Open first route'),
+          onPressed: () {
+
+            print("open first page again!");
+            FlutterBoost.singleton.open("first").then((Map value){
+              print("did recieve first route result");
+              print("did recieve first route result $value");
+            });
+
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class EmbededFirstRouteWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _EmbededFirstRouteWidgetState();
+  }
+
+}
+
+class _EmbededFirstRouteWidgetState extends State<EmbededFirstRouteWidget> {
+  @override
+  Widget build(BuildContext context) {
+    print('_EmbededFirstRouteWidgetState build called!');
+    return Scaffold(
+      body: Center(
+        child: RaisedButton(
+          child: Text('Open second route2'),
           onPressed: () {
             print("open second page!");
             FlutterBoost.singleton.open("second").then((Map value) {
@@ -72,6 +192,11 @@ class EmbededFirstRouteWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    print('[XDEBUG]:_EmbededFirstRouteWidgetState dispose called!');
+    super.dispose();
   }
 }
 
@@ -111,7 +236,7 @@ class TabRouteWidget extends StatelessWidget {
           onPressed: () {
             FlutterBoost.singleton.open("second");
           },
-          child: Text('Open second route'),
+          child: Text('Open second route3'),
         ),
       ),
     );
