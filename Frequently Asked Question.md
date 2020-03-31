@@ -42,13 +42,13 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 回答：官方的解决方案仅仅是在native侧对FlutterViewController和Flutterengine进行解耦，如此可以一个FlutterEngine切换不同的FlutterViewController或者Activity进行渲染。但其并未解决Native和Flutter页面混合的问题，无法保证两侧的页面生命周期一致。即使是Flutter官方针对这个问题也是建议使用FlutterBoost。
 其差别主要有：
 
-|*|FlutterBoost1.5	|Flutter官方方案	|其他框架|
+|*|FlutterBoost2.0	|Flutter官方方案	|其他框架|
 |----|----|----|----|
 |是否支持混合页面之间随意跳转	|Y	|N	|Y|
 |一致的页面生命周期管理(多Flutter页面)	|Y	|N	|?|
 |是否支持页面间数据传递(回传等)	|Y	|N	|N|
 |是否支持测滑手势	|Y	|Y	|Y|
-|是否支持跨页的hero动画	|N	|Y	|N|
+|是否支持跨页的hero动画	|Y	|Y	|N|
 |内存等资源占用是否可控	|Y	|Y	|Y|
 |是否提供一致的页面route方案	|Y	|Y	|N|
 |iOS和Android能力及接口是否一致	|Y	|N	|N|
@@ -57,6 +57,40 @@ bool isTopContainer = FlutterBoost.BoostContainer.of(context).onstage
 
 同时FlutterBoost也提供了一次性创建混合工程的命令：flutterboot。代码参考：https://github.com/alibaba-flutter/flutter-boot
 
-### 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
+### 7. 如果我需要通过FlutterViewController再弹出一个新的但frame比较小的FlutterViewController，应该怎么实现？
 回答：如果不加处理会遇到window大小变化的问题，但可以解决。具体可以参考这个issue：https://github.com/alibaba/flutter_boost/issues/435
 
+### 8. Flutter ViewController如何设置横屏
+VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方式来设置：
+1. dart层的SystemChrome.setPreferredOrientations函数并非直接设置转向，而是设置页面优先使用的转向(preferred)
+2. app的转向控制除了info.plist的设置外，主要受UIWindow.rootViewController控制。大概过程是这样的：硬件检测到转向，就会调用UIWindow的转向函数，然后调用其rootViewController的shouldAutorotate判断是否需要自动转，然后取supportedInterfaceOrientations和info.plist中设置的交集来判断可否转
+3. 对于UIViewController中的转向，也只在rootviewcontroller中才有效
+
+举例如下，实现步骤可以这样：
+1. 重写NavigationController：
+```objc
+-(BOOL)shouldAutorotate
+{
+//    id currentViewController = self.topViewController;
+//
+//
+//     if ([currentViewController isKindOfClass:[FlutterViewController class]])
+//        return [currentViewController shouldAutorotate];
+
+    return YES;
+}
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    id currentViewController = self.topViewController;
+    if ([currentViewController isKindOfClass:[FlutterViewController class]]){
+        NSLog(@"[XDEBUG]----fvc supported:%ld\n",[currentViewController supportedInterfaceOrientations]);
+         return [currentViewController supportedInterfaceOrientations];
+    }
+    return UIInterfaceOrientationMaskAll;
+}
+```
+2. 改dart层：因为SystemChrome.setPreferredOrientations的设置是全局的，但混合栈是多页面，所以在main函数中设置，后面在新建一个FlutterViewController时会被冲掉。为了解决这个问题，需要在每个dart页面的build处都加上这语句来设置每个页面能支持哪些转向类型
+
+### 9. FlutterBoost for flutter1.12出现和surface相关的crash。可以参考这个issue：https://github.com/flutter/flutter/issues/52455
+可能flutter engine的bug引起

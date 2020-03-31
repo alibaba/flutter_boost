@@ -2,6 +2,9 @@ package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
+import android.graphics.Color;
+import android.view.*;
+import androidx.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -253,19 +256,32 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        configureStatusBarForFullscreenFlutterExperience();
         return delegate.onCreateView(inflater, container, savedInstanceState);
+    }
+    private void configureStatusBarForFullscreenFlutterExperience() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getActivity().getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        delegate.onStart();
+        if (!isHidden()) {
+            delegate.onStart();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        delegate.onResume();
+        if (!isHidden()) {
+            delegate.onResume();
+        }
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if possible.
@@ -277,13 +293,17 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Override
     public void onPause() {
         super.onPause();
-        delegate.onPause();
+        if (!isHidden()) {
+            delegate.onPause();
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        delegate.onStop();
+        if (!isHidden()) {
+            delegate.onStop();
+        }
     }
 
     @Override
@@ -300,6 +320,15 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         delegate = null;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            delegate.onPause();
+        } else {
+            delegate.onResume();
+        }
+    }
 
     @ActivityCallThrough
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
