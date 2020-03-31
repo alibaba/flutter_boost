@@ -60,7 +60,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
                   print("open natve page!");
                   FlutterBoost.singleton.open("native").then((Map value) {
                     print(
-                        "call me when page is finished. did recieve second route result $value");
+                        "call me when page is finished. did recieve native route result $value");
                   });
                 },
               ),
@@ -86,6 +86,16 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
               ),
 
               RaisedButton(
+                  child: Text('Present second stateful route'),
+                  onPressed: () {
+                    print("Present second stateful page!");
+                    FlutterBoost.singleton.open("secondStateful",urlParams:<dynamic,dynamic>{"present":true}).then((Map value) {
+                      print(
+                          "call me when page is finished. did recieve second stateful route result $value");
+                    });
+                  },
+                ),
+                RaisedButton(
                   child: Text('Present second route'),
                   onPressed: () {
                     print("Present second page!");
@@ -195,7 +205,44 @@ class _EmbededFirstRouteWidgetState extends State<EmbededFirstRouteWidget> {
   }
   @override
   void dispose() {
-    print('[XDEBUG]:_EmbededFirstRouteWidgetState dispose called!');
+    print('[XDEBUG]:_EmbededFirstRouteWidgetState disposing~');
+    super.dispose();
+  }
+}
+
+class SecondStatefulRouteWidget extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return _SecondStatefulRouteWidgetState();
+  }
+}
+class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget>{
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("SecondStateful Route"),
+      ),
+      body: Center(
+        child: RaisedButton(
+          onPressed: () {
+            // Navigate back to first route when tapped.
+
+            BoostContainerSettings settings =
+                BoostContainer.of(context).settings;
+            FlutterBoost.singleton.close(settings.uniqueId,
+                result: <dynamic,dynamic>{"result": "data from second"});
+          },
+          child: Text('Go back with result!'),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    print('[XDEBUG]:SecondStatefulRouteWidget disposing~');
     super.dispose();
   }
 }
@@ -557,6 +604,7 @@ class _PushWidgetState extends State<PushWidget> {
   @override
   void dispose() {
     // TODO: implement dispose
+    print('[XDEBUG] - PushWidget is disposing~');
     super.dispose();
     _backPressedListenerUnsub?.call();
   }

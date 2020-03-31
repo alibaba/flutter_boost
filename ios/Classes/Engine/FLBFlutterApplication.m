@@ -232,8 +232,7 @@
     NSString *oldName = params[@"oldName"];
     NSString *newName = params[@"newName"];
     if (oldName!=nil && [newName isEqualToString:@"default"]) {
-        FLBFlutterViewContainer *viewController = (FLBFlutterViewContainer *)self.flutterProvider.engine.viewController;
-        [viewController surfaceUpdated:NO];
+        [self.flutterProvider detach];
     }
 }
 

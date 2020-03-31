@@ -108,6 +108,7 @@
 - (void)detach
 {
     if(_engine.viewController != _dummy){
+        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
         _engine.viewController = _dummy;
     }
 }
