@@ -7,7 +7,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Debug;
 
-import androidx.annotation.NonNull;
 import android.support.annotation.NonNull;
 
 import com.idlefish.flutterboost.interfaces.*;
