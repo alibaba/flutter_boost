@@ -52,6 +52,7 @@
 //    [self.flutterContainer.view layoutIfNeeded];
 }
 
+//NOTES: embed情景下必须实现！！！
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     [self.flutterContainer didMoveToParentViewController:parent];
     [super didMoveToParentViewController:parent];
