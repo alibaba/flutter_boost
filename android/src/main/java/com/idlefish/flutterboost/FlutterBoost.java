@@ -17,6 +17,7 @@ import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.view.FlutterMain;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
