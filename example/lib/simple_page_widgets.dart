@@ -89,7 +89,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
                   child: Text('Present second stateful route'),
                   onPressed: () {
                     print("Present second stateful page!");
-                    FlutterBoost.singleton.open("secondStateful",urlParams:<dynamic,dynamic>{"present":true}).then((Map value) {
+                    FlutterBoost.singleton.open("secondStateful",urlParams:<String,dynamic>{"present":true}).then((Map value) {
                       print(
                           "call me when page is finished. did recieve second stateful route result $value");
                     });
@@ -232,7 +232,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget>{
             BoostContainerSettings settings =
                 BoostContainer.of(context).settings;
             FlutterBoost.singleton.close(settings.uniqueId,
-                result: <dynamic,dynamic>{"result": "data from second"});
+                result: <String,dynamic>{"result": "data from second"});
           },
           child: Text('Go back with result!'),
         ),
