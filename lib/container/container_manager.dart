@@ -183,9 +183,11 @@ class ContainerManagerState extends State<BoostContainerManager> {
     if (SchedulerBinding.instance.schedulerPhase ==
         SchedulerPhase.persistentCallbacks) {
       SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+        Logger.log('_refreshOverlayEntries in addPostFrameCallback');
         _refreshOverlayEntries();
       });
     } else {
+      Logger.log('_refreshOverlayEntries in setState');
       _refreshOverlayEntries();
     }
 

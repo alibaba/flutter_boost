@@ -26,10 +26,12 @@
 #import "FlutterBoost.h"
 #import "FLBFlutterContainerManager.h"
 #import "FLBFlutterEngine.h"
+#import "FLBFlutterViewContainer.h"
 
 @interface FLBFlutterApplication()
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
 @property (nonatomic,strong) id<FLBFlutterProvider> viewProvider;
+@property (nonatomic, weak, readonly)FlutterViewController * previousViewController;
 @property (nonatomic,assign) BOOL isRunning;
 @property (nonatomic,strong) NSMutableDictionary *pageResultCallbacks;
 @property (nonatomic,strong) NSMutableDictionary *callbackCache;
@@ -156,6 +158,13 @@
     return self.flutterProvider.engine.viewController;
 }
 
+- (void)attachToPreviousContainer{
+    if([self.viewProvider atacheToViewController:self.previousViewController]){
+        [self.previousViewController.view setNeedsLayout];
+        [(FLBFlutterViewContainer*)self.previousViewController surfaceUpdated:YES];
+    }
+}
+
 - (void)close:(NSString *)uniqueId
        result:(NSDictionary *)resultData
          exts:(NSDictionary *)exts
@@ -189,7 +198,7 @@
         [newParams setObject:cid?cid:@"__default#0__" forKey:kPageCallBackId];
         urlParams = newParams;
     }
-    
+    _previousViewController = [self flutterViewController];
     _callbackCache[cid] = resultCallback;
     if([urlParams[@"present"]respondsToSelector:@selector(boolValue)] && [urlParams[@"present"] boolValue] && [self.platform respondsToSelector:@selector(present:urlParams:exts:completion:)]){
         [self.platform present:url

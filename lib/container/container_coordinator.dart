@@ -102,7 +102,7 @@ class ContainerCoordinator {
       Map map = event;
       final String type = map['type'];
 
-      Logger.log("onEvent $type");
+      Logger.log('onEvent $type');
 
       switch (type) {
         //Handler back key pressed event.
@@ -242,7 +242,7 @@ class ContainerCoordinator {
         ContainerLifeCycle.Appear);
 
     Logger.log(
-        'native containner did show,\nmanager dump:\n${FlutterBoost.containerManager?.dump()}');
+        'native containner did show-$name,\nmanager dump:\n${FlutterBoost.containerManager?.dump()}');
 
     return true;
   }
@@ -275,7 +275,7 @@ class ContainerCoordinator {
     FlutterBoost.containerManager?.remove(pageId);
 
     Logger.log(
-        'native containner dealloc, \n manager dump:\n${FlutterBoost.containerManager?.dump()}');
+        'native containner dealloc for $name, \n manager dump:\n${FlutterBoost.containerManager?.dump()}');
 
     return true;
   }
