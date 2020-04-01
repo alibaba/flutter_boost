@@ -66,6 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
        onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
 
+- (void)attachToPreviousContainer;
 
 - (void)didInitPageContainer:(NSString *)url
                       params:(NSDictionary *)urlParams

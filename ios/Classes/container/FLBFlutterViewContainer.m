@@ -118,10 +118,6 @@
     if(!_name && name){
         _name = name;
         _params = params;
-        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
-                                               pageName:name
-                                                 params:params
-                                               uniqueId:[self uniqueIDString]];
     }
 }
 
@@ -160,9 +156,38 @@ static NSUInteger kInstanceCounter = 0;
     [self.class instanceCounterIncrease];
 }
 
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+    if (parent && _name) {
+        //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
+        [BoostMessageChannel didInitPageContainer:^(NSNumber *r) {}
+               pageName:_name
+                 params:_params
+               uniqueId:[self uniqueIDString]];
+    }
+    [super willMoveToParentViewController:parent];
+}
+
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    if (!parent) {
+        //当VC被移出parent时，就通知flutter层销毁page
+        [self notifyWillDealloc];
+    }
+    [super didMoveToParentViewController:parent];
+}
+
+- (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    
+    [super dismissViewControllerAnimated:flag completion:^(){
+        if (completion) {
+            completion();
+        }
+        //当VC被dismiss时，就通知flutter层销毁page
+        [self notifyWillDealloc];
+    }];
+}
+
 - (void)dealloc
 {
-    [self notifyWillDealloc];
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -262,11 +287,6 @@ static NSUInteger kInstanceCounter = 0;
                                                 pageName:_name
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
-    //如果当前不可见vc和engine所持有的vc一致。在FlutterVC在混合栈中是最后一张页面，如tab中的页面
-    // if (self == FLUTTER_VC)
-    // {
-    //     [self surfaceUpdated:NO];
-    // }
     [super bridge_viewDidDisappear:animated];
 }
 

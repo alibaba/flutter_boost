@@ -51,6 +51,13 @@
 //    [self.flutterContainer.view setNeedsLayout];
 //    [self.flutterContainer.view layoutIfNeeded];
 }
+
+//NOTES: embed情景下必须实现！！！
+- (void)didMoveToParentViewController:(UIViewController *)parent {
+    [self.flutterContainer didMoveToParentViewController:parent];
+    [super didMoveToParentViewController:parent];
+}
+
 /*
 #pragma mark - Navigation
 
@@ -60,5 +67,9 @@
     // Pass the selected object to the new view controller.
 }
 */
+
+- (void)dealloc{
+    NSLog(@"dealloc native controller%p", self.flutterContainer);
+}
 
 @end
