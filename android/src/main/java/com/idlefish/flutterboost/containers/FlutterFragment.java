@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -255,17 +256,9 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        configureStatusBarForFullscreenFlutterExperience();
         return delegate.onCreateView(inflater, container, savedInstanceState);
     }
-    private void configureStatusBarForFullscreenFlutterExperience() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getActivity().getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.getDecorView().setSystemUiVisibility(PlatformPlugin.DEFAULT_SYSTEM_UI | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }
-    }
+
 
     @Override
     public void onStart() {
@@ -281,6 +274,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
         if (!isHidden()) {
             delegate.onResume();
         }
+
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if possible.
