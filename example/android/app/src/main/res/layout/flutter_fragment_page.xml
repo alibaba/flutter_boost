@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:background="@android:color/white">
 
-    <FrameLayout
+    <com.taobao.idlefish.flutterboostexample.FitSystemWindowFrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

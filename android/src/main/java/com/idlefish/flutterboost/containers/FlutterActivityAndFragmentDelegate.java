@@ -127,10 +127,13 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     @NonNull
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.v(TAG, "Creating FlutterView.");
+
+
         flutterEngine.getActivityControlSurface().attachToActivity(
                 host.getActivity(),
                 host.getLifecycle()
         );
+
 
 
         mSyncer = FlutterBoost.instance().containerManager().generateSyncer(this);
@@ -188,7 +191,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     public void onPostResume() {
         Log.v(TAG, "onPostResume()");
         ensureAlive();
-        Utils.setStatusBarLightMode(host.getActivity(), true);
+//        Utils.setStatusBarLightMode(host.getActivity(), true);
 
     }
 
