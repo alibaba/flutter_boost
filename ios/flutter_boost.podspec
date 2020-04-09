@@ -21,7 +21,8 @@ A new Flutter plugin make flutter better to use!
     'Classes/Boost/FLBFlutterAppDelegate.h',
     'Classes/Boost/FLBTypes.h',
     'Classes/Boost/FlutterBoost.h',
-    'Classes/Boost/BoostChannel.h',
+    'Classes/Boost/BoostChannel.h',    
+    'Classes/Messaging/BoostMessageChannel.h',
     'Classes/container/FLBFlutterViewContainer.h'
     
   s.dependency 'Flutter'
