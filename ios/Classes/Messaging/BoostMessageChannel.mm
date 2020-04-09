@@ -104,15 +104,7 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"didShowPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"didShowPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
  }
  
  + (void)willShowPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
@@ -121,15 +113,7 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"willShowPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"willShowPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
  }
  
  + (void)willDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
@@ -138,15 +122,7 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"willDisappearPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"willDisappearPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
  }
  
  + (void)didDisappearPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
@@ -155,15 +131,7 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"didDisappearPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"didDisappearPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
  }
  
  + (void)didInitPageContainer:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId
@@ -172,15 +140,7 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"didInitPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"didInitPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
      
      [FlutterBoostPlugin.sharedInstance.application didInitPageContainer:pageName
                                                                   params:params
@@ -193,20 +153,24 @@
          return;
      }
      
-     NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
-     if(pageName) tmp[@"pageName"] = pageName;
-     if(params) tmp[@"params"] = params;
-     if(uniqueId) tmp[@"uniqueId"] = uniqueId;
-     [self.methodChannel invokeMethod:@"willDeallocPageContainer" arguments:tmp result:^(id tTesult) {
-         if (result) {
-             result(tTesult);
-         }
-     }];
+     [self invokeMethod:@"willDeallocPageContainer" result:result pageName:pageName params:params uniqueId:uniqueId];
      
      [FlutterBoostPlugin.sharedInstance.application willDeallocPageContainer:pageName
                                                                       params:params
                                                                     uniqueId:uniqueId];
  }
+
++ (void)invokeMethod:(NSString *)method result:(void (^)(NSNumber *))result pageName:(NSString *)pageName params:(NSDictionary *)params uniqueId:(NSString *)uniqueId {
+    NSMutableDictionary *tmp = [NSMutableDictionary dictionary];
+    tmp[@"pageName"] = pageName;
+    tmp[@"params"] = params;
+    tmp[@"uniqueId"] = uniqueId;
+    [self.methodChannel invokeMethod:method arguments:tmp result:^(id tTesult) {
+        if (result) {
+            result(tTesult);
+        }
+    }];
+}
  
  
  @end
