@@ -1,5 +1,6 @@
-import 'package:flutter_boost/channel/boost_channel.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_boost/channel/boost_channel.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -22,13 +23,12 @@ void main() {
     response = null;
 
     test('sendEvent successfully', () async {
-      Map msg1 = Map<dynamic,dynamic>();
-      BoostChannel().sendEvent("name", msg1);
+      final Map<String, dynamic> msg1 = <String, dynamic>{};
+      BoostChannel().sendEvent('name', msg1);
 
-      Map msg = Map<dynamic,dynamic>();
-      msg["name"] = "name";
-      msg["arguments"] = msg1;
-
+      final Map<String, dynamic> msg = <String, dynamic>{};
+      msg['name'] = 'name';
+      msg['arguments'] = msg1;
 
       expect(
         log,
@@ -36,37 +36,21 @@ void main() {
       );
     });
 
-
     test('invokeMethod successfully', () async {
-      Map msg = <dynamic,dynamic>{};
-      msg["test"] = "test";
-      BoostChannel().invokeMethod<dynamic>("__event__1", msg);
-
-//       expect(e, isException);
+      final Map<String, dynamic> msg = <String, dynamic>{};
+      msg['test'] = 'test';
+      BoostChannel().invokeMethod<dynamic>('__event__1', msg);
 
       expect(
         log,
         <Matcher>[isMethodCall('__event__1', arguments: msg)],
       );
     });
-
 
     test('invokeListMethod successfully', () async {
-      Map msg = <dynamic,dynamic>{};
-      msg["test"] = "test";
-      var bb = await BoostChannel().invokeListMethod<dynamic>("__event__1", msg);
-
-      expect(
-        log,
-        <Matcher>[isMethodCall('__event__1', arguments: msg)],
-      );
-    });
-
-
-    test('invokeMapMethod successfully', () async {
-      Map msg = <dynamic,dynamic>{};
-      msg["test"] = "test";
-      BoostChannel().invokeMapMethod<dynamic,dynamic>("__event__1", msg);
+      final Map<String, dynamic> msg = <String, dynamic>{};
+      msg['test'] = 'test';
+      await BoostChannel().invokeListMethod<dynamic>('__event__1', msg);
 
       expect(
         log,
@@ -75,9 +59,20 @@ void main() {
     });
 
     test('invokeMapMethod successfully', () async {
-      Map msg = <dynamic,dynamic>{};
-      msg["test"] = "test";
-      BoostChannel().invokeMapMethod<dynamic,dynamic>("__event__1", msg);
+      final Map<String, dynamic> msg = <String, dynamic>{};
+      msg['test'] = 'test';
+      BoostChannel().invokeMapMethod<dynamic, dynamic>('__event__1', msg);
+
+      expect(
+        log,
+        <Matcher>[isMethodCall('__event__1', arguments: msg)],
+      );
+    });
+
+    test('invokeMapMethod successfully', () async {
+      final Map<String, dynamic> msg = <String, dynamic>{};
+      msg['test'] = 'test';
+      BoostChannel().invokeMapMethod<dynamic, dynamic>('__event__1', msg);
 
       expect(
         log,
@@ -86,22 +81,24 @@ void main() {
     });
 
     test('addEventListener successfully', () async {
-      Function test = BoostChannel().addEventListener(
-          "addEventListener", (String name, Map arguments) async => "test");
-      print("xxx" + test.toString());
+      final VoidCallback test = BoostChannel().addEventListener(
+        'addEventListener',
+        (String name, Map<String, dynamic> arguments) async => 'test',
+      );
+      print('xxx' + test.toString());
       expect(
         test.toString(),
-        "Closure: () => Null",
+        'Closure: () => Null',
       );
     });
 
-
     test('addMethodHandler successfully', () async {
-      Function test = BoostChannel().addMethodHandler((
-          MethodCall call) async => "test");
+      final VoidCallback test = BoostChannel().addMethodHandler(
+        (MethodCall call) async => 'test',
+      );
       expect(
         test.toString(),
-        "Closure: () => Null",
+        'Closure: () => Null',
       );
     });
   });

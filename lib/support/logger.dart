@@ -27,7 +27,6 @@ class Logger {
       print('FlutterBoost#$msg');
       return true;
     }());
-    //print('FlutterBoost=>$msg');
   }
 
   static void error(String msg) {
