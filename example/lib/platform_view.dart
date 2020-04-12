@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-typedef void TextViewCreatedCallback(TextViewController controller);
+typedef TextViewCreatedCallback = void Function(TextViewController controller);
 
 class TextView extends StatefulWidget {
   const TextView({
@@ -34,13 +34,13 @@ class _TextViewState extends State<TextView> {
     if (widget.onTextViewCreated == null) {
       return;
     }
-    widget.onTextViewCreated(new TextViewController._(id));
+    widget.onTextViewCreated(TextViewController._(id));
   }
 }
 
 class TextViewController {
   TextViewController._(int id)
-      : _channel = new MethodChannel('plugins.felix.angelov/textview_$id');
+      : _channel = MethodChannel('plugins.felix.angelov/textview_$id');
 
   final MethodChannel _channel;
 

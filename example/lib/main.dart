@@ -17,7 +17,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBoost.singleton.registerPageBuilders({
-      'embeded': (pageName, params, _)=>EmbededFirstRouteWidget(),
+      'embeded': (pageName, params, _) => EmbeddedFirstRouteWidget(),
       'first': (pageName, params, _) => FirstRouteWidget(),
       'firstFirst': (pageName, params, _) => FirstFirstRouteWidget(),
       'second': (pageName, params, _) => SecondRouteWidget(),
@@ -25,14 +25,16 @@ class _MyAppState extends State<MyApp> {
       'tab': (pageName, params, _) => TabRouteWidget(),
       'platformView': (pageName, params, _) => PlatformRouteWidget(),
       'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
+
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (pageName, params, _) {
         print("flutterPage params:$params");
 
-        return FlutterRouteWidget(params:params);
+        return FlutterRouteWidget(params: params);
       },
     });
-    FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoost.singleton
+        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
   }
 
   @override
@@ -40,18 +42,15 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
-        home: Container(
-            color:Colors.white
-        ));
+        home: Container(color: Colors.white));
   }
 
   void _onRoutePushed(
-      String pageName, String uniqueId, Map params, Route route, Future _) {
-  }
+      String pageName, String uniqueId, Map params, Route route, Future _) {}
 }
-class TestBoostNavigatorObserver extends NavigatorObserver{
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
 
+class TestBoostNavigatorObserver extends NavigatorObserver {
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     print("flutterboost#didPush");
   }
 
@@ -67,4 +66,3 @@ class TestBoostNavigatorObserver extends NavigatorObserver{
     print("flutterboost#didReplace");
   }
 }
-
