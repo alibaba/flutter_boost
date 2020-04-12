@@ -16,25 +16,29 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FlutterBoost.singleton.registerPageBuilders({
-      'embeded': (pageName, params, _) => EmbeddedFirstRouteWidget(),
-      'first': (pageName, params, _) => FirstRouteWidget(),
-      'firstFirst': (pageName, params, _) => FirstFirstRouteWidget(),
-      'second': (pageName, params, _) => SecondRouteWidget(),
-      'secondStateful': (pageName, params, _) => SecondStatefulRouteWidget(),
-      'tab': (pageName, params, _) => TabRouteWidget(),
-      'platformView': (pageName, params, _) => PlatformRouteWidget(),
-      'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
+    FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
+      'embeded': (String pageName, Map<String, dynamic> params, String _) =>
+          EmbeddedFirstRouteWidget(),
+      'first': (String pageName, Map<String, dynamic> params, String _) => FirstRouteWidget(),
+      'firstFirst': (String pageName, Map<String, dynamic> params, String _) =>
+          FirstFirstRouteWidget(),
+      'second': (String pageName, Map<String, dynamic> params, String _) => SecondRouteWidget(),
+      'secondStateful': (String pageName, Map<String, dynamic> params, String _) =>
+          SecondStatefulRouteWidget(),
+      'tab': (String pageName, Map<String, dynamic> params, String _) => TabRouteWidget(),
+      'platformView': (String pageName, Map<String, dynamic> params, String _) =>
+          PlatformRouteWidget(),
+      'flutterFragment': (String pageName, Map<String, dynamic> params, String _) =>
+          FragmentRouteWidget(params),
 
       ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage': (pageName, params, _) {
-        print("flutterPage params:$params");
+      'flutterPage': (String pageName, Map<String, dynamic> params, String _) {
+        print('flutterPage params:$params');
 
         return FlutterRouteWidget(params: params);
       },
     });
-    FlutterBoost.singleton
-        .addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
   }
 
   @override
@@ -46,23 +50,32 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _onRoutePushed(
-      String pageName, String uniqueId, Map params, Route route, Future _) {}
+    String pageName,
+    String uniqueId,
+    Map<String, dynamic> params,
+    Route<dynamic> route,
+    Future<dynamic> _,
+  ) {}
 }
 
 class TestBoostNavigatorObserver extends NavigatorObserver {
+  @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didPush");
+    print('flutterboost#didPush');
   }
 
+  @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didPop");
+    print('flutterboost#didPop');
   }
 
+  @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didRemove");
+    print('flutterboost#didRemove');
   }
 
+  @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    print("flutterboost#didReplace");
+    print('flutterboost#didReplace');
   }
 }
