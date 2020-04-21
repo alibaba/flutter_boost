@@ -38,6 +38,7 @@
 - (void)flushOngoingTouches;
 - (void)bridge_viewDidDisappear:(BOOL)animated;
 - (void)bridge_viewWillAppear:(BOOL)animated;
+- (void)surfaceUpdated:(BOOL)appeared;
 @end
 
 #pragma clang diagnostic push
@@ -231,6 +232,12 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP.flutterProvider detach];
 }
 
+- (void)surfaceUpdated:(BOOL)appeared {
+    if (self.engine && self.engine.viewController == self) {
+        [super surfaceUpdated:appeared];
+    }
+}
+
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -301,6 +308,10 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super bridge_viewDidDisappear:animated];
+    
+    if (self.engine.viewController == self) {
+        [self detatchFlutterEngine];
+    }
 }
 
 - (void)installSplashScreenViewIfNecessary {
