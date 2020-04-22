@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/alibaba/flutter_boost.svg?branch=master)](https://travis-ci.com/alibaba/flutter_boost) [![pub package](https://img.shields.io/pub/v/flutter_boost.svg)](https://pub.dartlang.org/packages/flutter_boost) [![codecov](https://codecov.io/gh/alibaba/flutter_boost/branch/master/graph/badge.svg)](https://codecov.io/gh/alibaba/flutter_boost)
+
 <p align="center">
   <img src="flutter_boost.png">
    <b></b><br>
@@ -7,7 +9,7 @@
 
 # Release Note
 
-Please checkout the release note for the latest 0.1.63 to see changes [0.1.63 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 0.1.64 to see changes [0.1.64 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
@@ -20,24 +22,26 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 # boost version description
 
-1. 0.1.50 is based on the flutter v1.5.4-hotfixes branch, android if other flutter versions or branches will compile incorrectly
+| Flutter Boost Version | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
+| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
+| 0.1.50                | 1.5.4-hotfixes              | android if other flutter versions or branches will compile incorrectly. | No                 |
+| 0.1.51-0.1.59         | 1.5.4-hotfixes              | bugfix for 0.1.50.                                           | No                 |
+| 0.1.60                | 1.9.1-hotfixes              | Android does not support andriodx if other flutter branches will compile incorrectly. | No                 |
+| 0.1.61-0.1.69         | 1.9.1-hotfixes              | bugfix for 0.1.60.                                           | No                 |
+| 0.1.63                | 1.9.1-hotfixes              | If other branches will compile incorrectly. Synchronize with the 0.1.60 code, and bugfix also merge to this branch. | No                 |
+| 1.9.1+2              | 1.9.1-hotfixes              | Rename the version number and start supporting androidx by default | Yes                 |
+| 1.12.13             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
 
-2. 0.1.51--0.1.54 is a bugfix for 0.1.50
 
 
-3. 0.1.60 is based on the flutter v1.9.1-hotfixes branch. Android does not support andriodx if other flutter branches will compile incorrectly
-
-4. 0.1.61--0.1.62  is a bugfix for 0.1.60
 
 
-5. Statement of support for androidx
-
- Current androidx branch is v0.1.61-androidx-hotfixes
-
- Is based on flutter v1.9.1-hotfixes branch, if other branches will compile incorrectly
-
- Synchronize with the 0.1.63 code, and bugfix also merge to this branch.
-
+| Flutter Boost branch | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
+| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
+| v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
+| task/task_v1.9.1_support_hotfixes| 1.9.1-hotfixes  | for support  | NO                 |
+| v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
+| task/task_v1.12.13_support_hotfixes| 1.12.13-hotfixes  | for support  | NO                 |
 
 
 # Getting Started
@@ -47,19 +51,19 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-support branch
-```json
-flutter_boost:
-    git:
-        url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '0.1.63'
-```
 androidx branch
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v0.1.61-androidx-hotfixes'
+        ref: ' 1.12.13'
+```
+support branch
+```json
+flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'task/task_v1.12.13_support_hotfixes'
 ```
 
 

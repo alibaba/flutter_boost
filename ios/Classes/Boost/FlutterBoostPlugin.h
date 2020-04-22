@@ -32,7 +32,13 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)sharedInstance;
 
 /**
- * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
+ * 获取当前管理的页面栈中页面的个数
+ *
+ */
++ (NSInteger)pageCount;
+
+/**
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数默认需要flutter boost来注册所有插件。
  *
  * @param platform 平台层实现FLBPlatform的对象
  * @param callback 启动之后回调
@@ -40,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                          onStart:(void (^)(FlutterEngine *engine))callback;
 /**
- * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数默认需要flutter boost来注册所有插件。
  *
  * @param platform 平台层实现FLBPlatform的对象
  * @param engine   外部实例化engine后传入
@@ -50,6 +56,17 @@ NS_ASSUME_NONNULL_BEGIN
                           engine:(FlutterEngine* _Nullable)engine
                          onStart:(void (^)(FlutterEngine *engine))callback;
 
+/**
+ * 初始化FlutterBoost混合栈环境。应在程序使用混合栈之前调用。如在AppDelegate中。本函数可以控制是否需要flutter boost来注册所有插件
+ *
+ * @param platform 平台层实现FLBPlatform的对象
+ * @param engine   外部实例化engine后传入
+ * @param callback 启动之后回调
+ */
+- (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
+                          engine:(FlutterEngine* _Nullable)engine
+                          pluginRegisterred:(BOOL)registerPlugin
+                         onStart:(void (^)(FlutterEngine *engine))callback;
 #pragma mark - Some properties.
 - (BOOL)isRunning;
 
@@ -119,5 +136,12 @@ NS_ASSUME_NONNULL_BEGIN
         exts:(NSDictionary *)exts
 onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
+
+//切记：在destroyPluginContext前务必将所有FlutterViewController及其子类的实例销毁。在这里是FLBFlutterViewContainer。否则会异常;以下是全部步骤
+//1. 首先通过为所有FlutterPlugin的methodChannel属性设为nil来解除其与FlutterEngine的间接强引用
+//2. 销毁所有的FlutterViewController实例（或保证所有FlutterVC已经退出），来解除其与FlutterEngine的强引用，在每个VC卸载的时候FlutterEngine会调用destroyContext
+//3. 调用FlutterBoostPlugin.destroyPluginContext函数来解除与其内部context的强引用。内部持有的FlutterEngine也会被卸载（非外部传入的情形）
+//4. 如果是外部传入的FlutterEngine，需要外部自己释放
+- (void)destroyPluginContext;
 @end
 NS_ASSUME_NONNULL_END

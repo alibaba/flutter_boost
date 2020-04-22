@@ -26,10 +26,12 @@
 #import "FlutterBoost.h"
 #import "FLBFlutterContainerManager.h"
 #import "FLBFlutterEngine.h"
+#import "FLBFlutterViewContainer.h"
 
 @interface FLBFlutterApplication()
 @property (nonatomic,strong) FLBFlutterContainerManager *manager;
 @property (nonatomic,strong) id<FLBFlutterProvider> viewProvider;
+@property (nonatomic, weak, readonly)FlutterViewController * previousViewController;
 @property (nonatomic,assign) BOOL isRunning;
 @property (nonatomic,strong) NSMutableDictionary *pageResultCallbacks;
 @property (nonatomic,strong) NSMutableDictionary *callbackCache;
@@ -51,6 +53,7 @@
 
 - (void)startFlutterWithPlatform:(id<FLBPlatform>)platform
                       withEngine:(FlutterEngine* _Nullable)engine
+                        withPluginRegisterred:(BOOL)registerPlugin
                          onStart:(void (^)(FlutterEngine *engine))callback
 {
     static dispatch_once_t onceToken;
@@ -58,6 +61,16 @@
         self.platform = platform;
         self.viewProvider = [[FLBFlutterEngine alloc] initWithPlatform:platform engine:engine];
         self.isRunning = YES;
+        if(registerPlugin){
+            Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
+            FlutterEngine *myengine = [self.viewProvider engine];
+            if (clazz && myengine) {
+                if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
+                    [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
+                                withObject:myengine];
+                }
+            }
+        }
         if(callback) callback(self.viewProvider.engine);
     });
 }
@@ -116,6 +129,9 @@
     return [_manager remove:vc];
 }
 
+- (NSInteger)pageCount{
+    return [_manager pageCount];
+}
 
 - (BOOL)isTop:(NSString *)pageId
 {
@@ -140,6 +156,13 @@
 - (FlutterViewController *)flutterViewController
 {
     return self.flutterProvider.engine.viewController;
+}
+
+- (void)attachToPreviousContainer{
+    if([self.viewProvider atacheToViewController:self.previousViewController]){
+        [self.previousViewController.view setNeedsLayout];
+        [(FLBFlutterViewContainer*)self.previousViewController surfaceUpdated:YES];
+    }
 }
 
 - (void)close:(NSString *)uniqueId
@@ -175,7 +198,7 @@
         [newParams setObject:cid?cid:@"__default#0__" forKey:kPageCallBackId];
         urlParams = newParams;
     }
-    
+    _previousViewController = [self flutterViewController];
     _callbackCache[cid] = resultCallback;
     if([urlParams[@"present"]respondsToSelector:@selector(boolValue)] && [urlParams[@"present"] boolValue] && [self.platform respondsToSelector:@selector(present:urlParams:exts:completion:)]){
         [self.platform present:url
@@ -209,6 +232,15 @@
         void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
         cb(@{});
         [_pageResultCallbacks removeObjectForKey:uniqueId];
+    }
+}
+
+- (void)onShownContainerChanged:(NSString *)uniqueId
+                         params:(NSDictionary *)params{
+    NSString *oldName = params[@"oldName"];
+    NSString *newName = params[@"newName"];
+    if (oldName!=nil && [newName isEqualToString:@"default"]) {
+        [self.flutterProvider detach];
     }
 }
 

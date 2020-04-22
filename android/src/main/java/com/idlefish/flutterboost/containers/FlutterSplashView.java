@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,9 +17,8 @@ import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.renderer.OnFirstFrameRenderedListener;
+import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
 
-import java.util.Date;
 
 /**
  * {@code View} that displays a {@link SplashScreen} until a given {@link FlutterView}
@@ -57,39 +56,20 @@ public class FlutterSplashView extends FrameLayout {
     };
 
     @NonNull
-    private final OnFirstFrameRenderedListener onFirstFrameRenderedListener = new OnFirstFrameRenderedListener() {
-        int i = 0;
+    private final FlutterUiDisplayListener onFirstFrameRenderedListener = new FlutterUiDisplayListener() {
+        @Override
+        public void onFlutterUiDisplayed() {
+            if (splashScreen != null) {
+                transitionToFlutter();
+            }
+        }
 
         @Override
-        public void onFirstFrameRendered() {
-
-            if (FlutterBoost.instance().platform().whenEngineStart() == FlutterBoost.ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
-                long now = new Date().getTime();
-                long flutterPostFrameCallTime = FlutterBoost.instance().getFlutterPostFrameCallTime();
-
-                if (flutterPostFrameCallTime != 0 && (now - flutterPostFrameCallTime) > 800) {
-                    if (splashScreen != null) {
-                        transitionToFlutter();
-                    }
-                    return;
-                }
-
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        onFirstFrameRenderedListener.onFirstFrameRendered();
-                    }
-                }, 200);
-
-
-            } else {
-                if (splashScreen != null) {
-                    transitionToFlutter();
-                }
-            }
-
+        public void onFlutterUiNoLongerDisplayed() {
 
         }
+
+
     };
 
     @NonNull

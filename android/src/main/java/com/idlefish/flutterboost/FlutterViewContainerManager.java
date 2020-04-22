@@ -133,7 +133,7 @@ public class FlutterViewContainerManager implements IContainerManager {
         urlParams.put(IContainerRecord.UNIQ_KEY,uniqueId);
 
         IContainerRecord currentTopRecord = getCurrentTopRecord();
-        if(onResult != null) {
+        if(onResult != null&&currentTopRecord!=null) {
             mOnResults.put(currentTopRecord.uniqueId(),onResult);
         }
 

@@ -53,18 +53,10 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
-                                                          nibName:nil
-                                                           bundle:nil];
-        _dummy.name = kIgnoreMessageWithName;
-        
-        Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-        if (clazz) {
-            if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
-                [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
-                            withObject:_engine];
-            }
-        }
+//        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
+//                                                          nibName:nil
+//                                                           bundle:nil];
+//        _dummy.name = kIgnoreMessageWithName;
     }
     
     return self;
@@ -105,32 +97,32 @@
                          arguments:@{@"type":@"foreground"}];
 }
 
-- (FlutterEngine *)engine
-{
-    return _engine;
-}
-
-- (void)atacheToViewController:(FlutterViewController *)vc
+- (BOOL)atacheToViewController:(FlutterViewController *)vc
 {
     if(_engine.viewController != vc){
-        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
         _engine.viewController = vc;
+        return YES;
     }
+    return NO;
 }
 
 - (void)detach
 {
     if(_engine.viewController != _dummy){
+        [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
         _engine.viewController = _dummy;
     }
 }
 
 - (void)prepareEngineIfNeeded
 {
-    [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
-    NSLog(@"[XDEBUG]---surface changed--reset-");
+//    [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
+//    NSLog(@"[XDEBUG]---surface changed--reset-");
 //    [self detach];
 }
 
+- (void)dealloc{
+    [self.engine setViewController:nil];
+}
 @end
 

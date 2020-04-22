@@ -44,7 +44,6 @@ typedef void PostPushRoute(
     String url, String uniqueId, Map params, Route route, Future result);
 
 class FlutterBoost {
-
   static final FlutterBoost _instance = FlutterBoost();
   final GlobalKey<ContainerManagerState> containerManagerKey =
       GlobalKey<ContainerManagerState>();
@@ -56,31 +55,36 @@ class FlutterBoost {
   static ContainerManagerState get containerManager =>
       _instance.containerManagerKey.currentState;
 
+  static void onPageStart() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo) {
+        if (pageInfo == null || pageInfo.isEmpty) return;
+
+        if (pageInfo.containsKey("name") &&
+            pageInfo.containsKey("params") &&
+            pageInfo.containsKey("uniqueId")) {
+          ContainerCoordinator.singleton.nativeContainerDidShow(
+              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+        }
+      });
+    });
+  }
+
   static TransitionBuilder init(
       {TransitionBuilder builder,
-        PrePushRoute prePush,
-        PostPushRoute postPush}) {
-
-    if(Platform.isAndroid){
-
-      WidgetsBinding.instance.addPostFrameCallback((_){
-
-        singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo){
-
-          if (pageInfo == null || pageInfo.isEmpty) return;
-
-          if (pageInfo.containsKey("name") &&
-              pageInfo.containsKey("params") &&
-              pageInfo.containsKey("uniqueId")) {
-
-            ContainerCoordinator.singleton.nativeContainerDidShow(
-                pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
-          }
-        });
-      });
+      PrePushRoute prePush,
+      PostPushRoute postPush}) {
+    if (Platform.isAndroid) {
+      onPageStart();
+    } else if (Platform.isIOS) {
+      assert(() {
+        () async {
+          onPageStart();
+        }();
+        return true;
+      }());
     }
 
-    
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
@@ -102,7 +106,7 @@ class FlutterBoost {
 
   BoostChannel get channel => _boostChannel;
 
-  FlutterBoost(){
+  FlutterBoost() {
     ContainerCoordinator(_boostChannel);
   }
 
@@ -116,30 +120,29 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
-  Future<Map<dynamic,dynamic>> open(String url,{Map<dynamic,dynamic> urlParams,Map<dynamic,dynamic> exts}){
-
+  Future<Map<dynamic, dynamic>> open(String url,
+      {Map<dynamic, dynamic> urlParams, Map<dynamic, dynamic> exts}) {
     Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    return channel.invokeMethod<Map<dynamic,dynamic>>(
-        'openPage', properties);
+    return channel.invokeMethod<Map<dynamic, dynamic>>('openPage', properties);
   }
 
-  Future<bool> close(String id,{Map<dynamic,dynamic> result,Map<dynamic,dynamic> exts}){
-
+  Future<bool> close(String id,
+      {Map<dynamic, dynamic> result, Map<dynamic, dynamic> exts}) {
     assert(id != null);
 
     BoostContainerSettings settings = containerManager?.onstageSettings;
     Map<dynamic, dynamic> properties = new Map<dynamic, dynamic>();
 
-    if(exts == null){
-      exts = Map<dynamic,dynamic>();
+    if (exts == null) {
+      exts = Map<dynamic, dynamic>();
     }
 
     exts["params"] = settings.params;
 
-    if(!exts.containsKey("animated")){
+    if (!exts.containsKey("animated")) {
       exts["animated"] = true;
     }
 
@@ -155,28 +158,30 @@ class FlutterBoost {
     return channel.invokeMethod<bool>('closePage', properties);
   }
 
-  Future<bool> closeCurrent({Map<String,dynamic> result,Map<String,dynamic> exts}) {
+  Future<bool> closeCurrent(
+      {Map<String, dynamic> result, Map<String, dynamic> exts}) {
     BoostContainerSettings settings = containerManager?.onstageSettings;
-    if(exts == null){
-      exts = Map<String,dynamic>();
+    if (exts == null) {
+      exts = Map<String, dynamic>();
     }
     exts["params"] = settings.params;
-    if(!exts.containsKey("animated")){
+    if (!exts.containsKey("animated")) {
       exts["animated"] = true;
     }
-    return close(settings.uniqueId,result: result,exts: exts);
+    return close(settings.uniqueId, result: result, exts: exts);
   }
 
-  Future<bool> closeByContext(BuildContext context,{Map<String,dynamic> result,Map<String,dynamic> exts}) {
+  Future<bool> closeByContext(BuildContext context,
+      {Map<String, dynamic> result, Map<String, dynamic> exts}) {
     BoostContainerSettings settings = containerManager?.onstageSettings;
-    if(exts == null){
-      exts = Map<String,dynamic>();
+    if (exts == null) {
+      exts = Map<String, dynamic>();
     }
     exts["params"] = settings.params;
-    if(!exts.containsKey("animated")){
+    if (!exts.containsKey("animated")) {
       exts["animated"] = true;
     }
-    return close(settings.uniqueId,result: result,exts: exts);
+    return close(settings.uniqueId, result: result, exts: exts);
   }
 
   ///register for Container changed callbacks
@@ -189,8 +194,6 @@ class FlutterBoost {
       _observersHolder.addObserver<BoostContainerLifeCycleObserver>(observer);
 
   ///register callbacks for Navigators push & pop
-  VoidCallback addBoostNavigatorObserver(BoostNavigatorObserver observer) =>
-      _observersHolder.addObserver<BoostNavigatorObserver>(observer);
-
-
+  void addBoostNavigatorObserver(NavigatorObserver observer) =>
+      ContainerNavigatorObserver.boostObservers.add(observer);
 }

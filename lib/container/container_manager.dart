@@ -47,13 +47,13 @@ class BoostContainerManager extends StatefulWidget {
 
   static ContainerManagerState tryOf(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     return manager;
   }
 
   static ContainerManagerState of(BuildContext context) {
     final ContainerManagerState manager =
-        context.ancestorStateOfType(const TypeMatcher<ContainerManagerState>());
+        context.findAncestorStateOfType<ContainerManagerState>();
     assert(manager != null, 'not in flutter boost');
     return manager;
   }
@@ -62,8 +62,6 @@ class BoostContainerManager extends StatefulWidget {
 class ContainerManagerState extends State<BoostContainerManager> {
   final GlobalKey<OverlayState> _overlayKey = GlobalKey<OverlayState>();
   final List<BoostContainer> _offstage = <BoostContainer>[];
-  final ManagerNavigatorObserver _navigatorObserver =
-      ManagerNavigatorObserver();
 
   List<_ContainerOverlayEntry> _leastEntries;
 
@@ -78,10 +76,10 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
   bool get foreground => _foreground;
 
-  ManagerNavigatorObserver get navigatorObserver => _navigatorObserver;
-
   //Number of containers.
   int get containerCounts => _offstage.length;
+
+  List<BoostContainer> get offstage => _offstage;
 
   //Setting for current visible container.
   BoostContainerSettings get onstageSettings => _onstage.settings;
@@ -139,7 +137,8 @@ class ContainerManagerState extends State<BoostContainerManager> {
     properties['newName'] = now;
     properties['oldName'] = old;
 
-    FlutterBoost.singleton.channel.invokeMethod('onShownContainerChanged',properties);
+    FlutterBoost.singleton.channel
+        .invokeMethod<dynamic>('onShownContainerChanged', properties);
   }
 
   void _refreshOverlayEntries() {
@@ -184,9 +183,11 @@ class ContainerManagerState extends State<BoostContainerManager> {
     if (SchedulerBinding.instance.schedulerPhase ==
         SchedulerPhase.persistentCallbacks) {
       SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+        Logger.log('_refreshOverlayEntries in addPostFrameCallback');
         _refreshOverlayEntries();
       });
     } else {
+      Logger.log('_refreshOverlayEntries in setState');
       _refreshOverlayEntries();
     }
 
@@ -344,54 +345,5 @@ class _ContainerOverlayEntry extends OverlayEntry {
 
     _removed = true;
     super.remove();
-  }
-}
-
-class ManagerNavigatorObserver extends BoostNavigatorObserver {
-  BoostNavigatorObserver observer;
-
-  final Set<BoostNavigatorObserver> _boostObservers =
-      Set<BoostNavigatorObserver>();
-
-  VoidCallback addBoostNavigatorObserver(BoostNavigatorObserver observer) {
-    _boostObservers.add(observer);
-
-    return () => _boostObservers.remove(observer);
-  }
-
-  void removeBoostNavigatorObserver(BoostNavigatorObserver observer) {
-    _boostObservers.remove(observer);
-  }
-
-  @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    Logger.log('ManagerNavigatorObserver didPush');
-    for (BoostNavigatorObserver observer in _boostObservers) {
-      observer.didPush(route, previousRoute);
-    }
-  }
-
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    Logger.log('ManagerNavigatorObserver didPop');
-    for (BoostNavigatorObserver observer in _boostObservers) {
-      observer.didPop(route, previousRoute);
-    }
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    Logger.log('ManagerNavigatorObserver didRemove');
-    for (BoostNavigatorObserver observer in _boostObservers) {
-      observer.didRemove(route, previousRoute);
-    }
-  }
-
-  @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    Logger.log('ManagerNavigatorObserver didReplace');
-    for (BoostNavigatorObserver observer in _boostObservers) {
-      observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    }
   }
 }

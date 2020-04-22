@@ -1,6 +1,9 @@
 package com.idlefish.flutterboost;
 
-import android.support.annotation.Nullable;
+import android.os.Handler;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
@@ -211,7 +214,7 @@ public class FlutterBoostPlugin {
 
 
                     } catch (Throwable t) {
-                        result.error("no flutter page found!", t.getMessage(), t);
+                        result.error("no flutter page found!", t.getMessage(), Log.getStackTraceString(t));
                     }
                 }
                 break;
@@ -230,7 +233,7 @@ public class FlutterBoostPlugin {
                             }
                         });
                     } catch (Throwable t) {
-                        result.error("open page error", t.getMessage(), t);
+                        result.error("open page error", t.getMessage(), Log.getStackTraceString(t));
                     }
                 }
                 break;
@@ -243,7 +246,7 @@ public class FlutterBoostPlugin {
                         mManager.closeContainer(uniqueId, resultData, exts);
                         result.success(true);
                     } catch (Throwable t) {
-                        result.error("close page error", t.getMessage(), t);
+                        result.error("close page error", t.getMessage(), Log.getStackTraceString(t));
                     }
                 }
                 break;
@@ -255,7 +258,7 @@ public class FlutterBoostPlugin {
                         mManager.onShownContainerChanged(newId, oldId);
                         result.success(true);
                     } catch (Throwable t) {
-                        result.error("onShownContainerChanged", t.getMessage(), t);
+                        result.error("onShownContainerChanged", t.getMessage(), Log.getStackTraceString(t));
                     }
                 }
                 break;
