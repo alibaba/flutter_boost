@@ -5,17 +5,18 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Debug;
 
 import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.view.FlutterMain;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -320,10 +321,22 @@ public class FlutterBoost {
             FlutterMain.ensureInitializationComplete(
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
 
-            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext());
+            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
+            registerPlugins(mEngine);
+
         }
         return mEngine;
 
+    }
+
+    private void registerPlugins(FlutterEngine engine) {
+        try {
+            Class<?> generatedPluginRegistrant = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
+            Method registrationMethod = generatedPluginRegistrant.getDeclaredMethod("registerWith", FlutterEngine.class);
+            registrationMethod.invoke(null, engine);
+        } catch (Exception e) {
+            Debuger.exception(e);
+        }
     }
 
     public FlutterEngine engineProvider() {

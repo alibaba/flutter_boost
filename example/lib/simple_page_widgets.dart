@@ -446,7 +446,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
                   onTap: () => FlutterBoost.singleton
-                      .open("sample://flutterPage", urlParams:<dynamic,dynamic> {
+                      .open("sample://flutterPage", urlParams:<String,dynamic> {
                     "query": {"aaa": "bbb"}
                   }),
                 ),
