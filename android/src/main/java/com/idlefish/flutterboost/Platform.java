@@ -38,6 +38,8 @@ public abstract class Platform {
 
     public abstract boolean isDebug();
 
+    public abstract String dartEntrypoint();
+
     public abstract String initialRoute();
 
     public FlutterBoost.BoostLifecycleListener lifecycleListener;
