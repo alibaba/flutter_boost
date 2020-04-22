@@ -41,6 +41,8 @@ public abstract class Platform {
 
     public abstract boolean isDebug();
 
+    public abstract String dartEntrypoint();
+
     public abstract String initialRoute();
 
     public abstract List<String> shellArgs();
