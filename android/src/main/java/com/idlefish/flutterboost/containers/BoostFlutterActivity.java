@@ -21,6 +21,7 @@ import android.view.*;
 import android.widget.*;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.XFlutterView;
+import com.idlefish.flutterboost.XPlatformPlugin;
 import io.flutter.Log;
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterView;
@@ -439,12 +440,8 @@ public class BoostFlutterActivity extends Activity
 
     @Nullable
     @Override
-    public PlatformPlugin providePlatformPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
-        if (activity != null) {
-            return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
-        } else {
-            return null;
-        }
+    public XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine) {
+        return new XPlatformPlugin( flutterEngine.getPlatformChannel());
     }
 
     /**
