@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'page_widgets.dart';
 import 'package:flutter_boost/container/container_coordinator.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'page_widgets.dart';
 
 class MyApp extends StatefulWidget {
   @override
@@ -15,14 +16,19 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
 
-    FlutterBoost.singleton.registerPageBuilders({
-      'embeded': (pageName, params, _) => EmbededFirstRouteWidget(),
-      'first': (pageName, params, _) => FirstRouteWidget(),
-      'second': (pageName, params, _) => SecondRouteWidget(),
-      'tab': (pageName, params, _) => TabRouteWidget(),
-      'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
-      'flutterPage': (pageName, params, _) {
-        print("flutterPage params:$params");
+    FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
+      'embeded': (String pageName, Map<String, dynamic> params, _) =>
+          EmbededFirstRouteWidget(),
+      'first': (String pageName, Map<String, dynamic> params, _) =>
+          FirstRouteWidget(),
+      'second': (String pageName, Map<String, dynamic> params, _) =>
+          SecondRouteWidget(),
+      'tab': (String pageName, Map<String, dynamic> params, _) =>
+          TabRouteWidget(),
+      'flutterFragment': (String pageName, Map<String, dynamic> params, _) =>
+          FragmentRouteWidget(params),
+      'flutterPage': (String pageName, Map<String, dynamic> params, _) {
+        print('flutterPage params:$params');
 
         return FlutterRouteWidget(params: params);
       },
@@ -40,24 +46,33 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _onRoutePushed(
-      String pageName, String uniqueId, Map params, Route route, Future _) {}
+    String pageName,
+    String uniqueId,
+    Map<String, dynamic> params,
+    Route<dynamic> route,
+    Future<dynamic> _,
+  ) {}
 }
 
 class TestBoostNavigatorObserver extends NavigatorObserver {
+  @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didPush");
+    print('flutterboost#didPush');
   }
 
+  @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didPop");
+    print('flutterboost#didPop');
   }
 
+  @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print("flutterboost#didRemove");
+    print('flutterboost#didRemove');
   }
 
+  @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    print("flutterboost#didReplace");
+    print('flutterboost#didReplace');
   }
 }
 
@@ -72,7 +87,7 @@ void main() {
     );
     //open firt page
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("first", <dynamic,dynamic>{}, "1000000");
+        .nativeContainerDidShow('first', <String, dynamic>{}, '1000000');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -80,7 +95,7 @@ void main() {
 
     //open second page  firt(1000000)->second(2000000)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000000");
+        .nativeContainerDidShow('second', <String, dynamic>{}, '2000000');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -89,7 +104,7 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     //close sencod page  firt(1000000)
-    FlutterBoost.containerManager?.remove("2000000");
+    FlutterBoost.containerManager?.remove('2000000');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -97,7 +112,7 @@ void main() {
 
     // second page ,but pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000001");
+        .nativeContainerDidShow('second', <String, dynamic>{}, '2000001');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -107,7 +122,7 @@ void main() {
 
     //reopen firt page   second(2000001)->firt(1000000)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("first",<dynamic,dynamic> {}, "1000000");
+        .nativeContainerDidShow('first', <String, dynamic>{}, '1000000');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -117,7 +132,7 @@ void main() {
 
     // reopen second page and  pageId is 2000001    firt(1000000)->second(2000001)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000001");
+        .nativeContainerDidShow('second', <String, dynamic>{}, '2000001');
 
     await tester.pump(const Duration(seconds: 1));
 
@@ -126,24 +141,18 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
 
     //close firt(1000000) page  second(2000001)
-    FlutterBoost.containerManager?.remove("1000000");
+    FlutterBoost.containerManager?.remove('1000000');
 
     await tester.pump(const Duration(seconds: 1));
 
     expect(find.text('Second'), findsOneWidget);
 
-
     // open  second(2000003)
     ContainerCoordinator.singleton
-        .nativeContainerDidShow("second", <dynamic,dynamic>{}, "2000003");
+        .nativeContainerDidShow('second', <String, dynamic>{}, '2000003');
 
     await tester.idle();
 
     expect(find.text('Second'), findsOneWidget);
-
-
-
-
-
   });
 }
