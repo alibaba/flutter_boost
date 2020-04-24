@@ -15,6 +15,7 @@ import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.loader.FlutterLoader;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.view.FlutterMain;
 
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ public class FlutterBoost {
 
     private long FlutterPostFrameCallTime = 0;
     private Application.ActivityLifecycleCallbacks mActivityLifecycleCallbacks;
+    private PluginRegistry mRegistry;
 
     public long getFlutterPostFrameCallTime() {
         return FlutterPostFrameCallTime;
@@ -323,8 +325,9 @@ public class FlutterBoost {
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
 
             mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
-            registerPlugins(mEngine);
-
+//            registerPlugins(mEngine);
+            mRegistry = new BoostPluginRegistry(createEngine());
+            mPlatform.registerPlugins(mRegistry);
         }
         return mEngine;
 

@@ -52,7 +52,7 @@ class BoostRegistrar implements Registrar, FlutterPlugin, ActivityAware {
     }
 
     public Context context() {
-        return this.pluginBinding != null ? this.pluginBinding.getApplicationContext() : null;
+        return this.pluginBinding != null ? this.pluginBinding.getApplicationContext() : FlutterBoost.instance().platform().getApplication();
     }
 
     public Context activeContext() {
