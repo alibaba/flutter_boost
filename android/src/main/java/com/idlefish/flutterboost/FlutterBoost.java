@@ -176,7 +176,7 @@ public class FlutterBoost {
         }
         DartExecutor.DartEntrypoint entrypoint = new DartExecutor.DartEntrypoint(
                 FlutterMain.findAppBundlePath(),
-                "main"
+                mPlatform.dartEntrypoint()
         );
 
         flutterEngine.getDartExecutor().executeDartEntrypoint(entrypoint);
@@ -264,6 +264,9 @@ public class FlutterBoost {
 
                     return ConfigBuilder.this.isDebug;
                 }
+
+                @Override
+                public String dartEntrypoint() { return ConfigBuilder.this.dartEntrypoint; }
 
                 @Override
                 public String initialRoute() {
