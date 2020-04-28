@@ -255,6 +255,10 @@ static NSUInteger kInstanceCounter = 0;
     //     [self surfaceUpdated:NO];
     // }
     [super bridge_viewDidDisappear:animated];
+    
+    if (self.engine.viewController == self) {
+        [self detatchFlutterEngine];
+    }
 }
 
 - (void)installSplashScreenViewIfNecessary {
