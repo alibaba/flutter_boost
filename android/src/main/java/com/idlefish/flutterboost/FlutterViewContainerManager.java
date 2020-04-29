@@ -74,6 +74,8 @@ public class FlutterViewContainerManager implements IContainerManager {
     }
 
     void popRecord(IContainerRecord record) {
+        if(mRecordStack.empty()) return;
+
         if(mRecordStack.peek() == record) {
             mRecordStack.pop();
         }
