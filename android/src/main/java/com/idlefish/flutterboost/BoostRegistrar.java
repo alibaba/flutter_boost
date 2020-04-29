@@ -3,6 +3,7 @@ package com.idlefish.flutterboost;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import io.flutter.Log;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -42,13 +43,25 @@ class BoostRegistrar implements Registrar, FlutterPlugin, ActivityAware {
     }
 
     public Activity activity() {
-        if(this.activityPluginBinding != null){
-           return this.activityPluginBinding.getActivity();
+
+
+        IContainerRecord record = FlutterBoost.instance().containerManager().getCurrentTopRecord();
+        if(record==null){
+            record = FlutterBoost.instance().containerManager().getLastGenerateRecord();
         }
-        if(FlutterBoost.instance().currentActivity()!=null){
-            return  FlutterBoost.instance().currentActivity();
+
+        if(record!=null&&record.getContainer().getContextActivity()!=null){
+           return  record.getContainer().getContextActivity();
         }
-        return null;
+
+
+        if(this.activityPluginBinding != null&&this.activityPluginBinding.getActivity()!=null){
+            return  this.activityPluginBinding.getActivity();
+        }
+
+        return FlutterBoost.instance().currentActivity();
+
+
     }
 
     public Context context() {
