@@ -25,26 +25,25 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
+typedef PageBuilder = Widget Function(
+    String pageName, Map<String, dynamic> params, String uniqueId);
 
 class BoostPageRoute<T> extends MaterialPageRoute<T> {
+  BoostPageRoute({
+    this.pageName,
+    this.params,
+    this.uniqueId,
+    this.animated,
+    WidgetBuilder builder,
+    RouteSettings settings,
+  }) : super(builder: builder, settings: settings);
+
   final String pageName;
   final String uniqueId;
-  final Map params;
+  final Map<String, dynamic> params;
   final bool animated;
-  final WidgetBuilder builder;
-  final RouteSettings settings;
 
-  final Set<VoidCallback> backPressedListeners = Set<VoidCallback>();
-
-  BoostPageRoute(
-      {this.pageName,
-      this.params,
-      this.uniqueId,
-      this.animated,
-      this.builder,
-      this.settings})
-      : super(builder: builder, settings: settings);
+  final Set<VoidCallback> backPressedListeners = <VoidCallback>{};
 
   static BoostPageRoute<T> of<T>(BuildContext context) {
     final Route<T> route = ModalRoute.of(context);

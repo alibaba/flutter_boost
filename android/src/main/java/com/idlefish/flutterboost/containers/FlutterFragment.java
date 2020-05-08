@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
+import com.idlefish.flutterboost.XPlatformPlugin;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -467,12 +468,9 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
 
     @Nullable
     @Override
-    public PlatformPlugin providePlatformPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
-        if (activity != null) {
-            return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
-        } else {
-            return null;
-        }
+    public XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine) {
+        return new XPlatformPlugin(flutterEngine.getPlatformChannel());
+
     }
 
     /**

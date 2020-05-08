@@ -24,10 +24,10 @@
 import 'dart:ui';
 
 class ObserversHolder {
-  final Map<String, Set<dynamic>> _observers = Map<String, Set<dynamic>>();
+  final Map<String, Set<dynamic>> _observers = <String, Set<dynamic>>{};
 
   VoidCallback addObserver<T>(T observer) {
-    final Set<T> set = _observers[T.toString()] ?? Set<T>();
+    final Set<T> set = _observers[T.toString()] as Set<T> ?? <T>{};
 
     set.add(observer);
     _observers[T.toString()] = set;
@@ -40,5 +40,5 @@ class ObserversHolder {
 
   void cleanObservers<T>(T observer) => _observers[T.toString()]?.clear();
 
-  Set<T> observersOf<T>() => _observers[T.toString()] ?? Set<T>();
+  Set<T> observersOf<T>() => _observers[T.toString()] as Set<T> ?? <T>{};
 }
