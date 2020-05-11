@@ -19,7 +19,7 @@ class FirstRouteWidget extends StatelessWidget {
                 print('open second page!');
                 FlutterBoost.singleton
                     .open('second')
-                    .then((Map<String, dynamic> value) {
+                    .then((Map<dynamic, dynamic> value) {
                   print(
                       'call me when page is finished. did recieve second route result $value');
                 });
@@ -32,7 +32,7 @@ class FirstRouteWidget extends StatelessWidget {
                 FlutterBoost.singleton.open('second',
                     urlParams: <String, dynamic>{
                       'present': true
-                    }).then((Map<String, dynamic> value) {
+                    }).then((Map<dynamic, dynamic> value) {
                   print(
                       'call me when page is finished. did recieve second route result $value');
                 });
@@ -56,7 +56,7 @@ class EmbededFirstRouteWidget extends StatelessWidget {
             print('open second page!');
             FlutterBoost.singleton
                 .open('second')
-                .then((Map<String, dynamic> value) {
+                .then((Map<dynamic, dynamic> value) {
               print(
                   'call me when page is finished. did recieve second route result $value');
             });
