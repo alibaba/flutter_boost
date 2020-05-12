@@ -161,6 +161,15 @@ class BoostContainerState extends NavigatorState {
   void initState() {
     super.initState();
     backPressedHandler = () => maybePop();
+    final String initRoute = widget.initialRoute ?? Navigator.defaultRouteName;
+    if (initRoute != null && routerHistory.isEmpty) {
+      routerHistory.addAll(
+        widget.onGenerateInitialRoutes(
+            this,
+            widget.initialRoute ?? Navigator.defaultRouteName
+        )
+      );
+    }
   }
 
   @override
@@ -183,6 +192,7 @@ class BoostContainerState extends NavigatorState {
     }
     
     final Route<T> route = routerHistory.last Route<T>;
+
     final RoutePopDisposition disposition = await route.willPop();
     if (mounted) {
       switch (disposition) {
