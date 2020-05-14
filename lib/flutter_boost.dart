@@ -63,8 +63,10 @@ class FlutterBoost {
         if (pageInfo.containsKey("name") &&
             pageInfo.containsKey("params") &&
             pageInfo.containsKey("uniqueId")) {
-          ContainerCoordinator.singleton.nativeContainerDidShow(
-              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+          if (!Platform.isIOS) {
+            ContainerCoordinator.singleton.nativeContainerDidShow(
+                pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+          }
         }
       });
     });
