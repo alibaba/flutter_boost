@@ -15,7 +15,7 @@ class FirstRouteWidget extends StatelessWidget {
             print('open second page!');
             FlutterBoost.singleton
                 .open('second')
-                .then((Map<String, dynamic> value) {
+                .then((Map<dynamic, dynamic> value) {
               print(
                   'call me when page is finished. did recieve second route result $value');
             });
