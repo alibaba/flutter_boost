@@ -69,6 +69,7 @@
 @property (nonatomic,assign) long long identifier;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
+@property (nonatomic, assign) BOOL deallocNotified;
 @end
 
 #pragma clang diagnostic push
@@ -163,6 +164,7 @@ static NSUInteger kInstanceCounter = 0;
                pageName:_name
                  params:_params
                uniqueId:[self uniqueIDString]];
+        self.deallocNotified = NO;
     }
     [super willMoveToParentViewController:parent];
 }
@@ -171,23 +173,29 @@ static NSUInteger kInstanceCounter = 0;
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
         [self notifyWillDealloc];
+        self.deallocNotified = YES;
     }
     [super didMoveToParentViewController:parent];
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
-    
+    __weak __typeof__(self) weakSelf = self;
     [super dismissViewControllerAnimated:flag completion:^(){
+        __strong __typeof__(weakSelf) self = weakSelf;
         if (completion) {
             completion();
         }
         //当VC被dismiss时，就通知flutter层销毁page
         [self notifyWillDealloc];
+        self.deallocNotified = YES;
     }];
 }
 
 - (void)dealloc
 {
+    if (!self.deallocNotified) {
+        [self notifyWillDealloc];
+    }
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
