@@ -191,7 +191,7 @@ class BoostContainerState extends NavigatorState {
       return true;
     }
     
-    final Route<T> route = routerHistory.last Route<T>;
+    final Route<T> route = routerHistory.last as Route<T>;
 
     final RoutePopDisposition disposition = await route.willPop();
     if (mounted) {

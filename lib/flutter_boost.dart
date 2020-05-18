@@ -69,8 +69,9 @@ class FlutterBoost {
   static void onPageStart() {
     WidgetsBinding.instance.addPostFrameCallback((Duration _) {
       singleton.channel
-          .invokeMethod<Map<String, dynamic>>('pageOnStart')
-          .then((Map<String, dynamic> pageInfo) {
+          .invokeMethod<Map>('pageOnStart')
+          .then((raw) {
+        Map<String, dynamic> pageInfo = Map<String, dynamic>.from(raw);
         if (pageInfo?.isEmpty ?? true) {
           return;
         }
@@ -146,7 +147,7 @@ class FlutterBoost {
     properties['url'] = url;
     properties['urlParams'] = urlParams;
     properties['exts'] = exts;
-    return channel.invokeMethod<Map<String, dynamic>>('openPage', properties);
+    return channel.invokeMethod<Map<dynamic, dynamic>>('openPage', properties).then((Map<dynamic, dynamic> c) => Map<String, dynamic>.from(c));
   }
 
   Future<bool> close(
