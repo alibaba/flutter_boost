@@ -62,4 +62,9 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
       return null;
     }
   }
+
+  @override
+  Future<RoutePopDisposition> willPop() {
+    return Future<RoutePopDisposition>.value(RoutePopDisposition.pop);
+  }
 }
