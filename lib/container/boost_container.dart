@@ -122,6 +122,8 @@ class BoostContainer extends Navigator {
   }
 
   String desc() => '{uniqueId=${settings.uniqueId},name=${settings.name}}';
+
+  RouteListFactory get initialRoutes => super.onGenerateInitialRoutes;
 }
 
 class BoostContainerState extends NavigatorState {
@@ -164,7 +166,7 @@ class BoostContainerState extends NavigatorState {
     final String initRoute = widget.initialRoute ?? Navigator.defaultRouteName;
     if (initRoute != null && routerHistory.isEmpty) {
       routerHistory.addAll(
-          widget.onGenerateInitialRoutes(
+          widget.initialRoutes(
               this,
               widget.initialRoute ?? Navigator.defaultRouteName
           )
