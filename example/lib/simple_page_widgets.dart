@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/platform_view.dart';
 
@@ -10,6 +11,24 @@ class FirstRouteWidget extends StatefulWidget {
 
 class _FirstRouteWidgetState extends State<FirstRouteWidget> {
   _FirstRouteWidgetState();
+
+  // flutter 侧MethodChannel配置，channel name需要和native侧一致
+  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
+  String _systemVersion = '';
+
+  Future<dynamic> _getPlatformVersion() async {
+
+    try {
+      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      print('getPlatformVersion:' + result);
+      setState(() {
+        _systemVersion = result;
+      });
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+
+  }
 
   @override
   void initState() {
@@ -110,6 +129,10 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
                       'call me when page is finished. did recieve second route result $value');
                 });
               },
+            ),
+            RaisedButton(
+              child: Text('Get system version by method channel:' + _systemVersion),
+              onPressed: () => _getPlatformVersion(),
             ),
           ],
         ),
@@ -318,6 +341,25 @@ class FlutterRouteWidget extends StatefulWidget {
 }
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
+
+  // flutter 侧MethodChannel配置，channel name需要和native侧一致
+  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
+  String _systemVersion = '';
+
+  Future<dynamic> _getPlatformVersion() async {
+
+    try {
+      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      print('getPlatformVersion:' + result);
+      setState(() {
+        _systemVersion = result;
+      });
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final String message = widget.message;
@@ -508,6 +550,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                 ),
                 onTap: () =>
                     FlutterBoost.singleton.open('sample://flutterFragmentPage'),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'get system version by method channel:' + _systemVersion,
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => _getPlatformVersion(),
               ),
             ],
           ),
