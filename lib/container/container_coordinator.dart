@@ -225,17 +225,15 @@ class ContainerCoordinator {
     FlutterBoost.containerManager
         ?.showContainer(_createContainerSettings(name, params, pageId));
 
-    //在Android上对无障碍辅助模式的兼容
-    if (Platform.isAndroid) {
-      try {
-        final SemanticsOwner owner =
-            WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
-        final SemanticsNode root = owner?.rootSemanticsNode;
-        root?.detach();
-        root?.attach(owner);
-      } catch (e) {
-        assert(false, e.toString());
-      }
+    //对无障碍辅助模式的兼容
+    try {
+      final SemanticsOwner owner =
+          WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+      final SemanticsNode root = owner?.rootSemanticsNode;
+      root?.detach();
+      root?.attach(owner);
+    } catch (e) {
+      assert(false, e.toString());
     }
 
     performContainerLifeCycle(_createContainerSettings(name, params, pageId),
