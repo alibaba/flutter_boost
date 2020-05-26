@@ -350,20 +350,32 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   alignment: AlignmentDirectional.center,
                 ),
 //                Expanded(child: Container()),
-                const CupertinoTextField(
-                  prefix: Icon(
-                    CupertinoIcons.person_solid,
-                    color: CupertinoColors.lightBackgroundGray,
-                    size: 28.0,
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
-                  clearButtonMode: OverlayVisibilityMode.editing,
-                  textCapitalization: TextCapitalization.words,
+        const CupertinoTextField(
+          prefix: Icon(
+            CupertinoIcons.person_solid,
+            color: CupertinoColors.lightBackgroundGray,
+            size: 28.0,
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
+          clearButtonMode: OverlayVisibilityMode.editing,
+          textCapitalization: TextCapitalization.words,
+        ),
+                new TextField(
+                  enabled: true,
+                  autocorrect: true,
+                  style: const TextStyle(
+                      fontSize: 20.0,
+                      color: const Color(0xFF222222),
+                      fontWeight: FontWeight.w500),
+                ), new TextField(
+                  controller: new TextEditingController(),
+                  focusNode:FocusNode(),
+                  enabled: true,
                   autocorrect: false,
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(width: 0.0, color: CupertinoColors.inactiveGray)),
-                  ),
-                  placeholder: 'Name',
+                  style: const TextStyle(
+                      fontSize: 20.0,
+                      color: const Color(0xFF222222),
+                      fontWeight: FontWeight.w500),
                 ),
                 InkWell(
                   child: Container(
