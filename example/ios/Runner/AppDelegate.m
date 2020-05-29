@@ -23,8 +23,22 @@
     PlatformRouterImp *router = [PlatformRouterImp new];
     [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
                                                         onStart:^(FlutterEngine *engine) {
-                                                            
-                                                        }];
+        
+        // 注册MethodChannel，监听flutter侧的getPlatformVersion调用
+        FlutterMethodChannel *flutterMethodChannel = [FlutterMethodChannel methodChannelWithName:@"flutter_native_channel" binaryMessenger:engine.binaryMessenger];
+        
+        [flutterMethodChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
+            
+            NSString *method = call.method;
+            if ([method isEqualToString:@"getPlatformVersion"]) {
+                NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
+                result(sysVersion);
+            } else {
+                result(FlutterMethodNotImplemented);
+            }
+            
+        }];
+    }];
     
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
