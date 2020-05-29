@@ -6,15 +6,18 @@ class FirstRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Route'),
+        title: const Text('First Route'),
       ),
       body: Center(
         child: RaisedButton(
-          child: Text('Open second route'),
+          child: const Text('Open second route'),
           onPressed: () {
-            print("open second page!");
-            FlutterBoost.singleton.open("second").then((Map value) {
-              print("call me when page is finished. did recieve second route result $value");
+            print('open second page!');
+            FlutterBoost.singleton
+                .open('second')
+                .then((Map<dynamic, dynamic> value) {
+              print(
+                  'call me when page is finished. did recieve second route result $value');
             });
           },
         ),
@@ -28,19 +31,21 @@ class SecondRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Second Route"),
+        title: const Text('Second Route'),
       ),
       body: Center(
         child: RaisedButton(
           onPressed: () {
             // Navigate back to first route when tapped.
 
-            BoostContainerSettings settings =
+            final BoostContainerSettings settings =
                 BoostContainer.of(context).settings;
-            FlutterBoost.singleton.close(settings.uniqueId,
-                result: <dynamic,dynamic>{"result": "data from second"});
+            FlutterBoost.singleton.close(
+              settings.uniqueId,
+              result: <String, dynamic>{'result': 'data from second'},
+            );
           },
-          child: Text('Go back with result!'),
+          child: const Text('Go back with result!'),
         ),
       ),
     );
@@ -51,15 +56,13 @@ class TabRouteWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Tab Route"),
-      ),
+      appBar: AppBar(title: const Text('Tab Route')),
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            FlutterBoost.singleton.open("second");
+            FlutterBoost.singleton.open('second');
           },
-          child: Text('Open second route'),
+          child: const Text('Open second route'),
         ),
       ),
     );
@@ -67,15 +70,15 @@ class TabRouteWidget extends StatelessWidget {
 }
 
 class FlutterRouteWidget extends StatelessWidget {
-  final String message;
+  const FlutterRouteWidget({this.message});
 
-  FlutterRouteWidget({this.message});
+  final String message;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('flutter_boost_example'),
+        title: const Text('flutter_boost_example'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +86,7 @@ class FlutterRouteWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 80.0),
             child: Text(
-              message ?? "This is a flutter activity",
+              message ?? 'This is a flutter activity',
               style: TextStyle(fontSize: 28.0, color: Colors.blue),
             ),
             alignment: AlignmentDirectional.center,
@@ -101,10 +104,12 @@ class FlutterRouteWidget extends StatelessWidget {
 
             ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
             ///例如：sample://nativePage?aaa=bbb
-            onTap: () =>
-                FlutterBoost.singleton.open("sample://nativePage", urlParams: <dynamic,dynamic>{
-                  "query": {"aaa": "bbb"}
-                }),
+            onTap: () => FlutterBoost.singleton.open(
+              'sample://nativePage',
+              urlParams: <String, dynamic>{
+                'query': <String, dynamic>{'aaa': 'bbb'}
+              },
+            ),
           ),
           InkWell(
             child: Container(
@@ -118,36 +123,42 @@ class FlutterRouteWidget extends StatelessWidget {
 
             ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
             ///例如：sample://nativePage?aaa=bbb
-            onTap: () =>
-                FlutterBoost.singleton.open("sample://flutterPage", urlParams: <dynamic,dynamic>{
-                  "query": {"aaa": "bbb"}
-                }),
+            onTap: () => FlutterBoost.singleton.open(
+              'sample://flutterPage',
+              urlParams: <String, dynamic>{
+                'query': <String, dynamic>{'aaa': 'bbb'},
+              },
+            ),
           ),
           InkWell(
             child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.all(8.0),
-                color: Colors.yellow,
-                child: Text(
-                  'push flutter widget',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              color: Colors.yellow,
+              child: Text(
+                'push flutter widget',
+                style: TextStyle(fontSize: 22.0, color: Colors.black),
+              ),
+            ),
             onTap: () {
               Navigator.push<dynamic>(
-                  context, MaterialPageRoute<dynamic>(builder: (_) => PushWidget()));
+                context,
+                MaterialPageRoute<dynamic>(builder: (_) => PushWidget()),
+              );
             },
           ),
           InkWell(
             child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.all(8.0),
-                color: Colors.yellow,
-                child: Text(
-                  'open flutter fragment page',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              color: Colors.yellow,
+              child: Text(
+                'open flutter fragment page',
+                style: TextStyle(fontSize: 22.0, color: Colors.black),
+              ),
+            ),
             onTap: () =>
-                FlutterBoost.singleton.open("sample://flutterFragmentPage"),
+                FlutterBoost.singleton.open('sample://flutterFragmentPage'),
           ),
         ],
       ),
@@ -156,15 +167,15 @@ class FlutterRouteWidget extends StatelessWidget {
 }
 
 class FragmentRouteWidget extends StatelessWidget {
-  final Map params;
+  const FragmentRouteWidget(this.params);
 
-  FragmentRouteWidget(this.params);
+  final Map<String, dynamic> params;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('flutter_boost_example'),
+        title: const Text('flutter_boost_example'),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +183,7 @@ class FragmentRouteWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 80.0),
             child: Text(
-              "This is a flutter fragment",
+              'This is a flutter fragment',
               style: TextStyle(fontSize: 28.0, color: Colors.blue),
             ),
             alignment: AlignmentDirectional.center,
@@ -180,7 +191,7 @@ class FragmentRouteWidget extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 32.0),
             child: Text(
-              params['tag'] ?? '',
+              '${params['tag']}' ?? '',
               style: TextStyle(fontSize: 28.0, color: Colors.red),
             ),
             alignment: AlignmentDirectional.center,
@@ -188,37 +199,40 @@ class FragmentRouteWidget extends StatelessWidget {
           Expanded(child: Container()),
           InkWell(
             child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.all(8.0),
-                color: Colors.yellow,
-                child: Text(
-                  'open native page',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
-            onTap: () => FlutterBoost.singleton.open("sample://nativePage"),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              color: Colors.yellow,
+              child: Text(
+                'open native page',
+                style: TextStyle(fontSize: 22.0, color: Colors.black),
+              ),
+            ),
+            onTap: () => FlutterBoost.singleton.open('sample://nativePage'),
           ),
           InkWell(
             child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.all(8.0),
-                color: Colors.yellow,
-                child: Text(
-                  'open flutter page',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
-            onTap: () => FlutterBoost.singleton.open("sample://flutterPage"),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.all(8.0),
+              color: Colors.yellow,
+              child: Text(
+                'open flutter page',
+                style: TextStyle(fontSize: 22.0, color: Colors.black),
+              ),
+            ),
+            onTap: () => FlutterBoost.singleton.open('sample://flutterPage'),
           ),
           InkWell(
             child: Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 80.0),
-                color: Colors.yellow,
-                child: Text(
-                  'open flutter fragment page',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                )),
+              padding: const EdgeInsets.all(8.0),
+              margin: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 80.0),
+              color: Colors.yellow,
+              child: Text(
+                'open flutter fragment page',
+                style: TextStyle(fontSize: 22.0, color: Colors.black),
+              ),
+            ),
             onTap: () =>
-                FlutterBoost.singleton.open("sample://flutterFragmentPage"),
+                FlutterBoost.singleton.open('sample://flutterFragmentPage'),
           )
         ],
       ),
@@ -235,14 +249,7 @@ class _PushWidgetState extends State<PushWidget> {
   VoidCallback _backPressedListenerUnsub;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
 //    if (_backPressedListenerUnsub == null) {
@@ -258,13 +265,12 @@ class _PushWidgetState extends State<PushWidget> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _backPressedListenerUnsub?.call();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterRouteWidget(message: "Pushed Widget");
+    return const FlutterRouteWidget(message: 'Pushed Widget');
   }
 }

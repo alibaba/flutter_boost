@@ -3,9 +3,11 @@ package com.taobao.idlefish.flutterboostexample;
 import android.app.Application;
 import android.content.Context;
 
+import android.os.Build;
 import android.util.Log;
 import com.idlefish.flutterboost.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.idlefish.flutterboost.interfaces.INativeRouter;
@@ -13,7 +15,7 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
-import io.flutter.plugins.GeneratedPluginRegistrant;
+import io.flutter.plugin.common.StandardMessageCodec;
 
 public class MyApplication extends Application {
 
@@ -40,6 +42,26 @@ public class MyApplication extends Application {
 
             @Override
             public void onEngineCreated() {
+
+                // 注册MethodChannel，监听flutter侧的getPlatformVersion调用
+                MethodChannel methodChannel = new MethodChannel(FlutterBoost.instance().engineProvider().getDartExecutor(), "flutter_native_channel");
+                methodChannel.setMethodCallHandler((call, result) -> {
+
+                    if (call.method.equals("getPlatformVersion")) {
+                        result.success(Build.VERSION.RELEASE);
+                    } else {
+                        result.notImplemented();
+                    }
+
+                });
+
+                // 注册PlatformView viewTypeId要和flutter中的viewType对应
+                FlutterBoost
+                        .instance()
+                        .engineProvider()
+                        .getPlatformViewsController()
+                        .getRegistry()
+                        .registerViewFactory("plugins.test/view", new TextPlatformViewFactory(StandardMessageCodec.INSTANCE));
 
             }
 

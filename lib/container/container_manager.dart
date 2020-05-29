@@ -23,10 +23,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'boost_container.dart';
-import 'container_coordinator.dart';
+
 import '../flutter_boost.dart';
 import '../support/logger.dart';
+import 'boost_container.dart';
+import 'container_coordinator.dart';
 
 enum ContainerOperation { Push, Onstage, Pop, Remove }
 
@@ -35,12 +36,16 @@ typedef BoostContainerObserver = void Function(
 
 @immutable
 class BoostContainerManager extends StatefulWidget {
+  const BoostContainerManager({
+    Key key,
+    this.initNavigator,
+    this.prePushRoute,
+    this.postPushRoute,
+  }) : super(key: key);
+
   final Navigator initNavigator;
   final PrePushRoute prePushRoute;
   final PostPushRoute postPushRoute;
-  const BoostContainerManager(
-      {Key key, this.initNavigator, this.prePushRoute, this.postPushRoute})
-      : super(key: key);
 
   @override
   ContainerManagerState createState() => ContainerManagerState();
@@ -76,15 +81,15 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
   bool get foreground => _foreground;
 
-  //Number of containers.
+  // Number of containers.
   int get containerCounts => _offstage.length;
 
   List<BoostContainer> get offstage => _offstage;
 
-  //Setting for current visible container.
+  // Setting for current visible container.
   BoostContainerSettings get onstageSettings => _onstage.settings;
 
-  //Current visible container.
+  // Current visible container.
   BoostContainerState get onstageContainer => _stateOf(_onstage);
 
   BoostContainerState get subContainer =>
@@ -118,8 +123,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
   }
 
   BoostContainerState _stateOf(BoostContainer container) {
-    if (container.key != null &&
-        container.key is GlobalKey<BoostContainerState>) {
+    if (container.key is GlobalKey<BoostContainerState>) {
       final GlobalKey<BoostContainerState> globalKey =
           container.key as GlobalKey<BoostContainerState>;
       return globalKey.currentState;
@@ -133,7 +137,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
   void _onShownContainerChanged(String old, String now) {
     Logger.log('onShownContainerChanged old:$old now:$now');
 
-    Map<String, dynamic> properties = new Map<String, dynamic>();
+    final Map<String, dynamic> properties = <String, dynamic>{};
     properties['newName'] = now;
     properties['oldName'] = old;
 
@@ -149,7 +153,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
     }
 
     if (_leastEntries != null && _leastEntries.isNotEmpty) {
-      for (_ContainerOverlayEntry entry in _leastEntries) {
+      for (final _ContainerOverlayEntry entry in _leastEntries) {
         entry.remove();
       }
     }
@@ -223,7 +227,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
       setState(() {});
 
-      for (BoostContainerObserver observer in FlutterBoost
+      for (final BoostContainerObserver observer in FlutterBoost
           .singleton.observersHolder
           .observersOf<BoostContainerObserver>()) {
         observer(ContainerOperation.Onstage, _onstage.settings);
@@ -265,7 +269,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
     setState(() {});
 
-    for (BoostContainerObserver observer in FlutterBoost
+    for (final BoostContainerObserver observer in FlutterBoost
         .singleton.observersHolder
         .observersOf<BoostContainerObserver>()) {
       observer(ContainerOperation.Push, _onstage.settings);
@@ -280,9 +284,11 @@ class ContainerManagerState extends State<BoostContainerManager> {
     _onstage = _offstage.removeLast();
     setState(() {});
 
-    for (BoostContainerObserver observer in FlutterBoost
+    final Set<BoostContainerObserver> observers = FlutterBoost
         .singleton.observersHolder
-        .observersOf<BoostContainerObserver>()) {
+        .observersOf<BoostContainerObserver>();
+
+    for (final BoostContainerObserver observer in observers) {
       observer(ContainerOperation.Pop, old.settings);
     }
 
@@ -294,32 +300,34 @@ class ContainerManagerState extends State<BoostContainerManager> {
       pop();
     } else {
       final BoostContainer container = _offstage.firstWhere(
-          (BoostContainer container) => container.settings.uniqueId == uniqueId,
-          orElse: () => null);
+        (BoostContainer container) => container.settings.uniqueId == uniqueId,
+        orElse: () => null,
+      );
 
       if (container != null) {
         _offstage.remove(container);
         setState(() {});
 
-        for (BoostContainerObserver observer in FlutterBoost
+        final Set<BoostContainerObserver> observers = FlutterBoost
             .singleton.observersHolder
-            .observersOf<BoostContainerObserver>()) {
+            .observersOf<BoostContainerObserver>();
+
+        for (final BoostContainerObserver observer in observers) {
           observer(ContainerOperation.Remove, container.settings);
         }
 
         Logger.log('ContainerObserver#2 didRemove');
       }
     }
-
-    return null;
   }
 
   bool canPop() => _offstage.isNotEmpty;
 
   String dump() {
-    String info = 'onstage#:\n  ${_onstage?.desc()}\noffstage#:';
+    String info;
+    info = 'onstage#:\n  ${_onstage?.desc()}\noffstage#:';
 
-    for (BoostContainer container in _offstage.reversed) {
+    for (final BoostContainer container in _offstage.reversed) {
       info = '$info\n  ${container?.desc()}';
     }
 
@@ -328,21 +336,21 @@ class ContainerManagerState extends State<BoostContainerManager> {
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
-  bool _removed = false;
   _ContainerOverlayEntry(BoostContainer container)
       : super(
-            builder: (BuildContext ctx) => container,
-            opaque: true,
-            maintainState: true);
+          builder: (BuildContext ctx) => container,
+          opaque: true,
+          maintainState: true,
+        );
+
+  bool _removed = false;
 
   @override
   void remove() {
     assert(!_removed);
-
     if (_removed) {
       return;
     }
-
     _removed = true;
     super.remove();
   }

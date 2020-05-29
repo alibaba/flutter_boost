@@ -24,30 +24,30 @@
 
 import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/services.dart';
 
-typedef Future<dynamic> EventListener(String name, Map arguments);
-typedef Future<dynamic> MethodHandler(MethodCall call);
+typedef EventListener = Future<dynamic> Function(
+    String name, Map<String, dynamic> arguments);
+
+typedef MethodHandler = Future<dynamic> Function(MethodCall call);
 
 class BoostChannel {
-  final MethodChannel _methodChannel = MethodChannel("flutter_boost");
-
-  final Map<String, List<EventListener>> _eventListeners = Map();
-  final Set<MethodHandler> _methodHandlers = Set();
-
   BoostChannel() {
     _methodChannel.setMethodCallHandler((MethodCall call) {
-      if (call.method == "__event__") {
-        String name = call.arguments["name"];
-        Map arg = call.arguments["arguments"];
-        List<EventListener> list = _eventListeners[name];
+      if (call.method == '__event__') {
+        final String name = call.arguments['name'] as String;
+        final Map<String, dynamic> arg =
+            (call.arguments['arguments'] as Map<dynamic, dynamic>)
+                ?.cast<String, dynamic>();
+        final List<EventListener> list = _eventListeners[name];
         if (list != null) {
-          for (EventListener l in list) {
+          for (final EventListener l in list) {
             l(name, arg);
           }
         }
       } else {
-        for (MethodHandler handler in _methodHandlers) {
+        for (final MethodHandler handler in _methodHandlers) {
           handler(call);
         }
       }
@@ -56,37 +56,41 @@ class BoostChannel {
     });
   }
 
-  void sendEvent(String name, Map arguments) {
+  final MethodChannel _methodChannel = const MethodChannel('flutter_boost');
+
+  final Map<String, List<EventListener>> _eventListeners =
+      <String, List<EventListener>>{};
+  final Set<MethodHandler> _methodHandlers = <MethodHandler>{};
+
+  void sendEvent(String name, Map<String, dynamic> arguments) {
     if (name == null) {
       return;
     }
 
-    if (arguments == null) {
-      arguments = Map<dynamic, dynamic>();
-    }
+    arguments ??= <String, dynamic>{};
 
-    Map msg = Map<dynamic, dynamic>();
-    msg["name"] = name;
-    msg["arguments"] = arguments;
-    _methodChannel.invokeMethod<dynamic>("__event__", msg);
+    final Map<String, dynamic> msg = <String, dynamic>{};
+    msg['name'] = name;
+    msg['arguments'] = arguments;
+    _methodChannel.invokeMethod<dynamic>('__event__', msg);
   }
 
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) async {
-    assert(method != "__event__");
+    assert(method != '__event__');
 
     return _methodChannel.invokeMethod<T>(method, arguments);
   }
 
   Future<List<T>> invokeListMethod<T>(String method,
       [dynamic arguments]) async {
-    assert(method != "__event__");
+    assert(method != '__event__');
 
     return _methodChannel.invokeListMethod<T>(method, arguments);
   }
 
   Future<Map<K, V>> invokeMapMethod<K, V>(String method,
       [dynamic arguments]) async {
-    assert(method != "__event__");
+    assert(method != '__event__');
 
     return _methodChannel.invokeMapMethod<K, V>(method, arguments);
   }
@@ -94,9 +98,11 @@ class BoostChannel {
   VoidCallback addEventListener(String name, EventListener listener) {
     assert(name != null && listener != null);
 
-    List<EventListener> list = _eventListeners[name];
+    List<EventListener> list;
+    list = _eventListeners[name];
+
     if (list == null) {
-      list = List();
+      list = <EventListener>[];
       _eventListeners[name] = list;
     }
 
