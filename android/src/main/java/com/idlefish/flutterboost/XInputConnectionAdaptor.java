@@ -31,6 +31,7 @@ import io.flutter.plugin.common.ErrorLogResult;
 import io.flutter.plugin.common.MethodChannel;
 
 class XInputConnectionAdaptor extends BaseInputConnection {
+
     private final View mFlutterView;
     private final int mClient;
     private final TextInputChannel textInputChannel;
@@ -221,7 +222,6 @@ class XInputConnectionAdaptor extends BaseInputConnection {
                         mEditable.delete(selStart, selEnd);
                     mEditable.insert(selStart, String.valueOf((char) character));
                     setSelection(selStart + 1, selStart + 1);
-                    updateEditingState();
                 }
                 return true;
             }
