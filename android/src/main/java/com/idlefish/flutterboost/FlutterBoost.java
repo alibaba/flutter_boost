@@ -324,10 +324,10 @@ public class FlutterBoost {
             FlutterMain.ensureInitializationComplete(
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
 
-            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
+            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,true);
 //            registerPlugins(mEngine);
-            mRegistry = new BoostPluginRegistry(createEngine());
-            mPlatform.registerPlugins(mRegistry);
+          //  mRegistry = new BoostPluginRegistry(createEngine());
+          //  mPlatform.registerPlugins(mRegistry);
         }
         return mEngine;
 
