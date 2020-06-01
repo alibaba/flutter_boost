@@ -400,7 +400,7 @@ public class XFlutterView extends FrameLayout {
    */
   @Override
   public boolean checkInputConnectionProxy(View view) {
-    return flutterEngine != null
+    return flutterEngine != null&&view!=null
             ? flutterEngine.getPlatformViewsController().checkInputConnectionProxy(view)
             : super.checkInputConnectionProxy(view);
   }
