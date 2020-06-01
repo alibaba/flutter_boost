@@ -357,6 +357,8 @@ public class XTextInputPlugin {
         String keyboardName = Settings.Secure.getString(mView.getContext().getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
         // The Samsung keyboard is called "com.sec.android.inputmethod/.SamsungKeypad" but look
         // for "Samsung" just in case Samsung changes the name of the keyboard.
+        if(keyboardName==null) return  false;
+
         return keyboardName.contains("Samsung");
     }
 
