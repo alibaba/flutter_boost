@@ -675,7 +675,7 @@ public class XFlutterView extends FrameLayout {
   }
   public void release(){
     if(textInputPlugin!=null){
-//      textInputPlugin.release();
+      textInputPlugin.release(this);
     }
   }
 

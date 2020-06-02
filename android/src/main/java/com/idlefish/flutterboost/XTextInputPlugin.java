@@ -72,6 +72,15 @@ public class XTextInputPlugin {
         this.platformViewsController = platformViewsController;
 //        this.platformViewsController.attachTextInputPlugin(this);
     }
+
+
+
+    public void  release(View v){
+        if(mView!=null && mView.hashCode()==v.hashCode()){
+            mView= null;
+        }
+    }
+
     public  void updateView(View view){
         mView = view;
         mImm = (InputMethodManager) view.getContext().getSystemService(
