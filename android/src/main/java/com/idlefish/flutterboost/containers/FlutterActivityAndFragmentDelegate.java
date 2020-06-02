@@ -228,7 +228,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         // Null out the platformPlugin to avoid a possible retain cycle between the plugin, this Fragment,
         // and this Fragment's Activity.
         if (platformPlugin != null) {
-            platformPlugin.detachActivity();
+            platformPlugin.detachActivity(getContextActivity());
             platformPlugin = null;
         }
 

@@ -29,8 +29,8 @@ public class XPlatformPlugin {
     public static final int DEFAULT_SYSTEM_UI = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
-    private  Activity activity;
-    private  PlatformChannel platformChannel;
+    private Activity activity;
+    private PlatformChannel platformChannel;
     private PlatformChannel.SystemChromeStyle currentTheme;
     private int mEnabledOverlays;
 
@@ -96,26 +96,25 @@ public class XPlatformPlugin {
         }
     };
 
-    public XPlatformPlugin( PlatformChannel platformChannel) {
-
+    public XPlatformPlugin(PlatformChannel platformChannel) {
         this.platformChannel = platformChannel;
-
+        this.platformChannel.setPlatformMessageHandler(mPlatformMessageHandler);
         mEnabledOverlays = DEFAULT_SYSTEM_UI;
     }
 
     public void attachToActivity(Activity activity ){
         this.activity = activity;
-        this.platformChannel.setPlatformMessageHandler(mPlatformMessageHandler);
-
     }
+
     /**
      * Releases all resources held by this {@code PlatformPlugin}.
      * <p>
      * Do not invoke any methods on a {@code PlatformPlugin} after invoking this method.
      */
-    public void detachActivity() {
-       this.activity=null;
-       this.mPlatformMessageHandler=null;
+    public void detachActivity(Activity activity) {
+        if (activity == this.activity) {
+            this.activity = null;
+        }
     }
 
     private void playSystemSound(PlatformChannel.SoundType soundType) {
