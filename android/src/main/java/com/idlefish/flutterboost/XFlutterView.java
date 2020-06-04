@@ -8,11 +8,9 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.LocaleList;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.VisibleForTesting;
-import androidx.core.view.ViewCompat;
+import android.support.annotation.*;
+import android.support.annotation.Nullable;
+
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.KeyEvent;

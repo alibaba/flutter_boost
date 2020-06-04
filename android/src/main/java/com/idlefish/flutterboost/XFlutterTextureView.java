@@ -1,12 +1,12 @@
 package com.idlefish.flutterboost;
 import android.content.Context;
 import android.graphics.SurfaceTexture;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 import io.flutter.Log;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.renderer.RenderSurface;

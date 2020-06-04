@@ -6,7 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.idlefish.flutterboost.interfaces.*;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
