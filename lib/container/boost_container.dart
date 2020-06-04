@@ -39,9 +39,9 @@ enum ContainerLifeCycle {
 }
 
 typedef BoostContainerLifeCycleObserver = void Function(
-  ContainerLifeCycle state,
-  BoostContainerSettings settings,
-);
+    ContainerLifeCycle state,
+    BoostContainerSettings settings,
+    );
 
 class BoostContainer extends Navigator {
   const BoostContainer({
@@ -52,17 +52,17 @@ class BoostContainer extends Navigator {
     RouteFactory onUnknownRoute,
     List<NavigatorObserver> observers,
   }) : super(
-          key: key,
-          initialRoute: initialRoute,
-          onGenerateRoute: onGenerateRoute,
-          onUnknownRoute: onUnknownRoute,
-          observers: observers,
-        );
+    key: key,
+    initialRoute: initialRoute,
+    onGenerateRoute: onGenerateRoute,
+    onUnknownRoute: onUnknownRoute,
+    observers: observers,
+  );
 
   factory BoostContainer.copy(
-    Navigator navigator, [
-    BoostContainerSettings settings = const BoostContainerSettings(),
-  ]) =>
+      Navigator navigator, [
+        BoostContainerSettings settings = const BoostContainerSettings(),
+      ]) =>
       BoostContainer(
         key: GlobalKey<BoostContainerState>(),
         settings: settings,
@@ -73,9 +73,9 @@ class BoostContainer extends Navigator {
       );
 
   factory BoostContainer.obtain(
-    Navigator navigator,
-    BoostContainerSettings settings,
-  ) =>
+      Navigator navigator,
+      BoostContainerSettings settings,
+      ) =>
       BoostContainer(
         key: GlobalKey<BoostContainerState>(),
         settings: settings,
@@ -110,18 +110,20 @@ class BoostContainer extends Navigator {
 
   static BoostContainerState tryOf(BuildContext context) {
     final BoostContainerState container =
-        context.findAncestorStateOfType<BoostContainerState>();
+    context.findAncestorStateOfType<BoostContainerState>();
     return container;
   }
 
   static BoostContainerState of(BuildContext context) {
     final BoostContainerState container =
-        context.findAncestorStateOfType<BoostContainerState>();
+    context.findAncestorStateOfType<BoostContainerState>();
     assert(container != null, 'not in flutter boost');
     return container;
   }
 
   String desc() => '{uniqueId=${settings.uniqueId},name=${settings.name}}';
+
+  RouteListFactory get initialRoutes => super.onGenerateInitialRoutes;
 }
 
 class BoostContainerState extends NavigatorState {
@@ -161,6 +163,15 @@ class BoostContainerState extends NavigatorState {
   void initState() {
     super.initState();
     backPressedHandler = () => maybePop();
+    final String initRoute = widget.initialRoute ?? Navigator.defaultRouteName;
+    if (initRoute != null && routerHistory.isEmpty) {
+      routerHistory.addAll(
+          widget.initialRoutes(
+              this,
+              widget.initialRoute ?? Navigator.defaultRouteName
+          )
+      );
+    }
   }
 
   @override
@@ -177,22 +188,28 @@ class BoostContainerState extends NavigatorState {
 
   @override
   Future<bool> maybePop<T extends Object>([T result]) async {
+    if(routerHistory.isEmpty) {
+      pop(result);
+      return true;
+    }
+
     final Route<T> route = routerHistory.last as Route<T>;
+
     final RoutePopDisposition disposition = await route.willPop();
     if (mounted) {
-      switch (disposition) {
-        case RoutePopDisposition.pop:
-          pop(result);
-          return true;
-          break;
-        case RoutePopDisposition.doNotPop:
-          return false;
-          break;
-        case RoutePopDisposition.bubble:
-          pop(result);
-          return true;
-          break;
-      }
+    switch (disposition) {
+    case RoutePopDisposition.pop:
+    pop(result);
+    return true;
+    break;
+    case RoutePopDisposition.doNotPop:
+    return false;
+    break;
+    case RoutePopDisposition.bubble:
+    pop(result);
+    return true;
+    break;
+    }
     }
     return false;
   }
@@ -238,10 +255,10 @@ class BoostContainerState extends NavigatorState {
 
   VoidCallback addLifeCycleObserver(BoostContainerLifeCycleObserver observer) {
     return FlutterBoost.singleton.addBoostContainerLifeCycleObserver(
-      (
-        ContainerLifeCycle state,
-        BoostContainerSettings settings,
-      ) {
+          (
+          ContainerLifeCycle state,
+          BoostContainerSettings settings,
+          ) {
         if (settings.uniqueId == uniqueId) {
           observer(state, settings);
         }
