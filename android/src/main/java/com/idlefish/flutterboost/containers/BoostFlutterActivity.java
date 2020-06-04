@@ -56,6 +56,7 @@ public class BoostFlutterActivity extends Activity
     // Default configuration.
     protected static final String DEFAULT_BACKGROUND_MODE = BackgroundMode.opaque.name();
 
+    private static XPlatformPlugin sXPlatformPlugin;
 
     public static Intent createDefaultIntent(@NonNull Context launchContext) {
         return withNewEngine().build(launchContext);
@@ -440,8 +441,8 @@ public class BoostFlutterActivity extends Activity
 
     @Nullable
     @Override
-    public XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine) {
-        return new XPlatformPlugin( flutterEngine.getPlatformChannel());
+    public XPlatformPlugin providePlatformPlugin(@NonNull FlutterEngine flutterEngine) {
+        return BoostViewUtils.getPlatformPlugin(flutterEngine.getPlatformChannel());
     }
 
     /**
