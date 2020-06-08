@@ -76,7 +76,9 @@
 
 - (void)resume
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
+        [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    }
 }
 
 - (void)inactive
