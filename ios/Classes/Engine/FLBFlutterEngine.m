@@ -30,7 +30,8 @@
 
 @interface FLBFlutterEngine()
 @property (nonatomic,strong) FlutterEngine *engine;
-@property (nonatomic,strong)  FLBFlutterViewContainer *dummy;
+@property (nonatomic,strong) FLBFlutterViewContainer *dummy;
+@property (nonatomic) BOOL dummyNeedDetach;
 @end
 
 @implementation FLBFlutterEngine
@@ -53,10 +54,11 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-//        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
-//                                                          nibName:nil
-//                                                           bundle:nil];
-//        _dummy.name = kIgnoreMessageWithName;
+        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
+                                                          nibName:nil
+                                                           bundle:nil];
+        _dummy.name = kIgnoreMessageWithName;
+        _dummyNeedDetach = NO;
     }
     
     return self;
@@ -70,13 +72,16 @@
 
 - (void)pause
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
     [self detach];
+    [self dummyAppear];
+    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
 }
 
 - (void)resume
 {
-    [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
+        [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    }
 }
 
 - (void)inactive
@@ -101,6 +106,7 @@
 {
     if(_engine.viewController != vc){
         _engine.viewController = vc;
+        [self dummyDisappear];
         return YES;
     }
     return NO;
@@ -111,6 +117,27 @@
     if(_engine.viewController != _dummy){
         [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
         _engine.viewController = _dummy;
+    }
+}
+
+- (void)dummyAppear {
+    if (_engine.viewController == _dummy) {
+        FLBFlutterViewContainer *container = (FLBFlutterViewContainer *)_engine.viewController;
+        [container beginAppearanceTransition:YES animated:NO];
+        [container endAppearanceTransition];
+        [container surfaceUpdated:YES];
+        _dummyNeedDetach = YES;
+    }
+}
+
+- (void)dummyDisappear {
+    if (_dummyNeedDetach == NO) return;
+    if (_engine.viewController == _dummy) {
+        FLBFlutterViewContainer *container = (FLBFlutterViewContainer *)_engine.viewController;
+        [container surfaceUpdated:NO];
+        [container beginAppearanceTransition:NO animated:NO];
+        [container endAppearanceTransition];
+        _dummyNeedDetach = NO;
     }
 }
 
