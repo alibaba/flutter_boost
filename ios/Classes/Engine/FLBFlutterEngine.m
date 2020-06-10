@@ -105,8 +105,8 @@
 - (BOOL)atacheToViewController:(FlutterViewController *)vc
 {
     if(_engine.viewController != vc){
-        _engine.viewController = vc;
         [self dummyDisappear];
+        _engine.viewController = vc;
         return YES;
     }
     return NO;
