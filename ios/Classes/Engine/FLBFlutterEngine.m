@@ -107,6 +107,7 @@
 {
     if(_engine.viewController != vc){
         _engine.viewController = vc;
+        [self dummyDisappear];
         return YES;
     }
     return NO;
