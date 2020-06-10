@@ -81,7 +81,6 @@
 {
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         [[_engine lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
-        [self dummyDisappear];
     }
 }
 
