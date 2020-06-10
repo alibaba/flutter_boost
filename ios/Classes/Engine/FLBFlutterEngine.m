@@ -53,10 +53,10 @@
         }else{
             [_engine runWithEntrypoint:nil];
         }
-//        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
-//                                                          nibName:nil
-//                                                           bundle:nil];
-//        _dummy.name = kIgnoreMessageWithName;
+        _dummy = [[FLBFlutterViewContainer alloc] initWithEngine:_engine
+                                                          nibName:nil
+                                                           bundle:nil];
+        _dummy.name = kIgnoreMessageWithName;
     }
     
     return self;
@@ -101,6 +101,13 @@
 
 - (BOOL)atacheToViewController:(FlutterViewController *)vc
 {
+    if (_engine.viewController == _dummy) {
+        FLBFlutterViewContainer *container = (FLBFlutterViewContainer *)_engine.viewController;
+        [container surfaceUpdated:NO];
+        [container beginAppearanceTransition:NO animated:NO];
+        [container endAppearanceTransition];
+    }
+    
     if(_engine.viewController != vc){
         _engine.viewController = vc;
         return YES;
@@ -114,6 +121,11 @@
         [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
         _engine.viewController = _dummy;
     }
+    
+    FLBFlutterViewContainer *container = (FLBFlutterViewContainer *)_engine.viewController;
+    [container beginAppearanceTransition:YES animated:NO];
+    [container endAppearanceTransition];
+    [container surfaceUpdated:YES];
 }
 
 - (void)prepareEngineIfNeeded
