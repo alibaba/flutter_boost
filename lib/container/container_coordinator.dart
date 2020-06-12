@@ -256,6 +256,12 @@ class ContainerCoordinator {
       _createContainerSettings(name, params, pageId),
       ContainerLifeCycle.Disappear,
     );
+
+    Logger.log(
+      'native containner did disappear-$name,\n'
+      'manager dump:\n'
+      '${FlutterBoost.containerManager?.dump()}',
+    );
     return true;
   }
 
@@ -267,6 +273,12 @@ class ContainerCoordinator {
     performContainerLifeCycle(
       _createContainerSettings(name, params, pageId),
       ContainerLifeCycle.Init,
+    );
+
+    Logger.log(
+      'native containner did init-$name,\n'
+      'manager dump:\n'
+      '${FlutterBoost.containerManager?.dump()}',
     );
     return true;
   }
