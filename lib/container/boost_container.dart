@@ -86,7 +86,11 @@ class BoostContainer extends Navigator {
               params: settings.params,
               uniqueId: settings.uniqueId,
               animated: false,
-              settings: routeSettings,
+              settings: RouteSettings(
+                name: settings.name,
+                isInitialRoute: routeSettings.isInitialRoute,
+                arguments: routeSettings.arguments,
+              ),
               builder: settings.builder,
             );
           } else {
