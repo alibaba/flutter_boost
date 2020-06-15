@@ -271,8 +271,13 @@ static NSUInteger kInstanceCounter = 0;
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
-    //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
-    [self surfaceUpdated:YES];
+    //根据淘宝特价版日志证明，即使在UIViewController的viewDidAppear下，application也可能在inactive模式，此时如果提交渲染会导致GPU后台渲染而crash
+    //参考：https://github.com/flutter/flutter/issues/57973
+    //https://github.com/flutter/engine/pull/18742
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
+        //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
+        [self surfaceUpdated:YES];
+    }
     
     [super viewDidAppear:animated];
     
