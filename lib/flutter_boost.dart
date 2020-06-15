@@ -58,46 +58,38 @@ class FlutterBoost {
 
   static FlutterBoost get singleton => _instance;
 
-  static ContainerManagerState get containerManager =>
-      _instance.containerManagerKey.currentState;
-
   final GlobalKey<ContainerManagerState> containerManagerKey =
       GlobalKey<ContainerManagerState>();
   final ObserversHolder _observersHolder = ObserversHolder();
   final BoostChannel _boostChannel = BoostChannel();
 
+
+
+  static ContainerManagerState get containerManager =>
+      _instance.containerManagerKey.currentState;
+
   static void onPageStart() {
-    WidgetsBinding.instance.addPostFrameCallback((Duration _) {
-      singleton.channel
-          .invokeMethod<Map<dynamic, dynamic>>('pageOnStart')
-          .then((Map<dynamic, dynamic> _pageInfo) {
-        final Map<String, dynamic> pageInfo = _pageInfo?.cast<String, dynamic>();
-        if (pageInfo?.isEmpty ?? true) {
-          return;
-        }
-        if (pageInfo.containsKey('name') &&
-            pageInfo.containsKey('params') &&
-            pageInfo.containsKey('uniqueId')) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      singleton.channel.invokeMethod<Map>('pageOnStart').then((Map pageInfo) {
+        if (pageInfo == null || pageInfo.isEmpty) return;
+
+        if (pageInfo.containsKey("name") &&
+            pageInfo.containsKey("params") &&
+            pageInfo.containsKey("uniqueId")) {
           ContainerCoordinator.singleton.nativeContainerDidShow(
-            pageInfo['name'] as String,
-            (pageInfo['params'] as Map<dynamic, dynamic>)
-                ?.cast<String, dynamic>(),
-            pageInfo['uniqueId'] as String,
-          );
+              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
         }
       });
     });
   }
 
-  static TransitionBuilder init({
-    TransitionBuilder builder,
-    PrePushRoute prePush,
-    PostPushRoute postPush,
-  }) {
+  static TransitionBuilder init(
+      {TransitionBuilder builder,
+      PrePushRoute prePush,
+      PostPushRoute postPush}) {
     if (Platform.isAndroid) {
       onPageStart();
     } else if (Platform.isIOS) {
-      // TODO(AlexVincent525): 未解之谜
       assert(() {
         () async {
           onPageStart();
