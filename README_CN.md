@@ -26,6 +26,7 @@
 | ----------------------- | ----------------------- | ------------------------------------------------------------ | ------------------- |
 | 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
 | 1.12.13+1               | 1.12.13 -hotfixes              | 支持androidx  | Yes                 |
+| 1.12.13+2              | 1.17.1-hotfixes              | 支持androidx  | Yes                 |
 
 
 
@@ -35,6 +36,7 @@
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
 | v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
+| v1.17.1-hotfixes       | 1.17.1        | for androidx                                                        | Yes                 |
 
 
 # 安装
@@ -48,7 +50,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '1.12.13+1'
+        ref: '1.12.13+2'
 ```
 
 

@@ -1,3 +1,6 @@
+## 1.12.13+2
+    Fixed bugs
+
 ## 1.12.13
     Supported Flutter sdk 1.12.13
 
