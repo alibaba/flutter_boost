@@ -6,6 +6,7 @@ import android.util.Log;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterView;
@@ -40,8 +41,9 @@ public abstract class Platform {
 
     public abstract String initialRoute();
 
-    public FlutterBoost.BoostLifecycleListener lifecycleListener;
+    public abstract List<String> shellArgs();
 
+    public FlutterBoost.BoostLifecycleListener lifecycleListener;
 
     public void closeContainer(IContainerRecord record, Map<String, Object> result, Map<String, Object> exts) {
         if (record == null) return;
