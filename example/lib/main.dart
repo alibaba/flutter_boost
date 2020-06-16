@@ -44,6 +44,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
         title: 'Flutter Boost example',
         builder: FlutterBoost.init(postPush: _onRoutePushed),
         home: Container(color: Colors.white));
