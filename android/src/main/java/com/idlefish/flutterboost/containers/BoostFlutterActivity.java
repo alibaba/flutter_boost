@@ -72,7 +72,7 @@ public class BoostFlutterActivity extends Activity
         private final Class<? extends BoostFlutterActivity> activityClass;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url = "";
-        private Map params = new HashMap();
+        private  Map<String ,Object> params = new HashMap();
 
 
         public NewEngineIntentBuilder(@NonNull Class<? extends BoostFlutterActivity> activityClass) {
@@ -86,7 +86,7 @@ public class BoostFlutterActivity extends Activity
         }
 
 
-        public NewEngineIntentBuilder params(@NonNull Map params) {
+        public NewEngineIntentBuilder params(@NonNull  Map<String ,Object> params) {
             this.params = params;
             return this;
         }
@@ -478,14 +478,14 @@ public class BoostFlutterActivity extends Activity
     }
 
     @Override
-    public Map getContainerUrlParams() {
+    public  Map<String ,Object> getContainerUrlParams() {
 
         if (getIntent().hasExtra(EXTRA_PARAMS)) {
             SerializableMap serializableMap = (SerializableMap) getIntent().getSerializableExtra(EXTRA_PARAMS);
             return serializableMap.getMap();
         }
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
 
         return params;
     }
