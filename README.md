@@ -28,6 +28,7 @@ You need to add Flutter to your project before moving on.The version of the flut
 | 1.9.1+2              | 1.9.1-hotfixes              | Rename the version number and start supporting androidx by default | Yes                 |
 | 1.12.13+1             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
 | 1.12.13+2             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
+| 1.12.13+3             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
 
 
 

@@ -27,6 +27,7 @@
 | 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
 | 1.12.13+1               | 1.12.13 -hotfixes              | 支持androidx  | Yes                 |
 | 1.12.13+2              | 1.17.1-hotfixes              | 支持androidx  | Yes                 |
+| 1.12.13+3              | 1.17.1-hotfixes              | 支持androidx  | Yes                 |
 
 
 
