@@ -458,10 +458,6 @@ public class XFlutterView extends FrameLayout {
    */
   @Override
   public boolean onTouchEvent(@NonNull MotionEvent event) {
-    if (!isAttachedToFlutterEngine()) {
-      return super.onTouchEvent(event);
-    }
-
     // TODO(abarth): This version check might not be effective in some
     // versions of Android that statically compile code and will be upset
     // at the lack of |requestUnbufferedDispatch|. Instead, we should factor
