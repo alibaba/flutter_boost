@@ -758,7 +758,7 @@ public class XFlutterView extends FrameLayout {
               + "FlutterView was not attached to a FlutterEngine.");
       return;
     }
-    if(viewportMetrics.width==0&&viewportMetrics.height==0)return;
+    if(viewportMetrics.width==0|| viewportMetrics.height==0)return;
 
     viewportMetrics.devicePixelRatio = getResources().getDisplayMetrics().density;
     flutterEngine.getRenderer().setViewportMetrics(viewportMetrics);
