@@ -17,22 +17,22 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
-      'embeded': (String pageName, Map<String, dynamic> params, String _) =>
+      'embeded': (String pageName, Map<dynamic, dynamic> params, String _) =>
           EmbeddedFirstRouteWidget(),
-      'first': (String pageName, Map<String, dynamic> params, String _) => FirstRouteWidget(),
-      'firstFirst': (String pageName, Map<String, dynamic> params, String _) =>
+      'first': (String pageName, Map<dynamic, dynamic> params, String _) => FirstRouteWidget(),
+      'firstFirst': (String pageName, Map<dynamic, dynamic> params, String _) =>
           FirstFirstRouteWidget(),
-      'second': (String pageName, Map<String, dynamic> params, String _) => SecondRouteWidget(),
-      'secondStateful': (String pageName, Map<String, dynamic> params, String _) =>
+      'second': (String pageName, Map<dynamic, dynamic> params, String _) => SecondRouteWidget(),
+      'secondStateful': (String pageName, Map<dynamic, dynamic> params, String _) =>
           SecondStatefulRouteWidget(),
-      'tab': (String pageName, Map<String, dynamic> params, String _) => TabRouteWidget(),
-      'platformView': (String pageName, Map<String, dynamic> params, String _) =>
+      'tab': (String pageName, Map<dynamic, dynamic> params, String _) => TabRouteWidget(),
+      'platformView': (String pageName, Map<dynamic, dynamic> params, String _) =>
           PlatformRouteWidget(),
-      'flutterFragment': (String pageName, Map<String, dynamic> params, String _) =>
+      'flutterFragment': (String pageName, Map<dynamic, dynamic> params, String _) =>
           FragmentRouteWidget(params),
 
       ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage': (String pageName, Map<String, dynamic> params, String _) {
+      'flutterPage': (String pageName, Map<dynamic, dynamic> params, String _) {
         print('flutterPage params:$params');
 
         return FlutterRouteWidget(params: params);
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
   void _onRoutePushed(
     String pageName,
     String uniqueId,
-    Map<String, dynamic> params,
+    Map<dynamic, dynamic> params,
     Route<dynamic> route,
     Future<dynamic> _,
   ) {}

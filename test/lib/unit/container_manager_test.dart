@@ -78,9 +78,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
-      'first': (String pageName, Map<String, dynamic> params, String _) =>
+      'first': (String pageName, Map<dynamic, dynamic> params, String _) =>
           FirstRouteWidget(),
-      'second': (String pageName, Map<String, dynamic> params, String _) =>
+      'second': (String pageName, Map<dynamic, dynamic> params, String _) =>
           SecondRouteWidget(),
     });
   }
@@ -123,17 +123,21 @@ void main() {
 
           FlutterBoost.singleton.registerPageBuilders(
             <String, PageBuilder>{
-              'context':
-                  (String pageName, Map<String, dynamic> params, String _) =>
-                      Builder(
-                        builder: (BuildContext context) {
-                          return FloatingActionButton(
-                            onPressed: () {
-                              builderContext = context;
-                            },
-                          );
-                        },
-                      ),
+              'context': (
+                String pageName,
+                Map<dynamic, dynamic> params,
+                String _,
+              ) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return FloatingActionButton(
+                      onPressed: () {
+                        builderContext = context;
+                      },
+                    );
+                  },
+                );
+              },
             },
           );
 
@@ -204,16 +208,21 @@ void main() {
 
           FlutterBoost.singleton.registerPageBuilders(
             <String, PageBuilder>{
-              'context': (String pageName, Map<String, dynamic> params, _) =>
-                  Builder(
-                    builder: (BuildContext context) {
-                      return FloatingActionButton(
-                        onPressed: () {
-                          builderContext = context;
-                        },
-                      );
-                    },
-                  ),
+              'context': (
+                String pageName,
+                Map<dynamic, dynamic> params,
+                String _,
+              ) {
+                return Builder(
+                  builder: (BuildContext context) {
+                    return FloatingActionButton(
+                      onPressed: () {
+                        builderContext = context;
+                      },
+                    );
+                  },
+                );
+              },
             },
           );
 
@@ -257,16 +266,21 @@ void main() {
 
         FlutterBoost.singleton.registerPageBuilders(
           <String, PageBuilder>{
-            'context': (String pageName, Map<String, dynamic> params, _) =>
-                Builder(
-                  builder: (BuildContext context) {
-                    return FloatingActionButton(
-                      onPressed: () {
-                        builderContext = context;
-                      },
-                    );
-                  },
-                ),
+            'context': (
+              String pageName,
+              Map<dynamic, dynamic> params,
+              String _,
+            ) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      builderContext = context;
+                    },
+                  );
+                },
+              );
+            },
           },
         );
 

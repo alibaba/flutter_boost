@@ -169,7 +169,7 @@ class FlutterRouteWidget extends StatelessWidget {
 class FragmentRouteWidget extends StatelessWidget {
   const FragmentRouteWidget(this.params);
 
-  final Map<String, dynamic> params;
+  final Map<dynamic, dynamic> params;
 
   @override
   Widget build(BuildContext context) {

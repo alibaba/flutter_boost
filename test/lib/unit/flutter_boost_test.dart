@@ -8,8 +8,8 @@ void main() {
 
   test('test onMethodCall', () async {
     FlutterBoost.singleton.registerDefaultPageBuilder(
-        (String pageName, Map<String, dynamic> params, String _) =>
-            Container());
+      (String _, Map<dynamic, dynamic> __, String ___) => Container(),
+    );
     FlutterBoost.singleton.addContainerObserver(
       (ContainerOperation operation, BoostContainerSettings settings) {},
     );

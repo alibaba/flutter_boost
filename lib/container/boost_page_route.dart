@@ -40,7 +40,7 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
 
   final String pageName;
   final String uniqueId;
-  final Map<String, dynamic> params;
+  final Map<dynamic, dynamic> params;
   final bool animated;
 
   final Set<VoidCallback> backPressedListeners = <VoidCallback>{};

@@ -137,7 +137,7 @@ class BoostContainerState extends NavigatorState {
 
   String get name => widget.settings.name;
 
-  Map<String, dynamic> get params => widget.settings.params;
+  Map<dynamic, dynamic> get params => widget.settings.params;
 
   BoostContainerSettings get settings => widget.settings;
 
@@ -281,7 +281,7 @@ class BoostContainerSettings {
 
   final String uniqueId;
   final String name;
-  final Map<String, dynamic> params;
+  final Map<dynamic, dynamic> params;
   final WidgetBuilder builder;
 }
 

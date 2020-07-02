@@ -113,7 +113,7 @@ class TabRouteWidget extends StatelessWidget {
 class FlutterRouteWidget extends StatefulWidget {
   const FlutterRouteWidget({this.params, this.message});
 
-  final Map<String, dynamic> params;
+  final Map<dynamic, dynamic> params;
   final String message;
 
   @override
@@ -314,7 +314,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 class FragmentRouteWidget extends StatelessWidget {
   const FragmentRouteWidget(this.params);
 
-  final Map<String, dynamic> params;
+  final Map<dynamic, dynamic> params;
 
   @override
   Widget build(BuildContext context) {

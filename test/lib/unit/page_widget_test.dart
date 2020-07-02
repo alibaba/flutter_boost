@@ -17,17 +17,17 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
-      'embeded': (String pageName, Map<String, dynamic> params, _) =>
+      'embeded': (String pageName, Map<dynamic, dynamic> params, _) =>
           EmbededFirstRouteWidget(),
-      'first': (String pageName, Map<String, dynamic> params, _) =>
+      'first': (String pageName, Map<dynamic, dynamic> params, _) =>
           FirstRouteWidget(),
-      'second': (String pageName, Map<String, dynamic> params, _) =>
+      'second': (String pageName, Map<dynamic, dynamic> params, _) =>
           SecondRouteWidget(),
-      'tab': (String pageName, Map<String, dynamic> params, _) =>
+      'tab': (String pageName, Map<dynamic, dynamic> params, _) =>
           TabRouteWidget(),
-      'flutterFragment': (String pageName, Map<String, dynamic> params, _) =>
+      'flutterFragment': (String pageName, Map<dynamic, dynamic> params, _) =>
           FragmentRouteWidget(params),
-      'flutterPage': (String pageName, Map<String, dynamic> params, _) {
+      'flutterPage': (String pageName, Map<dynamic, dynamic> params, _) {
         print('flutterPage params:$params');
 
         return FlutterRouteWidget(params: params);
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   void _onRoutePushed(
     String pageName,
     String uniqueId,
-    Map<String, dynamic> params,
+    Map<dynamic, dynamic> params,
     Route<dynamic> route,
     Future<dynamic> _,
   ) {}

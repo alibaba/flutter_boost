@@ -36,15 +36,22 @@ export 'container/boost_container.dart';
 export 'container/container_manager.dart';
 
 typedef PageBuilder = Widget Function(
-    String pageName, Map<String, dynamic> params, String uniqueId);
+  String pageName,
+  Map<dynamic, dynamic> params,
+  String uniqueId,
+);
 
-typedef PrePushRoute = Route<T> Function<T>(String url, String uniqueId,
-    Map<String, dynamic> params, Route<dynamic> route);
+typedef PrePushRoute = Route<T> Function<T>(
+  String url,
+  String uniqueId,
+  Map<dynamic, dynamic> params,
+  Route<dynamic> route,
+);
 
 typedef PostPushRoute = void Function(
   String url,
   String uniqueId,
-  Map<String, dynamic> params,
+  Map<dynamic, dynamic> params,
   Route<dynamic> route,
   Future<dynamic> result,
 );

@@ -55,7 +55,7 @@ class ContainerCoordinator {
 
   BoostContainerSettings _createContainerSettings(
     String name,
-    Map<String, dynamic> params,
+    Map<dynamic, dynamic> params,
     String pageId,
   ) {
     Widget page;
@@ -202,7 +202,7 @@ class ContainerCoordinator {
 
   bool nativeContainerDidShow(
     String name,
-    Map<String, dynamic> params,
+    Map<dynamic, dynamic> params,
     String pageId,
   ) {
     FlutterBoost.containerManager
