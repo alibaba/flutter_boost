@@ -63,8 +63,6 @@ class FlutterBoost {
   final ObserversHolder _observersHolder = ObserversHolder();
   final BoostChannel _boostChannel = BoostChannel();
 
-
-
   static ContainerManagerState get containerManager =>
       _instance.containerManagerKey.currentState;
 
@@ -77,7 +75,11 @@ class FlutterBoost {
             pageInfo.containsKey("params") &&
             pageInfo.containsKey("uniqueId")) {
           ContainerCoordinator.singleton.nativeContainerDidShow(
-              pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
+            pageInfo["name"] as String,
+            Map<String, dynamic>.from(
+                pageInfo['params'] as Map<dynamic, dynamic>),
+            pageInfo["uniqueId"] as String,
+          );
         }
       });
     });

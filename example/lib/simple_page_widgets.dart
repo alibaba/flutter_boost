@@ -13,13 +13,14 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
   _FirstRouteWidgetState();
 
   // flutter 侧MethodChannel配置，channel name需要和native侧一致
-  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
+  static const MethodChannel _methodChannel =
+      MethodChannel('flutter_native_channel');
   String _systemVersion = '';
 
   Future<dynamic> _getPlatformVersion() async {
-
     try {
-      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      final String result =
+          await _methodChannel.invokeMethod('getPlatformVersion');
       print('getPlatformVersion:' + result);
       setState(() {
         _systemVersion = result;
@@ -27,7 +28,6 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
     } on PlatformException catch (e) {
       print(e.message);
     }
-
   }
 
   @override
@@ -131,9 +131,29 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
               },
             ),
             RaisedButton(
-              child: Text('Get system version by method channel:' + _systemVersion),
+              child: Text(
+                  'Get system version by method channel:' + _systemVersion),
               onPressed: () => _getPlatformVersion(),
             ),
+            InkWell(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(8.0),
+                color: Colors.yellow,
+                child: const Text(
+                  'flutter 调用原生，且原生返回值',
+                  style: TextStyle(fontSize: 22.0, color: Colors.black),
+                ),
+              ),
+              onTap: () async {
+                final dynamic response = await FlutterBoost.singleton.channel
+                    .sendEvent('test_flutter_native_channel', <String, dynamic>{
+                  'title': 'test flutter native channel title'
+                });
+
+                print('test_flutter_native_channel callback data: $response');
+              },
+            )
           ],
         ),
       ),
@@ -341,15 +361,15 @@ class FlutterRouteWidget extends StatefulWidget {
 }
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
-
   // flutter 侧MethodChannel配置，channel name需要和native侧一致
-  static const MethodChannel _methodChannel = MethodChannel('flutter_native_channel');
+  static const MethodChannel _methodChannel =
+      MethodChannel('flutter_native_channel');
   String _systemVersion = '';
 
   Future<dynamic> _getPlatformVersion() async {
-
     try {
-      final String result = await _methodChannel.invokeMethod('getPlatformVersion');
+      final String result =
+          await _methodChannel.invokeMethod('getPlatformVersion');
       print('getPlatformVersion:' + result);
       setState(() {
         _systemVersion = result;
@@ -357,7 +377,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     } on PlatformException catch (e) {
       print(e.message);
     }
+  }
 
+  void _callNativeAndWaitResponse() {
+    final Map<String, dynamic> params = <String, dynamic>{
+      'title': 'test flutter native channel title'
+    };
+    FlutterBoost.singleton.channel
+        .sendEvent('test_flutter_native_channel', params);
   }
 
   @override

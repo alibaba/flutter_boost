@@ -62,17 +62,26 @@ class BoostChannel {
       <String, List<EventListener>>{};
   final Set<MethodHandler> _methodHandlers = <MethodHandler>{};
 
-  void sendEvent(String name, Map<String, dynamic> arguments) {
-    if (name == null) {
-      return;
-    }
+//  void sendEvent(String name, Map<String, dynamic> arguments) {
+//    if (name == null) {
+//      return;
+//    }
+//
+//    arguments ??= <String, dynamic>{};
+//
+//    final Map<String, dynamic> msg = <String, dynamic>{};
+//    msg['name'] = name;
+//    msg['arguments'] = arguments;
+//    _methodChannel.invokeMethod<dynamic>('__event__', msg);
+//  }
 
+  Future<dynamic> sendEvent(String name, Map<String, dynamic> arguments) {
+    assert(name != null);
     arguments ??= <String, dynamic>{};
-
     final Map<String, dynamic> msg = <String, dynamic>{};
     msg['name'] = name;
     msg['arguments'] = arguments;
-    _methodChannel.invokeMethod<dynamic>('__event__', msg);
+    return _methodChannel.invokeMethod<dynamic>('__event__', msg);
   }
 
   Future<T> invokeMethod<T>(String method, [dynamic arguments]) async {

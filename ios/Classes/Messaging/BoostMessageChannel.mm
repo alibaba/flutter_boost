@@ -77,7 +77,7 @@
             NSMutableArray *list = [self lists][name];
             if(list){
                 for(FLBEventListener l in list){
-                    l(name,arguments);
+                    l(name,arguments, result);
                 }
             }
         }

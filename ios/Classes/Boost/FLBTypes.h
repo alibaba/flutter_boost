@@ -22,12 +22,14 @@
  * THE SOFTWARE.
  */
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
 
 #ifndef FLBTypes_h
 #define FLBTypes_h
 
 typedef void (^FLBEventListener) (NSString *name ,
-                                  NSDictionary *arguments);
+                                  NSDictionary *arguments,
+                                  FlutterResult result);
 typedef void (^FLBVoidCallback)(void);
 
 #endif /* FLBTypes_h */

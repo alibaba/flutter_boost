@@ -40,6 +40,11 @@
         }];
     }];
     
+    [[FlutterBoostPlugin sharedInstance] addEventListener:^(NSString *name, NSDictionary *arguments, FlutterResult result) {
+        NSLog(@"test_flutter_native_channel:name-%@,arguments-%@", name, arguments);
+        result(@{@"title": @"test_flutter_native_channel back"});
+    } forName:@"test_flutter_native_channel"];
+    
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
     
