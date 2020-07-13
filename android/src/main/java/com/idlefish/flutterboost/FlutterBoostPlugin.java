@@ -224,12 +224,13 @@ public class FlutterBoostPlugin {
                         Map<String, Object> exts = methodCall.argument("exts");
                         String url = methodCall.argument("url");
 
-                        mManager.openContainer(url, params, exts, new FlutterViewContainerManager.OnResult() {
+                        mManager.openContainer(url, params, exts, new FlutterViewContainerManager.DefaultOnResult(result) {
                             @Override
                             public void onResult(Map<String, Object> rlt) {
-                                if (result != null) {
-                                    result.success(rlt);
+                                if (getResult() != null) {
+                                    getResult().success(rlt);
                                 }
+                                setResult(null);
                             }
                         });
                     } catch (Throwable t) {
