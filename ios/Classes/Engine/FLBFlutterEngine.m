@@ -105,7 +105,6 @@
 {
     if(_engine.viewController != nil){
         [(FLBFlutterViewContainer *)_engine.viewController surfaceUpdated:NO];
-        _engine.viewController = nil;
     }
 }
 
