@@ -98,8 +98,16 @@ public class XTextInputPlugin {
             }
 
             @Override
+            public void requestAutofill() {
+            }
+
+            @Override
             public void setClient(int textInputClientId, TextInputChannel.Configuration configuration) {
                 setTextInputClient(textInputClientId, configuration);
+            }
+
+            @Override
+            public void setEditableSizeAndTransform(final double width, final double height, final double[] transform) {
             }
 
             @Override
