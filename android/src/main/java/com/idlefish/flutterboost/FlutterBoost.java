@@ -64,6 +64,18 @@ public class FlutterBoost {
                 //fix crash：'FlutterBoostPlugin not register yet'
                 //case: initFlutter after Activity.OnCreate method，and then called start/stop crash
                 // In SplashActivity ,showDialog(in OnCreate method) to check permission, if authorized, then init sdk and jump homePage)
+
+                // fix bug : The LauncherActivity will be launch by clicking app icon when app enter background in HuaWei Rom, cause missing forgoround event
+                if(mEnterActivityCreate && mCurrentActiveActivity == null) {
+                    Intent intent = activity.getIntent();
+                    if (!activity.isTaskRoot()
+                            && intent != null
+                            && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                            && intent.getAction() != null
+                            && intent.getAction().equals(Intent.ACTION_MAIN)) {
+                        return;
+                    }
+                }
                 mEnterActivityCreate = true;
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
