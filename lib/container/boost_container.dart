@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'container_manager.dart';
 import '../flutter_boost.dart';
 import 'boost_page_route.dart';
@@ -222,6 +223,8 @@ class BoostContainerState extends NavigatorState {
 
     routerHistory.add(route);
 
+    // 复用XPlatformPlugin后，每次进入页面时都需要在这里反复通知Native更新Theme
+    SystemChrome.restoreSystemUIOverlays();
     if (FlutterBoost.containerManager.postPushRoute != null) {
       FlutterBoost.containerManager
           .postPushRoute(name, uniqueId, params, newRoute ?? route, future);
