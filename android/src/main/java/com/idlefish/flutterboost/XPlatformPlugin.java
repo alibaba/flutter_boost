@@ -151,7 +151,7 @@ public class XPlatformPlugin {
 
     @SuppressWarnings("deprecation")
     private void setSystemChromeApplicationSwitcherDescription(PlatformChannel.AppSwitcherDescription description) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || activity == null) {
             return;
         }
 
