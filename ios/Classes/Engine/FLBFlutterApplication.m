@@ -159,7 +159,7 @@
                   result:result
                     exts:exts
               completion:completion];
-    
+    [self attachToPreviousContainer];
     if(_pageResultCallbacks[uniqueId]){
         void (^cb)(NSDictionary *) = _pageResultCallbacks[uniqueId];
         cb(result);
