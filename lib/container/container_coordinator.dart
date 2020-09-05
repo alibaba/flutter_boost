@@ -40,6 +40,7 @@ class ContainerCoordinator {
   final Map<String, PageBuilder> _pageBuilders = <String, PageBuilder>{};
   PageBuilder _defaultPageBuilder;
 
+
   ContainerCoordinator(BoostChannel channel) {
     assert(_instance == null);
 
@@ -60,15 +61,8 @@ class ContainerCoordinator {
         name: name,
         params: params,
         builder: (BuildContext ctx) {
-          //Try to build a page using keyed builder.
-          if (_pageBuilders[name] != null) {
-            page = _pageBuilders[name](name, params, pageId);
-          }
 
-          //Build a page using default builder.
-          if (page == null && _defaultPageBuilder != null) {
-            page = _defaultPageBuilder(name, params, pageId);
-          }
+          page = createPage(name, params, pageId);
 
           assert(page != null);
           Logger.log('build widget:$page for page:$name($pageId)');
@@ -77,6 +71,22 @@ class ContainerCoordinator {
         });
 
     return routeSettings;
+  }
+
+  Widget createPage(String name, Map params, String pageId) {
+    Widget page;
+
+    //Try to build a page using keyed builder.
+    if (_pageBuilders[name] != null) {
+      page = _pageBuilders[name](name, params, pageId);
+    }
+
+    //Build a page using default builder.
+    if (page == null && _defaultPageBuilder != null) {
+      page = _defaultPageBuilder(name, params, pageId);
+    }
+
+    return page;
   }
 
   //Register a default page builder.

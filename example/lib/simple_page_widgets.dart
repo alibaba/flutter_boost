@@ -105,6 +105,16 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
                     });
                   },
                 ),
+
+                RaisedButton(
+                  child: Text('Flutter to Flutter with Animation'),
+                  onPressed: () {
+                    FlutterBoost.singleton.open("f2f_first").then((Map<dynamic,dynamic> value) {
+                      print(
+                          "call me when page is finished. did recieve second route result $value");
+                    });
+                  }
+                )
             ],
         ),
       ),

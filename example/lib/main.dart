@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'simple_page_widgets.dart';
+import 'flutter_to_flutter_sample.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,8 +32,17 @@ class _MyAppState extends State<MyApp> {
 
         return FlutterRouteWidget(params:params);
       },
+
+      'f2f_first': (pageName, params, _) =>  F2FFirstPage(),
+      'f2f_second': (pageName, params, _) => F2FSecondPage(),
     });
     FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoostAPI.singleton.routeSettingsBuilder = (String url,
+        {Map<String, dynamic> urlParams, Map<String, dynamic> exts}) => BoostRouteSettings(
+      uniqueId: '${url}_${DateTime.now().millisecondsSinceEpoch}',
+      name: url,
+      params: urlParams,
+    );
   }
 
   @override

@@ -16,6 +16,8 @@ public class PageRouter {
         put("first", "first");
         put("second", "second");
         put("tab", "tab");
+        put("f2f_first", "f2f_first");
+        put("f2f_second", "f2f_second");
         put("sample://flutterPage", "flutterPage");
     }};
 

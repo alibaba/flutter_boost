@@ -26,6 +26,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'container/boost_container.dart';
+import 'container/container_coordinator.dart';
 import 'container/container_manager.dart';
 
 import 'channel/boost_channel.dart';
@@ -34,6 +35,7 @@ import 'observers_holders.dart';
 
 export 'container/boost_container.dart';
 export 'container/container_manager.dart';
+export 'flutter_boost_api.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
@@ -121,11 +123,16 @@ class FlutterBoost {
   }
 
   Future<Map<dynamic, dynamic>> open(String url,
-      {Map<String, dynamic> urlParams, Map<String, dynamic> exts}) {
+      {Map<String, dynamic> urlParams,
+      Map<String, dynamic> exts}) {
     Map<String, dynamic> properties = new Map<String, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
+    //TODO 判断是不是需要跳Flutter，有没有前置拦截逻辑，如果都没有，就找到Navigator去把页面推进去
+
+
+
     return channel.invokeMethod<Map<dynamic, dynamic>>('openPage', properties);
   }
 
