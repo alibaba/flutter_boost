@@ -62,8 +62,12 @@ class F2FSecondPageState extends State<F2FSecondPage>{
           mainAxisAlignment: MainAxisAlignment.center,
           children:
           <Widget>[
-            Text('Hello')
-
+            RaisedButton(
+              child: Text('close'),
+              onPressed: () {
+                FlutterBoostAPI.singleton.close();
+              },
+            ),
           ],
         ),
       ),
