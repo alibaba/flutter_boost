@@ -73,6 +73,11 @@ class ContainerCoordinator {
     return routeSettings;
   }
 
+  bool  isFlutterPageUrl(String url){
+
+    return _pageBuilders.containsKey(url);
+  }
+
   Widget createPage(String name, Map params, String pageId) {
     Widget page;
 

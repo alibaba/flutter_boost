@@ -39,16 +39,18 @@ export 'flutter_boost_api.dart';
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
-typedef Route PrePushRoute(
-    String url, String uniqueId, Map params, Route route);
+typedef Route PrePushRoute(String url, String uniqueId, Map params,
+    Route route);
 
-typedef void PostPushRoute(
-    String url, String uniqueId, Map params, Route route, Future result);
+typedef void PostPushRoute(String url, String uniqueId, Map params, Route route,
+    Future result);
+
+typedef Route FlutterBoostRouteBuilder(Widget widget);
 
 class FlutterBoost {
   static final FlutterBoost _instance = FlutterBoost();
   final GlobalKey<ContainerManagerState> containerManagerKey =
-      GlobalKey<ContainerManagerState>();
+  GlobalKey<ContainerManagerState>();
   final ObserversHolder _observersHolder = ObserversHolder();
   final BoostChannel _boostChannel = BoostChannel();
 
@@ -72,15 +74,14 @@ class FlutterBoost {
     });
   }
 
-  static TransitionBuilder init(
-      {TransitionBuilder builder,
-      PrePushRoute prePush,
-      PostPushRoute postPush}) {
+  static TransitionBuilder init({TransitionBuilder builder,
+    PrePushRoute prePush,
+    PostPushRoute postPush}) {
     if (Platform.isAndroid) {
       onPageStart();
     } else if (Platform.isIOS) {
       assert(() {
-        () async {
+            () async {
           onPageStart();
         }();
         return true;
@@ -124,16 +125,51 @@ class FlutterBoost {
 
   Future<Map<dynamic, dynamic>> open(String url,
       {Map<String, dynamic> urlParams,
-      Map<String, dynamic> exts}) {
+        Map<String, dynamic> exts}) {
     Map<String, dynamic> properties = new Map<String, dynamic>();
     properties["url"] = url;
     properties["urlParams"] = urlParams;
     properties["exts"] = exts;
-    //TODO 判断是不是需要跳Flutter，有没有前置拦截逻辑，如果都没有，就找到Navigator去把页面推进去
-
-
-
     return channel.invokeMethod<Map<dynamic, dynamic>>('openPage', properties);
+  }
+
+
+  /**
+   *
+   * when flutter page->flutter page,do not open the new Activity Container
+   *
+   **/
+  Future<Map<dynamic, dynamic>> openInCurrentContainer(String url,
+      {Map<String, dynamic> urlParams,
+        Map<String, dynamic> exts,
+        FlutterBoostRouteBuilder routeBuilder}) {
+
+    if(!ContainerCoordinator.singleton.isFlutterPageUrl(url)){
+      return open(url, urlParams: urlParams, exts: exts);
+    }
+
+    String  uniqueId='${url}_${DateTime.now().millisecondsSinceEpoch}';
+
+    final Widget page = ContainerCoordinator.singleton.createPage(
+        url, urlParams, uniqueId);
+
+    final Route<Map<dynamic, dynamic>> route = routeBuilder != null
+        ? routeBuilder(page)
+        : PageRouteBuilder<Map<dynamic, dynamic>>(
+        pageBuilder: (BuildContext context,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,) =>
+        page);
+
+    return FlutterBoost.containerManager?.onstageContainer?.push(route);
+
+  }
+
+  /**
+   * close flutter page but not close container
+   */
+  bool closeInCurrentContainer<T extends Object>([T result]) {
+    return FlutterBoost.containerManager?.onstageContainer?.pop(result);
   }
 
   Future<bool> close(String id,
@@ -197,7 +233,7 @@ class FlutterBoost {
 
   ///register for Container lifecycle callbacks
   VoidCallback addBoostContainerLifeCycleObserver(
-          BoostContainerLifeCycleObserver observer) =>
+      BoostContainerLifeCycleObserver observer) =>
       _observersHolder.addObserver<BoostContainerLifeCycleObserver>(observer);
 
   ///register callbacks for Navigators push & pop
