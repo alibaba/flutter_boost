@@ -94,7 +94,11 @@
         pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
         pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
         if(result) result(pageInfo);
-    }else{
+    } if([@"disablePopGesture" isEqualToString:call.method]) {
+        [FlutterBoostPlugin sharedInstance].application.flutterViewController.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    } if([@"enablePopGesture" isEqualToString:call.method]){
+        [FlutterBoostPlugin sharedInstance].application.flutterViewController.navigationController.interactivePopGestureRecognizer.enabled = YES;
+    } else{
         result(FlutterMethodNotImplemented);
     }
 }

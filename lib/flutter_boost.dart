@@ -28,6 +28,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'container/boost_container.dart';
 import 'container/container_coordinator.dart';
+import 'container/container_coordinator.dart';
 import 'container/container_manager.dart';
 
 import 'channel/boost_channel.dart';
@@ -37,6 +38,7 @@ import 'observers_holders.dart';
 export 'container/boost_container.dart';
 export 'container/container_manager.dart';
 export 'flutter_boost_api.dart';
+export 'container/container_coordinator.dart' show BoostRouteSettings;
 
 typedef Widget PageBuilder(String pageName, Map params, String uniqueId);
 
@@ -47,6 +49,9 @@ typedef void PostPushRoute(String url, String uniqueId, Map params, Route route,
     Future result);
 
 typedef Route FlutterBoostRouteBuilder(Widget widget);
+
+
+
 
 class FlutterBoost {
   static final FlutterBoost _instance = FlutterBoost();
@@ -124,6 +129,11 @@ class FlutterBoost {
     ContainerCoordinator.singleton.registerPageBuilders(builders);
   }
 
+  ///Register a route settings builder
+  void registerRouteSettingsBuilder(BoostRouteSettingsBuilder builder) {
+    ContainerCoordinator.singleton.registerRouteSettingsBuilder(builder);
+  }
+
   Future<Map<dynamic, dynamic>> open(String url,
       {Map<String, dynamic> urlParams,
         Map<String, dynamic> exts}) {
@@ -145,14 +155,15 @@ class FlutterBoost {
         Map<String, dynamic> exts,
         FlutterBoostRouteBuilder routeBuilder}) {
 
-//    if(!ContainerCoordinator.singleton.isFlutterPageUrl(url)){
-//      return open(url, urlParams: urlParams, exts: exts);
-//    }
 
-    String  uniqueId='${url}_${DateTime.now().millisecondsSinceEpoch}';
+    final BoostRouteSettings routeSettings = ContainerCoordinator.singleton.createRouteSettings(url,urlParams: urlParams,exts: exts);
 
     final Widget page = ContainerCoordinator.singleton.createPage(
-        url, urlParams, uniqueId);
+        routeSettings.name, routeSettings.params, routeSettings.uniqueId);
+
+    if (page == null ) {
+      return open(url, urlParams: urlParams, exts: exts);
+    }
 
     final Route<Map<dynamic, dynamic>> route = routeBuilder != null
         ? routeBuilder(page)

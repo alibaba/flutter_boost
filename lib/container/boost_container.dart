@@ -21,6 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'container_manager.dart';
 import '../flutter_boost.dart';
@@ -201,6 +203,11 @@ class BoostContainerState extends NavigatorState {
 
     if (canPop()) {
          super.pop<T>(result);
+         if (Platform.isIOS && multipleRouteMode && !canPop()) {
+           FlutterBoost.singleton.channel
+               .invokeMethod<dynamic>('enablePopGesture', null);
+           //开启native返回手势
+         }
     } else {
       if (T is Map<String, dynamic>) {
         FlutterBoost.singleton
@@ -227,6 +234,11 @@ class BoostContainerState extends NavigatorState {
     if (FlutterBoost.containerManager.postPushRoute != null) {
       FlutterBoost.containerManager
           .postPushRoute(name, uniqueId, params, newRoute ?? route, future);
+    }
+
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
     }
 
     return future;

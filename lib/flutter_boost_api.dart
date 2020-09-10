@@ -7,13 +7,7 @@ import 'flutter_boost.dart';
 
 typedef Route FlutterBoostRouteBuilder(Widget widget);
 
-class BoostRouteSettings {
-  final String uniqueId;
-  final String name;
-  final Map params;
 
-  const BoostRouteSettings({this.uniqueId, this.name, this.params});
-}
 
 typedef BoostRouteSettings BoostRouteSettingsBuilder(String url,
     {Map<String, dynamic> urlParams, Map<String, dynamic> exts});

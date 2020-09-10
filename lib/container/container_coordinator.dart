@@ -32,6 +32,17 @@ import 'boost_container.dart';
 import '../flutter_boost.dart';
 import '../support/logger.dart';
 
+class BoostRouteSettings {
+  final String uniqueId;
+  final String name;
+  final Map params;
+
+  const BoostRouteSettings({this.uniqueId, this.name, this.params});
+}
+
+typedef BoostRouteSettings BoostRouteSettingsBuilder(String url,
+    {Map<String, dynamic> urlParams, Map<String, dynamic> exts});
+
 class ContainerCoordinator {
   static ContainerCoordinator get singleton => _instance;
 
@@ -40,6 +51,7 @@ class ContainerCoordinator {
   final Map<String, PageBuilder> _pageBuilders = <String, PageBuilder>{};
   PageBuilder _defaultPageBuilder;
 
+  BoostRouteSettingsBuilder _routeSettingsBuilder;
 
   ContainerCoordinator(BoostChannel channel) {
     assert(_instance == null);
@@ -92,6 +104,22 @@ class ContainerCoordinator {
     }
 
     return page;
+  }
+
+  BoostRouteSettings createRouteSettings(String url,
+      {Map<String, dynamic> urlParams, Map<String, dynamic> exts}) {
+    if (_routeSettingsBuilder != null) {
+      return _routeSettingsBuilder(url, urlParams:urlParams,exts:exts);
+    }
+
+    return BoostRouteSettings(
+        uniqueId: '${url}_${DateTime.now().millisecondsSinceEpoch}',
+        name: url,
+        params: urlParams);
+  }
+
+  void registerRouteSettingsBuilder(BoostRouteSettingsBuilder builder) {
+    _routeSettingsBuilder = builder;
   }
 
   //Register a default page builder.
