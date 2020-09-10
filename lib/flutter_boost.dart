@@ -24,6 +24,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'container/boost_container.dart';
 import 'container/container_coordinator.dart';
@@ -144,9 +145,9 @@ class FlutterBoost {
         Map<String, dynamic> exts,
         FlutterBoostRouteBuilder routeBuilder}) {
 
-    if(!ContainerCoordinator.singleton.isFlutterPageUrl(url)){
-      return open(url, urlParams: urlParams, exts: exts);
-    }
+//    if(!ContainerCoordinator.singleton.isFlutterPageUrl(url)){
+//      return open(url, urlParams: urlParams, exts: exts);
+//    }
 
     String  uniqueId='${url}_${DateTime.now().millisecondsSinceEpoch}';
 
@@ -155,24 +156,49 @@ class FlutterBoost {
 
     final Route<Map<dynamic, dynamic>> route = routeBuilder != null
         ? routeBuilder(page)
-        : PageRouteBuilder<Map<dynamic, dynamic>>(
-        pageBuilder: (BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,) =>
-        page);
+        : defaultRoute(page);
+
+    FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode = true;
 
     return FlutterBoost.containerManager?.onstageContainer?.push(route);
 
   }
 
+  Route<Map<dynamic, dynamic>> defaultRoute(Widget page) {
+    if (Platform.isIOS) {
+      return CupertinoPageRoute<Map<dynamic, dynamic>> (
+        builder: (BuildContext context) => page
+      );
+    }
+
+    return MaterialPageRoute<Map<dynamic, dynamic>>(builder: (BuildContext context) => page);
+
+//    PageRouteBuilder<Map<dynamic, dynamic>>(
+//        pageBuilder: (BuildContext context,
+//            Animation<double> animation,
+//            Animation<double> secondaryAnimation,) =>
+//        page)
+  }
+
   /**
-   * close flutter page but not close container
+   * close flutter page but not close container if there has more than one page in contaienr
    */
   bool closeInCurrentContainer<T extends Object>([T result]) {
     return FlutterBoost.containerManager?.onstageContainer?.pop(result);
   }
 
   Future<bool> close(String id,
+      {Map<String, dynamic> result, Map<String, dynamic> exts}) {
+
+    //判断当前onStage的容器是不是通过openInCurrentContainer打开过界面
+    if (FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode ?? false) {
+      return Future.value(closeInCurrentContainer(result));
+    }
+
+    return closeInternal(id, result: result, exts: exts);
+  }
+
+  Future<bool> closeInternal(String id,
       {Map<String, dynamic> result, Map<String, dynamic> exts}) {
     assert(id != null);
 
@@ -199,7 +225,10 @@ class FlutterBoost {
       properties["exts"] = exts;
     }
     return channel.invokeMethod<bool>('closePage', properties);
+
   }
+
+
 
   Future<bool> closeCurrent(
       {Map<String, dynamic> result, Map<String, dynamic> exts}) {

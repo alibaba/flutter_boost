@@ -135,6 +135,8 @@ class BoostContainerState extends NavigatorState {
 
   final List<Route<dynamic>> routerHistory = <Route<dynamic>>[];
 
+  bool multipleRouteMode = false;
+
   ContainerNavigatorObserver findContainerNavigatorObserver(
       Navigator navigator) {
     for (NavigatorObserver observer in navigator.observers) {
@@ -202,9 +204,9 @@ class BoostContainerState extends NavigatorState {
     } else {
       if (T is Map<String, dynamic>) {
         FlutterBoost.singleton
-            .close(uniqueId, result: result as Map<String, dynamic>);
+            .closeInternal(uniqueId, result: result as Map<String, dynamic>);
       } else {
-        FlutterBoost.singleton.close(uniqueId);
+        FlutterBoost.singleton.closeInternal(uniqueId,);
       }
     }
     return true;
