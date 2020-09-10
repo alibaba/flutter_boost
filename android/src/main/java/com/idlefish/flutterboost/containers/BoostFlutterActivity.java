@@ -3,6 +3,8 @@ package com.idlefish.flutterboost.containers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
@@ -35,7 +37,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoostFlutterActivity extends Activity
+public class BoostFlutterActivity extends AppCompatActivity
         implements FlutterActivityAndFragmentDelegate.Host,
         LifecycleOwner {
 
@@ -130,9 +132,9 @@ public class BoostFlutterActivity extends Activity
     @NonNull
     private LifecycleRegistry lifecycle;
 
-    public BoostFlutterActivity() {
-        lifecycle = new LifecycleRegistry(this);
-    }
+//    public BoostFlutterActivity() {
+//        lifecycle = new LifecycleRegistry(this);
+//    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,6 +142,9 @@ public class BoostFlutterActivity extends Activity
 
         super.onCreate(savedInstanceState);
 
+        if(lifecycle == null){
+            lifecycle = new LifecycleRegistry(this);
+        }
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
 
         delegate = new FlutterActivityAndFragmentDelegate(this);
@@ -355,6 +360,9 @@ public class BoostFlutterActivity extends Activity
     @Override
     @NonNull
     public Lifecycle getLifecycle() {
+        if(lifecycle == null){
+            lifecycle = new LifecycleRegistry(this);
+        }
         return lifecycle;
     }
 
