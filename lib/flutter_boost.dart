@@ -175,20 +175,27 @@ class FlutterBoost {
 
   }
 
+
   Route<Map<dynamic, dynamic>> defaultRoute(Widget page) {
     if (Platform.isIOS) {
       return CupertinoPageRoute<Map<dynamic, dynamic>> (
         builder: (BuildContext context) => page
       );
     }
+    return PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 300),
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          var offsetAnimation = Tween<Offset>(
+              begin: Offset(1.0, 0.0), end: Offset(0.0, 0.0))
+              .animate(
+              CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn));
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        });
 
-    return MaterialPageRoute<Map<dynamic, dynamic>>(builder: (BuildContext context) => page);
-
-//    PageRouteBuilder<Map<dynamic, dynamic>>(
-//        pageBuilder: (BuildContext context,
-//            Animation<double> animation,
-//            Animation<double> secondaryAnimation,) =>
-//        page)
   }
 
   /**
