@@ -227,6 +227,10 @@ class BoostContainerState extends NavigatorState {
           .prePushRoute(name, uniqueId, params, route);
     }
 
+    if (multipleRouteMode) {
+      ContainerNavigatorObserver.bindContainerManager().willPush(route, routerHistory.last);
+    }
+
     Future<T> future = super.push<T>(newRoute ?? route);
 
     routerHistory.add(route);
@@ -289,6 +293,14 @@ class ContainerNavigatorObserver extends NavigatorObserver {
     boostObservers.remove(observer);
   }
 
+  void willPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    for (NavigatorObserver observer in boostObservers) {
+      if(observer is ContainerNavigatorObserver){
+        ContainerNavigatorObserver  containerNavigatorObserver = observer as ContainerNavigatorObserver;
+        containerNavigatorObserver.willPush(route, previousRoute);
+      }
+    }
+  }
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {

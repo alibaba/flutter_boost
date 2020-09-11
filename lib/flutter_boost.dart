@@ -77,7 +77,8 @@ class FlutterBoost {
               pageInfo["name"], pageInfo["params"], pageInfo["uniqueId"]);
         }
       });
-    });
+    }
+    );
   }
 
   static TransitionBuilder init({TransitionBuilder builder,
@@ -167,7 +168,7 @@ class FlutterBoost {
 
     final Route<Map<dynamic, dynamic>> route = routeBuilder != null
         ? routeBuilder(page)
-        : defaultRoute(page);
+        : defaultRoute(page,routeSettings);
 
     FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode = true;
 
@@ -176,14 +177,17 @@ class FlutterBoost {
   }
 
 
-  Route<Map<dynamic, dynamic>> defaultRoute(Widget page) {
+  Route<Map<dynamic, dynamic>> defaultRoute(Widget page,BoostRouteSettings settings ) {
+    RouteSettings routeSettings =new RouteSettings(name:settings.name,arguments:settings.params);
     if (Platform.isIOS) {
       return CupertinoPageRoute<Map<dynamic, dynamic>> (
+        settings: routeSettings,
         builder: (BuildContext context) => page
       );
     }
     return PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 300),
+        settings:routeSettings ,
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var offsetAnimation = Tween<Offset>(

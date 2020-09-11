@@ -37,6 +37,12 @@ class _MyAppState extends State<MyApp> {
       'f2f_second': (pageName, params, _) => F2FSecondPage(),
     });
     FlutterBoost.singleton.addBoostNavigatorObserver(TestBoostNavigatorObserver());
+    FlutterBoost.singleton.addContainerObserver((
+        ContainerOperation operation, BoostContainerSettings settings){
+      operation;
+      settings;
+    });
+
     FlutterBoostAPI.singleton.routeSettingsBuilder = (String url,
         {Map<String, dynamic> urlParams, Map<String, dynamic> exts}) => BoostRouteSettings(
       uniqueId: '${url}_${DateTime.now().millisecondsSinceEpoch}',
@@ -59,9 +65,13 @@ class _MyAppState extends State<MyApp> {
       String pageName, String uniqueId, Map params, Route route, Future _) {
   }
 }
-class TestBoostNavigatorObserver extends NavigatorObserver{
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
 
+class TestBoostNavigatorObserver extends ContainerNavigatorObserver{
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    route.settings.name!="/";
+
+    //1. 底下
+    //新页面已经push完成
     print("flutterboost#didPush");
   }
 
@@ -76,5 +86,10 @@ class TestBoostNavigatorObserver extends NavigatorObserver{
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     print("flutterboost#didReplace");
   }
+  void willPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+
+    print("flutterboost#willPush");
+  }
+
 }
 
