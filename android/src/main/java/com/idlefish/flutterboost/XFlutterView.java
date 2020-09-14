@@ -501,8 +501,12 @@ public class XFlutterView extends FrameLayout {
     if (!isAttachedToFlutterEngine()) {
       return super.onHoverEvent(event);
     }
-
-    boolean handled = accessibilityBridge.onAccessibilityHoverEvent(event);
+    boolean handled=false;
+    try{
+       handled = accessibilityBridge.onAccessibilityHoverEvent(event);
+    }catch (Throwable e){
+        Log.e(TAG, "onConfigurationChanged error ");
+    }
     if (!handled) {
       // TODO(ianh): Expose hover events to the platform,
       // implementing ADD, REMOVE, etc.
