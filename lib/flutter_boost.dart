@@ -51,8 +51,6 @@ typedef void PostPushRoute(String url, String uniqueId, Map params, Route route,
 typedef Route FlutterBoostRouteBuilder(Widget widget);
 
 
-
-
 class FlutterBoost {
   static final FlutterBoost _instance = FlutterBoost();
   final GlobalKey<ContainerManagerState> containerManagerKey =
@@ -155,39 +153,40 @@ class FlutterBoost {
       {Map<String, dynamic> urlParams,
         Map<String, dynamic> exts,
         FlutterBoostRouteBuilder routeBuilder}) {
-
-
-    final BoostRouteSettings routeSettings = ContainerCoordinator.singleton.createRouteSettings(url,urlParams: urlParams,exts: exts);
+    final BoostRouteSettings routeSettings = ContainerCoordinator.singleton
+        .createRouteSettings(url, urlParams: urlParams, exts: exts);
 
     final Widget page = ContainerCoordinator.singleton.createPage(
         routeSettings.name, routeSettings.params, routeSettings.uniqueId);
 
-    if (page == null ) {
+    if (page == null) {
       return open(url, urlParams: urlParams, exts: exts);
     }
 
     final Route<Map<dynamic, dynamic>> route = routeBuilder != null
         ? routeBuilder(page)
-        : defaultRoute(page,routeSettings);
+        : defaultRoute(page, routeSettings);
+
+    GlobalRouteSettingsManager.instance.addSettings(route, routeSettings);
 
     FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode = true;
-
     return FlutterBoost.containerManager?.onstageContainer?.push(route);
-
   }
 
 
-  Route<Map<dynamic, dynamic>> defaultRoute(Widget page,BoostRouteSettings settings ) {
-    RouteSettings routeSettings =new RouteSettings(name:settings.name,arguments:settings.params);
+  Route<Map<dynamic, dynamic>> defaultRoute(Widget page,
+      BoostRouteSettings settings) {
+    RouteSettings routeSettings = new RouteSettings(
+        name: settings.name, arguments: settings.params);
     if (Platform.isIOS) {
-      return CupertinoPageRoute<Map<dynamic, dynamic>> (
-        settings: routeSettings,
-        builder: (BuildContext context) => page
+      return CupertinoPageRoute<Map<dynamic, dynamic>>(
+          settings: routeSettings,
+          builder: (BuildContext context) => page
       );
     }
     return PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 300),
-        settings:routeSettings ,
+        settings: routeSettings,
         pageBuilder: (context, animation, secondaryAnimation) => page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var offsetAnimation = Tween<Offset>(
@@ -199,7 +198,6 @@ class FlutterBoost {
             child: child,
           );
         });
-
   }
 
   /**
@@ -211,9 +209,9 @@ class FlutterBoost {
 
   Future<bool> close(String id,
       {Map<String, dynamic> result, Map<String, dynamic> exts}) {
-
     //判断当前onStage的容器是不是通过openInCurrentContainer打开过界面
-    if (FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode ?? false) {
+    if (FlutterBoost.containerManager?.onstageContainer?.multipleRouteMode ??
+        false) {
       return Future.value(closeInCurrentContainer(result));
     }
 
@@ -247,10 +245,7 @@ class FlutterBoost {
       properties["exts"] = exts;
     }
     return channel.invokeMethod<bool>('closePage', properties);
-
   }
-
-
 
   Future<bool> closeCurrent(
       {Map<String, dynamic> result, Map<String, dynamic> exts}) {
@@ -290,4 +285,16 @@ class FlutterBoost {
   ///register callbacks for Navigators push & pop
   void addBoostNavigatorObserver(NavigatorObserver observer) =>
       ContainerNavigatorObserver.boostObservers.add(observer);
+
+  BoostRouteSettings getBoostRouteSettings(Route route) {
+    return GlobalRouteSettingsManager.instance.getSettings(route);
+  }
+
+  BoostRouteSettings getCurrentBoostRouteSettings() {
+    Route route = FlutterBoost?.containerManager?.onstageContainer?.topRoute;
+    if (route != null) {
+      return GlobalRouteSettingsManager.instance.getSettings(route);
+    }
+    return null;
+  }
 }

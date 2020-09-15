@@ -135,7 +135,7 @@ class BoostContainerState extends NavigatorState {
   @override
   BoostContainer get widget => super.widget as BoostContainer;
 
-  final List<Route<dynamic>> routerHistory = <Route<dynamic>>[];
+  List<Route<dynamic>> routerHistory = <Route<dynamic>>[];
 
   bool multipleRouteMode = false;
 
@@ -163,7 +163,12 @@ class BoostContainerState extends NavigatorState {
 
   @override
   void dispose() {
+    for (Route route in routerHistory) {
+      GlobalRouteSettingsManager.instance.removeSettings(route);
+    }
+
     routerHistory.clear();
+
     super.dispose();
   }
 
@@ -172,6 +177,8 @@ class BoostContainerState extends NavigatorState {
 
     backPressedHandler?.call();
   }
+
+  Route get topRoute => routerHistory.isNotEmpty ? routerHistory.last : null;
 
   @override
   Future<bool> maybePop<T extends Object>([T result]) async {
@@ -197,12 +204,16 @@ class BoostContainerState extends NavigatorState {
 
   @override
   bool pop<T extends Object>([T result]) {
+    Route removedRoute;
     if (routerHistory.length > 1) {
-      routerHistory.removeLast();
+      removedRoute = routerHistory.removeLast();
     }
 
     if (canPop()) {
          super.pop<T>(result);
+         if (removedRoute != null) {
+           GlobalRouteSettingsManager.instance.removeSettings(removedRoute);
+         }
          if (Platform.isIOS && multipleRouteMode && !canPop()) {
            FlutterBoost.singleton.channel
                .invokeMethod<dynamic>('enablePopGesture', null);
@@ -327,5 +338,30 @@ class ContainerNavigatorObserver extends NavigatorObserver {
     for (NavigatorObserver observer in boostObservers) {
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     }
+  }
+}
+
+class GlobalRouteSettingsManager {
+
+  GlobalRouteSettingsManager._();
+
+  static GlobalRouteSettingsManager instance = GlobalRouteSettingsManager._();
+
+  final Map<Route,BoostRouteSettings> _routeSettingsMap = <Route,BoostRouteSettings>{};
+
+  void addSettings(Route route,BoostRouteSettings settings) {
+    _routeSettingsMap[route] = settings;
+  }
+
+  void removeSettings(Route route) {
+    _routeSettingsMap.remove(route);
+  }
+
+  BoostRouteSettings getSettings(Route route) {
+    return _routeSettingsMap[route];
+  }
+
+  bool contains(Route route) {
+    return _routeSettingsMap[route] != null;
   }
 }
