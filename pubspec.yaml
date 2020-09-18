@@ -1,6 +1,6 @@
 name: flutter_boost
 description: A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.
-version: 1.12.13+2
+version: 1.17.1
 author: Alibaba Xianyu
 homepage: https://github.com/alibaba/flutter_boost
 
