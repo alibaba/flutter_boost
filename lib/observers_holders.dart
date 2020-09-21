@@ -38,7 +38,7 @@ class ObserversHolder {
   void removeObserver<T>(T observer) =>
       _observers[T.toString()]?.remove(observer);
 
-  void cleanObservers<T>(T observer) => _observers[T.toString()]?.clear();
+  void cleanObservers<T>() => _observers[T.toString()]?.clear();
 
   Set<T> observersOf<T>() => _observers[T.toString()] as Set<T> ?? <T>{};
 }

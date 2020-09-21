@@ -55,7 +55,10 @@ flutter_boost:
 
 ## boost集成
 
- 集成请看boost的Examples
+集成请看：
+1. boost的Examples
+
+2. 集成文档  <a href="INTEGRATION.md">Integration </a>
 
 
 

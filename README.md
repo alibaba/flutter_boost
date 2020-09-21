@@ -56,7 +56,11 @@ flutter_boost:
 
 # Boost  Integration
 
-Please see the boost example for details.
+Please see
+
+1. Boost detail example
+
+2. integrated document <a href="INTEGRATION.md">Integration </a>
 
 # FAQ
 please read this document:

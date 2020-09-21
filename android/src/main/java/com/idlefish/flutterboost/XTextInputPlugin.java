@@ -1,8 +1,14 @@
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 package com.idlefish.flutterboost;
 
+
+import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import android.os.Build;
+import android.provider.Settings;
+
 import android.text.Editable;
 import android.text.InputType;
 import android.text.Selection;
@@ -11,6 +17,11 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.systemchannels.TextInputChannel;
@@ -21,11 +32,11 @@ import io.flutter.plugin.platform.PlatformViewsController;
  */
 public class XTextInputPlugin {
     @NonNull
-    private View mView;
+    private  View mView;
     @NonNull
-    private final InputMethodManager mImm;
+    private  InputMethodManager mImm;
     @NonNull
-    private final TextInputChannel textInputChannel;
+    private  TextInputChannel textInputChannel;
     @NonNull
     private InputTarget inputTarget = new InputTarget(InputTarget.Type.NO_TARGET, 0);
     @Nullable
@@ -37,26 +48,43 @@ public class XTextInputPlugin {
     private InputConnection lastInputConnection;
     @NonNull
     private PlatformViewsController platformViewsController;
+    private  boolean restartAlwaysRequired;
 
     // When true following calls to createInputConnection will return the cached lastInputConnection if the input
     // target is a platform view. See the comments on lockPlatformViewInputConnection for more details.
     private boolean isInputConnectionLocked;
+    private static  XTextInputPlugin xTextInputPlugin;
 
-    public XTextInputPlugin(View view, @NonNull TextInputChannel textInputChannel, @NonNull PlatformViewsController platformViewsController) {
-        mView = view;
-        mImm = (InputMethodManager) view.getContext().getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        this.textInputChannel = textInputChannel;
+    public  static  XTextInputPlugin getTextInputPlugin( DartExecutor dartExecutor, @NonNull PlatformViewsController platformViewsController){
+        if(xTextInputPlugin!=null) return xTextInputPlugin;
+        xTextInputPlugin =new XTextInputPlugin(dartExecutor,platformViewsController);
+        return  xTextInputPlugin;
+    }
+
+    public XTextInputPlugin(@NonNull DartExecutor dartExecutor, @NonNull PlatformViewsController platformViewsController) {
+
+
+        textInputChannel = new TextInputChannel(dartExecutor);
+
+
+        textInputChannel.requestExistingInputState();
 
         this.platformViewsController = platformViewsController;
 //        this.platformViewsController.attachTextInputPlugin(this);
     }
 
-    public void release() {
-        mView = null;
+
+
+    public void  release(View v){
+        if(mView!=null && mView.hashCode()==v.hashCode()){
+            mView= null;
+        }
     }
 
-    public void setTextInputMethodHandler() {
+    public  void updateView(View view){
+        mView = view;
+        mImm = (InputMethodManager) view.getContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
 
         textInputChannel.setTextInputMethodHandler(new TextInputChannel.TextInputMethodHandler() {
             @Override
@@ -89,7 +117,11 @@ public class XTextInputPlugin {
                 clearTextInputClient();
             }
         });
+        restartAlwaysRequired = isRestartAlwaysRequired();
+
     }
+
+
 
     @NonNull
     public InputMethodManager getInputMethodManager() {
@@ -114,7 +146,7 @@ public class XTextInputPlugin {
 
     /**
      * Unlocks the input connection.
-     * <p>
+     *
      * See also: @{link lockPlatformViewInputConnection}.
      */
     public void unlockPlatformViewInputConnection() {
@@ -123,7 +155,7 @@ public class XTextInputPlugin {
 
     /**
      * Detaches the text input plugin from the platform views controller.
-     * <p>
+     *
      * The TextInputPlugin instance should not be used after calling this.
      */
     public void destroy() {
@@ -134,6 +166,7 @@ public class XTextInputPlugin {
             TextInputChannel.InputType type,
             boolean obscureText,
             boolean autocorrect,
+            boolean enableSuggestions,
             TextInputChannel.TextCapitalization textCapitalization
     ) {
         if (type.type == TextInputChannel.TextInputType.DATETIME) {
@@ -168,6 +201,7 @@ public class XTextInputPlugin {
             textType |= InputType.TYPE_TEXT_VARIATION_PASSWORD;
         } else {
             if (autocorrect) textType |= InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
+            if (!enableSuggestions) textType |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
         }
 
         if (textCapitalization == TextInputChannel.TextCapitalization.CHARACTERS) {
@@ -191,19 +225,15 @@ public class XTextInputPlugin {
             if (isInputConnectionLocked) {
                 return lastInputConnection;
             }
-            View platformView = platformViewsController.getPlatformViewById(inputTarget.id);
-            if (platformView != null) {
-                lastInputConnection = platformView.onCreateInputConnection(outAttrs);
-                return lastInputConnection;
-            } else {
-                return null;
-            }
+            lastInputConnection = platformViewsController.getPlatformViewById(inputTarget.id).onCreateInputConnection(outAttrs);
+            return lastInputConnection;
         }
 
         outAttrs.inputType = inputTypeFromTextInputType(
                 configuration.inputType,
                 configuration.obscureText,
                 configuration.autocorrect,
+                configuration.enableSuggestions,
                 configuration.textCapitalization
         );
         outAttrs.imeOptions = EditorInfo.IME_FLAG_NO_FULLSCREEN;
@@ -243,7 +273,7 @@ public class XTextInputPlugin {
 
     /**
      * Clears a platform view text input client if it is the current input target.
-     * <p>
+     *
      * This is called when a platform view is disposed to make sure we're not hanging to a stale input
      * connection.
      */
@@ -269,7 +299,8 @@ public class XTextInputPlugin {
         mImm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    private void setTextInputClient(int client, TextInputChannel.Configuration configuration) {
+    @VisibleForTesting
+    void setTextInputClient(int client, TextInputChannel.Configuration configuration) {
         inputTarget = new InputTarget(InputTarget.Type.FRAMEWORK_CLIENT, client);
         this.configuration = configuration;
         mEditable = Editable.Factory.getInstance().newEditable("");
@@ -301,8 +332,8 @@ public class XTextInputPlugin {
         }
     }
 
-    private void setTextInputEditingState(View view, TextInputChannel.TextEditState state) {
-        if (!mRestartInputPending && state.text.equals(mEditable.toString())) {
+    @VisibleForTesting void setTextInputEditingState(View view, TextInputChannel.TextEditState state) {
+        if (!restartAlwaysRequired && !mRestartInputPending && state.text.equals(mEditable.toString())) {
             applyStateToSelection(state);
             mImm.updateSelection(mView, Math.max(Selection.getSelectionStart(mEditable), 0),
                     Math.max(Selection.getSelectionEnd(mEditable), 0),
@@ -314,6 +345,30 @@ public class XTextInputPlugin {
             mImm.restartInput(view);
             mRestartInputPending = false;
         }
+    }
+
+    // Samsung's Korean keyboard has a bug where it always attempts to combine characters based on
+    // its internal state, ignoring if and when the cursor is moved programmatically. The same bug
+    // also causes non-korean keyboards to occasionally duplicate text when tapping in the middle
+    // of existing text to edit it.
+    //
+    // Fully restarting the IMM works around this because it flushes the keyboard's internal state
+    // and stops it from trying to incorrectly combine characters. However this also has some
+    // negative performance implications, so we don't want to apply this workaround in every case.
+    @SuppressLint("NewApi") // New API guard is inline, the linter can't see it.
+    @SuppressWarnings("deprecation")
+    private boolean isRestartAlwaysRequired() {
+        InputMethodSubtype subtype = mImm.getCurrentInputMethodSubtype();
+        // Impacted devices all shipped with Android Lollipop or newer.
+        if (subtype == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || !Build.MANUFACTURER.equals("samsung")) {
+            return false;
+        }
+        String keyboardName = Settings.Secure.getString(mView.getContext().getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+        // The Samsung keyboard is called "com.sec.android.inputmethod/.SamsungKeypad" but look
+        // for "Samsung" just in case Samsung changes the name of the keyboard.
+        if(keyboardName==null) return  false;
+
+        return keyboardName.contains("Samsung");
     }
 
     private void clearTextInputClient() {

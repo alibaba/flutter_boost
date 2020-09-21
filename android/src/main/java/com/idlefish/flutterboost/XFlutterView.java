@@ -38,32 +38,12 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
 import io.flutter.embedding.engine.renderer.RenderSurface;
-import io.flutter.embedding.engine.systemchannels.TextInputChannel;
+import io.flutter.embedding.engine.systemchannels.SettingsChannel;
 import io.flutter.plugin.editing.TextInputPlugin;
 import io.flutter.plugin.platform.PlatformViewsController;
 import io.flutter.view.AccessibilityBridge;
 
-/**
- * Displays a Flutter UI on an Android device.
- * <p>
- * A {@code FlutterView}'s UI is painted by a corresponding {@link FlutterEngine}.
- * <p>
- * A {@code FlutterView} can operate in 2 different {@link RenderMode}s:
- * <ol>
- *   <li>{@link RenderMode#surface}, which paints a Flutter UI to a {@link android.view.SurfaceView}.
- *   This mode has the best performance, but a {@code FlutterView} in this mode cannot be positioned
- *   between 2 other Android {@code View}s in the z-index, nor can it be animated/transformed.
- *   Unless the special capabilities of a {@link android.graphics.SurfaceTexture} are required,
- *   developers should strongly prefer this render mode.</li>
- *   <li>{@link RenderMode#texture}, which paints a Flutter UI to a {@link android.graphics.SurfaceTexture}.
- *   This mode is not as performant as {@link RenderMode#surface}, but a {@code FlutterView} in this
- *   mode can be animated and transformed, as well as positioned in the z-index between 2+ other
- *   Android {@code Views}. Unless the special capabilities of a {@link android.graphics.SurfaceTexture}
- *   are required, developers should strongly prefer the {@link RenderMode#surface} render mode.</li>
- * </ol>
- * See <a>https://source.android.com/devices/graphics/arch-tv#surface_or_texture</a> for more
- * information comparing {@link android.view.SurfaceView} and {@link android.view.TextureView}.
- */
+
 public class XFlutterView extends FrameLayout {
   private static final String TAG = "FlutterView";
 
@@ -150,26 +130,12 @@ public class XFlutterView extends FrameLayout {
     this(context, null, null, null);
   }
 
-  /**
-   * Constructs a {@code FlutterView} programmatically, without any XML attributes,
-   * and allows selection of a {@link #renderMode}.
-   * <p>
-   * {@link #transparencyMode} defaults to {@link TransparencyMode#opaque}.
-   * <p>
-   * {@code FlutterView} requires an {@code Activity} instead of a generic {@code Context}
-   * to be compatible with {@link PlatformViewsController}.
-   */
+
   public XFlutterView(@NonNull Context context, @NonNull FlutterView.RenderMode renderMode) {
     this(context, null, renderMode, null);
   }
 
-  /**
-   * Constructs a {@code FlutterView} programmatically, without any XML attributes,
-   * assumes the use of {@link RenderMode#surface}, and allows selection of a {@link #transparencyMode}.
-   * <p>
-   * {@code FlutterView} requires an {@code Activity} instead of a generic {@code Context}
-   * to be compatible with {@link PlatformViewsController}.
-   */
+
   public XFlutterView(@NonNull Context context, @NonNull FlutterView.TransparencyMode transparencyMode) {
     this(context, null, FlutterView.RenderMode.surface, transparencyMode);
   }
@@ -217,7 +183,7 @@ public class XFlutterView extends FrameLayout {
         break;
       case texture:
         Log.v(TAG, "Internally using a FlutterTextureView.");
-        FlutterTextureView flutterTextureView = new FlutterTextureView(getContext());
+        XFlutterTextureView flutterTextureView = new XFlutterTextureView(getContext());
         renderSurface = flutterTextureView;
         addView(flutterTextureView);
         break;
@@ -434,7 +400,7 @@ public class XFlutterView extends FrameLayout {
    */
   @Override
   public boolean checkInputConnectionProxy(View view) {
-    return flutterEngine != null
+    return flutterEngine != null&&view!=null
             ? flutterEngine.getPlatformViewsController().checkInputConnectionProxy(view)
             : super.checkInputConnectionProxy(view);
   }
@@ -609,16 +575,9 @@ public class XFlutterView extends FrameLayout {
     this.flutterEngine.getPlatformViewsController().attachToView(this);
 
 
-
-    if(textInputPlugin==null){
-      textInputPlugin = new XTextInputPlugin(
-              this,
-              flutterEngine.getTextInputChannel(),
-              this.flutterEngine.getPlatformViewsController()
-      );
-    }
-
-    textInputPlugin.setTextInputMethodHandler();
+    textInputPlugin= XTextInputPlugin.getTextInputPlugin(  this.flutterEngine.getDartExecutor(),
+            this.flutterEngine.getPlatformViewsController());
+    textInputPlugin.updateView(this);
     textInputPlugin.getInputMethodManager().restartInput(this);
 
 
@@ -717,7 +676,7 @@ public class XFlutterView extends FrameLayout {
   }
   public void release(){
     if(textInputPlugin!=null){
-      textInputPlugin.release();
+      textInputPlugin.release(this);
     }
   }
 
@@ -788,9 +747,17 @@ public class XFlutterView extends FrameLayout {
    */
   private void sendUserSettingsToFlutter() {
     if(flutterEngine!=null&&flutterEngine.getSettingsChannel()!=null){
-    flutterEngine.getSettingsChannel().startMessage()
+      // Lookup the current brightness of the Android OS.
+      boolean isNightModeOn = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+      SettingsChannel.PlatformBrightness brightness = isNightModeOn
+              ? SettingsChannel.PlatformBrightness.dark
+              : SettingsChannel.PlatformBrightness.light;
+
+
+      flutterEngine.getSettingsChannel().startMessage()
             .setTextScaleFactor(getResources().getConfiguration().fontScale)
             .setUse24HourFormat(DateFormat.is24HourFormat(getContext()))
+            .setPlatformBrightness(brightness)
             .send();
     }
   }
