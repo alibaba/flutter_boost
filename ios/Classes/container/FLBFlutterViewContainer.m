@@ -284,7 +284,9 @@ static NSUInteger kInstanceCounter = 0;
     //https://github.com/flutter/engine/pull/18742
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
-        [self surfaceUpdated:YES];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self surfaceUpdated:YES];
+        });
     }
     
     [super viewDidAppear:animated];
