@@ -4,6 +4,7 @@ package com.idlefish.flutterboost;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,7 +51,7 @@ public class FlutterBoost {
 
     public void init(Platform platform) {
         if (sInit){
-            Debuger.log("FlutterBoost is alread inited. Do not init twice");
+            Debuger.log("FlutterBoost is already initialized. Don't initialize it twice");
             return;
         }
 
