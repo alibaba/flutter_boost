@@ -29,6 +29,7 @@
 NS_ASSUME_NONNULL_BEGIN
 @interface FLBFlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
 @property (nonatomic,copy,readwrite) NSString *name;
+@property (nonatomic, strong) NSNumber *disablePopGesture;
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (void)surfaceUpdated:(BOOL)appeared;
 @end

@@ -275,6 +275,14 @@ static NSUInteger kInstanceCounter = 0;
     [self surfaceUpdated:YES];
     
     [super viewDidAppear:animated];
+    
+    
+    
+    // Enable or disable pop gesture
+    // note: if disablePopGesture is nil, do nothing
+    if (self.disablePopGesture) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
