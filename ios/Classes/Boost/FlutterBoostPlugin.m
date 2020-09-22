@@ -88,15 +88,15 @@
                                                          exts:exts
                                                         onPageFinished:result
                                                    completion:^(BOOL r) {}];
-    }else if([@"pageOnStart" isEqualToString:call.method]){
+    } else if([@"pageOnStart" isEqualToString:call.method]){
         NSMutableDictionary *pageInfo = [NSMutableDictionary new];
         pageInfo[@"name"] =[FlutterBoostPlugin sharedInstance].fPagename;
         pageInfo[@"params"] = [FlutterBoostPlugin sharedInstance].fParams;
         pageInfo[@"uniqueId"] = [FlutterBoostPlugin sharedInstance].fPageId;
         if(result) result(pageInfo);
-    } if([@"disablePopGesture" isEqualToString:call.method]) {
+    } else if([@"disablePopGesture" isEqualToString:call.method]) {
         [FlutterBoostPlugin sharedInstance].application.flutterViewController.navigationController.interactivePopGestureRecognizer.enabled = NO;
-    } if([@"enablePopGesture" isEqualToString:call.method]){
+    } else if([@"enablePopGesture" isEqualToString:call.method]){
         [FlutterBoostPlugin sharedInstance].application.flutterViewController.navigationController.interactivePopGestureRecognizer.enabled = YES;
     } else{
         result(FlutterMethodNotImplemented);
