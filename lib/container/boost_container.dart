@@ -307,6 +307,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
   void willPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
       if(observer is ContainerNavigatorObserver){
+        if (observer == this) continue;
         ContainerNavigatorObserver  containerNavigatorObserver = observer as ContainerNavigatorObserver;
         containerNavigatorObserver.willPush(route, previousRoute);
       }
@@ -315,6 +316,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
+      if (observer == this) continue;
       observer.didPush(route, previousRoute);
     }
   }
@@ -322,6 +324,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
+      if (observer == this) continue;
       observer.didPop(route, previousRoute);
     }
   }
@@ -329,6 +332,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
+      if (observer == this) continue;
       observer.didRemove(route, previousRoute);
     }
   }
@@ -336,6 +340,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
   @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     for (NavigatorObserver observer in boostObservers) {
+      if (observer == this) continue;
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     }
   }
