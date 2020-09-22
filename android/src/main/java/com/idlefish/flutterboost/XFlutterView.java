@@ -38,6 +38,7 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
 import io.flutter.embedding.engine.renderer.RenderSurface;
+import io.flutter.embedding.engine.systemchannels.SettingsChannel;
 import io.flutter.plugin.editing.TextInputPlugin;
 import io.flutter.plugin.platform.PlatformViewsController;
 import io.flutter.view.AccessibilityBridge;
@@ -742,9 +743,17 @@ public class XFlutterView extends FrameLayout {
    */
   private void sendUserSettingsToFlutter() {
     if(flutterEngine!=null&&flutterEngine.getSettingsChannel()!=null){
-    flutterEngine.getSettingsChannel().startMessage()
+      // Lookup the current brightness of the Android OS.
+      boolean isNightModeOn = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+      SettingsChannel.PlatformBrightness brightness = isNightModeOn
+              ? SettingsChannel.PlatformBrightness.dark
+              : SettingsChannel.PlatformBrightness.light;
+
+
+      flutterEngine.getSettingsChannel().startMessage()
             .setTextScaleFactor(getResources().getConfiguration().fontScale)
             .setUse24HourFormat(DateFormat.is24HourFormat(getContext()))
+            .setPlatformBrightness(brightness)
             .send();
     }
   }

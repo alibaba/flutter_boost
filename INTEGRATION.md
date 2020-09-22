@@ -91,7 +91,7 @@ onPageFinished:(void (^)(NSDictionary *))resultCallback
   completion:(void (^)(BOOL))completion;
 ```
 
-IOS如何传递数据给flutter
+IOS如何传递数据给flutter（可以自定义channel）
 
 ```
 //name是事件的名称，arguments中是一个NSDictionary，OC代码
@@ -106,7 +106,7 @@ IOS如何传递数据给flutter
     });
 ```
 
-flutter如何传递数据给native
+flutter如何传递数据给native（可以自定义channel）
 
 ```
 //flutter代码，ChannelName是通道名称与native部分一致即可，tmp是map类型的参数
@@ -167,4 +167,186 @@ enum ContainerLifeCycle {
                      //这个方法会优先于addBoostContainerLifeCycleObserver中的appear方法调用，所以说有些方法在这里调用，如果appear还没有出现的话就会有问题。
                     });
 ```
-3、集成流程Android（待补充）
+
+IOS已知的一些问题
+```
+    1、如果在IOS端只是第一次打开Flutter页面用Boost的路由然后FlutterA跳转到FlutterB用的Navigator的话，当前右滑会直接pop掉所有Flutter页面，因为这种情况只有一个VC承载Flutter页面，
+推荐Native->Flutter，FlutterA->FlutterB，Flutter->Native都用Boost路由管理
+
+    2、移除addEventListener，移除addBoostContainerLifeCycleObserver。addEventListener方法会返回一个FLBVoidCallback，执行这个FLBVoidCallback就会移除；addBoostContainerLifeCycleObserver会返回一个VoidCallback，在dispose()中调用VoidCallback就remove了
+    
+    3、Flutter调Native后获取Native回传。channel肯定可以的，boost目前默认应该只支持FlutterA->FlutterB的回传，Flutter->Native和Native->Flutter可以自己实现。下面是FlutterA->FlutterB的回传方式
+        FlutterA打开FlutterB：
+            FlutterBoost.singleton
+                .open('FlutterB')
+                .then((Map<dynamic, dynamic> value) {
+              print(
+                  'call me when page is finished. did recieve FlutterB route result $value');
+            });
+        FlutterB close并回传：
+            final BoostContainerSettings settings = BoostContainer.of(context).settings;
+            FlutterBoost.singleton.close(settings.uniqueId, result: <String, dynamic>{'result': 'data from FlutterB'});
+```
+
+3、集成流程Android
+
+在Android工程全局Application类的onCreate周期初始化，具体可以参考example
+```
+INativeRouter router =new INativeRouter() {
+    @Override
+    public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
+       String  assembleUrl=Utils.assembleUrl(url,urlParams);
+        PageRouter.openPageByUrl(context,assembleUrl, urlParams);
+    }
+
+};
+
+// 生命周期监听
+FlutterBoost.BoostLifecycleListener boostLifecycleListener= new FlutterBoost.BoostLifecycleListener(){
+
+    @Override
+    public void beforeCreateEngine() {
+
+    }
+
+    @Override
+    public void onEngineCreated() {
+        // 引擎创建后的操作，比如自定义MethodChannel，PlatformView等
+    }
+
+    @Override
+    public void onPluginsRegistered() {
+
+    }
+
+    @Override
+    public void onEngineDestroy() {
+
+    }
+
+};
+
+// 生成Platform配置
+Platform platform= new FlutterBoost
+        .ConfigBuilder(this,router)
+        .isDebug(true)
+        .dartEntrypoint() //dart入口，默认为main函数，这里可以根据native的环境自动选择Flutter的入口函数来统一Native和Flutter的执行环境，（比如debugMode == true ? "mainDev" : "mainProd"，Flutter的main.dart里也要有这两个对应的入口函数）
+        .whenEngineStart(FlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
+        .renderMode(FlutterView.RenderMode.texture)
+        .lifecycleListener(boostLifecycleListener)
+        .build();
+// 初始化
+FlutterBoost.instance().init(platform);
+```
+
+配置路由PageRouter类
+```
+// 这里可以配置管理Native和Flutter的映射，通过Boost提供的open方法在Flutter打开Native和Flutter页面并传参，或者通过openPageByUrl方法在Native打开Native和Flutter页面并传参。
+// 一定要确保Flutter端registerPageBuilders里注册的路由的key和这里能够一一映射，否则会报page != null的红屏错误
+
+// flutter页面映射
+public final static Map<String, String> pageName = new HashMap<String, String>() {{
+    put("first", "first");
+    put("second", "second");
+    put("tab", "tab");
+    put("sample://flutterPage", "flutterPage");
+}};
+
+public static final String NATIVE_PAGE_URL = "sample://nativePage";
+public static final String FLUTTER_PAGE_URL = "sample://flutterPage";
+
+public static boolean openPageByUrl(Context context, String url, Map params, int requestCode) {
+
+    String path = url.split("\\?")[0];
+
+    Log.i("openPageByUrl",path);
+
+    try {
+        if (pageName.containsKey(path)) {
+            // 这直接用的Boost提供的Activity作为Flutter的容器，也可以继承BoostFlutterActivity后做一些自定义的行为
+            Intent intent = BoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
+                    .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque).build(context);
+            if(context instanceof Activity){
+                Activity activity=(Activity)context;
+                activity.startActivityForResult(intent,requestCode);
+            }else{
+                context.startActivity(intent);
+            }
+            return true;
+        } else if (url.startsWith(NATIVE_PAGE_URL)) {
+            context.startActivity(new Intent(context, NativePageActivity.class));
+            return true;
+        }
+
+        return false;
+
+    } catch (Throwable t) {
+        return false;
+    }
+}
+比如启动App后首页点击open flutter page按钮实际执行的是PageRouter.openPageByUrl(this, PageRouter.FLUTTER_PAGE_URL,params)，然后走openPageByUrl方法第一个if是Flutter页面的映射
+然后pageName.get(path)这里path是sample://flutterPage，这样pageName.get(path)获取到的是flutterPage，对应的就是main.dart里registerPageBuilders注册的flutterPage对应的FlutterRouteWidget(params: params)，
+进入这个页面同时把params传到这个页面
+```
+
+Flutter工程配置registerPageBuilders
+```
+FlutterBoost.singleton.registerPageBuilders(<String, PageBuilder>{
+    'first': (String pageName, Map<String, dynamic> params, String _) => FirstRouteWidget(),
+    'second': (String pageName, Map<String, dynamic> params, String _) => SecondRouteWidget(),
+    'tab': (String pageName, Map<String, dynamic> params, String _) => TabRouteWidget(),
+    'flutterPage': (String pageName, Map<String, dynamic> params, String _) {
+        print('flutterPage params:$params');
+        return FlutterRouteWidget(params: params);
+    },
+});
+```
+
+Android和Flutter传递数据
+```
+    1、Native用PageRouter.openPageByUrl打开Flutter，Flutter用FlutterBoost.singleton.open打开Native都可以传递参数
+    
+    2、自定义channel
+    
+    3、Native向Flutter传递数据在Native端发送FlutterBoost.instance().channel().sendEvent("name", map)，在Flutter端监听FlutterBoost.singleton.channel.addEventListener(name, (name, arguments) => null)，两个name要一致。
+Flutter向Native发送数据在Flutter端发送FlutterBoost.singleton.channel.sendEvent(name, arguments)，在Native端监听，两个name要一致。移除的话Native端调用removeEventListener方法，Flutter端直接执行addEventListener返回的VoidCallback
+```
+
+Android已知的一些问题
+```
+    1、第一次进flutter页面statusBar字体颜色正常，第二次进入不正常。状态栏字体颜色的问题，Boost之前写死在delegate onPostResume里了，但是只适配白底黑字的情况所以这部分代码去掉了，当前可行的方式是继承BoostActivity自己设置状态栏颜色：
+        白底黑字
+        brightness: Brightness.light, （Flutter AppBar)
+        backgroundColor: Colors.white, (Flutter AppBar)
+        Utils.setStatusBarLightMode(host.getActivity(), true); (Native Activity，这里是之前delegate onPostResume的代码，自定义Activity使用需要修改)
+        黑底白字
+        brightness: Brightness.dark, （Flutter AppBar)
+        backgroundColor: Colors.black, (Flutter AppBar)
+        Utils.setStatusBarLightMode(host.getActivity(), false); (Native Activity，这里是之前delegate onPostResume的代码，自定义Activity使用需要修改)
+        
+    2、Flutter调Native后获取Native回传。channel肯定可以的，boost目前默认应该只支持FlutterA->FlutterB的回传，Flutter->Native和Native->Flutter可以自己实现。下面是FlutterA->FlutterB的回传方式
+        FlutterA打开FlutterB：
+            FlutterBoost.singleton
+                .open('FlutterB')
+                .then((Map<dynamic, dynamic> value) {
+              print(
+                  'call me when page is finished. did recieve FlutterB route result $value');
+            });
+        FlutterB close并回传：
+            final BoostContainerSettings settings = BoostContainer.of(context).settings;
+            FlutterBoost.singleton.close(settings.uniqueId, result: <String, dynamic>{'result': 'data from FlutterB'});
+        Android端实现Flutter调Native回传的一种方案：
+            FlutterBoost.singleton.open('url').then((result)=>{...}) Flutter调用Android如果需要返回值开启Activity的时候用startActivityforResult 然后关闭页面Activity的时候setResult就可以在Flutter的页面拿到返回值
+            Router打开Native的时候startActivityForResult
+            然后Native页面返回的时候setResult就行了
+            Map map = new HashMap<String, String>();
+            map.put("a", "a");
+            Intent intent = getIntent().putExtra(IFlutterViewContainer.RESULT_KEY, (Serializable) map);
+            setResult(0, intent);
+            
+    3、flutter_boost 使用pushReplacement跳转返回键报错 Unhandled Exception: Failed assertion scope != null
+        目前还不支持，Navigator的方法现在只支持push/pop/maybePop/addLifeCycleObserver，待后续增加，popUntil可以用close结合广播实现，不过侵入性相对强了些
+```
+
+
+

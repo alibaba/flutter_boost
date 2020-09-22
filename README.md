@@ -10,7 +10,7 @@
 
 # Release Note
 
-Please checkout the release note for the latest 1.12.13+1 to see changes [1.12.13+1 release note](https://github.com/alibaba/flutter_boost/releases)
+Please checkout the release note for the latest 1.17.1 to see changes [1.17.1 release note](https://github.com/alibaba/flutter_boost/releases)
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
@@ -23,17 +23,17 @@ You need to add Flutter to your project before moving on.The version of the flut
 
 # boost version description
 
-| Flutter Boost Version | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
+| Flutter Boost Release Version | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | 1.9.1+2              | 1.9.1-hotfixes              | Rename the version number and start supporting androidx by default | Yes                 |
-| 1.12.13+1             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
-| 1.12.13+2             | 1.12.13-hotfixes              | supporting androidx      | Yes                 |
+| 1.12.13+3               | 1.12.13-hotfixes              | 支持androidx  | Yes                 |
+| 1.17.1               | 1.17.1              | 支持androidx  | Yes                 |
 
 
 
 
 
-| Flutter Boost branch | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
+| Flutter Boost Branch | Support Flutter SDK Version | Description                                                  | Support AndroidX？ |
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
 | v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
@@ -51,7 +51,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '1.12.13+2'
+        ref: '1.17.1'
 ```
 
 
