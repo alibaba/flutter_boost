@@ -22,6 +22,8 @@ import android.widget.*;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.XPlatformPlugin;
+import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
+
 import io.flutter.Log;
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterView;
@@ -132,6 +134,9 @@ public class BoostFlutterActivity extends Activity
         lifecycle = new LifecycleRegistry(this);
     }
 
+    public IFlutterViewContainer getIFlutterViewContainer(){
+        return delegate;
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         switchLaunchThemeForNormalTheme();
