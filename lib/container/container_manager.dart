@@ -69,6 +69,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
   final List<BoostContainer> _offstage = <BoostContainer>[];
 
   List<_ContainerOverlayEntry> _leastEntries;
+
   BoostContainer _onstage;
   bool _foreground = true;
 
@@ -157,20 +158,15 @@ class ContainerManagerState extends State<BoostContainerManager> {
       }
     }
 
-    final List<Widget> containers = <Widget>[];
-    containers.addAll(_offstage.map<Widget>(
-      (BoostContainer container) => HeroControllerScope(
-        controller: null,
-        child: container
-      )
-    ));
+    final List<BoostContainer> containers = <BoostContainer>[];
+    containers.addAll(_offstage);
 
     assert(_onstage != null, 'Should have a least one BoostContainer');
     containers.add(_onstage);
 
     _leastEntries = containers
         .map<_ContainerOverlayEntry>(
-            (Widget container) => _ContainerOverlayEntry(container))
+            (BoostContainer container) => _ContainerOverlayEntry(container))
         .toList(growable: false);
 
     overlayState.insertAll(_leastEntries);
@@ -340,7 +336,7 @@ class ContainerManagerState extends State<BoostContainerManager> {
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
-  _ContainerOverlayEntry(Widget container)
+  _ContainerOverlayEntry(BoostContainer container)
       : super(
           builder: (BuildContext ctx) => container,
           opaque: true,

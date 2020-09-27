@@ -5,7 +5,7 @@
 
 # Release Note
 
- 请查看最新版本1.12.13+1的release note 确认变更，[1.12.13+1 release note](https://github.com/alibaba/flutter_boost/releases)。
+ 请查看最新版本1.17.1的release note 确认变更，[1.17.1 release note](https://github.com/alibaba/flutter_boost/releases)。
 
 # FlutterBoost
 
@@ -22,10 +22,11 @@
 
 # boost 版本说明
 
-| Flutter Boost 版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
+| Flutter Boost Release 版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
 | ----------------------- | ----------------------- | ------------------------------------------------------------ | ------------------- |
 | 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
-| 1.12.13+1               | 1.12.13 -hotfixes              | 支持androidx  | Yes                 |
+| 1.12.13+3               | 1.12.13-hotfixes              | 支持androidx  | Yes                 |
+| 1.17.1               | 1.17.1              | 支持androidx  | Yes                 |
 
 
 
@@ -35,6 +36,7 @@
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
 | v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
+| v1.17.1-hotfixes       | 1.17.1         | for androidx                                                        | Yes                 |
 
 
 # 安装
@@ -48,7 +50,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '1.12.13+1'
+        ref: '1.17.1'
 ```
 
 
