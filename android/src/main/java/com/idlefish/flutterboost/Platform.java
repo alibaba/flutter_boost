@@ -8,7 +8,9 @@ import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.PluginRegistry;
 
 /**
@@ -58,5 +60,9 @@ public abstract class Platform {
         } catch (Throwable t) {
             Log.i("flutterboost.platform",t.toString());
         }
+    }
+
+    public FlutterEngineProvider flutterEngineProvider() {
+        return null;
     }
 }
