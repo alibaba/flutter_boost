@@ -58,7 +58,7 @@ public interface IFlutterViewContainer {
      * container params
      * @return
      */
-    Map getContainerUrlParams();
+    Map<String,Object> getContainerUrlParams();
 
     /**
      * callback when container shown

@@ -36,7 +36,7 @@
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
 | v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
-| v1.17.1-hotfixes       | 1.17.1         | for androidx                                                        | Yes                 |
+| v1.17.1-hotfixes       | 1.17.1        | for androidx                                                        | Yes                 |
 
 
 # 安装

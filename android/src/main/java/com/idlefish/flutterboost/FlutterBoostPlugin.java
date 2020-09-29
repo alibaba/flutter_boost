@@ -194,7 +194,7 @@ public class FlutterBoostPlugin {
             FlutterViewContainerManager mManager = (FlutterViewContainerManager) FlutterBoost.instance().containerManager();
             switch (methodCall.method) {
                 case "pageOnStart": {
-                    Map<String, Object> pageInfo = new HashMap<>();
+                    Map<String, Object> pageInfo = new HashMap<String, Object>();
 
                     try {
                         IContainerRecord record = mManager.getCurrentTopRecord();

@@ -521,7 +521,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
     @Override
-    public Map getContainerUrlParams() {
+    public Map<String, Object> getContainerUrlParams() {
 
         BoostFlutterActivity.SerializableMap serializableMap = (BoostFlutterActivity.SerializableMap) getArguments().getSerializable(EXTRA_PARAMS);
 

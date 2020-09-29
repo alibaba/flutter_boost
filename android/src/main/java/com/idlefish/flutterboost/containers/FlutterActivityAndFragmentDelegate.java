@@ -390,7 +390,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     }
 
     @Override
-    public Map getContainerUrlParams() {
+    public Map<String,Object> getContainerUrlParams() {
         return this.host.getContainerUrlParams();
 
     }
@@ -482,7 +482,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
         String getContainerUrl();
 
-        Map getContainerUrlParams();
+        Map<String ,Object> getContainerUrlParams();
 
 
     }

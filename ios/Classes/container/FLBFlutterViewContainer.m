@@ -38,6 +38,7 @@
 - (void)flushOngoingTouches;
 - (void)bridge_viewDidDisappear:(BOOL)animated;
 - (void)bridge_viewWillAppear:(BOOL)animated;
+- (void)surfaceUpdated:(BOOL)appeared;
 @end
 
 #pragma clang diagnostic push
@@ -231,6 +232,12 @@ static NSUInteger kInstanceCounter = 0;
     [FLUTTER_APP.flutterProvider detach];
 }
 
+- (void)surfaceUpdated:(BOOL)appeared {
+    if (self.engine && self.engine.viewController == self) {
+        [super surfaceUpdated:appeared];
+    }
+}
+
 #pragma mark - Life circle methods
 
 - (void)viewDidLayoutSubviews
@@ -272,8 +279,13 @@ static NSUInteger kInstanceCounter = 0;
                                            pageName:_name
                                              params:_params
                                            uniqueId:self.uniqueIDString];
-    //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
-    [self surfaceUpdated:YES];
+    //根据淘宝特价版日志证明，即使在UIViewController的viewDidAppear下，application也可能在inactive模式，此时如果提交渲染会导致GPU后台渲染而crash
+    //参考：https://github.com/flutter/flutter/issues/57973
+    //https://github.com/flutter/engine/pull/18742
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
+        //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
+        [self surfaceUpdated:YES];
+    }
     
     [super viewDidAppear:animated];
 }
@@ -296,6 +308,10 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super bridge_viewDidDisappear:animated];
+    
+    if (self.engine.viewController == self) {
+        [self detatchFlutterEngine];
+    }
 }
 
 - (void)installSplashScreenViewIfNecessary {

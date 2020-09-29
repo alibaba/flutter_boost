@@ -37,7 +37,7 @@ You need to add Flutter to your project before moving on.The version of the flut
 | --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
 | v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
 | v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
-| v1.17.1-hotfixes       | 1.17.1         | for androidx                                                        | Yes                 |
+| v1.17.1-hotfixes       | 1.17.1       | for androidx                                                        | Yes                 |
 
 # Getting Started
 
