@@ -27,6 +27,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 
 import '../channel/boost_channel.dart';
 import '../flutter_boost.dart';
@@ -188,6 +189,7 @@ class ContainerCoordinator {
     // TODO(unknown): 需要验证android代码是否也可以移到这里
     if (Platform.isIOS) {
       try {
+        RendererBinding.instance.setSemanticsEnabled(true);
         final SemanticsOwner owner =
             WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
         final SemanticsNode root = owner?.rootSemanticsNode;
@@ -210,6 +212,7 @@ class ContainerCoordinator {
 
     //对无障碍辅助模式的兼容
     try {
+      RendererBinding.instance.setSemanticsEnabled(true);
       final SemanticsOwner owner =
           WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
       final SemanticsNode root = owner?.rootSemanticsNode;

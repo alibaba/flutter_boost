@@ -240,7 +240,11 @@
     NSString *oldName = params[@"oldName"];
     NSString *newName = params[@"newName"];
     if (oldName!=nil && [newName isEqualToString:@"default"]) {
-        [self.flutterProvider detach];
+        //NOTES:因FlutterVC存在被remove后又立即添加到engine的情形，此时dart层（仅一个page）page现被remove后onstage变成default，然后
+        //showContainer后，onstage又变成0._refreshOverlayEntries中的postback调用有延时，导致返回到native层的onShownContainerChanged函数调
+        //用先因为newName是default时detach了，而此时native层其实已经更新了engine的vc，导致不一致
+        //注释掉这行可解决这个问题。但需要同时禁用semantice的更新
+        // [self.flutterProvider detach];
     }
 }
 

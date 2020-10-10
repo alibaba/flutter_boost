@@ -23,6 +23,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/rendering.dart';
 
 import '../flutter_boost.dart';
 import '../support/logger.dart';
@@ -318,6 +319,9 @@ class ContainerManagerState extends State<BoostContainerManager> {
 
         Logger.log('ContainerObserver#2 didRemove');
       }
+    }
+    if(_onstage.settings.uniqueId == 'default') {//已经没有页面存在,此时vc会被置nil，无障碍更新可以停止
+      RendererBinding.instance.setSemanticsEnabled(false);
     }
   }
 
