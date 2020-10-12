@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.idlefish.flutterboost.interfaces.*;
+
+import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterJNI;
@@ -216,6 +218,8 @@ public class FlutterBoost {
 
         private BoostLifecycleListener lifecycleListener;
 
+        private FlutterEngineProvider flutterEngineProvider = null;
+
 
 
 
@@ -255,6 +259,11 @@ public class FlutterBoost {
             return this;
         }
 
+        public ConfigBuilder flutterEngineProvider(FlutterEngineProvider flutterEngineProvider) {
+            this.flutterEngineProvider = flutterEngineProvider;
+            return this;
+        }
+
         public Platform build() {
 
             Platform platform = new Platform() {
@@ -286,11 +295,14 @@ public class FlutterBoost {
                 public FlutterView.RenderMode renderMode() {
                     return ConfigBuilder.this.renderMode;
                 }
+
+                public  FlutterEngineProvider flutterEngineProvider() {
+                    return flutterEngineProvider;
+                }
             };
 
             platform.lifecycleListener = this.lifecycleListener;
             return platform;
-
         }
 
     }
@@ -323,8 +335,14 @@ public class FlutterBoost {
             FlutterShellArgs flutterShellArgs = new FlutterShellArgs(new String[0]);
             FlutterMain.ensureInitializationComplete(
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
+            if (mPlatform.flutterEngineProvider() != null) {
+                mEngine = mPlatform.flutterEngineProvider().provideFlutterEngine(mPlatform.getApplication().getApplicationContext());
+            }
 
-            mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
+            if (mEngine == null) {
+                mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
+            }
+
 //            registerPlugins(mEngine);
             mRegistry = new BoostPluginRegistry(createEngine());
             mPlatform.registerPlugins(mRegistry);
