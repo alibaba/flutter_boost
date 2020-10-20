@@ -232,7 +232,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
             platformPlugin = null;
         }
 
-        if(ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE!=0||
+        if(ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE!=0 &&
                 ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE==this.host.getActivity().hashCode()){
             flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
         }
