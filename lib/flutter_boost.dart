@@ -63,8 +63,6 @@ class FlutterBoost {
   final ObserversHolder _observersHolder = ObserversHolder();
   final BoostChannel _boostChannel = BoostChannel();
 
-
-
   static ContainerManagerState get containerManager =>
       _instance.containerManagerKey.currentState;
 
@@ -72,8 +70,10 @@ class FlutterBoost {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       singleton.channel
           .invokeMethod<Map<dynamic, dynamic>>('pageOnStart')
-          .then((Map<dynamic, dynamic> pageInfo) {
-        if (pageInfo == null || pageInfo.isEmpty) {
+          .then((Map<dynamic, dynamic> _pageInfo) {
+        final Map<String, dynamic> pageInfo =
+            _pageInfo?.cast<String, dynamic>();
+        if (pageInfo?.isEmpty ?? true) {
           return;
         }
         if (pageInfo.containsKey('name') &&
@@ -89,21 +89,16 @@ class FlutterBoost {
     });
   }
 
-  static TransitionBuilder init(
-      {TransitionBuilder builder,
-      PrePushRoute prePush,
-      PostPushRoute postPush}) {
-    if (Platform.isAndroid) {
-      onPageStart();
-    } else if (Platform.isIOS) {
-      assert(() {
-        () async {
-          onPageStart();
-        }();
-        return true;
-      }());
-    }
-
+  static TransitionBuilder init({
+    TransitionBuilder builder,
+    PrePushRoute prePush,
+    PostPushRoute postPush,
+  }) {
+    // 1、methodChannel didShowPageContainer 在启动的时候可能不可靠，引擎刚启动method channel可能发不到dart
+    // 2、Flutter 1.22之后 rootIsolate启动是异步的， methodChannel didShowPageContainer 发到dart时可能main函数还没跑完，
+    //    此时flutter_boost还没初始化完成，路由切换失败，导致白屏。
+    // 所以需要boost启动后主动取一次路由信息
+    onPageStart();
     return (BuildContext context, Widget child) {
       assert(child is Navigator, 'child must be Navigator, what is wrong?');
 
