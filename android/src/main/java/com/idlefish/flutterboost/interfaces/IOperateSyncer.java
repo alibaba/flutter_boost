@@ -5,6 +5,7 @@ import android.content.Intent;
 import java.util.Map;
 
 public interface IOperateSyncer {
+    boolean isLock();
 
     void onCreate();
 
@@ -29,4 +30,5 @@ public interface IOperateSyncer {
     void onTrimMemory(int level);
 
     void onLowMemory();
+
 }

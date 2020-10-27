@@ -67,6 +67,14 @@ public class ContainerRecord implements IContainerRecord {
     }
 
     @Override
+    public boolean isLock(){
+        IContainerRecord record=mManager.getCurrentTopRecord();
+        if(record==this ||record==null ) return  false;
+        return  true;
+
+    }
+
+    @Override
     public void onCreate() {
         Utils.assertCallOnMainThread();
 
@@ -210,6 +218,7 @@ public class ContainerRecord implements IContainerRecord {
                 mState = STATE_CREATED;
             }
         }
+
 
         private void appear() {
             invokeChannelUnsafe("didShowPageContainer",

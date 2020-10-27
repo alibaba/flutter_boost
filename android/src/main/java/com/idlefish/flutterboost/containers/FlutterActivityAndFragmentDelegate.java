@@ -23,6 +23,7 @@ import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
 import com.idlefish.flutterboost.XFlutterView;
 import com.idlefish.flutterboost.XPlatformPlugin;
+import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
 import io.flutter.Log;
@@ -164,6 +165,8 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
 
     public void onResume() {
+        if(mSyncer.isLock()) return;
+
         mSyncer.onAppear();
 
         Log.v(TAG, "onResume()");
@@ -196,7 +199,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
     public void onPause() {
         Log.v(TAG, "onPause()");
-
+        if(mSyncer.isLock()) return;
         ensureAlive();
         mSyncer.onDisappear();
         flutterEngine.getLifecycleChannel().appIsInactive();
