@@ -66,8 +66,27 @@ public class ContainerRecord implements IContainerRecord {
         return mState;
     }
 
+    /**
+     *
+     * 解决Top页面在绑定engine 后，被底下页面detach engine ，导致白屏问题卡死问题
+     *
+     * 具体案例路径和原因：
+     * android 10系统
+     * 1、闲鱼应用当前是Flutter页面（Flutter-A），切到后台；
+     * 2、切后台后，某些原因，导致accs断开；
+     * 3、收到push，因为accs断开，走厂商通道；
+     * 4、进去XiaoMiSystemMessageActivity（Native-B），这个activity主题是透明的，埋下一个问题；
+     * 5、XiaoMiSystemMessageActivity 内处理push，跳转到消息页（Flutter-C）,同时关闭自己；
+     *
+     * 5 步骤 堆栈从 [Native-B,Flutter-A] 变成了  [Flutter-C,Flutter-A] ，由于Native-B的主题是透明的，导致Flutter-C,Flutter-A的生命周期回调不合预期，
+     * 出现了Flutter-C没有挂载Engine，而Flutter-A挂载Engine的情况。
+     *
+     * 最终现象是 Flutter-C 假死
+     *
+     * @return
+     */
     @Override
-    public boolean isLock(){
+    public boolean isLocked(){
         IContainerRecord record=mManager.getCurrentTopRecord();
         if(record==this ||record==null ) return  false;
         return  true;

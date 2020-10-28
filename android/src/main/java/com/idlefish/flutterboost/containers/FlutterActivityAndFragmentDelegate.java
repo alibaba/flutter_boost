@@ -165,7 +165,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
 
     public void onResume() {
-        if(mSyncer.isLock()) return;
+        if(mSyncer.isLocked()) return;
 
         mSyncer.onAppear();
 
@@ -199,7 +199,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
     public void onPause() {
         Log.v(TAG, "onPause()");
-        if(mSyncer.isLock()) return;
+        if(mSyncer.isLocked()) return;
         ensureAlive();
         mSyncer.onDisappear();
         flutterEngine.getLifecycleChannel().appIsInactive();

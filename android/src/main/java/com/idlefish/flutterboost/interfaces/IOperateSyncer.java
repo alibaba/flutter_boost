@@ -5,7 +5,7 @@ import android.content.Intent;
 import java.util.Map;
 
 public interface IOperateSyncer {
-    boolean isLock();
+    boolean isLocked();
 
     void onCreate();
 
