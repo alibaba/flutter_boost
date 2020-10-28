@@ -303,10 +303,6 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super bridge_viewDidDisappear:animated];
-    
-    if (self.engine.viewController == self) {
-        [self detatchFlutterEngine];
-    }
 }
 
 - (void)installSplashScreenViewIfNecessary {
