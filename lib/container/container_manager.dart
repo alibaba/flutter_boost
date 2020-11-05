@@ -338,7 +338,8 @@ class ContainerManagerState extends State<BoostContainerManager> {
 class _ContainerOverlayEntry extends OverlayEntry {
   _ContainerOverlayEntry(BoostContainer container)
       : super(
-          builder: (BuildContext ctx) => container,
+          builder: (BuildContext ctx) =>
+              HeroControllerScope.none(child: container),
           opaque: true,
           maintainState: true,
         );
