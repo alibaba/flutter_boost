@@ -24,6 +24,9 @@ public class XAndroidKeyProcessor {
 
     public void onKeyUp(@NonNull KeyEvent keyEvent) {
         Character complexCharacter = applyCombiningCharacterToBaseCharacter(keyEvent.getUnicodeChar());
+        if (complexCharacter == null) {
+            return;
+        }
         keyEventChannel.keyUp(
                 new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
         );
@@ -36,6 +39,9 @@ public class XAndroidKeyProcessor {
         }
 
         Character complexCharacter = applyCombiningCharacterToBaseCharacter(keyEvent.getUnicodeChar());
+        if (complexCharacter == null) {
+            return;
+        }
         keyEventChannel.keyDown(
                 new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
         );
