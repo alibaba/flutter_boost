@@ -329,7 +329,7 @@ public class FlutterBoost {
         if (mEngine == null) {
             FlutterMain.startInitialization(mPlatform.getApplication());
 
-            FlutterShellArgs flutterShellArgs = new FlutterShellArgs(mPlatform.shellArgs() != null ? mPlatform.shellArgs() : Arrays.asList(""));
+            FlutterShellArgs flutterShellArgs = new FlutterShellArgs(mPlatform.shellArgs() != null ? mPlatform.shellArgs() : Arrays.asList(new String[0]));
             FlutterMain.ensureInitializationComplete(
                     mPlatform.getApplication().getApplicationContext(), flutterShellArgs.toArray());
 
