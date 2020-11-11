@@ -29,8 +29,8 @@ public class XPlatformPlugin {
     public static final int DEFAULT_SYSTEM_UI = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
-    private  Activity activity;
-    private  PlatformChannel platformChannel;
+    private Activity activity;
+    private PlatformChannel platformChannel;
     private PlatformChannel.SystemChromeStyle currentTheme;
     private int mEnabledOverlays;
 
@@ -96,37 +96,42 @@ public class XPlatformPlugin {
         }
     };
 
-    public XPlatformPlugin( PlatformChannel platformChannel) {
-
+    public XPlatformPlugin(PlatformChannel platformChannel) {
         this.platformChannel = platformChannel;
-
+        this.platformChannel.setPlatformMessageHandler(mPlatformMessageHandler);
         mEnabledOverlays = DEFAULT_SYSTEM_UI;
     }
 
     public void attachToActivity(Activity activity ){
         this.activity = activity;
-        this.platformChannel.setPlatformMessageHandler(mPlatformMessageHandler);
-
     }
+
     /**
      * Releases all resources held by this {@code PlatformPlugin}.
      * <p>
      * Do not invoke any methods on a {@code PlatformPlugin} after invoking this method.
      */
-    public void detachActivity() {
-       this.activity=null;
-       this.mPlatformMessageHandler=null;
+    public void detachActivity(Activity activity) {
+        if (activity == this.activity) {
+            this.activity = null;
+        }
     }
 
     private void playSystemSound(PlatformChannel.SoundType soundType) {
+        if (getActivity() == null) {
+            return;
+        }
         if (soundType == PlatformChannel.SoundType.CLICK) {
-            View view = activity.getWindow().getDecorView();
+            View view = getActivity().getWindow().getDecorView();
             view.playSoundEffect(SoundEffectConstants.CLICK);
         }
     }
 
     private void vibrateHapticFeedback(PlatformChannel.HapticFeedbackType feedbackType) {
-        View view = activity.getWindow().getDecorView();
+        if (getActivity() == null) {
+            return;
+        }
+        View view = getActivity().getWindow().getDecorView();
         switch (feedbackType) {
             case STANDARD:
                 view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
@@ -148,11 +153,17 @@ public class XPlatformPlugin {
     }
 
     private void setSystemChromePreferredOrientations(int androidOrientation) {
-        activity.setRequestedOrientation(androidOrientation);
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().setRequestedOrientation(androidOrientation);
     }
 
     @SuppressWarnings("deprecation")
     private void setSystemChromeApplicationSwitcherDescription(PlatformChannel.AppSwitcherDescription description) {
+        if (getActivity() == null) {
+            return;
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return;
         }
@@ -160,11 +171,12 @@ public class XPlatformPlugin {
         // Linter refuses to believe we're only executing this code in API 28 unless we use distinct if blocks and
         // hardcode the API 28 constant.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P && Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            activity.setTaskDescription(new ActivityManager.TaskDescription(description.label, /*icon=*/ null, description.color));
+            getActivity().setTaskDescription(new ActivityManager.TaskDescription(description.label, /*icon=*/ null, description.color));
+
         }
         if (Build.VERSION.SDK_INT >= 28) {
             ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(description.label, 0, description.color);
-            activity.setTaskDescription(taskDescription);
+            getActivity().setTaskDescription(taskDescription);
         }
     }
 
@@ -206,7 +218,10 @@ public class XPlatformPlugin {
      * {@code PlatformPlugin}.
      */
     public void updateSystemUiOverlays(){
-        activity.getWindow().getDecorView().setSystemUiVisibility(mEnabledOverlays);
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(mEnabledOverlays);
         if (currentTheme != null) {
             setSystemChromeSystemUIOverlayStyle(currentTheme);
         }
@@ -217,7 +232,10 @@ public class XPlatformPlugin {
     }
 
     private void setSystemChromeSystemUIOverlayStyle(PlatformChannel.SystemChromeStyle systemChromeStyle) {
-        Window window = activity.getWindow();
+        if (getActivity() == null) {
+            return;
+        }
+        Window window = getActivity().getWindow();
         View view = window.getDecorView();
         int flags = view.getSystemUiVisibility();
         // You can change the navigation bar color (including translucent colors)
@@ -266,32 +284,44 @@ public class XPlatformPlugin {
     }
 
     private void popSystemNavigator() {
-        activity.finish();
+        if (getActivity() == null) {
+            return;
+        }
+        getActivity().finish();
     }
 
     private CharSequence getClipboardData(PlatformChannel.ClipboardContentFormat format) {
-        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (getActivity() == null) {
+            return null;
+        }
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
         if (clip == null)
             return null;
 
         if (format == null || format == PlatformChannel.ClipboardContentFormat.PLAIN_TEXT) {
-            return clip.getItemAt(0).coerceToText(activity);
+            return clip.getItemAt(0).coerceToText(getActivity());
         }
 
         return null;
     }
 
     private void setClipboardData(String text) {
-        ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+        if (getActivity() == null) {
+            return;
+        }
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("text label?", text);
         clipboard.setPrimaryClip(clip);
     }
 
 
     private List<Rect> getSystemGestureExclusionRects() {
+        if (getActivity() == null) {
+            return null;
+        }
         if (Build.VERSION.SDK_INT >= 29) {
-            Window window = activity.getWindow();
+            Window window = getActivity().getWindow();
             View view = window.getDecorView();
             return view.getSystemGestureExclusionRects();
         }
@@ -300,13 +330,23 @@ public class XPlatformPlugin {
     }
 
     private void setSystemGestureExclusionRects(ArrayList<Rect> rects) {
+        if (getActivity() == null) {
+            return;
+        }
         if (Build.VERSION.SDK_INT < 29) {
             return;
         }
 
-        Window window = activity.getWindow();
+        Window window = getActivity().getWindow();
         View view = window.getDecorView();
         view.setSystemGestureExclusionRects(rects);
     }
 
+    @Nullable
+    private Activity getActivity() {
+        if (activity != null) {
+            return activity;
+        }
+        return FlutterBoost.instance().currentActivity();
+    }
 }

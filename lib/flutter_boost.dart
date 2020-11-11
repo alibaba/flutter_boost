@@ -282,9 +282,22 @@ class FlutterBoost {
       BoostContainerLifeCycleObserver observer) =>
       _observersHolder.addObserver<BoostContainerLifeCycleObserver>(observer);
 
+  ///unregister for Container changed callbacks
+  void removeContainerObserver(BoostContainerObserver observer) =>
+      _observersHolder.removeObserver<BoostContainerObserver>(observer);
+
+  ///unregister for Container lifecycle callbacks
+  void removeBoostContainerLifeCycleObserver(
+      BoostContainerLifeCycleObserver observer) =>
+      _observersHolder.removeObserver<BoostContainerLifeCycleObserver>(observer);
+
   ///register callbacks for Navigators push & pop
   void addBoostNavigatorObserver(NavigatorObserver observer) =>
       ContainerNavigatorObserver.boostObservers.add(observer);
+
+  ///unregister callbacks for Navigators push & pop
+  void removeBoostNavigatorObserver(NavigatorObserver observer) =>
+      ContainerNavigatorObserver.boostObservers.remove(observer);
 
   BoostRouteSettings getBoostRouteSettings(Route route) {
     return GlobalRouteSettingsManager.instance.getSettings(route);
