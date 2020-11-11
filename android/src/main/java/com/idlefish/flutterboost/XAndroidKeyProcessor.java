@@ -2,6 +2,7 @@ package com.idlefish.flutterboost;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 
@@ -24,9 +25,11 @@ public class XAndroidKeyProcessor {
 
     public void onKeyUp(@NonNull KeyEvent keyEvent) {
         Character complexCharacter = applyCombiningCharacterToBaseCharacter(keyEvent.getUnicodeChar());
-        keyEventChannel.keyUp(
-                new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
-        );
+        if (complexCharacter != null) {
+            keyEventChannel.keyUp(
+                    new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
+            );
+        }
     }
 
     public void onKeyDown(@NonNull KeyEvent keyEvent) {
@@ -36,9 +39,12 @@ public class XAndroidKeyProcessor {
         }
 
         Character complexCharacter = applyCombiningCharacterToBaseCharacter(keyEvent.getUnicodeChar());
-        keyEventChannel.keyDown(
-                new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
-        );
+        if (complexCharacter != null) {
+            keyEventChannel.keyDown(
+                    new KeyEventChannel.FlutterKeyEvent(keyEvent, complexCharacter)
+            );
+        }
+
     }
 
     /**

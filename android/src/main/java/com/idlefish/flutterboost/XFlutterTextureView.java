@@ -131,6 +131,7 @@ public class XFlutterTextureView extends TextureView implements RenderSurface {
    *
    * This method will cease any on-going rendering from Flutter to this {@code FlutterTextureView}.
    */
+  @Override
   public void detachFromRenderer() {
     if (flutterRenderer != null) {
       // If we're attached to an Android window then we were rendering a Flutter UI. Now that
@@ -146,6 +147,11 @@ public class XFlutterTextureView extends TextureView implements RenderSurface {
     } else {
       Log.w(TAG, "detachFromRenderer() invoked when no FlutterRenderer was attached.");
     }
+  }
+
+  @Override
+  public void pause() {
+
   }
 
   // FlutterRenderer and getSurfaceTexture() must both be non-null.

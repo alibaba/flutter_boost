@@ -29,6 +29,7 @@ public class BoostPluginRegistry implements PluginRegistry {
         this.flutterEngine.getPlugins().add(this.shimRegistrarAggregate);
     }
 
+    @Override
     public Registrar registrarFor(String pluginKey) {
         Log.v("ShimPluginRegistry", "Creating plugin Registrar for '" + pluginKey + "'");
         if (this.pluginMap.containsKey(pluginKey)) {
@@ -41,10 +42,12 @@ public class BoostPluginRegistry implements PluginRegistry {
         }
     }
 
+    @Override
     public boolean hasPlugin(String pluginKey) {
         return this.pluginMap.containsKey(pluginKey);
     }
 
+    @Override
     public Object valuePublishedByPlugin(String pluginKey) {
         return this.pluginMap.get(pluginKey);
     }
@@ -96,6 +99,7 @@ public class BoostPluginRegistry implements PluginRegistry {
             this.flutterPluginBinding = null;
         }
 
+        @Override
         public void onAttachedToActivity(ActivityPluginBinding binding) {
             this.activityPluginBinding = binding;
             Iterator var2 = this.shimRegistrars.iterator();
@@ -107,6 +111,7 @@ public class BoostPluginRegistry implements PluginRegistry {
 
         }
 
+        @Override
         public void onDetachedFromActivityForConfigChanges() {
             Iterator var1 = this.shimRegistrars.iterator();
 
@@ -118,6 +123,7 @@ public class BoostPluginRegistry implements PluginRegistry {
             this.activityPluginBinding = null;
         }
 
+        @Override
         public void onReattachedToActivityForConfigChanges(ActivityPluginBinding binding) {
             Iterator var2 = this.shimRegistrars.iterator();
 
@@ -128,6 +134,7 @@ public class BoostPluginRegistry implements PluginRegistry {
 
         }
 
+        @Override
         public void onDetachedFromActivity() {
             Iterator var1 = this.shimRegistrars.iterator();
 

@@ -7,6 +7,7 @@ package com.idlefish.flutterboost;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 
 import android.text.Editable;
@@ -32,11 +33,11 @@ import io.flutter.plugin.platform.PlatformViewsController;
  */
 public class XTextInputPlugin {
     @NonNull
-    private  View mView;
+    private View mView;
     @NonNull
-    private  InputMethodManager mImm;
+    private InputMethodManager mImm;
     @NonNull
-    private  TextInputChannel textInputChannel;
+    private TextInputChannel textInputChannel;
     @NonNull
     private InputTarget inputTarget = new InputTarget(InputTarget.Type.NO_TARGET, 0);
     @Nullable
@@ -48,17 +49,19 @@ public class XTextInputPlugin {
     private InputConnection lastInputConnection;
     @NonNull
     private PlatformViewsController platformViewsController;
-    private  boolean restartAlwaysRequired;
+    private boolean restartAlwaysRequired;
 
     // When true following calls to createInputConnection will return the cached lastInputConnection if the input
     // target is a platform view. See the comments on lockPlatformViewInputConnection for more details.
     private boolean isInputConnectionLocked;
-    private static  XTextInputPlugin xTextInputPlugin;
+    private static XTextInputPlugin xTextInputPlugin;
 
-    public  static  XTextInputPlugin getTextInputPlugin( DartExecutor dartExecutor, @NonNull PlatformViewsController platformViewsController){
-        if(xTextInputPlugin!=null) return xTextInputPlugin;
-        xTextInputPlugin =new XTextInputPlugin(dartExecutor,platformViewsController);
-        return  xTextInputPlugin;
+    public static XTextInputPlugin getTextInputPlugin(DartExecutor dartExecutor, @NonNull PlatformViewsController platformViewsController) {
+        if (xTextInputPlugin != null) {
+            return xTextInputPlugin;
+        }
+        xTextInputPlugin = new XTextInputPlugin(dartExecutor, platformViewsController);
+        return xTextInputPlugin;
     }
 
     public XTextInputPlugin(@NonNull DartExecutor dartExecutor, @NonNull PlatformViewsController platformViewsController) {
@@ -74,14 +77,13 @@ public class XTextInputPlugin {
     }
 
 
-
-    public void  release(View v){
-        if(mView!=null && mView.hashCode()==v.hashCode()){
-            mView= null;
+    public void release(View v) {
+        if (mView != null && mView.hashCode() == v.hashCode()) {
+            mView = null;
         }
     }
 
-    public  void updateView(View view){
+    public void updateView(View view) {
         mView = view;
         mImm = (InputMethodManager) view.getContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
@@ -98,6 +100,16 @@ public class XTextInputPlugin {
             }
 
             @Override
+            public void requestAutofill() {
+
+            }
+
+            @Override
+            public void finishAutofillContext(boolean shouldSave) {
+
+            }
+
+            @Override
             public void setClient(int textInputClientId, TextInputChannel.Configuration configuration) {
                 setTextInputClient(textInputClientId, configuration);
             }
@@ -105,6 +117,11 @@ public class XTextInputPlugin {
             @Override
             public void setPlatformViewClient(int platformViewId) {
                 setPlatformViewTextInputClient(platformViewId);
+            }
+
+            @Override
+            public void setEditableSizeAndTransform(double width, double height, double[] transform) {
+
             }
 
             @Override
@@ -116,11 +133,15 @@ public class XTextInputPlugin {
             public void clearClient() {
                 clearTextInputClient();
             }
+
+            @Override
+            public void sendAppPrivateCommand(String action, Bundle data) {
+
+            }
         });
         restartAlwaysRequired = isRestartAlwaysRequired();
 
     }
-
 
 
     @NonNull
@@ -146,7 +167,7 @@ public class XTextInputPlugin {
 
     /**
      * Unlocks the input connection.
-     *
+     * <p>
      * See also: @{link lockPlatformViewInputConnection}.
      */
     public void unlockPlatformViewInputConnection() {
@@ -155,7 +176,7 @@ public class XTextInputPlugin {
 
     /**
      * Detaches the text input plugin from the platform views controller.
-     *
+     * <p>
      * The TextInputPlugin instance should not be used after calling this.
      */
     public void destroy() {
@@ -200,8 +221,12 @@ public class XTextInputPlugin {
             textType |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
             textType |= InputType.TYPE_TEXT_VARIATION_PASSWORD;
         } else {
-            if (autocorrect) textType |= InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
-            if (!enableSuggestions) textType |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+            if (autocorrect) {
+                textType |= InputType.TYPE_TEXT_FLAG_AUTO_CORRECT;
+            }
+            if (!enableSuggestions) {
+                textType |= InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
+            }
         }
 
         if (textCapitalization == TextInputChannel.TextCapitalization.CHARACTERS) {
@@ -273,7 +298,7 @@ public class XTextInputPlugin {
 
     /**
      * Clears a platform view text input client if it is the current input target.
-     *
+     * <p>
      * This is called when a platform view is disposed to make sure we're not hanging to a stale input
      * connection.
      */
@@ -332,7 +357,8 @@ public class XTextInputPlugin {
         }
     }
 
-    @VisibleForTesting void setTextInputEditingState(View view, TextInputChannel.TextEditState state) {
+    @VisibleForTesting
+    void setTextInputEditingState(View view, TextInputChannel.TextEditState state) {
         if (!restartAlwaysRequired && !mRestartInputPending && state.text.equals(mEditable.toString())) {
             applyStateToSelection(state);
             mImm.updateSelection(mView, Math.max(Selection.getSelectionStart(mEditable), 0),
@@ -366,7 +392,9 @@ public class XTextInputPlugin {
         String keyboardName = Settings.Secure.getString(mView.getContext().getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
         // The Samsung keyboard is called "com.sec.android.inputmethod/.SamsungKeypad" but look
         // for "Samsung" just in case Samsung changes the name of the keyboard.
-        if(keyboardName==null) return  false;
+        if (keyboardName == null) {
+            return false;
+        }
 
         return keyboardName.contains("Samsung");
     }

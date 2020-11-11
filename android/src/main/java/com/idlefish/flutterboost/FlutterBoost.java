@@ -269,10 +269,12 @@ public class FlutterBoost {
 
             Platform platform = new Platform() {
 
+                @Override
                 public Application getApplication() {
                     return ConfigBuilder.this.mApp;
                 }
 
+                @Override
                 public boolean isDebug() {
 
                     return ConfigBuilder.this.isDebug;
@@ -286,16 +288,19 @@ public class FlutterBoost {
                     return ConfigBuilder.this.initialRoute;
                 }
 
+                @Override
                 public void openContainer(Context context, String url, Map<String, Object> urlParams, int requestCode, Map<String, Object> exts) {
                     router.openContainer(context, url, urlParams, requestCode, exts);
                 }
 
 
+                @Override
                 public int whenEngineStart() {
                     return ConfigBuilder.this.whenEngineStart;
                 }
 
 
+                @Override
                 public FlutterView.RenderMode renderMode() {
                     return ConfigBuilder.this.renderMode;
                 }

@@ -188,8 +188,8 @@ class ContainerCoordinator {
     // TODO(unknown): 需要验证android代码是否也可以移到这里
     if (Platform.isIOS) {
       try {
-        final SemanticsOwner owner =
-            WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+        final SemanticsOwner owner = WidgetsBinding
+            .instance.pipelineOwner?.semanticsOwner as SemanticsOwner;
         final SemanticsNode root = owner?.rootSemanticsNode;
         root?.detach();
         root?.attach(owner);
@@ -211,8 +211,8 @@ class ContainerCoordinator {
     // Compatible to accessibility mode on Android.
     if (Platform.isAndroid) {
       try {
-        final SemanticsOwner owner =
-            WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+        final SemanticsOwner owner = WidgetsBinding
+            .instance.pipelineOwner?.semanticsOwner as SemanticsOwner;
         final SemanticsNode root = owner?.rootSemanticsNode;
         root?.detach();
         root?.attach(owner);

@@ -33,7 +33,7 @@ public class XPlatformPlugin {
     private PlatformChannel.SystemChromeStyle currentTheme;
     private int mEnabledOverlays;
 
-    private  PlatformChannel.PlatformMessageHandler mPlatformMessageHandler = new PlatformChannel.PlatformMessageHandler() {
+    private PlatformChannel.PlatformMessageHandler mPlatformMessageHandler = new PlatformChannel.PlatformMessageHandler() {
         @Override
         public void playSystemSound(@NonNull PlatformChannel.SoundType soundType) {
             XPlatformPlugin.this.playSystemSound(soundType);
@@ -85,11 +85,14 @@ public class XPlatformPlugin {
         }
 
         @Override
+        public boolean clipboardHasStrings() {
+            return false;
+        }
+
         public List<Rect> getSystemGestureExclusionRects() {
             return XPlatformPlugin.this.getSystemGestureExclusionRects();
         }
 
-        @Override
         public void setSystemGestureExclusionRects(@NonNull ArrayList<Rect> rects) {
             XPlatformPlugin.this.setSystemGestureExclusionRects(rects);
         }
@@ -101,7 +104,7 @@ public class XPlatformPlugin {
         mEnabledOverlays = DEFAULT_SYSTEM_UI;
     }
 
-    public void attachToActivity(Activity activity ){
+    public void attachToActivity(Activity activity) {
         this.activity = activity;
     }
 
@@ -203,7 +206,7 @@ public class XPlatformPlugin {
      * {@link Window} associated with the {@link Activity} that was provided to this
      * {@code PlatformPlugin}.
      */
-    public void updateSystemUiOverlays(){
+    public void updateSystemUiOverlays() {
         activity.getWindow().getDecorView().setSystemUiVisibility(mEnabledOverlays);
         if (currentTheme != null) {
             setSystemChromeSystemUIOverlayStyle(currentTheme);
@@ -270,8 +273,9 @@ public class XPlatformPlugin {
     private CharSequence getClipboardData(PlatformChannel.ClipboardContentFormat format) {
         ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
-        if (clip == null)
+        if (clip == null) {
             return null;
+        }
 
         if (format == null || format == PlatformChannel.ClipboardContentFormat.PLAIN_TEXT) {
             return clip.getItemAt(0).coerceToText(activity);
