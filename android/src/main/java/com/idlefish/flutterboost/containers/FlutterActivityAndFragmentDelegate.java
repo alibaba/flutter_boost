@@ -137,6 +137,11 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
 
         flutterSplashView = new FlutterSplashView(host.getContext());
+
+        if(host.getTransparencyMode()==FlutterView.TransparencyMode.opaque){
+            flutterSplashView.setBackgroundColor(Color.WHITE);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             flutterSplashView.setId(View.generateViewId());
         } else {
