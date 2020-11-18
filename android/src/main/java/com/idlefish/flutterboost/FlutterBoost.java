@@ -6,7 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.idlefish.flutterboost.interfaces.*;
 
@@ -355,7 +355,7 @@ public class FlutterBoost {
                 mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
             }
 
-//            registerPlugins(mEngine);
+            registerPlugins(mEngine);
           //  mRegistry = new BoostPluginRegistry(createEngine());
           //  mPlatform.registerPlugins(mRegistry);
         }
