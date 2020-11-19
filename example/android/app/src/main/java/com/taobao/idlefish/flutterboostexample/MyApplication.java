@@ -13,6 +13,8 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugin.common.StandardMessageCodec;
+import io.flutter.plugin.platform.PlatformViewRegistry;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MyApplication extends Application {
@@ -71,13 +73,18 @@ public class MyApplication extends Application {
         Platform platform= new FlutterBoost
                 .ConfigBuilder(this,router)
                 .isDebug(true)
-                .whenEngineStart(FlutterBoost.ConfigBuilder.ANY_ACTIVITY_CREATED)
+                .whenEngineStart(FlutterBoost.ConfigBuilder.IMMEDIATELY)
                 .renderMode(FlutterView.RenderMode.texture)
                 .lifecycleListener(boostLifecycleListener)
                 .build();
         FlutterBoost.instance().init(platform);
 
-
+        // whenEngineStart(FlutterBoost.ConfigBuilder.IMMEDIATELY) 时候，engine才初始化好。
+        if(FlutterBoost.instance().engineProvider()!=null){
+            PlatformViewRegistry registry = FlutterBoost.instance().engineProvider().getPlatformViewsController().getRegistry();
+            registry.registerViewFactory("plugins.test/view",
+                    new TextPlatformViewFactory(StandardMessageCodec.INSTANCE));
+        }
 
     }
 }

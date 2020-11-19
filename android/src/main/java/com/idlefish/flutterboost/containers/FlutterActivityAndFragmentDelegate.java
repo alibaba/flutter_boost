@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Lifecycle;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -98,6 +99,22 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         host.configureFlutterEngine(flutterEngine);
 
         host.getActivity().getWindow().setFormat(PixelFormat.TRANSLUCENT);
+
+        if (host.shouldAttachEngineToActivity()) {
+            // Notify any plugins that are currently attached to our FlutterEngine that they
+            // are now attached to an Activity.
+            //
+            // Passing this Fragment's Lifecycle should be sufficient because as long as this Fragment
+            // is attached to its Activity, the lifecycles should be in sync. Once this Fragment is
+            // detached from its Activity, that Activity will be detached from the FlutterEngine, too,
+            // which means there shouldn't be any possibility for the Fragment Lifecycle to get out of
+            // sync with the Activity. We use the Fragment's Lifecycle because it is possible that the
+            // attached Activity is not a LifecycleOwner.
+            Log.v(TAG, "Attaching FlutterEngine to the Activity that owns this Fragment.");
+            flutterEngine
+                    .getActivityControlSurface()
+                    .attachToActivity(host.getActivity(), host.getLifecycle());
+        }
     }
 
 
@@ -133,6 +150,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
 
         flutterSplashView = new FlutterSplashView(host.getContext());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             flutterSplashView.setId(View.generateViewId());
         } else {
@@ -168,18 +186,6 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         Log.v(TAG, "onResume()");
         ensureAlive();
         flutterEngine.getLifecycleChannel().appIsResumed();
-        if(ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE==0||
-                ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE!=this.host.getActivity().hashCode()){
-            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
-            flutterEngine.getActivityControlSurface().attachToActivity(
-                    host.getActivity(),
-                    host.getLifecycle()
-            );
-            ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE=this.host.getActivity().hashCode();
-        }
-
-
-
 
 
     }
@@ -219,8 +225,6 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         mSyncer.onDestroy();
 
         ensureAlive();
-
-//        flutterView.release();
     }
 
 
@@ -231,30 +235,25 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
             platformPlugin.destroy();
             platformPlugin = null;
         }
-        if(ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE!=0 &&
-                ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE==this.host.getActivity().hashCode()){
-            flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
-        }
 
+        if (host.shouldAttachEngineToActivity()) {
+            // Notify plugins that they are no longer attached to an Activity.
+            Log.v(TAG, "Detaching FlutterEngine from the Activity that owns this Fragment.");
+            if (host.getActivity().isChangingConfigurations()) {
+                flutterEngine.getActivityControlSurface().detachFromActivityForConfigChanges();
+            } else {
+                flutterEngine.getActivityControlSurface().detachFromActivity();
+            }
+        }
         Utils.fixInputMethodManagerLeak(host.getActivity());
 
     }
 
-//    public void onBackPressed() {
-//        ensureAlive();
-//        if (flutterEngine != null) {
-//            Log.v(TAG, "Forwarding onBackPressed() to FlutterEngine.");
-//            flutterEngine.getNavigationChannel().popRoute();
-//        } else {
-//            Log.w(TAG, "Invoked onBackPressed() before FlutterFragment was attached to an Activity.");
-//        }
-//    }
 
     public void onBackPressed() {
         mSyncer.onBackPressed();
 
         ensureAlive();
-
 
     }
 
