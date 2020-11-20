@@ -331,7 +331,7 @@ class _ContainerOverlayEntry extends OverlayEntry {
   bool _removed = false;
   _ContainerOverlayEntry(BoostContainer container)
       : super(
-            builder: (BuildContext ctx) => container,
+            builder: (BuildContext ctx) =>  HeroControllerScope.none(child: container),
             opaque: true,
             maintainState: true);
 
