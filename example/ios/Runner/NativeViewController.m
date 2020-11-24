@@ -19,7 +19,7 @@
 - (instancetype)init{
     if (self = [super init]) {
         _flutterContainer = [[FLBFlutterViewContainer alloc]init];
-        [_flutterContainer setName:@"embeded" params:@{}];
+        [_flutterContainer setName:@"embedded" params:@{}];
     }
     return self;
 }
