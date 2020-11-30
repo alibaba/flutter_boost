@@ -172,6 +172,10 @@ static NSUInteger kInstanceCounter = 0;
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
         [self notifyWillDealloc];
+        
+        if (self.engine.viewController == self) {
+            [self detatchFlutterEngine];
+        }
     }
     [super didMoveToParentViewController:parent];
 }
@@ -303,10 +307,6 @@ static NSUInteger kInstanceCounter = 0;
                                                   params:_params
                                                 uniqueId:self.uniqueIDString];
     [super bridge_viewDidDisappear:animated];
-    
-    if (self.engine.viewController == self) {
-        [self detatchFlutterEngine];
-    }
 }
 
 - (void)installSplashScreenViewIfNecessary {
