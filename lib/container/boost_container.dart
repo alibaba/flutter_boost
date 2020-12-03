@@ -118,6 +118,8 @@ class BoostContainer extends Navigator {
 class BoostContainerState extends NavigatorState {
   VoidCallback backPressedHandler;
 
+  VoidCallback lifeCycleObserverRemove;
+
   String get uniqueId => widget.settings.uniqueId;
 
   String get name => widget.settings.name;
@@ -134,6 +136,8 @@ class BoostContainerState extends NavigatorState {
 
   @override
   BoostContainer get widget => super.widget as BoostContainer;
+
+  final Set<int> _activePointers = <int>{};
 
   List<Route<dynamic>> routerHistory = <Route<dynamic>>[];
 
@@ -154,6 +158,12 @@ class BoostContainerState extends NavigatorState {
   void initState() {
     super.initState();
     backPressedHandler = () => maybePop();
+    lifeCycleObserverRemove = addLifeCycleObserver(
+        (ContainerLifeCycle state, BoostContainerSettings settings) {
+          if (state == ContainerLifeCycle.Disappear){
+            _cancelActivePointers();
+          }
+        });
   }
 
   @override
@@ -166,6 +176,8 @@ class BoostContainerState extends NavigatorState {
     for (Route route in routerHistory) {
       GlobalRouteSettingsManager.instance.removeSettings(route);
     }
+
+    lifeCycleObserverRemove();
 
     routerHistory.clear();
 
@@ -257,6 +269,28 @@ class BoostContainerState extends NavigatorState {
     }
 
     return future;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Listener(
+      onPointerDown: _handlePointerDown,
+      onPointerUp: _handlePointerUpOrCancel,
+      onPointerCancel: _handlePointerUpOrCancel,
+      child: super.build(context),
+    );
+  }
+
+  void _handlePointerDown(PointerDownEvent event) {
+    _activePointers.add(event.pointer);
+  }
+
+  void _handlePointerUpOrCancel(PointerEvent event) {
+    _activePointers.remove(event.pointer);
+  }
+
+  void _cancelActivePointers() {
+    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
   }
 
   VoidCallback addLifeCycleObserver(BoostContainerLifeCycleObserver observer) {
