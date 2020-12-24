@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mOpenNative = findViewById(R.id.open_native);
         mOpenFlutter = findViewById(R.id.open_flutter);
-        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
+//        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
-        mOpenFlutterFragment.setOnClickListener(this);
+//        mOpenFlutterFragment.setOnClickListener(this);
     }
 
     @Override
