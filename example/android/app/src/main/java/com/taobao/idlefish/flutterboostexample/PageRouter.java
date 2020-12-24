@@ -4,10 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.idlefish.flutterboost.containers.BoostFlutterActivity;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.flutter.embedding.android.FlutterActivity;
 
 public class PageRouter {
 
@@ -37,8 +38,7 @@ public class PageRouter {
 
         try {
             if (pageName.containsKey(path)) {
-                Intent intent = BoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
-                        .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque).build(context);
+                Intent intent =FlutterActivity.createDefaultIntent(context);
                 if(context instanceof Activity){
                     Activity activity=(Activity)context;
                     activity.startActivityForResult(intent,requestCode);

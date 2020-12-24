@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:text="@string/open_flutter" />
 
-    <TextView
+    <!--<TextView
         android:background="@android:color/holo_orange_dark"
         android:layout_marginLeft="8.0dp"
         android:layout_marginTop="8.0dp"
@@ -57,6 +57,6 @@
         android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/open_flutter_fragment" />
+        android:text="@string/open_flutter_fragment" />-->
 
 </LinearLayout>

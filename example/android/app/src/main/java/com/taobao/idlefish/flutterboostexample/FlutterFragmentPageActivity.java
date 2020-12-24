@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import com.idlefish.flutterboost.containers.FlutterFragment;
 import io.flutter.embedding.android.DrawableSplashScreen;
+import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.SplashScreen;
 import io.flutter.embedding.android.SplashScreenProvider;
 import io.flutter.plugin.platform.PlatformPlugin;
@@ -70,17 +70,17 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
         if(mTab1 == v) {
             mTab1.setBackgroundColor(Color.YELLOW);
 
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+//            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
 
         }else if(mTab2 == v) {
             mTab2.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+//            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }else if(mTab3 == v) {
             mTab3.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+//            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }else{
             mTab4.setBackgroundColor(Color.YELLOW);
-            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
+//            mFragment= new FlutterFragment.NewEngineFragmentBuilder().url("flutterFragment").build();
         }
 
         getSupportFragmentManager()

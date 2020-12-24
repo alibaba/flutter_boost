@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.idlefish.flutterboost.FlutterRouterApi;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,7 +41,7 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
         if (v == mOpenNative) {
             PageRouter.openPageByUrl(this, PageRouter.NATIVE_PAGE_URL,params);
         } else if (v == mOpenFlutter) {
-            PageRouter.openPageByUrl(this, PageRouter.FLUTTER_PAGE_URL,params);
+            FlutterRouterApi.instance().pushRoute("flutterPage",null,null,null);
         } else if (v == mOpenFlutterFragment) {
             PageRouter.openPageByUrl(this, PageRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         }

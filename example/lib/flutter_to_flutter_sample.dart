@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/flutter_boost.dart';
 
 class F2FFirstPage extends StatefulWidget {
 
@@ -25,13 +24,13 @@ class F2FFirstPageState extends State<F2FFirstPage>{
             RaisedButton(
               child: Text('Open second with native container'),
               onPressed: () {
-                FlutterBoost.singleton.open("f2f_second");
+                // FlutterBoost.singleton.open("f2f_second");
               },
             ),
             RaisedButton(
               child: Text('Open second without native container'),
               onPressed: () {
-                FlutterBoost.singleton.openInCurrentContainer("f2f_second");
+                // FlutterBoost.singleton.openInCurrentContainer("f2f_second");
               },
             ),
           ],
@@ -65,7 +64,7 @@ class F2FSecondPageState extends State<F2FSecondPage>{
             RaisedButton(
               child: Text('close'),
               onPressed: () {
-                FlutterBoostAPI.singleton.close();
+                // FlutterBoostAPI.singleton.close();
               },
             ),
           ],
