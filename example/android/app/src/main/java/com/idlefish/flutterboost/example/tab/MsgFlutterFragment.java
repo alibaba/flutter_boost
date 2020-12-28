@@ -18,8 +18,8 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-         uniqueId = FlutterRouterApi.instance().generateUniqueId("second");
-        FlutterRouterApi.instance().pushOrShowRoute( uniqueId, "second", null,false,null);
+        uniqueId = FlutterRouterApi.instance().generateUniqueId("tab_message");
+        FlutterRouterApi.instance().pushOrShowRoute( uniqueId, "tab_message", null,false,null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -31,7 +31,7 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if(!hidden){
-            FlutterRouterApi.instance().pushOrShowRoute( uniqueId, "second", null,false,null);
+            FlutterRouterApi.instance().pushOrShowRoute( uniqueId, "tab_message", null,false,null);
         }
         super.onHiddenChanged(hidden);
 

@@ -18,8 +18,8 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        uniqueId = FlutterRouterApi.instance().generateUniqueId("flutterFragment");
-        FlutterRouterApi.instance().pushOrShowRoute(uniqueId, "flutterFragment", null, false, null);
+        uniqueId = FlutterRouterApi.instance().generateUniqueId("tab_friend");
+        FlutterRouterApi.instance().pushOrShowRoute(uniqueId, "tab_friend", null, false, null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -31,7 +31,7 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            FlutterRouterApi.instance().pushOrShowRoute(uniqueId, "flutterFragment", null, false, null);
+            FlutterRouterApi.instance().pushOrShowRoute(uniqueId, "tab_friend", null, false, null);
         }
         super.onHiddenChanged(hidden);
 

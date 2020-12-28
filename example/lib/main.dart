@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
+import 'tab/friend.dart';
+import 'tab/message.dart';
 
 import 'simple_page_widgets.dart';
 import 'flutter_to_flutter_sample.dart';
@@ -39,7 +41,8 @@ class _MyAppState extends State<MyApp> {
 
         return FlutterRouteWidget(params: params);
       },
-
+      'tab_friend': (pageName, params, _) => FriendWidget(params),
+      'tab_message': (pageName, params, _) => MessageWidget(params),
       'f2f_first': (pageName, params, _) => F2FFirstPage(),
       'f2f_second': (pageName, params, _) => F2FSecondPage(),
     };

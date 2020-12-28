@@ -631,6 +631,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     @Override
     public void onResume() {
         super.onResume();
+        delegate.getFlutterEngine();
 //        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
 //        delegate.onResume();
     }
