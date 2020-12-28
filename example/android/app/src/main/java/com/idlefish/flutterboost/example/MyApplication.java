@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.content.Intent;
 import android.util.Log;

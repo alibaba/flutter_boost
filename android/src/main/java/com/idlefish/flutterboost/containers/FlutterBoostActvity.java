@@ -559,7 +559,9 @@ public class FlutterBoostActvity extends Activity
     protected void onResume() {
         super.onResume();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        delegate.onResume();
+//        delegate.onResume();
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+
     }
 
     @Override
@@ -571,7 +573,8 @@ public class FlutterBoostActvity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        delegate.onPause();
+//        delegate.onPause();
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     }
 
@@ -611,13 +614,7 @@ public class FlutterBoostActvity extends Activity
     @Override
     public void onBackPressed() {
 //        delegate.onBackPressed();
-        FlutterRouterApi.instance().popRoute(new FlutterRouterApi.Reply<Void>() {
-
-            @Override
-            public void reply(Void reply) {
-
-            }
-        });
+        ActivityAndFragmentPatch.onBackPressed();
     }
 
     @Override
@@ -820,7 +817,8 @@ public class FlutterBoostActvity extends Activity
     @NonNull
     @Override
     public RenderMode getRenderMode() {
-        return RenderMode.texture;
+        return ActivityAndFragmentPatch.getRenderMode();
+//        return RenderMode.texture;
     }
 
     /**

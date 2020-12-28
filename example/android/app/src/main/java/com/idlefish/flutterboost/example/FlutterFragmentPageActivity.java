@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+
+
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.SplashScreen;

@@ -14,7 +14,6 @@ typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 typedef PageBuilder = Widget Function(
     String pageName, Map params, String uniqueId);
 
-
 class FlutterBoostApp extends StatefulWidget {
   final FlutterBoostAppBuilder appBuilder;
   final Map<String, PageBuilder> routeMap;
@@ -35,7 +34,7 @@ class FlutterBoostApp extends StatefulWidget {
 }
 
 class FlutterBoostAppState extends State<FlutterBoostApp> {
-  final List<Page<dynamic>> pages = <Page<dynamic>>[];
+  final List<BoostPage<dynamic>> pages = <BoostPage<dynamic>>[];
   BoostFlutterRouterApi _boostFlutterRouterApi;
   NativeRouterApi _nativeRouterApi;
 
@@ -44,15 +43,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi get boostFlutterRouterApi => _boostFlutterRouterApi;
 
   Map<String, PageBuilder> get routeMap => widget.routeMap;
-  final List<PageInfo>  _stack = <PageInfo>[];
-  List<PageInfo>  get stack=>_stack;
+  final List<PageInfo> _stack = <PageInfo>[];
+
+  List<PageInfo> get stack => _stack;
 
   void stackAdd(PageInfo pageInfo) {
     _stack.add(pageInfo);
   }
+
   void stackRemove(PageInfo pageInfo) {
     _stack.add(pageInfo);
   }
+
   // bool isNextFlutterPage(PageInfo pageInfo) {
   //   PageInfo pInfo = _stack.singleWhere((element) =>
   //   (element.location == pageInfo.location) && (element.page == pageInfo.page));
@@ -91,37 +93,29 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   @override
   Widget build(BuildContext context) {
-    return widget.appBuilder(
+    return widget.appBuilder(WillPopScope(
+        onWillPop: () async {
+          ///1.当page 的navigator 还能pop 时候 ,ispop=false
+          // bool ispop=await _navigatorKey.currentState.maybePop();
+          // if(!ispop){
+          //   return true;
+          // }
+          // if(ispop){
+          //   return false;
+          // }
 
-        WillPopScope(
-            onWillPop: () async {
-              ///1.当page 的navigator 还能pop 时候 ,ispop=false
-              // bool ispop=await _navigatorKey.currentState.maybePop();
-              // if(!ispop){
-              //   return true;
-              // }
-              // if(ispop){
-              //   return false;
-              // }
-
-              BoostPage page = pages.last as BoostPage;
-              bool r = page.navKey.currentState.canPop();
-              if (r) {
-                page.navKey.currentState.pop();
-                return true;
-              } else {
-                return false;
-              }
-              // return !await _navigatorKey.currentState.maybePop();
-            },
-            child: Navigator(
-                key: _navigatorKey,
-                pages: List.of(pages),
-                onPopPage: _onPopPage
-            )
-        )
-
-    );
+          BoostPage<dynamic> page = pages.last;
+          bool r = page.navKey.currentState.canPop();
+          if (r) {
+            page.navKey.currentState.pop();
+            return true;
+          } else {
+            return false;
+          }
+          // return !await _navigatorKey.currentState.maybePop();
+        },
+        child: Navigator(
+            key: _navigatorKey, pages: List.of(pages), onPopPage: _onPopPage)));
   }
 
   bool _onPopPage(Route<dynamic> route, dynamic result) {
@@ -130,13 +124,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return false;
   }
 
-  Page _createPage(String pageName, Map arguments) {
+  Page _createPage(String pageName, Map arguments, {String uniqueId}) {
     if (widget.routeMap.containsKey(pageName)) {
       PageBuilder builder = widget.routeMap[pageName];
-      String uniqueId = _getUniqueId(pageName);
-      return BoostPage(key: ValueKey(uniqueId),
+      String uId = uniqueId ?? _getUniqueId(pageName);
+      return BoostPage<dynamic>(
+          key: ValueKey(uId),
           name: pageName,
-          uniqueId: uniqueId,
+          uniqueId: uId,
           builder: builder,
           arguments: arguments);
     } else {
@@ -145,28 +140,38 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   String _getUniqueId(String pageName) {
-    return '__container_uniqueId_key__${DateTime
-        .now()
-        .millisecondsSinceEpoch}-${pageName}';
+    return '__container_uniqueId_key__${DateTime.now().millisecondsSinceEpoch}-${pageName}';
   }
 
-  void _push(String pageName, {Map arguments}) {
+  void _push(String pageName, {String uniqueId, Map arguments}) {
     setState(() {
-      Page page = _createPage(pageName, arguments);
+      Page page = _createPage(pageName, arguments, uniqueId: uniqueId);
       pages.add(page);
       // stackAdd(PageInfo(location:PageLocation.flutter, page: page));
     });
   }
 
+  bool _show(String uniqueId) {
+    BoostPage page = pages
+        .singleWhere((element) => element.uniqueId == uniqueId, orElse: () {});
+    if (page != null) {
+      pages.remove(page);
+      pages.add(page);
+      setState(() {});
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   void pop() async {
-    BoostPage page = pages.last as BoostPage;
+    BoostPage page = pages.last;
     bool r = await page.navKey.currentState.maybePop();
     if (!r) {
       setState(() {
         Page page = pages.removeLast();
 
         _nativeRouterApi.popRoute(null, null);
-
       });
     }
   }
@@ -193,14 +198,25 @@ class BoostNavigator {
     return appState.routeMap.containsKey(pageName);
   }
 
-  void push(String pageName, {Map arguments, bool openContainer = true}) {
+  void push(String pageName,
+      {String uniqueId, Map arguments, bool openContainer = true}) {
     if (isFlutterPage(pageName)) {
-
-      appState.nativeRouterApi.pushFlutterRoute(pageName, null, arguments);
-      appState._push(pageName, arguments: arguments);
+      if(openContainer){
+        appState.nativeRouterApi.pushFlutterRoute(pageName, null, arguments);
+      }
+      appState._push(pageName, uniqueId: uniqueId, arguments: arguments);
     } else {
       appState.nativeRouterApi.pushNativeRoute(pageName, null, arguments);
       // appState.stackAdd(PageInfo(location: PageLocation.native,page: null));
+    }
+  }
+
+  void pushOrShowRoute(
+      String pageName, String uniqueId, Map arguments, bool openContainer) {
+    bool isShow = appState._show(uniqueId);
+    if (!isShow) {
+      push(pageName,
+          uniqueId: uniqueId, arguments: arguments, openContainer: false);
     }
   }
 
@@ -209,19 +225,19 @@ class BoostNavigator {
   }
 }
 
-class BoostPage extends Page<dynamic> {
+class BoostPage<T> extends Page<dynamic> {
   final PageBuilder builder;
   final String name;
   final Map arguments;
   final String uniqueId;
 
-  BoostPage({
-    @required LocalKey key,
-    @required String this.name,
-    @required this.builder,
-    @required String this.uniqueId,
-    Map this.arguments
-  }) : super(key: key, name: name);
+  BoostPage(
+      {@required LocalKey key,
+      @required String this.name,
+      @required this.builder,
+      @required String this.uniqueId,
+      Map this.arguments})
+      : super(key: key, name: name, arguments: arguments);
 
   Future<bool> _onBackPressed(BuildContext context) {
     return new Future(() {
@@ -232,8 +248,8 @@ class BoostPage extends Page<dynamic> {
 
   GlobalKey<NavigatorState> navKey;
 
-  GlobalKey<NavigatorState> keySave(String uniqueId,
-      GlobalKey<NavigatorState> key) {
+  GlobalKey<NavigatorState> keySave(
+      String uniqueId, GlobalKey<NavigatorState> key) {
     if (navKey == null) {
       navKey = key;
     }
@@ -241,7 +257,7 @@ class BoostPage extends Page<dynamic> {
   }
 
   Route createRoute(BuildContext context) {
-    return MaterialPageRoute <dynamic>(
+    return MaterialPageRoute<dynamic>(
         settings: this,
         builder: (BuildContext context) {
           // return WillPopScope(
@@ -280,9 +296,7 @@ class BoostPage extends Page<dynamic> {
                   settings: settings,
                   builder: (BuildContext context) {
                     return builder(name, arguments, uniqueId);
-                  }
-
-              );
+                  });
             },
           );
 
@@ -299,9 +313,9 @@ enum PageLocation {
 class PageInfo {
   final PageLocation location;
   final BoostPage page;
-  PageInfo({this.location, BoostPage this.page });
-}
 
+  PageInfo({this.location, BoostPage this.page});
+}
 
 class PageNameUnkonw extends Page<dynamic> {
   PageNameUnkonw() : super(key: ValueKey("PageNameUnkonw"));

@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.annotation.TargetApi;
 import android.content.Context;

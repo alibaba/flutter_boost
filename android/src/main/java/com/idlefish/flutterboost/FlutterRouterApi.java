@@ -1,5 +1,8 @@
 package com.idlefish.flutterboost;
 
+import android.text.format.DateUtils;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,20 +10,20 @@ import io.flutter.plugin.common.BasicMessageChannel;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.StandardMessageCodec;
 
-public  class FlutterRouterApi {
+public class FlutterRouterApi {
 
     private BinaryMessenger binaryMessenger;
     static FlutterRouterApi flutterRouterApi;
 
-   public static FlutterRouterApi instance(){
-       if(flutterRouterApi==null){
-           flutterRouterApi=new FlutterRouterApi();
-       }
-        return  flutterRouterApi;
+    public static FlutterRouterApi instance() {
+        if (flutterRouterApi == null) {
+            flutterRouterApi = new FlutterRouterApi();
+        }
+        return flutterRouterApi;
     }
 
-    public  void setBinaryMessenger(BinaryMessenger binaryMessenger){
-       this.binaryMessenger=binaryMessenger;
+    public void setBinaryMessenger(BinaryMessenger binaryMessenger) {
+        this.binaryMessenger = binaryMessenger;
     }
 
     public static void setup(BinaryMessenger binaryMessenger) {
@@ -30,23 +33,54 @@ public  class FlutterRouterApi {
     public interface Reply<T> {
         void reply(T reply);
     }
-    public void pushRoute(String pageName, String uniqueId,Map arguments, final Reply<Void> callback) {
-        final Map<String , Object> mapMessage = new HashMap<String , Object>();
-        mapMessage.put("pageName",pageName);
-        mapMessage.put("uniqueId",uniqueId);
-        mapMessage.put("arguments",arguments);
+
+    public void pushRoute(String pageName, String uniqueId, Map arguments, final Reply<Void> callback) {
+        final Map<String, Object> mapMessage = new HashMap<String, Object>();
+        mapMessage.put("pageName", pageName);
+        mapMessage.put("uniqueId", uniqueId);
+        mapMessage.put("arguments", arguments);
 
         BasicMessageChannel<Object> channel =
                 new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_PushRoute, new StandardMessageCodec());
 
         channel.send(mapMessage, new BasicMessageChannel.Reply<Object>() {
             public void reply(Object channelReply) {
-                if(callback!=null){
+                if (callback != null) {
                     callback.reply(null);
                 }
             }
         });
     }
+
+    public String generateUniqueId(String pageName) {
+        Date date = new Date();
+        return "__container_uniqueId_key__" + date.getTime() + pageName;
+    }
+
+    /**
+     * @param uniqueId
+     * @param pageName
+     * @param arguments
+     * @param callback
+     */
+    public void pushOrShowRoute(String uniqueId, String pageName, Map arguments, boolean openContainer, final Reply<Void> callback) {
+        final Map<String, Object> mapMessage = new HashMap<String, Object>();
+        mapMessage.put("uniqueId", uniqueId);
+        mapMessage.put("arguments", arguments);
+        mapMessage.put("pageName", pageName);
+        mapMessage.put("openContainer", openContainer);
+        BasicMessageChannel<Object> channel =
+                new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_PushOrShowRoute, new StandardMessageCodec());
+
+        channel.send(mapMessage, new BasicMessageChannel.Reply<Object>() {
+            public void reply(Object channelReply) {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            }
+        });
+    }
+
     public void popRoute(final Reply<Void> callback) {
         BasicMessageChannel<Object> channel =
                 new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_PopRoute, new StandardMessageCodec());

@@ -4,4 +4,5 @@
     <string name="open_flutter">open flutter page</string>
     <string name="open_flutter_fragment">open flutter fragment page</string>
     <string name="native_info">This is a native activity</string>
+
 </resources>

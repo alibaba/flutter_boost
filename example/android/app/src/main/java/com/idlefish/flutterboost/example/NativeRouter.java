@@ -1,16 +1,19 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+
+import com.idlefish.flutterboost.example.tab.TabMainActivity;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
 
-public class PageRouter {
+public class NativeRouter {
 
     public final static Map<String, String> pageName = new HashMap<String, String>() {{
 
@@ -47,7 +50,8 @@ public class PageRouter {
                 }
                 return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
-                context.startActivity(new Intent(context, FlutterFragmentPageActivity.class));
+                context.startActivity(new Intent(context, TabMainActivity.class));
+
                 return true;
             } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));

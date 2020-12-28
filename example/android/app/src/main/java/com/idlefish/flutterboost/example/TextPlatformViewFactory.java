@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.content.Context;
 import android.view.View;

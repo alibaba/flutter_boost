@@ -23,5 +23,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void popRoute() {
     BoostNavigator.of(null,appState:appState).pop();
   }
+  void pushOrShowRoute(String pageName,String uniqueId, Map arguments, bool openContainer) {
+    BoostNavigator.of(null,appState:appState).pushOrShowRoute(pageName,uniqueId,arguments,openContainer);
+  }
+
 }
 

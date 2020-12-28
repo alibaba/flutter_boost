@@ -5,7 +5,7 @@ abstract class FlutterRouterApi {
   void pushRoute(String pageName, String uniqueId, Map arguments);
 
   void popRoute();
-
+  void pushOrShowRoute(String pageName,String uniqueId, Map arguments, bool openContainer);
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
@@ -26,6 +26,20 @@ abstract class FlutterRouterApi {
         final Map<dynamic, dynamic> mapMessage =
             message as Map<dynamic, dynamic>;
         api.popRoute();
+      });
+    }
+    {
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'FlutterRouterApi.pushOrShowRoute', StandardMessageCodec());
+      channel.setMessageHandler((dynamic message) async {
+        final Map<dynamic, dynamic> mapMessage =
+        message as Map<dynamic, dynamic>;
+        String pageName = mapMessage["pageName"];
+        String uniqueId = mapMessage["uniqueId"];
+        bool openContainer = mapMessage["openContainer"];
+        Map arguments = mapMessage["arguments"];
+
+        api.pushOrShowRoute(pageName,uniqueId, arguments, openContainer);
       });
     }
   }

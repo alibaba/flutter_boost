@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -30,11 +30,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mOpenNative = findViewById(R.id.open_native);
         mOpenFlutter = findViewById(R.id.open_flutter);
-//        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
+        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
-//        mOpenFlutterFragment.setOnClickListener(this);
+        mOpenFlutterFragment.setOnClickListener(this);
     }
 
     @Override
@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         params.put("test2","v_test2");
         //Add some params if needed.
         if (v == mOpenNative) {
-            PageRouter.openPageByUrl(this, PageRouter.NATIVE_PAGE_URL , params);
+            NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL , params);
         } else if (v == mOpenFlutter) {
             FlutterRouterApi.instance().pushRoute("flutterPage",null,null,null);
 //            PageRouter.openPageByUrl(this, PageRouter.FLUTTER_PAGE_URL,params);
         } else if (v == mOpenFlutterFragment) {
-//            PageRouter.openPageByUrl(this, PageRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
+            NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         }
     }
 }

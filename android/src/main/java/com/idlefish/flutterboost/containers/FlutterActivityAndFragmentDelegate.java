@@ -393,9 +393,7 @@ public class FlutterActivityAndFragmentDelegate {
     void onResume() {
         Log.v(TAG, "onResume()");
         ensureAlive();
-        flutterView.attachToFlutterEngine(flutterEngine);
         flutterEngine.getLifecycleChannel().appIsResumed();
-
 
     }
 
@@ -436,7 +434,6 @@ public class FlutterActivityAndFragmentDelegate {
     void onPause() {
         Log.v(TAG, "onPause()");
         ensureAlive();
-        flutterView.detachFromFlutterEngine();
         flutterEngine.getLifecycleChannel().appIsInactive();
     }
 
@@ -457,6 +454,14 @@ public class FlutterActivityAndFragmentDelegate {
         Log.v(TAG, "onStop()");
         ensureAlive();
 //        flutterEngine.getLifecycleChannel().appIsPaused();
+    }
+
+    /**
+     *
+     */
+    @Nullable
+    public FlutterView getFlutterView() {
+        return flutterView;
     }
 
     /**

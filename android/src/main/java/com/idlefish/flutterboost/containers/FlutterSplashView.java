@@ -255,18 +255,18 @@ import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
     splashScreen.transitionToFlutter(onTransitionComplete);
   }
 
-//  @Override
-//  protected void onAttachedToWindow() {
-//    super.onAttachedToWindow();
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
 //    flutterView.attachToFlutterEngine(flutterEngine);
-//  }
-//
-//  @Override
-//  protected void onDetachedFromWindow() {
-//    super.onDetachedFromWindow();
-//
+  }
+
+  @Override
+  protected void onDetachedFromWindow() {
+    super.onDetachedFromWindow();
+
 //    flutterView.detachFromFlutterEngine();
-//  }
+  }
 
   @Keep
   public static class SavedState extends BaseSavedState {

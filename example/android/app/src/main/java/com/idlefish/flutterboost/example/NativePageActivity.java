@@ -1,4 +1,4 @@
-package com.taobao.idlefish.flutterboostexample;
+package com.idlefish.flutterboost.example;
 
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -39,11 +39,11 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
         params.put("test2","v_test2");
 
         if (v == mOpenNative) {
-            PageRouter.openPageByUrl(this, PageRouter.NATIVE_PAGE_URL,params);
+            NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL,params);
         } else if (v == mOpenFlutter) {
             FlutterRouterApi.instance().pushRoute("flutterPage",null,null,null);
         } else if (v == mOpenFlutterFragment) {
-            PageRouter.openPageByUrl(this, PageRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
+            NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         }
     }
 }
