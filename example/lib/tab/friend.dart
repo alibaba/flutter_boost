@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/flutter_boost_app.dart';
+import 'package:flutter_boost/boost_navigator.dart';
 class FriendWidget extends StatelessWidget {
   final Map params;
 

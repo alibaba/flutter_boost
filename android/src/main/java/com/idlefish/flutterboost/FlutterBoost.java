@@ -7,12 +7,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.idlefish.flutterboost.containers.ContainerManager;
+
 public class FlutterBoost {
 
     static FlutterBoost sInstance = null;
 
     private NativeRouterApi mApi;
+
     private Activity topActivity = null;
+
+    private ContainerManager containerManager;
+
+    FlutterBoost() {
+        containerManager = new ContainerManager();
+    }
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -21,22 +30,22 @@ public class FlutterBoost {
         return sInstance;
     }
 
-    public void init(Application application,NativeRouterApi api) {
+    public void init(Application application, NativeRouterApi api) {
         mApi = api;
         application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-                topActivity=activity;
+                topActivity = activity;
             }
 
             @Override
             public void onActivityStarted(@NonNull Activity activity) {
-                topActivity=activity;
+                topActivity = activity;
             }
 
             @Override
             public void onActivityResumed(@NonNull Activity activity) {
-                topActivity=activity;
+                topActivity = activity;
             }
 
             @Override
@@ -60,12 +69,16 @@ public class FlutterBoost {
             }
         });
     }
-    public Activity getTopActivity(){
-        return  topActivity;
+
+    public Activity getTopActivity() {
+        return topActivity;
     }
+
     public NativeRouterApi getApi() {
         return mApi;
     }
 
-
+    public ContainerManager getContainerManager() {
+        return containerManager;
+    }
 }

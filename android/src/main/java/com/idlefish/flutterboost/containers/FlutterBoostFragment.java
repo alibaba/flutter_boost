@@ -601,7 +601,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     public View onCreateView(
             LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v=delegate.onCreateView(inflater, container, savedInstanceState);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+//        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         return v;
 
     }
@@ -632,7 +632,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     public void onResume() {
         super.onResume();
         delegate.getFlutterEngine();
-//        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
 //        delegate.onResume();
     }
 

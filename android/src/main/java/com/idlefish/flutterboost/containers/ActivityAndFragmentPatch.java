@@ -1,6 +1,9 @@
 package com.idlefish.flutterboost.containers;
 
 
+import android.os.Build;
+import android.view.View;
+
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterRouterApi;
 
@@ -55,7 +58,7 @@ public class ActivityAndFragmentPatch {
      * @param flutterEngine
      */
     public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
-        if(FlutterBoost.instance().getTopActivity()== flutterView.getContext()){
+        if((FlutterBoost.instance().getTopActivity()== flutterView.getContext())){
             flutterView.attachToFlutterEngine(flutterEngine);
         }
         flutterEngine.getLifecycleChannel().appIsResumed();

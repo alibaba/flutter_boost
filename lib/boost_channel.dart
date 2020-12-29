@@ -1,11 +1,13 @@
 import 'package:flutter/services.dart';
 
 abstract class FlutterRouterApi {
-
   void pushRoute(String pageName, String uniqueId, Map arguments);
 
   void popRoute();
-  void pushOrShowRoute(String pageName,String uniqueId, Map arguments, bool openContainer);
+
+  void pushOrShowRoute(
+      String pageName, String uniqueId, Map arguments, bool openContainer);
+
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
@@ -13,9 +15,9 @@ abstract class FlutterRouterApi {
       channel.setMessageHandler((dynamic message) async {
         final Map<dynamic, dynamic> mapMessage =
             message as Map<dynamic, dynamic>;
-        String pageName = mapMessage["pageName"];
-        String uniqueId = mapMessage["uniqueId"];
-        Map arguments = mapMessage["arguments"];
+        final String pageName = mapMessage['pageName'];
+        final String uniqueId = mapMessage['uniqueId'];
+        final Map arguments = mapMessage['arguments'];
         api.pushRoute(pageName, uniqueId, arguments);
       });
     }
@@ -33,25 +35,28 @@ abstract class FlutterRouterApi {
           'FlutterRouterApi.pushOrShowRoute', StandardMessageCodec());
       channel.setMessageHandler((dynamic message) async {
         final Map<dynamic, dynamic> mapMessage =
-        message as Map<dynamic, dynamic>;
-        String pageName = mapMessage["pageName"];
-        String uniqueId = mapMessage["uniqueId"];
-        bool openContainer = mapMessage["openContainer"];
-        Map arguments = mapMessage["arguments"];
+            message as Map<dynamic, dynamic>;
+        final String pageName = mapMessage['pageName'];
+        final String uniqueId = mapMessage['uniqueId'];
+        final bool openContainer = mapMessage['openContainer'];
+        final Map arguments = mapMessage['arguments'];
 
-        api.pushOrShowRoute(pageName,uniqueId, arguments, openContainer);
+        api.pushOrShowRoute(pageName, uniqueId, arguments, openContainer);
       });
     }
   }
 }
-
+///
+///
+/// Native测接口
+///
 class NativeRouterApi {
   Future<void> pushNativeRoute(
       String pageName, String uniqueId, Map arguments) async {
     final Map<dynamic, dynamic> requestMap = <dynamic, dynamic>{};
-    requestMap["pageName"] = pageName;
-    requestMap["uniqueId"] = uniqueId;
-    requestMap["arguments"] = arguments;
+    requestMap['pageName'] = pageName;
+    requestMap['uniqueId'] = uniqueId;
+    requestMap['arguments'] = arguments;
 
     const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
         'NativeRouterApi.pushNativeRoute', StandardMessageCodec());
@@ -76,9 +81,9 @@ class NativeRouterApi {
   Future<void> pushFlutterRoute(
       String pageName, String uniqueId, Map arguments) async {
     final Map<dynamic, dynamic> requestMap = <dynamic, dynamic>{};
-    requestMap["pageName"] = pageName;
-    requestMap["uniqueId"] = uniqueId;
-    requestMap["arguments"] = arguments;
+    requestMap['pageName'] = pageName;
+    requestMap['uniqueId'] = uniqueId;
+    requestMap['arguments'] = arguments;
     const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
         'NativeRouterApi.pushFlutterRoute', StandardMessageCodec());
 
@@ -101,8 +106,8 @@ class NativeRouterApi {
 
   Future<void> popRoute(String pageName, String uniqueId) async {
     final Map<dynamic, dynamic> requestMap = <dynamic, dynamic>{};
-    requestMap["pageName"] = pageName;
-    requestMap["uniqueId"] = uniqueId;
+    requestMap['pageName'] = pageName;
+    requestMap['uniqueId'] = uniqueId;
 
     const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
         'NativeRouterApi.popRoute', StandardMessageCodec());
