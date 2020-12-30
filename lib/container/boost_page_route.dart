@@ -39,7 +39,8 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    return super.buildTransitions(context, animation, secondaryAnimation, child);
+    return super
+        .buildTransitions(context, animation, secondaryAnimation, child);
   }
 
   BoostPageRoute(
@@ -70,6 +71,11 @@ class BoostPageRoute<T> extends MaterialPageRoute<T> {
     } else {
       return null;
     }
+  }
+
+  @override
+  String toString() {
+    return 'pageName:$pageName,params:$params,${super.toString()}';
   }
 }
 
