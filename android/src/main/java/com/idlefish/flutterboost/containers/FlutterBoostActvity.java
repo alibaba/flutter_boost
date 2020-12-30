@@ -427,7 +427,7 @@ public class FlutterBoostActvity extends Activity
         delegate = new FlutterActivityAndFragmentDelegate(this);
         delegate.onAttach(this);
         delegate.onActivityCreated(savedInstanceState);
-
+        ActivityAndFragmentPatch.pushContainer(this);
         configureWindowForTransparency();
         setContentView(createFlutterView());
         configureStatusBarForFullscreenFlutterExperience();
@@ -559,8 +559,7 @@ public class FlutterBoostActvity extends Activity
     protected void onResume() {
         super.onResume();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-//        delegate.onResume();
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
 
     }
 
@@ -573,6 +572,7 @@ public class FlutterBoostActvity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
+        ActivityAndFragmentPatch.removeContainer(this);
 //        delegate.onPause();
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);

@@ -48,7 +48,7 @@ import io.flutter.plugin.platform.PlatformPlugin;
  *   <li>{@link #onUserLeaveHint()}
  *   <li>{@link #onTrimMemory(int)}
  * </ol>
- *
+ * <p>
  * Additionally, when starting an {@code Activity} for a result from this {@code Fragment}, be sure
  * to invoke {@link Fragment#startActivityForResult(Intent, int)} rather than {@link
  * android.app.Activity#startActivityForResult(Intent, int)}. If the {@code Activity} version of the
@@ -95,21 +95,33 @@ import io.flutter.plugin.platform.PlatformPlugin;
 public class FlutterBoostFragment extends Fragment implements FlutterActivityAndFragmentDelegate.Host {
     private static final String TAG = "FlutterBoostFragment";
 
-    /** The Dart entrypoint method name that is executed upon initialization. */
+    /**
+     * The Dart entrypoint method name that is executed upon initialization.
+     */
     protected static final String ARG_DART_ENTRYPOINT = "dart_entrypoint";
-    /** Initial Flutter route that is rendered in a Navigator widget. */
+    /**
+     * Initial Flutter route that is rendered in a Navigator widget.
+     */
     protected static final String ARG_INITIAL_ROUTE = "initial_route";
-    /** Path to Flutter's Dart code. */
+    /**
+     * Path to Flutter's Dart code.
+     */
     protected static final String ARG_APP_BUNDLE_PATH = "app_bundle_path";
-    /** Flutter shell arguments. */
+    /**
+     * Flutter shell arguments.
+     */
     protected static final String ARG_FLUTTER_INITIALIZATION_ARGS = "initialization_args";
-    /** {@link RenderMode} to be used for the {@link FlutterView} in this {@code FlutterFragment} */
+    /**
+     * {@link RenderMode} to be used for the {@link FlutterView} in this {@code FlutterFragment}
+     */
     protected static final String ARG_FLUTTERVIEW_RENDER_MODE = "flutterview_render_mode";
     /**
      * {@link TransparencyMode} to be used for the {@link FlutterView} in this {@code FlutterFragment}
      */
     protected static final String ARG_FLUTTERVIEW_TRANSPARENCY_MODE = "flutterview_transparency_mode";
-    /** See {@link #shouldAttachEngineToActivity()}. */
+    /**
+     * See {@link #shouldAttachEngineToActivity()}.
+     */
     protected static final String ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY =
             "should_attach_engine_to_activity";
     /**
@@ -128,7 +140,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * when this fragment is created and destroyed.
      */
     protected static final String ARG_ENABLE_STATE_RESTORATION = "enable_state_restoration";
-
+    protected boolean isStackTop =true;
     /**
      * Creates a {@code FlutterFragment} with a default configuration.
      *
@@ -187,7 +199,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      *   <li>Override {@link io.flutter.embedding.android.FlutterFragment.NewEngineFragmentBuilder}, call through to the super method,
      *       then add the new properties as arguments in the {@link Bundle}.
      * </ol>
-     *
+     * <p>
      * Once a {@code NewEngineFragmentBuilder} subclass is defined, the {@code FlutterFragment}
      * subclass can be instantiated as follows. {@code MyFlutterFragment f = new MyBuilder()
      * .someExistingProperty(...) .someNewProperty(...) .build<MyFlutterFragment>(); }
@@ -218,7 +230,9 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
             fragmentClass = subclass;
         }
 
-        /** The name of the initial Dart method to invoke, defaults to "main". */
+        /**
+         * The name of the initial Dart method to invoke, defaults to "main".
+         */
         @NonNull
         public NewEngineFragmentBuilder dartEntrypoint(@NonNull String dartEntrypoint) {
             this.dartEntrypoint = dartEntrypoint;
@@ -245,7 +259,9 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
             return this;
         }
 
-        /** Any special configuration arguments for the Flutter engine */
+        /**
+         * Any special configuration arguments for the Flutter engine
+         */
         @NonNull
         public NewEngineFragmentBuilder flutterShellArgs(@NonNull FlutterShellArgs shellArgs) {
             this.shellArgs = shellArgs;
@@ -411,7 +427,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      *   <li>Override {@link FlutterBoostFragment.CachedEngineFragmentBuilder#createArgs()}, call through to the super
      *       method, then add the new properties as arguments in the {@link Bundle}.
      * </ol>
-     *
+     * <p>
      * Once a {@code CachedEngineFragmentBuilder} subclass is defined, the {@code FlutterFragment}
      * subclass can be instantiated as follows. {@code MyFlutterFragment f = new MyBuilder()
      * .someExistingProperty(...) .someNewProperty(...) .build<MyFlutterFragment>(); }
@@ -563,11 +579,12 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     // Delegate that runs all lifecycle and OS hook logic that is common between
     // FlutterActivity and FlutterFragment. See the FlutterActivityAndFragmentDelegate
     // implementation for details about why it exists.
-   FlutterActivityAndFragmentDelegate delegate;
+    FlutterActivityAndFragmentDelegate delegate;
 
-    public FlutterActivityAndFragmentDelegate getDelegate(){
-        return  delegate;
+    public FlutterActivityAndFragmentDelegate getDelegate() {
+        return delegate;
     }
+
     public FlutterBoostFragment() {
         // Ensure that we at least have an empty Bundle of arguments so that we don't
         // need to continually check for null arguments before grabbing one.
@@ -600,7 +617,8 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     @Override
     public View onCreateView(
             LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v=delegate.onCreateView(inflater, container, savedInstanceState);
+        ActivityAndFragmentPatch.pushContainer(this);
+        View v = delegate.onCreateView(inflater, container, savedInstanceState);
 //        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         return v;
 
@@ -620,20 +638,25 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        if(hidden){
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
-        }else{
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+        if (hidden) {
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine());
+        } else {
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
         }
         super.onHiddenChanged(hidden);
+    }
+
+    public void setTabSelected(boolean isTop) {
+        isStackTop=isTop;
     }
 
     @Override
     public void onResume() {
         super.onResume();
         delegate.getFlutterEngine();
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
-//        delegate.onResume();
+        if(isStackTop){
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
+        }
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if
@@ -646,7 +669,8 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     @Override
     public void onPause() {
         super.onPause();
-//        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
+        ActivityAndFragmentPatch.removeContainer(this);
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
 //        delegate.onPause();
     }
 
@@ -683,8 +707,8 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      *
      * <p>
      *
-     * @param requestCode identifier passed with the initial permission request
-     * @param permissions permissions that were requested
+     * @param requestCode  identifier passed with the initial permission request
+     * @param permissions  permissions that were requested
      * @param grantResults permission grants or denials
      */
     @FlutterBoostFragment.ActivityCallThrough
@@ -725,8 +749,8 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * <p>
      *
      * @param requestCode request code sent with {@link Fragment#startActivityForResult(Intent, int)}
-     * @param resultCode code representing the result of the {@code Activity} that was launched
-     * @param data any corresponding return data, held within an {@code Intent}
+     * @param resultCode  code representing the result of the {@code Activity} that was launched
+     * @param data        any corresponding return data, held within an {@code Intent}
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -775,7 +799,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     public FlutterShellArgs getFlutterShellArgs() {
         String[] flutterShellArgsArray = getArguments().getStringArray(ARG_FLUTTER_INITIALIZATION_ARGS);
         return new FlutterShellArgs(
-                flutterShellArgsArray != null ? flutterShellArgsArray : new String[] {});
+                flutterShellArgsArray != null ? flutterShellArgsArray : new String[]{});
     }
 
     /**
@@ -815,7 +839,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * Flutter app.
      *
      * <p>Defaults to "main".
-     *
      */
     @Override
     @NonNull
@@ -829,7 +852,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      *
      * <p>When unspecified, the value is null, which defaults to the app bundle path defined in {@link
      * FlutterLoader#findAppBundlePath()}.
-     *
      */
     @Override
     @NonNull
@@ -841,7 +863,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * Returns the initial route that should be rendered within Flutter, once the Flutter app starts.
      *
      * <p>Defaults to {@code null}, which signifies a route of "/" in Flutter.
-     *
      */
     @Override
     @Nullable
@@ -854,7 +875,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * FlutterFragment}.
      *
      * <p>Defaults to {@link RenderMode#surface}.
-     *
      */
     @Override
     @NonNull
@@ -867,7 +887,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * {@code FlutterFragment}.
      *
      * <p>Defaults to {@link TransparencyMode#transparent}.
-     *
      */
     @Override
     @NonNull
@@ -903,7 +922,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      *
      * <p>If null is returned then a new default {@link FlutterEngine} will be created to back this
      * {@code FlutterFragment}.
-     *
      */
     @Override
     @Nullable
@@ -958,7 +976,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * <p>The default behavior of this method is to defer to the owning {@code FragmentActivity} as a
      * {@link FlutterEngineConfigurator}. Subclasses can override this method if the subclass needs to
      * override the {@code FragmentActivity}'s behavior, or add to it.
-     *
      */
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -985,7 +1002,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     /**
      * See {@link io.flutter.embedding.android.FlutterFragment.NewEngineFragmentBuilder#shouldAttachEngineToActivity()} and {@link
      * io.flutter.embedding.android.FlutterFragment.CachedEngineFragmentBuilder#shouldAttachEngineToActivity()}.
-     *
      */
     @Override
     public boolean shouldAttachEngineToActivity() {
@@ -1010,7 +1026,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * attached {@code Activity} implements {@link FlutterUiDisplayListener}.
      *
      * <p>Subclasses that override this method must call through to the {@code super} method.
-     *
      */
     @Override
     public void onFlutterUiDisplayed() {
@@ -1028,7 +1043,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * Activity}, if the attached {@code Activity} implements {@link FlutterUiDisplayListener}.
      *
      * <p>Subclasses that override this method must call through to the {@code super} method.
-     *
      */
     @Override
     public void onFlutterUiNoLongerDisplayed() {
@@ -1053,5 +1067,6 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
      * Annotates methods in {@code FlutterFragment} that must be called by the containing {@code
      * Activity}.
      */
-    @interface ActivityCallThrough {}
+    @interface ActivityCallThrough {
+    }
 }

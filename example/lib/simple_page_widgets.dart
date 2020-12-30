@@ -502,7 +502,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
               //   onTap: () {
               //     Navigator.push<dynamic>(context,
               //         MaterialPageRoute<dynamic>(builder: (_) => PlatformRouteWidget()));
-              //   },
+              //   }
               // ),
               //   InkWell(
               //     child: Container(

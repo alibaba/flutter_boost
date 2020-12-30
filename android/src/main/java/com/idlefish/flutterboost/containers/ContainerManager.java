@@ -7,7 +7,12 @@ public class ContainerManager {
     private final Stack<Object> mRecordStack = new Stack<Object>();
 
     void push(Object container) {
-        mRecordStack.push(container);
+        if(mRecordStack.search(container)<0){
+            mRecordStack.push(container);
+        }else{
+            mRecordStack.remove(container);
+            mRecordStack.push(container);
+        }
     }
 
     void pop(Object container) {

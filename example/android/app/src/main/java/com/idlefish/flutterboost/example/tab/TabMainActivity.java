@@ -127,14 +127,16 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         switch (i) {
             case 0:
                 mesImag.setImageResource(R.drawable.tab1_selected);
-//                friendFragment.hidden();
                 showFragment(mesFragment);
-
+                mesFragment.setTabSelected(true);
+                friendFragment.setTabSelected(false);
                 break;
             case 1:
                 friendImag.setImageResource(R.drawable.tab2_selected);
 //                mesFragment.hidden();
                 showFragment(friendFragment);
+                friendFragment.setTabSelected(true);
+                mesFragment.setTabSelected(false);
                 break;
             case 2:
                 addressImag.setImageResource(R.drawable.tab3_selected);
