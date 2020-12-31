@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 
 class MessageWidget extends StatelessWidget {
+  MessageWidget(this.params);
+
   final Map params;
 
-  MessageWidget(this.params);
 
   @override
   Widget build(BuildContext context) {

@@ -48,10 +48,42 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    return FlutterBoostApp(routerMap);
+    return FlutterBoostApp(routerMap,appBuilder:appBuilder);
   }
+  static Widget appBuilder(Widget home) {
+    return MaterialApp(home: home,navigatorObservers: [
+      BoostNavigatorObserver()
+    ],);
+  }
+
+
 
   void _onRoutePushed(
       String pageName, String uniqueId, Map params, Route route, Future _) {}
 }
 
+class BoostNavigatorObserver extends NavigatorObserver{
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('boost-didPush'+route.settings.name);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('boost-didPop'+route.settings.name);
+  }
+
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('boost-didRemove'+route.settings.name);
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    print('boost-didStartUserGesture'+route.settings.name);
+
+
+  }
+
+}

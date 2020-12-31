@@ -81,6 +81,31 @@ public class FlutterRouterApi {
         });
     }
 
+    /**
+     * groupName,保持唯一，
+     *  用来当前页面关闭后，和它同 groupname 的tab 都移除。
+     *
+     * @param uniqueId
+     * @param pageName
+     * @param arguments
+     */
+    public void showTabRoute(String groupName, String uniqueId, String pageName, Map arguments) {
+        final Map<String, Object> mapMessage = new HashMap<String, Object>();
+        mapMessage.put("groupName", groupName);
+        mapMessage.put("uniqueId", uniqueId);
+        mapMessage.put("arguments", arguments);
+        mapMessage.put("pageName", pageName);
+        BasicMessageChannel<Object> channel =
+                new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_ShowTabRoute, new StandardMessageCodec());
+
+        channel.send(mapMessage, new BasicMessageChannel.Reply<Object>() {
+            public void reply(Object channelReply) {
+//                if (callback != null) {
+//                    callback.reply(null);
+//                }
+            }
+        });
+    }
     public void popRoute(final Reply<Void> callback) {
         BasicMessageChannel<Object> channel =
                 new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_PopRoute, new StandardMessageCodec());

@@ -83,7 +83,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   // }
   @override
   void initState() {
-    pages.add(_createPage(widget.initialRoute, null));
+    pages.add(_createPage(PageInfo(pageName: widget.initialRoute)));
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi.instance(this);
     super.initState();
@@ -113,18 +113,17 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   bool _onPopPage(Route<dynamic> route, dynamic result) {
     return false;
   }
+
   ///
   /// 创建页面
-  Page _createPage(String pageName, Map arguments, {String uniqueId}) {
-    if (widget.routeMap.containsKey(pageName)) {
-      final PageBuilder builder = widget.routeMap[pageName];
-      final String uId = uniqueId ?? _getUniqueId(pageName);
+  Page _createPage(PageInfo pageInfo) {
+    if (widget.routeMap.containsKey(pageInfo.pageName)) {
+      final PageBuilder builder = widget.routeMap[pageInfo.pageName];
+      final String uId = pageInfo.uniqueId ?? _getUniqueId(pageInfo.pageName);
       return BoostPage<dynamic>(
           key: ValueKey(uId),
-          name: pageName,
-          uniqueId: uId,
-          builder: builder,
-          arguments: arguments);
+          pageInfo: pageInfo,
+          builder: builder);
     } else {
       return PageNameUnkonw();
     }
@@ -134,24 +133,34 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// 生成UniqueId
   ///
   String _getUniqueId(String pageName) {
-    return '__container_uniqueId_key__${DateTime.now().millisecondsSinceEpoch}-${pageName}';
+    return '__container_uniqueId_key__${DateTime
+        .now()
+        .millisecondsSinceEpoch}-${pageName}';
   }
 
-  void push(String pageName, {String uniqueId, Map arguments}) {
+  void push(String pageName,
+      {String uniqueId, Map arguments, bool openContainer, String groupName}) {
     setState(() {
-      final Page page = _createPage(pageName, arguments, uniqueId: uniqueId);
+      PageInfo pageInfo = PageInfo(pageName: pageName,
+          uniqueId: uniqueId,
+          arguments: arguments,
+          openContainer: openContainer,
+          groupName: groupName);
+      final Page page = _createPage(pageInfo);
       pages.add(page);
     });
   }
+
   ///
   /// 展示页面
   ///
   bool show(String uniqueId) {
-    if (pages.last?.uniqueId == uniqueId) {
+    if (pages.last?.pageInfo.uniqueId == uniqueId) {
       return true;
     }
     final BoostPage page = pages
-        .singleWhere((element) => element.uniqueId == uniqueId, orElse: () {});
+        .singleWhere((element) => element.pageInfo.uniqueId == uniqueId,
+        orElse: () {});
     if (page != null) {
       pages.remove(page);
       pages.add(page);
@@ -161,6 +170,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       return false;
     }
   }
+
   ///
   /// 关闭操作
   ///
@@ -169,31 +179,35 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final bool r = await page.navKey.currentState.maybePop();
     if (!r) {
       setState(() {
-        pages.removeLast();
-        _nativeRouterApi.popRoute(null, null);
+        if (page.pageInfo.groupName != null) {
+          pages.removeWhere((element) =>
+          element.pageInfo.groupName == page.pageInfo.groupName);
+        }
+        pages.remove(page);
+        if (page.pageInfo.openContainer) {
+          _nativeRouterApi.popRoute(null, null);
+        }
       });
     }
   }
 }
+
 ///
 /// boost定义的page
 ///
 class BoostPage<T> extends Page<T> {
-  BoostPage(
-      {LocalKey key, this.name, this.builder, this.uniqueId, this.arguments})
-      : super(key: key, name: name, arguments: arguments);
+  BoostPage({LocalKey key,
+    this.builder,
+    this.pageInfo})
+      : super(key: key);
 
-  @override
-  final String name;
   final PageBuilder builder;
-  final String uniqueId;
-  @override
-  final Map arguments;
+  final PageInfo pageInfo;
 
   GlobalKey<NavigatorState> navKey;
 
-  GlobalKey<NavigatorState> keySave(
-      String uniqueId, GlobalKey<NavigatorState> key) {
+  GlobalKey<NavigatorState> keySave(String uniqueId,
+      GlobalKey<NavigatorState> key) {
     navKey ??= key;
     return navKey;
   }
@@ -204,16 +218,17 @@ class BoostPage<T> extends Page<T> {
         settings: this,
         builder: (BuildContext context) {
           return Navigator(
-            key: keySave(uniqueId, GlobalKey<NavigatorState>()),
+            key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
             onPopPage: (Route<dynamic> route, dynamic result) {
               return false;
             },
-            initialRoute: name,
+            initialRoute: pageInfo.pageName,
             onGenerateRoute: (RouteSettings settings) {
               return MaterialPageRoute<T>(
                   settings: settings,
                   builder: (BuildContext context) {
-                    return builder(name, arguments, uniqueId);
+                    return builder(pageInfo.pageName, pageInfo.arguments,
+                        pageInfo.uniqueId);
                   });
             },
           );
@@ -226,12 +241,16 @@ class BoostPage<T> extends Page<T> {
 //   flutter,
 // }
 //
-// class PageInfo {
-//   PageInfo({this.location, BoostPage this.page});
-//
-//   final PageLocation location;
-//   final BoostPage page;
-// }
+class PageInfo {
+  PageInfo(
+      {this.pageName, this.uniqueId, this.arguments, this.openContainer, this.groupName});
+
+  String pageName;
+  String uniqueId;
+  Map arguments;
+  bool openContainer;
+  String groupName;
+}
 //
 
 class PageNameUnkonw extends Page<dynamic> {

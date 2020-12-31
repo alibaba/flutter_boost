@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
 import com.idlefish.flutterboost.example.R;
 
 import java.util.ArrayList;
@@ -35,7 +36,6 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
     Fragment currentFragment;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tab_main_page);
@@ -46,6 +46,11 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         setSelect(0);
     }
 
+    @Override
+    public void onBackPressed() {
+//        delegate.onBackPressed();
+        ActivityAndFragmentPatch.onBackPressed();
+    }
     //初始化元素
     private void init() {
 

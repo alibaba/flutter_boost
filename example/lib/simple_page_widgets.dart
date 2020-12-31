@@ -341,7 +341,10 @@ class FlutterRouteWidget extends StatefulWidget {
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
   final TextEditingController _usernameController = TextEditingController();
-
+  @override
+  void dispose(){
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final String message=widget.message;
@@ -471,7 +474,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () =>  BoostNavigator.of(context).push("flutterPage"),
+                  onTap: () =>  BoostNavigator.of(context).push("flutterPage",openContainer: false),
                 ),
                 InkWell(
                   child: Container(
@@ -523,6 +526,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
       ),
     );
   }
+
 }
 
 

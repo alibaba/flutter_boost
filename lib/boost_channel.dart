@@ -8,6 +8,8 @@ abstract class FlutterRouterApi {
   void pushOrShowRoute(
       String pageName, String uniqueId, Map arguments, bool openContainer);
 
+  void showTabRoute(String groupName, String pageName, String uniqueId, Map arguments);
+
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
@@ -44,8 +46,23 @@ abstract class FlutterRouterApi {
         api.pushOrShowRoute(pageName, uniqueId, arguments, openContainer);
       });
     }
+    {
+      const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
+          'FlutterRouterApi.showTabRoute', StandardMessageCodec());
+      channel.setMessageHandler((dynamic message) async {
+        final Map<dynamic, dynamic> mapMessage =
+            message as Map<dynamic, dynamic>;
+        final String groupName = mapMessage['groupName'];
+        final String pageName = mapMessage['pageName'];
+        final String uniqueId = mapMessage['uniqueId'];
+        final Map arguments = mapMessage['arguments'];
+
+        api.showTabRoute(groupName, pageName, uniqueId, arguments);
+      });
+    }
   }
 }
+
 ///
 ///
 /// Native测接口

@@ -16,6 +16,7 @@ class RouterApiChannel {
     public final static String FlutterRouterApi_PushRoute = "FlutterRouterApi.pushRoute";
     public final static String FlutterRouterApi_PopRoute = "FlutterRouterApi.popRoute";
     public final static String FlutterRouterApi_PushOrShowRoute = "FlutterRouterApi.pushOrShowRoute";
+    public final static String FlutterRouterApi_ShowTabRoute = "FlutterRouterApi.showTabRoute";
 
 
     public static void setup(BinaryMessenger binaryMessenger) {

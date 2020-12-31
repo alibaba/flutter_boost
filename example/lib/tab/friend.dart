@@ -54,7 +54,7 @@ class FriendWidget extends StatelessWidget {
                           'open flutter page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of(context).push("flutterPage"),
+                    onTap: () =>  BoostNavigator.of(context).push("flutterPage",openContainer: false),
                   ),
                   Container(
                     height: 300,
@@ -68,4 +68,5 @@ class FriendWidget extends StatelessWidget {
               ))),
     );
   }
+
 }

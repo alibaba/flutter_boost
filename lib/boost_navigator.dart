@@ -38,7 +38,7 @@ class BoostNavigator {
       if (openContainer) {
         appState.nativeRouterApi.pushFlutterRoute(pageName, null, arguments);
       }
-      appState.push(pageName, uniqueId: uniqueId, arguments: arguments);
+      appState.push(pageName, uniqueId: uniqueId, arguments: arguments,openContainer:openContainer);
     } else {
       appState.nativeRouterApi.pushNativeRoute(pageName, null, arguments);
     }
