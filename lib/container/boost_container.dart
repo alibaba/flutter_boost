@@ -250,7 +250,7 @@ class BoostContainerState extends NavigatorState {
     }
 
     if (multipleRouteMode) {
-      ContainerNavigatorObserver.bindContainerManager().willPush(route, routerHistory.last);
+      ContainerNavigatorObserver.bindContainerManager().willPush(route, routerHistory.isNotEmpty ? routerHistory.last : null);
     }
 
     Future<T> future = super.push<T>(newRoute ?? route);
