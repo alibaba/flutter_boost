@@ -7,18 +7,7 @@ package com.idlefish.flutterboost.containers;
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DART_ENTRYPOINT_META_DATA_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_DART_ENTRYPOINT;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_INITIAL_ROUTE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_INITIAL_ROUTE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.INITIAL_ROUTE_META_DATA_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.NORMAL_THEME_META_DATA_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.SPLASH_SCREEN_META_DATA_KEY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.*;
 
 import android.app.Activity;
 import android.content.Context;
@@ -325,6 +314,9 @@ public class FlutterBoostActvity extends Activity
         private final String cachedEngineId;
         private boolean destroyEngineWithActivity = false;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
+        private String uniqueId;
+        private String pageName;
+
 
         /**
          * Constructor that allows this {@code CachedEngineIntentBuilder} to be used by subclasses of
@@ -375,6 +367,14 @@ public class FlutterBoostActvity extends Activity
             return this;
         }
 
+        public CachedEngineIntentBuilder pageName(String pageName) {
+            this.pageName =pageName;
+            return this;
+        }
+        public CachedEngineIntentBuilder uniqueId( String uniqueId) {
+            this.uniqueId = uniqueId;
+            return this;
+        }
         /**
          * Creates and returns an {@link Intent} that will launch a {@code FlutterActivity} with the
          * desired configuration.
@@ -384,7 +384,9 @@ public class FlutterBoostActvity extends Activity
             return new Intent(context, activityClass)
                     .putExtra(EXTRA_CACHED_ENGINE_ID, cachedEngineId)
                     .putExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, destroyEngineWithActivity)
-                    .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode);
+                    .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
+                    .putExtra(PAGE_NAME, pageName)
+                    .putExtra(UNIQUE_ID, uniqueId);
         }
     }
 
@@ -559,6 +561,7 @@ public class FlutterBoostActvity extends Activity
     protected void onResume() {
         super.onResume();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
 
     }
@@ -572,8 +575,7 @@ public class FlutterBoostActvity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.removeContainer(this);
-//        delegate.onPause();
+        ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     }
@@ -596,6 +598,8 @@ public class FlutterBoostActvity extends Activity
         super.onDestroy();
         delegate.onDestroyView();
         delegate.onDetach();
+        ActivityAndFragmentPatch.removeContainer(this);
+
 //        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 

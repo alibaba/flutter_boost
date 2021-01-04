@@ -21,6 +21,11 @@ public class FlutterActivityLaunchConfigs {
     // Default configuration.
      static final String DEFAULT_DART_ENTRYPOINT = "main";
      static final String DEFAULT_INITIAL_ROUTE = "/";
+
+    static final String PAGE_NAME = "page_name";
+    static final String UNIQUE_ID = "unique_id";
+
+
    static final String DEFAULT_BACKGROUND_MODE = io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode.opaque.name();
 
     /** The mode of the background of a Flutter {@code Activity}, either opaque or transparent. */

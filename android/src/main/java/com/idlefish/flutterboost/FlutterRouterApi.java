@@ -54,7 +54,7 @@ public class FlutterRouterApi {
 
     public String generateUniqueId(String pageName) {
         Date date = new Date();
-        return "__container_uniqueId_key__" + date.getTime() + pageName;
+        return "__container_uniqueId_key__" + date.getTime()+"_"+ pageName;
     }
 
     /**

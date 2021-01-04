@@ -31,36 +31,29 @@ public class MyApplication extends FlutterApplication {
         flutterEngine.getNavigationChannel().setInitialRoute("/");
         flutterEngine.getDartExecutor().executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault());
         FlutterEngineCache.getInstance().put("test", flutterEngine);
+
         FlutterBoost.instance().init(this, new NativeRouterApi() {
 
             @Override
-            public void pushNativeRoute(String pageName, String uniqueId, Map arguments) {
+            public void pushNativeRoute(String pageName, Map arguments) {
                 Intent intent = new Intent(FlutterBoost.instance().getTopActivity(), NativePageActivity.class);
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }
 
             @Override
             public void pushFlutterRoute(String pageName, String uniqueId, Map arguments) {
-//                Intent intent = new FBFlutterActivity.CachedEngineIntentBuilder(FBFlutterActivity.class, "test")
-//                        .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
-//                        .destroyEngineWithActivity(false)
-//                        .build(FlutterBoost.instance().getTopActivity());
-
-//                Intent intent=  BoostFlutterActivity.createDefaultIntent(FlutterBoost.instance().getTopActivity().getBaseContext());
 
                 Intent intent = new FlutterBoostActvity.CachedEngineIntentBuilder(FlutterBoostActvity.class, "test")
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                         .destroyEngineWithActivity(false)
+                        .pageName(pageName)
+                        .uniqueId(uniqueId)
                         .build(FlutterBoost.instance().getTopActivity());
 
 
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }
 
-            @Override
-            public void popRoute(String pageName, String uniqueId) {
-                FlutterBoost.instance().getTopActivity().finish();
-            }
         });
 
 

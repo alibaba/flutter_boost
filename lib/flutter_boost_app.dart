@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_channel.dart';
 import 'package:flutter_boost/boost_flutter_router_api.dart';
+import 'package:flutter_boost/logger.dart';
 
 final _navigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,42 +46,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   Map<String, PageBuilder> get routeMap => widget.routeMap;
 
-  // final List<PageInfo> _stack = <PageInfo>[];
-  //
-  // List<PageInfo> get stack => _stack;
-  //
-  // void stackAdd(PageInfo pageInfo) {
-  //   _stack.add(pageInfo);
-  // }
-  //
-  // void stackRemove(PageInfo pageInfo) {
-  //   _stack.add(pageInfo);
-  // }
 
-  // bool isNextFlutterPage(PageInfo pageInfo) {
-  //   PageInfo pInfo = _stack.singleWhere((element) =>
-  //   (element.location == pageInfo.location) && (element.page == pageInfo.page));
-  //   for(; ;){
-  //     if(pInfo==_stack.last){
-  //       break;
-  //     }
-  //     _stack.removeLast();
-  //   }
-  //   _stack.removeLast();
-  //   return  _stack?.last.location == PageLocation.flutter ;
-  // }
-
-  // bool isFlutterPageCurrent() {
-  //   PageInfo pInfo = _stack.singleWhere((element) =>
-  //   (element.location == pageInfo.location) && (element.page == pageInfo.page));
-  //   for(; ;){
-  //     if(pInfo==_stack.last){
-  //       break;
-  //     }
-  //     _stack.removeLast();
-  //   }
-  //   return  _stack?.last.location == PageLocation.flutter ;
-  // }
   @override
   void initState() {
     pages.add(_createPage(PageInfo(pageName: widget.initialRoute)));
@@ -116,16 +82,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   ///
   /// 创建页面
-  Page _createPage(PageInfo pageInfo) {
+  BoostPage _createPage(PageInfo pageInfo) {
     if (widget.routeMap.containsKey(pageInfo.pageName)) {
       final PageBuilder builder = widget.routeMap[pageInfo.pageName];
-      final String uId = pageInfo.uniqueId ?? _getUniqueId(pageInfo.pageName);
+      pageInfo.uniqueId ??= _getUniqueId(pageInfo.pageName);
       return BoostPage<dynamic>(
-          key: ValueKey(uId),
+          key: ValueKey(pageInfo.uniqueId),
           pageInfo: pageInfo,
           builder: builder);
     } else {
-      return PageNameUnkonw();
+      return  PageNameUnkonw();
     }
   }
 
@@ -135,7 +101,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   String _getUniqueId(String pageName) {
     return '__container_uniqueId_key__${DateTime
         .now()
-        .millisecondsSinceEpoch}-${pageName}';
+        .millisecondsSinceEpoch}_$pageName';
   }
 
   void push(String pageName,
@@ -146,8 +112,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           arguments: arguments,
           openContainer: openContainer,
           groupName: groupName);
-      final Page page = _createPage(pageInfo);
+      final BoostPage page = _createPage(pageInfo);
       pages.add(page);
+      Logger.log(
+          'push page ,  uniqueId=${page.pageInfo.uniqueId} , pageName= ${page
+              .pageInfo.pageName}');
     });
   }
 
@@ -155,16 +124,20 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// 展示页面
   ///
   bool show(String uniqueId) {
-    if (pages.last?.pageInfo.uniqueId == uniqueId) {
+    if (pages.last?.pageInfo?.uniqueId == uniqueId) {
+      Logger.log(
+          'show page ,  uniqueId=${uniqueId} ,pageName= ${pages.last?.pageInfo
+              .pageName} ');
       return true;
     }
-    final BoostPage page = pages
-        .singleWhere((element) => element.pageInfo.uniqueId == uniqueId,
-        orElse: () {});
+    final BoostPage page = _findByUniqueId(uniqueId);
     if (page != null) {
-      pages.remove(page);
-      pages.add(page);
-      setState(() {});
+      setState(() {
+        pages.remove(page);
+        pages.add(page);
+        Logger.log('show page ,  uniqueId=${uniqueId} ,pageName= ${page.pageInfo
+            .pageName} ');
+      });
       return true;
     } else {
       return false;
@@ -174,22 +147,50 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   /// 关闭操作
   ///
-  void pop() async {
-    final BoostPage page = pages.last;
-    final bool r = await page.navKey.currentState.maybePop();
+  void pop({String uniqueId, Map arguments}) async {
+    BoostPage page;
+    if (uniqueId != null) {
+      page = _findByUniqueId(uniqueId);
+      if (page == null) {
+        Logger.error('uniqueId=$uniqueId not find');
+        return;
+      }
+    }
+    page = pages.last;
+    final bool r = await page?.navKey?.currentState?.maybePop();
     if (!r) {
       setState(() {
         if (page.pageInfo.groupName != null) {
-          pages.removeWhere((element) =>
-          element.pageInfo.groupName == page.pageInfo.groupName);
+          _removeByGroupName(page.pageInfo.groupName);
+        } else {
+          pages.remove(page);
         }
-        pages.remove(page);
         if (page.pageInfo.openContainer) {
-          _nativeRouterApi.popRoute(null, null);
+          Logger.log('pop container ,  uniqueId=${page.pageInfo
+              .uniqueId} , groupName= ${page.pageInfo.groupName}');
+          _nativeRouterApi.popRoute(
+              page.pageInfo.pageName, uniqueId, arguments);
         }
       });
     }
   }
+
+  BoostPage _findByUniqueId(String uniqueId) {
+    return pages?.singleWhere((BoostPage element) =>
+    element.pageInfo.uniqueId == uniqueId, orElse: () {});
+  }
+
+  void _removeByGroupName(String groupName) {
+    pages.removeWhere((BoostPage element) {
+      bool test = (element.pageInfo.groupName == groupName);
+      if (test) {
+        Logger.log('pop page , uniqueId=${element.pageInfo
+            .uniqueId} , groupName= ${element.pageInfo.groupName}');
+      }
+      return test;
+    });
+  }
+
 }
 
 ///
@@ -253,8 +254,8 @@ class PageInfo {
 }
 //
 
-class PageNameUnkonw extends Page<dynamic> {
-  const PageNameUnkonw() : super(key: const ValueKey('PageNameUnkonw'));
+class PageNameUnkonw extends BoostPage<dynamic> {
+   PageNameUnkonw() : super(key: const ValueKey('PageNameUnkonw'));
 
   @override
   Route<dynamic> createRoute(BuildContext context) {

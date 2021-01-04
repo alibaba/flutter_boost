@@ -27,7 +27,7 @@ class BoostNavigator {
   /// 判断是否是一个flutter 页面
   ///
   bool isFlutterPage(String pageName) {
-    return appState.routeMap.containsKey(pageName);
+    return appState.routeMap?.containsKey(pageName);
   }
   ///
   /// push 一个page，并展示在栈顶
@@ -49,7 +49,7 @@ class BoostNavigator {
   /// 2.openContainer =false 时候。不再打开容器。
   ///
   void pushOrShowRoute(
-      String pageName, String uniqueId, Map arguments, bool openContainer) {
+      String pageName, String uniqueId, {Map arguments, bool openContainer}) {
     final bool isShow = appState.show(uniqueId);
     if (!isShow) {
       push(pageName,
@@ -61,7 +61,7 @@ class BoostNavigator {
   /// 1.先执行该页面的navigator.pop
   /// 2.如果该页面的navigator.maybePop=false ，才会关闭整个页面，且关闭容器.
   ///
-  void pop() {
+  void pop({String uniqueId,Map arguments}) {
     appState.pop();
   }
 }

@@ -15,6 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 
+import com.idlefish.flutterboost.FlutterBoost;
+
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterEngineConfigurator;
@@ -617,7 +619,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     @Override
     public View onCreateView(
             LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ActivityAndFragmentPatch.pushContainer(this);
+        ActivityAndFragmentPatch.setStackTop(this);
         View v = delegate.onCreateView(inflater, container, savedInstanceState);
 //        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         return v;
@@ -646,17 +648,16 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
         super.onHiddenChanged(hidden);
     }
 
-    public void setTabSelected(boolean isTop) {
-        isStackTop=isTop;
+    public void setTabSelected() {
+        FlutterBoost.instance().getContainerManager().setStackTop(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         delegate.getFlutterEngine();
-        if(isStackTop){
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
-        }
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
+
     }
 
     // TODO(mattcarroll): determine why this can't be in onResume(). Comment reason, or move if
@@ -669,7 +670,7 @@ public class FlutterBoostFragment extends Fragment implements FlutterActivityAnd
     @Override
     public void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.removeContainer(this);
+        ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
 //        delegate.onPause();
     }

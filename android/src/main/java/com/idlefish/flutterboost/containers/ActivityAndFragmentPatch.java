@@ -61,7 +61,7 @@ public class ActivityAndFragmentPatch {
     public static void onResumeAttachToFlutterEngine(FlutterBoostFragment fragment) {
         FlutterView flutterView = fragment.delegate.getFlutterView();
         FlutterEngine flutterEngine = fragment.delegate.getFlutterEngine();
-        Object object = FlutterBoost.instance().getContainerManager().getCurrentTop();
+        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
 
         if ((object == null) || (object == fragment)) {
             flutterView.attachToFlutterEngine(flutterEngine);
@@ -72,7 +72,7 @@ public class ActivityAndFragmentPatch {
     public static void onResumeAttachToFlutterEngine(FlutterBoostActvity activity) {
         FlutterView flutterView = activity.delegate.getFlutterView();
         FlutterEngine flutterEngine = activity.delegate.getFlutterEngine();
-        Object object = FlutterBoost.instance().getContainerManager().getCurrentTop();
+        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
         if ((object == null) || (object == activity)) {
             flutterView.attachToFlutterEngine(flutterEngine);
         }
@@ -87,14 +87,22 @@ public class ActivityAndFragmentPatch {
     public static void onPauseDetachFromFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
         flutterView.detachFromFlutterEngine();
         flutterEngine.getLifecycleChannel().appIsInactive();
-
     }
 
-    public static void pushContainer(Object container) {
-        FlutterBoost.instance().getContainerManager().push(container);
+    public static void setStackTop(Object  object) {
+        FlutterBoost.instance().getContainerManager().setStackTop(object);
     }
 
-    public static void removeContainer(Object container) {
-        FlutterBoost.instance().getContainerManager().remove(container);
+    public static void removeStackTop(Object  object) {
+        FlutterBoost.instance().getContainerManager().removeStackTop(object);
+    }
+    public static void pushContainer(Activity  activity) {
+        String uniqueId=activity.getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
+        FlutterBoost.instance().getContainerManager().addContainer(uniqueId, activity);
+    }
+
+    public static void removeContainer(Activity  activity) {
+        String uniqueId=activity.getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
+        FlutterBoost.instance().getContainerManager().removeContainer(uniqueId);
     }
 }

@@ -24,6 +24,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   /// push 一个页面
   ///
+  @override
   void pushRoute(String pageName, String uniqueId, Map arguments) {
     BoostNavigator.of(null, appState: appState)
         .push(pageName, arguments: arguments);
@@ -32,6 +33,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   ///关闭页面
   ///
+  @override
   void popRoute() {
     BoostNavigator.of(null, appState: appState).pop();
   }
@@ -40,10 +42,12 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   /// push 一个 指定uniqueId的页面，并展示在栈最顶
   ///
   ///
+  @override
   void pushOrShowRoute(
       String pageName, String uniqueId, Map arguments, bool openContainer) {
-    BoostNavigator.of(null, appState: appState)
-        .pushOrShowRoute(pageName, uniqueId, arguments, openContainer);
+    BoostNavigator.of(null, appState: appState).pushOrShowRoute(
+        pageName, uniqueId,
+        arguments: arguments, openContainer: openContainer);
   }
 
   @override

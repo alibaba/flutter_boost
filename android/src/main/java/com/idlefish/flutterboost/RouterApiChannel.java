@@ -28,11 +28,10 @@ class RouterApiChannel {
                 public void onMessage(Object message, BasicMessageChannel.Reply<Object> reply) {
                     Map<String, Object> msg = (HashMap) message;
                     String pageName = (String) msg.get("pageName");
-                    String uniqueId = (String) msg.get("uniqueId");
                     Map arguments = (Map) msg.get("arguments");
                     HashMap<String, HashMap> wrapped = new HashMap<String, HashMap>();
                     try {
-                        FlutterBoost.instance().getApi().pushNativeRoute(pageName, uniqueId, arguments);
+                        FlutterBoost.instance().getApi().pushNativeRoute(pageName, arguments);
                         wrapped.put("result", null);
                     } catch (Exception exception) {
 //                            wrapped.put("error", wrapError(exception));

@@ -121,11 +121,11 @@ class NativeRouterApi {
     }
   }
 
-  Future<void> popRoute(String pageName, String uniqueId) async {
+  Future<void> popRoute(String pageName, String uniqueId, Map arguments) async {
     final Map<dynamic, dynamic> requestMap = <dynamic, dynamic>{};
     requestMap['pageName'] = pageName;
     requestMap['uniqueId'] = uniqueId;
-
+    requestMap['arguments'] = arguments;
     const BasicMessageChannel<dynamic> channel = BasicMessageChannel<dynamic>(
         'NativeRouterApi.popRoute', StandardMessageCodec());
 
