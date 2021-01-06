@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.view.View;
 
+import com.idlefish.flutterboost.ContainerManager;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterRouterApi;
 
@@ -37,14 +38,8 @@ public class ActivityAndFragmentPatch {
     /**
      * 重写onBackPressed
      */
-    public static void onBackPressed() {
-        FlutterRouterApi.instance().popRoute(new FlutterRouterApi.Reply<Void>() {
-
-            @Override
-            public void reply(Void reply) {
-
-            }
-        });
+    public static void onBackPressed(String unqueId) {
+        FlutterRouterApi.instance().popRoute(unqueId, null);
     }
 
     /**
@@ -58,26 +53,16 @@ public class ActivityAndFragmentPatch {
      * @param
      * @param
      */
-    public static void onResumeAttachToFlutterEngine(FlutterBoostFragment fragment) {
-        FlutterView flutterView = fragment.delegate.getFlutterView();
-        FlutterEngine flutterEngine = fragment.delegate.getFlutterEngine();
-        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
+    public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
 
-        if ((object == null) || (object == fragment)) {
+        Object object = ContainerManager.instance().getCurrentStackTop();
+
+        if ((object == null) || (object == container)) {
             flutterView.attachToFlutterEngine(flutterEngine);
         }
         flutterEngine.getLifecycleChannel().appIsResumed();
     }
 
-    public static void onResumeAttachToFlutterEngine(FlutterBoostActvity activity) {
-        FlutterView flutterView = activity.delegate.getFlutterView();
-        FlutterEngine flutterEngine = activity.delegate.getFlutterEngine();
-        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
-        if ((object == null) || (object == activity)) {
-            flutterView.attachToFlutterEngine(flutterEngine);
-        }
-        flutterEngine.getLifecycleChannel().appIsResumed();
-    }
 
     /**
      * 添加 detachFromFlutterEngine
@@ -89,20 +74,20 @@ public class ActivityAndFragmentPatch {
         flutterEngine.getLifecycleChannel().appIsInactive();
     }
 
-    public static void setStackTop(Object  object) {
-        FlutterBoost.instance().getContainerManager().setStackTop(object);
+    public static void setStackTop(FlutterViewContainer object) {
+        ContainerManager.instance().setStackTop(object);
     }
 
-    public static void removeStackTop(Object  object) {
-        FlutterBoost.instance().getContainerManager().removeStackTop(object);
-    }
-    public static void pushContainer(Activity  activity) {
-        String uniqueId=activity.getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
-        FlutterBoost.instance().getContainerManager().addContainer(uniqueId, activity);
+    public static void removeStackTop(FlutterViewContainer object) {
+        ContainerManager.instance().removeStackTop(object);
     }
 
-    public static void removeContainer(Activity  activity) {
-        String uniqueId=activity.getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
-        FlutterBoost.instance().getContainerManager().removeContainer(uniqueId);
+    public static void pushContainer(FlutterViewContainer container) {
+        ContainerManager.instance().addContainer(container);
+    }
+
+    public static void removeContainer(FlutterViewContainer container) {
+        String uniqueId = container.getContextActivity().getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
+        ContainerManager.instance().removeContainer(uniqueId);
     }
 }

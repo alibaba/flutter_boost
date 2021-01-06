@@ -13,6 +13,7 @@ import io.flutter.plugin.common.StandardMessageCodec;
 public class FlutterRouterApi {
 
     private BinaryMessenger binaryMessenger;
+
     static FlutterRouterApi flutterRouterApi;
 
     public static FlutterRouterApi instance() {
@@ -89,14 +90,14 @@ public class FlutterRouterApi {
      * @param pageName
      * @param arguments
      */
-    public void showTabRoute(String groupName, String uniqueId, String pageName, Map arguments) {
+    public void showRoute(String groupName, String uniqueId, String pageName, Map arguments) {
         final Map<String, Object> mapMessage = new HashMap<String, Object>();
         mapMessage.put("groupName", groupName);
         mapMessage.put("uniqueId", uniqueId);
         mapMessage.put("arguments", arguments);
         mapMessage.put("pageName", pageName);
         BasicMessageChannel<Object> channel =
-                new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_ShowTabRoute, new StandardMessageCodec());
+                new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_ShowRoute, new StandardMessageCodec());
 
         channel.send(mapMessage, new BasicMessageChannel.Reply<Object>() {
             public void reply(Object channelReply) {
@@ -106,10 +107,12 @@ public class FlutterRouterApi {
             }
         });
     }
-    public void popRoute(final Reply<Void> callback) {
+    public void popRoute(String uniqueId,final Reply<Void> callback) {
+        final Map<String, Object> mapMessage = new HashMap<String, Object>();
+        mapMessage.put("uniqueId", uniqueId);
         BasicMessageChannel<Object> channel =
                 new BasicMessageChannel<Object>(binaryMessenger, RouterApiChannel.FlutterRouterApi_PopRoute, new StandardMessageCodec());
-        channel.send(null, new BasicMessageChannel.Reply<Object>() {
+        channel.send(mapMessage, new BasicMessageChannel.Reply<Object>() {
             public void reply(Object channelReply) {
                 callback.reply(null);
             }

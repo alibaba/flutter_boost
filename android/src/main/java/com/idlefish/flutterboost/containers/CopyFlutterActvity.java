@@ -31,8 +31,6 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
-import com.idlefish.flutterboost.FlutterRouterApi;
-
 import io.flutter.Log;
 import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
@@ -201,7 +199,7 @@ import io.flutter.plugin.platform.PlatformPlugin;
 // A number of methods in this class have the same implementation as FlutterFragmentActivity. These
 // methods are duplicated for readability purposes. Be sure to replicate any change in this class in
 // FlutterFragmentActivity, too.
-public class FlutterBoostActvity extends Activity
+public class CopyFlutterActvity extends Activity
         implements FlutterActivityAndFragmentDelegate.Host, LifecycleOwner {
     private static final String TAG = "FlutterActivity";
 
@@ -302,7 +300,7 @@ public class FlutterBoostActvity extends Activity
      * is cached in {@link io.flutter.embedding.engine.FlutterEngineCache}.
      */
     public static CachedEngineIntentBuilder withCachedEngine(@NonNull String cachedEngineId) {
-        return new CachedEngineIntentBuilder(FlutterBoostActvity.class, cachedEngineId);
+        return new CachedEngineIntentBuilder(CopyFlutterActvity.class, cachedEngineId);
     }
 
     /**
@@ -310,7 +308,7 @@ public class FlutterBoostActvity extends Activity
      * {@link FlutterEngine} that is cached in {@link io.flutter.embedding.engine.FlutterEngineCache}.
      */
     public static class CachedEngineIntentBuilder {
-        private final Class<? extends FlutterBoostActvity> activityClass;
+        private final Class<? extends CopyFlutterActvity> activityClass;
         private final String cachedEngineId;
         private boolean destroyEngineWithActivity = false;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
@@ -329,7 +327,7 @@ public class FlutterBoostActvity extends Activity
          * <p>{@code return new CachedEngineIntentBuilder(MyFlutterActivity.class, engineId); }
          */
         public CachedEngineIntentBuilder(
-                @NonNull Class<? extends FlutterBoostActvity> activityClass, @NonNull String engineId) {
+                @NonNull Class<? extends CopyFlutterActvity> activityClass, @NonNull String engineId) {
             this.activityClass = activityClass;
             this.cachedEngineId = engineId;
         }
@@ -399,7 +397,7 @@ public class FlutterBoostActvity extends Activity
     @NonNull
     private LifecycleRegistry lifecycle;
 
-    public FlutterBoostActvity() {
+    public CopyFlutterActvity() {
         lifecycle = new LifecycleRegistry(this);
     }
 
@@ -429,7 +427,6 @@ public class FlutterBoostActvity extends Activity
         delegate = new FlutterActivityAndFragmentDelegate(this);
         delegate.onAttach(this);
         delegate.onActivityCreated(savedInstanceState);
-        ActivityAndFragmentPatch.pushContainer(this);
         configureWindowForTransparency();
         setContentView(createFlutterView());
         configureStatusBarForFullscreenFlutterExperience();
@@ -561,8 +558,7 @@ public class FlutterBoostActvity extends Activity
     protected void onResume() {
         super.onResume();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        ActivityAndFragmentPatch.setStackTop(this);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(this);
+
 
     }
 
@@ -575,8 +571,6 @@ public class FlutterBoostActvity extends Activity
     @Override
     protected void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.removeStackTop(this);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     }
 
@@ -584,7 +578,7 @@ public class FlutterBoostActvity extends Activity
     protected void onStop() {
         super.onStop();
         delegate.onStop();
-//        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
     }
 
     @Override
@@ -598,9 +592,7 @@ public class FlutterBoostActvity extends Activity
         super.onDestroy();
         delegate.onDestroyView();
         delegate.onDetach();
-        ActivityAndFragmentPatch.removeContainer(this);
-
-//        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 
     @Override
@@ -617,8 +609,7 @@ public class FlutterBoostActvity extends Activity
 
     @Override
     public void onBackPressed() {
-//        delegate.onBackPressed();
-        ActivityAndFragmentPatch.onBackPressed();
+        delegate.onBackPressed();
     }
 
     @Override
@@ -821,8 +812,7 @@ public class FlutterBoostActvity extends Activity
     @NonNull
     @Override
     public RenderMode getRenderMode() {
-        return ActivityAndFragmentPatch.getRenderMode();
-//        return RenderMode.texture;
+        return getBackgroundMode() == BackgroundMode.opaque ? RenderMode.surface : RenderMode.texture;
     }
 
     /**

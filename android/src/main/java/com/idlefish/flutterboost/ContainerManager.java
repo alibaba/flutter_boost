@@ -1,43 +1,53 @@
-package com.idlefish.flutterboost.containers;
+package com.idlefish.flutterboost;
 
-import android.app.Activity;
 import android.text.TextUtils;
+
+import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
 public class ContainerManager {
 
+    private static ContainerManager sInstance = null;
+
+    public static ContainerManager instance() {
+        if (sInstance == null) {
+            sInstance = new ContainerManager();
+        }
+        return sInstance;
+    }
+
     private final Set<ContainerRef> mContainerRefs = new HashSet<ContainerRef>();
     /**
      * 记录当前最上层的容器
      */
-    private Stack<WeakReference<Object>> stackTop = new Stack<>();
+    private Stack<ContainerRef> stackTop = new Stack<ContainerRef>();
 
-    void setStackTop(Object container) {
-        stackTop.add(new WeakReference<>(container));
+
+    public void setStackTop(FlutterViewContainer container) {
+        stackTop.add(new ContainerRef(container.getUniqueId(),container));
 
     }
 
-    void removeStackTop(Object container) {
+    public void removeStackTop(FlutterViewContainer container) {
         if (stackTop.empty()) return;
-        if (stackTop.peek().get() == container) {
+        if (stackTop.peek().uniqueId== container.getUniqueId()) {
             stackTop.pop();
         }
     }
 
 
-    public Object getCurrentStackTop() {
+    public FlutterViewContainer getCurrentStackTop() {
         if (stackTop.empty()) return null;
-        return stackTop.peek().get();
+        return  stackTop.peek().container.get();
     }
 
 
-    public void addContainer(String uniqueId, Activity container) {
-        ContainerRef containerRef = new ContainerRef(uniqueId, container);
+    public void addContainer(FlutterViewContainer container) {
+        ContainerRef containerRef = new ContainerRef(container.getUniqueId(), container);
         mContainerRefs.add(containerRef);
     }
 
@@ -51,7 +61,7 @@ public class ContainerManager {
         }
     }
 
-    public Object findContainerById(String uniqueId) {
+    public FlutterViewContainer findContainerById(String uniqueId) {
         for (ContainerRef ref : mContainerRefs) {
             if (TextUtils.equals(uniqueId, ref.uniqueId)) {
                 return ref.container.get();
@@ -63,9 +73,9 @@ public class ContainerManager {
 
     public static class ContainerRef {
         public final String uniqueId;
-        public final WeakReference<Object> container;
+        public final WeakReference<FlutterViewContainer> container;
 
-        ContainerRef(String id, Object container) {
+        ContainerRef(String id, FlutterViewContainer container) {
             this.uniqueId = id;
             this.container = new WeakReference<>(container);
         }

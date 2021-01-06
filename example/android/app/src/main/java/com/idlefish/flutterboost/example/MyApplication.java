@@ -1,11 +1,11 @@
 package com.idlefish.flutterboost.example;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.idlefish.flutterboost.NativeRouterApi;
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.containers.FlutterBoostActvity;
+import com.idlefish.flutterboost.containers.CopyFlutterActvity;
+import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.Map;
 
@@ -23,16 +23,7 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterEngine flutterEngine =
-                new FlutterEngine(
-                        this,
-                        null,
-                        true, false);
-        flutterEngine.getNavigationChannel().setInitialRoute("/");
-        flutterEngine.getDartExecutor().executeDartEntrypoint(DartExecutor.DartEntrypoint.createDefault());
-        FlutterEngineCache.getInstance().put("test", flutterEngine);
-
-        FlutterBoost.instance().init(this, new NativeRouterApi() {
+        FlutterBoost.withDefaultEngine().init(this, new NativeRouterApi() {
 
             @Override
             public void pushNativeRoute(String pageName, Map arguments) {
@@ -43,7 +34,7 @@ public class MyApplication extends FlutterApplication {
             @Override
             public void pushFlutterRoute(String pageName, String uniqueId, Map arguments) {
 
-                Intent intent = new FlutterBoostActvity.CachedEngineIntentBuilder(FlutterBoostActvity.class, "test")
+                Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, "test")
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                         .destroyEngineWithActivity(false)
                         .pageName(pageName)

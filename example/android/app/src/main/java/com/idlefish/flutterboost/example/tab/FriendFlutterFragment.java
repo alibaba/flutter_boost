@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.idlefish.flutterboost.BoostNavigator;
 import com.idlefish.flutterboost.FlutterRouterApi;
 import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 
@@ -19,8 +20,7 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         uniqueId = FlutterRouterApi.instance().generateUniqueId("tab_friend");
-        FlutterRouterApi.instance().showTabRoute( "maintab",uniqueId, "tab_friend", null);
-
+        BoostNavigator.showRoute( "maintab",uniqueId, "tab_friend", null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -32,7 +32,7 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            FlutterRouterApi.instance().showTabRoute( "maintab",uniqueId, "tab_friend", null);
+            BoostNavigator.showRoute( "maintab",uniqueId, "tab_friend", null);
         }
         super.onHiddenChanged(hidden);
 

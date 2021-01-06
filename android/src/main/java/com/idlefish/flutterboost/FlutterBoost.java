@@ -7,21 +7,20 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.idlefish.flutterboost.containers.ContainerManager;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
 
-    static FlutterBoost sInstance = null;
+    public final static String ENGINE_ID = "flutter_boost_default_engine";
+
+    private static FlutterBoost sInstance = null;
 
     private NativeRouterApi mApi;
 
     private Activity topActivity = null;
-
-    private ContainerManager containerManager;
-
-    FlutterBoost() {
-        containerManager = new ContainerManager();
-    }
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -30,55 +29,97 @@ public class FlutterBoost {
         return sInstance;
     }
 
-    public void init(Application application, NativeRouterApi api) {
-        mApi = api;
-        application.registerActivityLifecycleCallbacks(new Application.ActivityLifecycleCallbacks() {
-            @Override
-            public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-                topActivity = activity;
+
+    public static DefaultEngineConfig withDefaultEngine() {
+        return new DefaultEngineConfig();
+    }
+
+    public static class DefaultEngineConfig {
+        private String initialRoute = "/";
+        private String dartEntrypointFunctionName = "main";
+
+        public DefaultEngineConfig() {
+        }
+
+        @NonNull
+        public DefaultEngineConfig initialRoute(@NonNull String initialRoute) {
+            this.initialRoute = initialRoute;
+            return this;
+        }
+
+        @NonNull
+        public DefaultEngineConfig entrypoint(@NonNull String dartEntrypointFunctionName) {
+            this.dartEntrypointFunctionName = dartEntrypointFunctionName;
+            return this;
+        }
+
+        public void init(Application application, NativeRouterApi api) {
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+            if (engine == null) {
+                engine = new FlutterEngine(application);
+                engine.getNavigationChannel().setInitialRoute(this.initialRoute);
+                engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
+                        FlutterMain.findAppBundlePath(), this.dartEntrypointFunctionName));
+                FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
             }
+            FlutterBoost.instance().setApi(api);
+            FlutterBoost.instance().setupActivityLifecycleCallback(application);
 
-            @Override
-            public void onActivityStarted(@NonNull Activity activity) {
-                topActivity = activity;
-            }
+        }
+    }
 
-            @Override
-            public void onActivityResumed(@NonNull Activity activity) {
-                topActivity = activity;
-            }
-
-            @Override
-            public void onActivityPaused(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivityStopped(@NonNull Activity activity) {
-
-            }
-
-            @Override
-            public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
-
-            }
-
-            @Override
-            public void onActivityDestroyed(@NonNull Activity activity) {
-
-            }
-        });
+    public void setupActivityLifecycleCallback(Application application) {
+        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
     public Activity getTopActivity() {
         return topActivity;
     }
 
+    public void setApi(NativeRouterApi api) {
+        mApi = api;
+    }
+
     public NativeRouterApi getApi() {
         return mApi;
     }
 
-    public ContainerManager getContainerManager() {
-        return containerManager;
+    class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
+
+        @Override
+        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+            topActivity = activity;
+
+        }
+
+        @Override
+        public void onActivityStarted(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResumed(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityPaused(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityStopped(@NonNull Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(@NonNull Activity activity) {
+            topActivity = null;
+        }
     }
 }
