@@ -31,7 +31,7 @@ class RouterApiChannel {
                     Map arguments = (Map) msg.get("arguments");
                     HashMap<String, HashMap> wrapped = new HashMap<String, HashMap>();
                     try {
-                        FlutterBoost.instance().getApi().pushNativeRoute(pageName, arguments);
+                        FlutterBoost.instance().getNativeRouterApi().pushNativeRoute(pageName, arguments);
                         wrapped.put("result", null);
                     } catch (Exception exception) {
 //                            wrapped.put("error", wrapError(exception));
@@ -52,7 +52,7 @@ class RouterApiChannel {
                     Map arguments = (Map) msg.get("arguments");
                     HashMap<String, HashMap> wrapped = new HashMap<String, HashMap>();
                     try {
-                        FlutterBoost.instance().getApi().pushFlutterRoute(pageName, uniqueId, arguments);
+                        FlutterBoost.instance().getNativeRouterApi().pushFlutterRoute(pageName, uniqueId, arguments);
                         wrapped.put("result", null);
                     } catch (Exception exception) {
 //                            wrapped.put("error", wrapError(exception));
@@ -73,7 +73,7 @@ class RouterApiChannel {
 
                     HashMap<String, HashMap> wrapped = new HashMap<String, HashMap>();
                     try {
-                        FlutterBoost.instance().getApi().popRoute(pageName, uniqueId);
+                        FlutterBoost.instance().getNativeRouterApi().popRoute(pageName, uniqueId);
                         wrapped.put("result", null);
                     } catch (Exception exception) {
 //                            wrapped.put("error", wrapError(exception));

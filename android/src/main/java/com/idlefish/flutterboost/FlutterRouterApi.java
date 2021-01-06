@@ -14,21 +14,12 @@ public class FlutterRouterApi {
 
     private BinaryMessenger binaryMessenger;
 
-    static FlutterRouterApi flutterRouterApi;
-
-    public static FlutterRouterApi instance() {
-        if (flutterRouterApi == null) {
-            flutterRouterApi = new FlutterRouterApi();
-        }
-        return flutterRouterApi;
-    }
-
     public void setBinaryMessenger(BinaryMessenger binaryMessenger) {
         this.binaryMessenger = binaryMessenger;
     }
 
     public static void setup(BinaryMessenger binaryMessenger) {
-        FlutterRouterApi.instance().setBinaryMessenger(binaryMessenger);
+        FlutterBoost.instance().getFlutterRouterApi().setBinaryMessenger(binaryMessenger);
     }
 
     public interface Reply<T> {

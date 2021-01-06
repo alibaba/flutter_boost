@@ -1,5 +1,7 @@
 package com.idlefish.flutterboost;
 
+import com.idlefish.flutterboost.containers.FlutterViewContainer;
+
 import java.util.Map;
 
 public abstract class NativeRouterApi {
@@ -11,7 +13,10 @@ public abstract class NativeRouterApi {
             String pageName, String uniqueId, Map arguments);
 
     public void popRoute(String pageName, String uniqueId) {
-        ContainerManager.instance().findContainerById(uniqueId).finishContainer(null);
+        FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
+        if(container!=null){
+            container.finishContainer(null);
+        }
     }
 
 }

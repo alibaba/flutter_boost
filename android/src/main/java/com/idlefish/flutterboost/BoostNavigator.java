@@ -9,27 +9,31 @@ import java.util.Map;
 public class BoostNavigator {
 
     public static void pushRoute(String pageName, String uniqueId, Map arguments) {
-        FlutterRouterApi.instance().pushRoute(pageName, uniqueId, arguments, null);
+        FlutterBoost.instance().getFlutterRouterApi().pushRoute(pageName, uniqueId, arguments, null);
     }
 
     public static String generateUniqueId(String pageName) {
-        return FlutterRouterApi.instance().generateUniqueId(pageName);
+        return FlutterBoost.instance().getFlutterRouterApi().generateUniqueId(pageName);
     }
 
     public static void showRoute(String groupName, String uniqueId, String pageName, Map arguments) {
-        FlutterRouterApi.instance().showRoute(groupName, uniqueId, pageName, arguments);
+        FlutterBoost.instance().getFlutterRouterApi().showRoute(groupName, uniqueId, pageName, arguments);
     }
 
     public static void popRoute(String uniqueId) {
-        FlutterRouterApi.instance().popRoute(uniqueId, null);
+        FlutterBoost.instance().getFlutterRouterApi().popRoute(uniqueId, null);
+        FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
+        if(container!=null){
+            container.finishContainer(null);
+        }
     }
 
     public static FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
-        return ContainerManager.instance().findContainerById(uniqueId);
+        return FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
     }
 
     public static FlutterViewContainer getTopFlutterViewContainer() {
-        return ContainerManager.instance().getCurrentStackTop();
+        return FlutterBoost.instance().getContainerManager().getCurrentStackTop();
     }
 
     public static Activity getTopActivity() {

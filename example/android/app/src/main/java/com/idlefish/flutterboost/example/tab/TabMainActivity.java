@@ -49,7 +49,7 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
 //        delegate.onBackPressed();
-        ActivityAndFragmentPatch.onBackPressed();
+        ActivityAndFragmentPatch.onBackPressed(null);
     }
     //初始化元素
     private void init() {
@@ -64,9 +64,13 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
 
 
         fragmentList = new ArrayList<>();
-        mesFragment = new MsgFlutterFragment.CachedEngineFragmentBuilder(MsgFlutterFragment.class, "test").build();
+        mesFragment = new MsgFlutterFragment
+                .CachedEngineFragmentBuilder(MsgFlutterFragment.class, "test")
+                .build();
 
-        friendFragment = new FriendFlutterFragment.CachedEngineFragmentBuilder(FriendFlutterFragment.class, "test").build();
+        friendFragment = new FriendFlutterFragment
+                .CachedEngineFragmentBuilder(FriendFlutterFragment.class, "test")
+                .build();
 
         nativeFragment = new NativeFragment();
 

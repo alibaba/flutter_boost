@@ -39,7 +39,7 @@ public class ActivityAndFragmentPatch {
      * 重写onBackPressed
      */
     public static void onBackPressed(String unqueId) {
-        FlutterRouterApi.instance().popRoute(unqueId, null);
+        FlutterBoost.instance().getFlutterRouterApi().popRoute(unqueId, null);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ActivityAndFragmentPatch {
      */
     public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
 
-        Object object = ContainerManager.instance().getCurrentStackTop();
+        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
 
         if ((object == null) || (object == container)) {
             flutterView.attachToFlutterEngine(flutterEngine);
@@ -75,19 +75,19 @@ public class ActivityAndFragmentPatch {
     }
 
     public static void setStackTop(FlutterViewContainer object) {
-        ContainerManager.instance().setStackTop(object);
+        FlutterBoost.instance().getContainerManager().setStackTop(object);
     }
 
     public static void removeStackTop(FlutterViewContainer object) {
-        ContainerManager.instance().removeStackTop(object);
+        FlutterBoost.instance().getContainerManager().removeStackTop(object);
     }
 
     public static void pushContainer(FlutterViewContainer container) {
-        ContainerManager.instance().addContainer(container);
+        FlutterBoost.instance().getContainerManager().addContainer(container);
     }
 
     public static void removeContainer(FlutterViewContainer container) {
         String uniqueId = container.getContextActivity().getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
-        ContainerManager.instance().removeContainer(uniqueId);
+        FlutterBoost.instance().getContainerManager().removeContainer(uniqueId);
     }
 }

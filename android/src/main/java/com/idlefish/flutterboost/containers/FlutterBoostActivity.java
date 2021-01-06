@@ -3,21 +3,18 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Lifecycle;
 
 import java.util.Map;
 
 import io.flutter.embedding.android.RenderMode;
 
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.PAGE_NAME;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.UNIQUE_ID;
 
 public class FlutterBoostActivity extends CopyFlutterActvity implements FlutterViewContainer {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityAndFragmentPatch.pushContainer(this);
     }
@@ -70,7 +67,7 @@ public class FlutterBoostActivity extends CopyFlutterActvity implements FlutterV
 
     @Override
     public String getUniqueId() {
-          return getIntent().getStringExtra(UNIQUE_ID);
+        return getIntent().getStringExtra(UNIQUE_ID);
     }
 
 }

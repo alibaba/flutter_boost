@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.Nullable;
-
 import java.util.Map;
 
 import io.flutter.embedding.android.RenderMode;
@@ -17,9 +15,8 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.UNIQUE_ID;
 
 public class FlutterBoostFragment extends CopyFlutterFragment implements FlutterViewContainer {
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActivityAndFragmentPatch.setStackTop(this);
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -31,7 +28,7 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
         if (hidden) {
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine());
         } else {
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine(),this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine(), this);
         }
         super.onHiddenChanged(hidden);
     }
@@ -39,19 +36,20 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
     @Override
     public void onResume() {
         super.onResume();
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine(),this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine(), this);
 
     }
+
     @Override
     public RenderMode getRenderMode() {
         return ActivityAndFragmentPatch.getRenderMode();
     }
+
     @Override
     public void onPause() {
         super.onPause();
         ActivityAndFragmentPatch.removeStackTop(this);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(),delegate.getFlutterEngine());
-//        delegate.onPause();
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine());
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.idlefish.flutterboost.FlutterRouterApi;
+import com.idlefish.flutterboost.BoostNavigator;
 import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 
 public class MsgFlutterFragment extends FlutterBoostFragment {
@@ -18,8 +18,8 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        uniqueId = FlutterRouterApi.instance().generateUniqueId("tab_message");
-        FlutterRouterApi.instance().showRoute("maintab", uniqueId, "tab_message", null);
+        uniqueId = BoostNavigator.generateUniqueId("tab_message");
+        BoostNavigator.showRoute("maintab", uniqueId, "tab_message", null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -31,7 +31,7 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            FlutterRouterApi.instance().showRoute("maintab", uniqueId, "tab_message", null);
+            BoostNavigator.showRoute("maintab", uniqueId, "tab_message", null);
         }
         super.onHiddenChanged(hidden);
 

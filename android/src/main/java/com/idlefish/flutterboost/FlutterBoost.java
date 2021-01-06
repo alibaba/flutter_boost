@@ -18,9 +18,33 @@ public class FlutterBoost {
 
     private static FlutterBoost sInstance = null;
 
-    private NativeRouterApi mApi;
+    private NativeRouterApi nativeRouterApi;
 
     private Activity topActivity = null;
+
+    private FlutterRouterApi flutterRouterApi;
+
+    private ContainerManager containerManager;
+
+    FlutterBoost(){
+        flutterRouterApi=new FlutterRouterApi();
+        containerManager=new ContainerManager();
+    }
+
+    public ContainerManager getContainerManager() {
+        return containerManager;
+    }
+
+    public FlutterRouterApi getFlutterRouterApi() {
+        return flutterRouterApi;
+    }
+    public void setNativeRouterApi(NativeRouterApi api) {
+        nativeRouterApi = api;
+    }
+
+    public NativeRouterApi getNativeRouterApi() {
+        return nativeRouterApi;
+    }
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -62,7 +86,7 @@ public class FlutterBoost {
                         FlutterMain.findAppBundlePath(), this.dartEntrypointFunctionName));
                 FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
             }
-            FlutterBoost.instance().setApi(api);
+            FlutterBoost.instance().setNativeRouterApi(api);
             FlutterBoost.instance().setupActivityLifecycleCallback(application);
 
         }
@@ -74,14 +98,6 @@ public class FlutterBoost {
 
     public Activity getTopActivity() {
         return topActivity;
-    }
-
-    public void setApi(NativeRouterApi api) {
-        mApi = api;
-    }
-
-    public NativeRouterApi getApi() {
-        return mApi;
     }
 
     class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {

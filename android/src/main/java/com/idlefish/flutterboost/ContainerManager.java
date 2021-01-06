@@ -11,15 +11,6 @@ import java.util.Stack;
 
 public class ContainerManager {
 
-    private static ContainerManager sInstance = null;
-
-    public static ContainerManager instance() {
-        if (sInstance == null) {
-            sInstance = new ContainerManager();
-        }
-        return sInstance;
-    }
-
     private final Set<ContainerRef> mContainerRefs = new HashSet<ContainerRef>();
     /**
      * 记录当前最上层的容器
