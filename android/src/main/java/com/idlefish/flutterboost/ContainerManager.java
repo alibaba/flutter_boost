@@ -19,14 +19,29 @@ public class ContainerManager {
 
 
     public void setStackTop(FlutterViewContainer container) {
+//        if(!stackTop.empty()){
+//            for( ContainerRef ref:stackTop){
+//                if(ref.container.get() ==container){
+//                    stackTop.remove(ref);
+//                    stackTop.push(new ContainerRef(container.getUniqueId(),container));
+//                    return;
+//                }
+//            }
+//        }
+        if(stackTop.size()>0){
+            return;
+        }
         stackTop.add(new ContainerRef(container.getUniqueId(),container));
 
     }
 
     public void removeStackTop(FlutterViewContainer container) {
         if (stackTop.empty()) return;
-        if (stackTop.peek().uniqueId== container.getUniqueId()) {
-            stackTop.pop();
+        for( ContainerRef ref:stackTop){
+            if(ref.container.get()==container){
+                stackTop.remove(ref);
+                return;
+            }
         }
     }
 
@@ -42,8 +57,8 @@ public class ContainerManager {
         mContainerRefs.add(containerRef);
     }
 
-    public void removeContainer(String uniqueId) {
-        if (mContainerRefs.isEmpty()) return;
+    public synchronized void removeContainer(String uniqueId) {
+        if (mContainerRefs.isEmpty() || mContainerRefs.size()==0) return;
 
         for (ContainerRef ref : mContainerRefs) {
             if (uniqueId != null && TextUtils.equals(uniqueId, ref.uniqueId)) {

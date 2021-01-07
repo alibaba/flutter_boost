@@ -2,34 +2,53 @@ package com.idlefish.flutterboost.containers;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 
 import java.util.Map;
 
+import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
-import io.flutter.embedding.engine.FlutterEngine;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.PAGE_NAME;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.UNIQUE_ID;
 
-public class FlutterBoostFragment extends CopyFlutterFragment implements FlutterViewContainer {
+public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
+    private FlutterView flutterView;
     private  String uniqueId;
     private  String pageName;
+    boolean isTabSelect=true;
     public void setContainerInfo( String uniqueId,String pageName){
         this.uniqueId=uniqueId;
         this.pageName=pageName;
     }
+
+    private void findFlutterView(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup vp = (ViewGroup) view;
+            for (int i = 0; i < vp.getChildCount(); i++) {
+                View viewchild = vp.getChildAt(i);
+                if (viewchild instanceof FlutterView) {
+                    flutterView = (FlutterView) viewchild;
+                    return;
+                } else {
+                    findFlutterView(viewchild);
+                }
+
+            }
+        }
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.pushContainer(this);
+//        ActivityAndFragmentPatch.setStackTop(this);
+
         if(getArguments().getString(UNIQUE_ID)!=null){
             uniqueId=getArguments().getString(UNIQUE_ID);
         }
@@ -42,21 +61,34 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
 
     @Override
     public void onHiddenChanged(boolean hidden) {
+
         if (hidden) {
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine());
+            ActivityAndFragmentPatch.removeStackTop(this);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         } else {
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine(), this);
+            ActivityAndFragmentPatch.setStackTop(this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         }
         super.onHiddenChanged(hidden);
     }
 
-    public void setTabSelected() {
-        ActivityAndFragmentPatch.setStackTop(this);
+
+
+    public void setTabSelected(boolean isTabSelect) {
+        this.isTabSelect=isTabSelect;
+//        ActivityAndFragmentPatch.setStackTop(this);
     }
     @Override
     public void onResume() {
+        if (flutterView == null) {
+            findFlutterView(this.getView().getRootView());
+        }
+        if(isTabSelect){
+            ActivityAndFragmentPatch.setStackTop(this);
+        }
         super.onResume();
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine(), this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
 
     }
 
@@ -69,13 +101,28 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
     public void onPause() {
         super.onPause();
         ActivityAndFragmentPatch.removeStackTop(this);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(delegate.getFlutterView(), delegate.getFlutterEngine());
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if( this.getFlutterEngine()!=null){
+            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
     }
 
     @Override
     public void onDestroyView() {
-        ActivityAndFragmentPatch.removeContainer(this);
         super.onDestroyView();
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     @Override
@@ -111,12 +158,12 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
         private boolean shouldAttachEngineToActivity = true;
         private  String pageName;
         private  String uniqueId;
-        public CachedEngineFragmentBuilder(@NonNull String engineId) {
+        public CachedEngineFragmentBuilder( String engineId) {
             this(FlutterBoostFragment.class, engineId);
         }
 
         public CachedEngineFragmentBuilder(
-                 Class<? extends FlutterBoostFragment> subclass, @NonNull String engineId) {
+                 Class<? extends FlutterBoostFragment> subclass,  String engineId) {
             this.fragmentClass = subclass;
             this.engineId = engineId;
         }
@@ -137,14 +184,14 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
         }
 
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder renderMode(@NonNull RenderMode renderMode) {
+        public FlutterBoostFragment.CachedEngineFragmentBuilder renderMode( RenderMode renderMode) {
             this.renderMode = renderMode;
             return this;
         }
 
 
         public FlutterBoostFragment.CachedEngineFragmentBuilder transparencyMode(
-                @NonNull TransparencyMode transparencyMode) {
+                 TransparencyMode transparencyMode) {
             this.transparencyMode = transparencyMode;
             return this;
         }
@@ -161,7 +208,6 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
          * <p>Subclasses should override this method to add new properties to the {@link Bundle}.
          * Subclasses must call through to the super method to collect all existing property values.
          */
-        @NonNull
         protected Bundle createArgs() {
             Bundle args = new Bundle();
             args.putString(ARG_CACHED_ENGINE_ID, engineId);
@@ -182,7 +228,6 @@ public class FlutterBoostFragment extends CopyFlutterFragment implements Flutter
          * Constructs a new {@code FlutterFragment} (or a subclass) that is configured based on
          * properties set on this {@code CachedEngineFragmentBuilder}.
          */
-        @NonNull
         public <T extends FlutterBoostFragment> T build() {
             try {
                 @SuppressWarnings("unchecked")

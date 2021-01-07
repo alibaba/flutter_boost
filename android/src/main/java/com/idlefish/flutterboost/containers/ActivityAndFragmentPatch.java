@@ -87,7 +87,6 @@ public class ActivityAndFragmentPatch {
     }
 
     public static void removeContainer(FlutterViewContainer container) {
-        String uniqueId = container.getContextActivity().getIntent().getStringExtra(FlutterActivityLaunchConfigs.UNIQUE_ID);
-        FlutterBoost.instance().getContainerManager().removeContainer(uniqueId);
+        FlutterBoost.instance().getContainerManager().removeContainer(container.getUniqueId());
     }
 }
