@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import java.util.Map;
-
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
@@ -54,6 +52,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+
     }
 
     @Override

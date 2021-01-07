@@ -6,7 +6,7 @@ import 'tab/message.dart';
 
 import 'simple_page_widgets.dart';
 import 'flutter_to_flutter_sample.dart';
-
+import 'image_pick.dart';
 void main() {
   runApp(MyApp());
 }
@@ -25,7 +25,8 @@ class _MyAppState extends State<MyApp> {
     routerMap=<String, PageBuilder>{
       '/': (pageName, params, _) => Container(),
       'embedded': (pageName, params, _) => EmbeddedFirstRouteWidget(),
-      'first': (pageName, params, _) => FirstRouteWidget(),
+      'imagepick': (pageName, params, _) => ImagePickerPage(title: "xxx",),
+      // 'first': (pageName, params, _) => FlutterRouteWidget(params: params),
       'firstFirst': (pageName, params, _) => FirstFirstRouteWidget(),
       'second': (pageName, params, _) => SecondRouteWidget(),
       'secondStateful': (pageName, params, _) => SecondStatefulRouteWidget(),
@@ -51,9 +52,7 @@ class _MyAppState extends State<MyApp> {
     return FlutterBoostApp(routerMap,appBuilder:appBuilder);
   }
   static Widget appBuilder(Widget home) {
-    return MaterialApp(home: home,navigatorObservers: [
-      BoostNavigatorObserver()
-    ],);
+    return MaterialApp(home: home,);
   }
 
 

@@ -70,8 +70,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onHiddenChanged(hidden);
     }
 
-
-
     public void setTabSelected(boolean isTabSelect) {
         this.isTabSelect=isTabSelect;
     }
@@ -134,7 +132,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getContainerUrl() {
-
         return this.pageName;
     }
 
