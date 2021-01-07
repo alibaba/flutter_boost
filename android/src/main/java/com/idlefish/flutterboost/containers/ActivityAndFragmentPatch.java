@@ -1,13 +1,6 @@
 package com.idlefish.flutterboost.containers;
 
-
-import android.app.Activity;
-import android.os.Build;
-import android.view.View;
-
-import com.idlefish.flutterboost.ContainerManager;
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterRouterApi;
 
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;

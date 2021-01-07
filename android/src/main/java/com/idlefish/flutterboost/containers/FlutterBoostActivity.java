@@ -11,11 +11,8 @@ import android.view.ViewGroup;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
-import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
-import io.flutter.embedding.engine.FlutterEngine;
-
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;

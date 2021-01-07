@@ -4,17 +4,11 @@ import android.content.Intent;
 
 import com.idlefish.flutterboost.NativeRouterApi;
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.containers.CopyFlutterActvity;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.Map;
-
 import io.flutter.app.FlutterApplication;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterEngineCache;
-import io.flutter.embedding.engine.dart.DartExecutor;
-
 
 public class MyApplication extends FlutterApplication {
 

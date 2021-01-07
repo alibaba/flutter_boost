@@ -47,8 +47,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActivityAndFragmentPatch.pushContainer(this);
-//        ActivityAndFragmentPatch.setStackTop(this);
-
         if(getArguments().getString(UNIQUE_ID)!=null){
             uniqueId=getArguments().getString(UNIQUE_ID);
         }
@@ -76,7 +74,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     public void setTabSelected(boolean isTabSelect) {
         this.isTabSelect=isTabSelect;
-//        ActivityAndFragmentPatch.setStackTop(this);
     }
     @Override
     public void onResume() {
@@ -143,7 +140,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getUniqueId() {
-//        getArguments().getString(UNIQUE_ID, null)==null
         return this.uniqueId;
     }
 

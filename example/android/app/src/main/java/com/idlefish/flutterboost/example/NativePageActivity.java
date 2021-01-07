@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.idlefish.flutterboost.BoostNavigator;
-import com.idlefish.flutterboost.FlutterRouterApi;
 
 import java.util.HashMap;
 import java.util.Map;
