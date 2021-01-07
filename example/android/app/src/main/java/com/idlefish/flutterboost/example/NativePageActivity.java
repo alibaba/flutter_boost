@@ -42,7 +42,7 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
         if (v == mOpenNative) {
             NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL,params);
         } else if (v == mOpenFlutter) {
-            BoostNavigator.pushRoute("flutterPage",null,null);
+            BoostNavigator.pushRoute("flutterPage",null);
         } else if (v == mOpenFlutterFragment) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         }

@@ -25,7 +25,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   /// push 一个页面
   ///
   @override
-  void pushRoute(String pageName, String uniqueId, Map arguments) {
+  void pushRoute(String pageName, Map arguments) {
     BoostNavigator.of(null, appState: appState)
         .push(pageName, arguments: arguments);
   }

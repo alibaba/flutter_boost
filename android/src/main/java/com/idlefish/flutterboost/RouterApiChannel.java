@@ -15,8 +15,8 @@ class RouterApiChannel {
     public final static String NativeRouterApi_PopRoute = "NativeRouterApi.popRoute";
     public final static String FlutterRouterApi_PushRoute = "FlutterRouterApi.pushRoute";
     public final static String FlutterRouterApi_PopRoute = "FlutterRouterApi.popRoute";
-    public final static String FlutterRouterApi_PushOrShowRoute = "FlutterRouterApi.pushOrShowRoute";
-    public final static String FlutterRouterApi_ShowRoute = "FlutterRouterApi.showRoute";
+//    public final static String FlutterRouterApi_PushOrShowRoute = "FlutterRouterApi.pushOrShowRoute";
+    public final static String FlutterRouterApi_ShowTabRoute = "FlutterRouterApi.showTabRoute";
 
 
     public static void setup(BinaryMessenger binaryMessenger) {
@@ -52,7 +52,7 @@ class RouterApiChannel {
                     Map arguments = (Map) msg.get("arguments");
                     HashMap<String, HashMap> wrapped = new HashMap<String, HashMap>();
                     try {
-                        FlutterBoost.instance().getNativeRouterApi().pushFlutterRoute(pageName, uniqueId, arguments);
+                        FlutterBoost.instance().getNativeRouterApi().pushFlutterRoute(pageName,uniqueId,  arguments);
                         wrapped.put("result", null);
                     } catch (Exception exception) {
 //                            wrapped.put("error", wrapError(exception));

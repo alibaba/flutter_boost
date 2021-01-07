@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == mOpenNative) {
             NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL , params);
         } else if (v == mOpenFlutter) {
-            BoostNavigator.pushRoute("flutterPage",null,null);
+            BoostNavigator.pushRoute("flutterPage",null);
 //            PageRouter.openPageByUrl(this, PageRouter.FLUTTER_PAGE_URL,params);
         } else if (v == mOpenFlutterFragment) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);

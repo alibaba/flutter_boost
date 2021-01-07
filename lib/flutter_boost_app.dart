@@ -85,7 +85,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostPage _createPage(PageInfo pageInfo) {
     if (widget.routeMap.containsKey(pageInfo.pageName)) {
       final PageBuilder builder = widget.routeMap[pageInfo.pageName];
-      pageInfo.uniqueId ??= _getUniqueId(pageInfo.pageName);
+      pageInfo.uniqueId ??= getUniqueId(pageInfo.pageName);
       return BoostPage<dynamic>(
           key: ValueKey(pageInfo.uniqueId),
           pageInfo: pageInfo,
@@ -98,7 +98,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   /// 生成UniqueId
   ///
-  String _getUniqueId(String pageName) {
+  String getUniqueId(String pageName) {
     return '__container_uniqueId_key__${DateTime
         .now()
         .millisecondsSinceEpoch}_$pageName';
@@ -155,8 +155,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         Logger.error('uniqueId=$uniqueId not find');
         return;
       }
+    }else{
+      page = pages.last;
     }
-    page = pages.last;
     final bool r = await page?.navKey?.currentState?.maybePop();
     if (!r) {
       setState(() {
@@ -169,7 +170,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           Logger.log('pop container ,  uniqueId=${page.pageInfo
               .uniqueId} , groupName= ${page.pageInfo.groupName}');
           _nativeRouterApi.popRoute(
-              page.pageInfo.pageName, uniqueId, arguments);
+              page.pageInfo.pageName, page.pageInfo.uniqueId, arguments);
         }
       });
     }

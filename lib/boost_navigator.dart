@@ -33,10 +33,11 @@ class BoostNavigator {
   /// push 一个page，并展示在栈顶
   ///
   void push(String pageName,
-      {String uniqueId, Map arguments, bool openContainer = true}) {
+      { Map arguments, bool openContainer = true}) {
     if (isFlutterPage(pageName)) {
+      String uniqueId=appState.getUniqueId(pageName);
       if (openContainer) {
-        appState.nativeRouterApi.pushFlutterRoute(pageName, null, arguments);
+        appState.nativeRouterApi.pushFlutterRoute(pageName, uniqueId, arguments);
       }
       appState.push(pageName, uniqueId: uniqueId, arguments: arguments,openContainer:openContainer);
     } else {
@@ -52,8 +53,10 @@ class BoostNavigator {
       String pageName, String uniqueId, {Map arguments, bool openContainer}) {
     final bool isShow = appState.show(uniqueId);
     if (!isShow) {
-      push(pageName,
-          uniqueId: uniqueId, arguments: arguments, openContainer: false);
+      if (openContainer) {
+        appState.nativeRouterApi.pushFlutterRoute(pageName, uniqueId, arguments);
+      }
+      appState.push(pageName, uniqueId: uniqueId, arguments: arguments,openContainer:openContainer);
     }
   }
   ///

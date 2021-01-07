@@ -8,16 +8,16 @@ import java.util.Map;
 
 public class BoostNavigator {
 
-    public static void pushRoute(String pageName, String uniqueId, Map arguments) {
-        FlutterBoost.instance().getFlutterRouterApi().pushRoute(pageName, uniqueId, arguments, null);
+    public static void pushRoute(String pageName, Map arguments) {
+        FlutterBoost.instance().getFlutterRouterApi().pushRoute(pageName, arguments, null);
     }
 
     public static String generateUniqueId(String pageName) {
         return FlutterBoost.instance().getFlutterRouterApi().generateUniqueId(pageName);
     }
 
-    public static void showRoute(String groupName, String uniqueId, String pageName, Map arguments) {
-        FlutterBoost.instance().getFlutterRouterApi().showRoute(groupName, uniqueId, pageName, arguments);
+    public static void showTabRoute(String groupName, String uniqueId, String pageName, Map arguments) {
+        FlutterBoost.instance().getFlutterRouterApi().showTabRoute(groupName, uniqueId, pageName, arguments);
     }
 
     public static void popRoute(String uniqueId) {

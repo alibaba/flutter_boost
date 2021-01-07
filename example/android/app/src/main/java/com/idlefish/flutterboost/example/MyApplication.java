@@ -34,7 +34,7 @@ public class MyApplication extends FlutterApplication {
             @Override
             public void pushFlutterRoute(String pageName, String uniqueId, Map arguments) {
 
-                Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, "test")
+                Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                         .destroyEngineWithActivity(false)
                         .pageName(pageName)

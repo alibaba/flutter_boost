@@ -635,9 +635,7 @@ public class CopyFlutterFragment extends Fragment implements FlutterActivityAndF
 
 
 
-    public void setTabSelected() {
 
-    }
 
     @Override
     public void onResume() {

@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 
 abstract class FlutterRouterApi {
-  void pushRoute(String pageName, String uniqueId, Map arguments);
+  void pushRoute(String pageName, Map arguments);
 
   void popRoute();
 
@@ -18,9 +18,8 @@ abstract class FlutterRouterApi {
         final Map<dynamic, dynamic> mapMessage =
             message as Map<dynamic, dynamic>;
         final String pageName = mapMessage['pageName'];
-        final String uniqueId = mapMessage['uniqueId'];
         final Map arguments = mapMessage['arguments'];
-        api.pushRoute(pageName, uniqueId, arguments);
+        api.pushRoute(pageName, arguments);
       });
     }
     {

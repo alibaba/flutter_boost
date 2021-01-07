@@ -115,6 +115,7 @@ public class FlutterBoost {
 
         @Override
         public void onActivityResumed(@NonNull Activity activity) {
+            topActivity = activity;
 
         }
 
@@ -135,7 +136,6 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(@NonNull Activity activity) {
-            topActivity = null;
         }
     }
 }

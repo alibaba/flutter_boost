@@ -44,7 +44,7 @@
 
         </activity>
         <activity
-                android:name="com.idlefish.flutterboost.containers.CopyFlutterActvity"
+                android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
                 android:theme="@style/Theme.AppCompat"
                 android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
                 android:hardwareAccelerated="true"
@@ -63,15 +63,6 @@
 
         </activity>
 
-        <activity
-            android:name="com.idlefish.flutterboost.containers.FBFlutterActivity"
-            android:theme="@style/Theme.AppCompat"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize" >
-            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
-
-        </activity>
         <activity
             android:name="com.idlefish.flutterboost.example.FlutterFragmentPageActivity"
             android:theme="@style/Theme.AppCompat"
