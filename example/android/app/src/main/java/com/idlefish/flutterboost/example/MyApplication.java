@@ -2,11 +2,12 @@ package com.idlefish.flutterboost.example;
 
 import android.content.Intent;
 
-import com.idlefish.flutterboost.NativeRouterApi;
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.NativeRouterApi;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
-import java.util.Map;
+import java.util.HashMap;
+
 import io.flutter.app.FlutterApplication;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
@@ -20,13 +21,13 @@ public class MyApplication extends FlutterApplication {
         FlutterBoost.withDefaultEngine().init(this, new NativeRouterApi() {
 
             @Override
-            public void pushNativeRoute(String pageName, Map arguments) {
+            public void pushNativeRoute(String pageName, HashMap<String,Object> arguments) {
                 Intent intent = new Intent(FlutterBoost.instance().getTopActivity(), NativePageActivity.class);
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }
 
             @Override
-            public void pushFlutterRoute(String pageName, String uniqueId, Map arguments) {
+            public void pushFlutterRoute(String pageName, String uniqueId, HashMap<String,Object> arguments) {
 
                 Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
@@ -34,8 +35,6 @@ public class MyApplication extends FlutterApplication {
                         .pageName(pageName)
                         .uniqueId(uniqueId)
                         .build(FlutterBoost.instance().getTopActivity());
-
-
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }
 

@@ -4,24 +4,24 @@ import android.app.Activity;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.Map;
+import java.util.HashMap;
 
 public class BoostNavigator {
 
-    public static void pushRoute(String pageName, Map arguments) {
-        FlutterBoost.instance().getFlutterRouterApi().pushRoute(pageName, arguments, null);
+    public static void pushRoute(String pageName, HashMap<String, Object> arguments) {
+        FlutterBoost.instance().getPlugin().pushRoute(pageName, arguments, null);
     }
 
     public static String generateUniqueId(String pageName) {
-        return FlutterBoost.instance().getFlutterRouterApi().generateUniqueId(pageName);
+        return FlutterBoost.instance().getPlugin().generateUniqueId(pageName);
     }
 
-    public static void showTabRoute(String groupName, String uniqueId, String pageName, Map arguments) {
-        FlutterBoost.instance().getFlutterRouterApi().showTabRoute(groupName, uniqueId, pageName, arguments);
+    public static void showTabRoute(String groupName, String uniqueId, String pageName, HashMap<String, Object> arguments) {
+        FlutterBoost.instance().getPlugin().showTabRoute(groupName, uniqueId, pageName, arguments);
     }
 
     public static void popRoute(String uniqueId) {
-        FlutterBoost.instance().getFlutterRouterApi().popRoute(uniqueId, null);
+        FlutterBoost.instance().getPlugin().popRoute(uniqueId, null);
         FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
         if(container!=null){
             container.finishContainer(null);
