@@ -114,7 +114,7 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
             );
             Bundle metadata = activityInfo.metaData;
             Integer splashScreenId = metadata != null ? metadata.getInt(SPLASH_SCREEN_META_DATA_KEY) : null;
-            return splashScreenId != null
+            return (splashScreenId != null && splashScreenId > 0)
                     ? Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
                     ? getResources().getDrawable(splashScreenId, getTheme())
                     : getResources().getDrawable(splashScreenId)
