@@ -1,4 +1,3 @@
-
 class Logger {
   static void log(String msg) {
     assert(() {

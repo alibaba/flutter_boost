@@ -32,7 +32,7 @@ public class ActivityAndFragmentPatch {
      * 重写onBackPressed
      */
     public static void onBackPressed(String unqueId) {
-        FlutterBoost.instance().getFlutterRouterApi().popRoute(unqueId, null);
+        FlutterBoost.instance().getPlugin().popRoute(unqueId, null);
     }
 
     /**

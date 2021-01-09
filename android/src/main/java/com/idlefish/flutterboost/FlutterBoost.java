@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
@@ -18,32 +19,18 @@ public class FlutterBoost {
 
     private static FlutterBoost sInstance = null;
 
-    private NativeRouterApi nativeRouterApi;
-
     private Activity topActivity = null;
-
-    private FlutterRouterApi flutterRouterApi;
 
     private ContainerManager containerManager;
 
+    private FlutterBoostPlugin plugin;
+
     FlutterBoost(){
-        flutterRouterApi=new FlutterRouterApi();
         containerManager=new ContainerManager();
     }
 
     public ContainerManager getContainerManager() {
         return containerManager;
-    }
-
-    public FlutterRouterApi getFlutterRouterApi() {
-        return flutterRouterApi;
-    }
-    public void setNativeRouterApi(NativeRouterApi api) {
-        nativeRouterApi = api;
-    }
-
-    public NativeRouterApi getNativeRouterApi() {
-        return nativeRouterApi;
     }
 
     public static FlutterBoost instance() {
@@ -78,6 +65,7 @@ public class FlutterBoost {
         }
 
         public void init(Application application, NativeRouterApi api) {
+            // 1. initialize default engine
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
                 engine = new FlutterEngine(application);
@@ -86,10 +74,32 @@ public class FlutterBoost {
                         FlutterMain.findAppBundlePath(), this.dartEntrypointFunctionName));
                 FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
             }
-            FlutterBoost.instance().setNativeRouterApi(api);
+
+            // 2. set delegate
+            FlutterBoost.instance().getPlugin().setDelegate(api);
+
+            //3. register ActivityLifecycleCallbacks
             FlutterBoost.instance().setupActivityLifecycleCallback(application);
 
         }
+    }
+
+    public FlutterBoostPlugin getPlugin() {
+        if (plugin == null) {
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+            if (engine == null) {
+                throw new RuntimeException("FlutterBoost might not have been initialized yet!!!");
+            }
+
+            try {
+                Class<? extends FlutterPlugin> pluginClass =
+                        (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
+                plugin = (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return plugin;
     }
 
     public void setupActivityLifecycleCallback(Application application) {
