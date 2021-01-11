@@ -1,70 +1,109 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
+
 ///
 ///
 /// boost 页面栈的操作和管理
 ///
 ///
 class BoostNavigator {
-  const BoostNavigator(this.appState, this.context);
+
+  const BoostNavigator(this.appState);
 
   final FlutterBoostAppState appState;
-  final BuildContext context;
+
   ///
-  /// 获取 BoostNavigator
+  /// 获取BoostNavigator实例
   ///
-  static BoostNavigator of(BuildContext context,
-      {FlutterBoostAppState appState}) {
+  static BoostNavigator of() {
     FlutterBoostAppState _appState;
-    if (appState == null) {
-      _appState = context.findAncestorStateOfType<FlutterBoostAppState>();
-    } else {
-      _appState = appState;
-    }
-    return BoostNavigator(_appState, context);
+    _appState = navigatorKey.currentContext
+        .findAncestorStateOfType<FlutterBoostAppState>();
+    return BoostNavigator(_appState);
   }
+
   ///
   /// 判断是否是一个flutter 页面
   ///
   bool isFlutterPage(String pageName) {
     return appState.routeMap?.containsKey(pageName);
   }
+
   ///
   /// push 一个page，并展示在栈顶
+  /// openContainer=true 是指打开对用的native的容器。如android 的activity。
+  /// 在当前页面是flutter页面时候，不打开容器，能提升用户体验
   ///
-  void push(String pageName,
-      { Map arguments, bool openContainer = true}) {
+  void push(String pageName, {Map arguments, bool openContainer = true}) {
     if (isFlutterPage(pageName)) {
-      String uniqueId=appState.getUniqueId(pageName);
+      String uniqueId = appState.getUniqueId(pageName);
       if (openContainer) {
-        appState.nativeRouterApi.pushFlutterRoute(pageName, uniqueId, arguments);
+        appState.nativeRouterApi
+            .pushFlutterRoute(pageName, uniqueId, arguments);
       }
-      appState.push(pageName, uniqueId: uniqueId, arguments: arguments,openContainer:openContainer);
+      appState.push(pageName,
+          uniqueId: uniqueId,
+          arguments: arguments,
+          openContainer: openContainer);
     } else {
       appState.nativeRouterApi.pushNativeRoute(pageName, null, arguments);
     }
   }
+
   ///
-  /// 1.根据uniqueId查找page ,如果已经存在，把对应的page移动到栈顶 。
-  /// 如果不存在，新建page。并展示在栈顶
-  /// 2.openContainer =false 时候。不再打开容器。
+  /// 根据uniqueId查找page ,移动到栈顶展示
   ///
-  void pushOrShowRoute(
-      String pageName, String uniqueId, {Map arguments, bool openContainer}) {
+  void show(String uniqueId) {
     final bool isShow = appState.show(uniqueId);
     if (!isShow) {
-      if (openContainer) {
-        appState.nativeRouterApi.pushFlutterRoute(pageName, uniqueId, arguments);
-      }
-      appState.push(pageName, uniqueId: uniqueId, arguments: arguments,openContainer:openContainer);
+
     }
   }
+
   ///
   /// 关闭一个页面
-  /// 1.先执行该页面的navigator.pop
-  /// 2.如果该页面的navigator.maybePop=false ，才会关闭整个页面，且关闭容器.
+  /// 1.如果uniqueId 指定，关闭uniqueId对应的 page 和容器
+  /// 2.如果未指定uniqueId，关闭栈顶页面，和页面对应的容器
+  /// 注意：
+  /// 1.每个page，都包含了一个自己的navigator，执行关闭时候先执行，
+  /// 页面里面的navigator.pop ，让子路由pop.
   ///
-  void pop({String uniqueId,Map arguments}) {
-    appState.pop();
+  /// 2.执行关闭时候，页面内的子路由 maybePop=false ，才会关闭整个页面，
+  /// 如果page有对应的容native 容器， 则会关闭容器
+  /// page是否有容器，是打开时候的openContainer属性定的。
+  ///
+  void pop({String uniqueId}) {
+    appState.pop(uniqueId:uniqueId);
   }
+
+  ///
+  ///获取当前栈顶页面的页面信息，包括uniqueId，pagename
+  ///
+  PageInfo getTopPageInfo(){
+    return appState.pages.last?.pageInfo;
+  }
+
+  ///
+  /// 获取页面总个数
+  ///
+  ///
+  int pageSize(){
+    return appState.pages.length;
+  }
+
+}
+
+class PageInfo {
+  PageInfo(
+      {this.pageName,
+      this.uniqueId,
+      this.arguments,
+      this.openContainer,
+      this.groupName});
+
+  String pageName;
+  String uniqueId;
+  Map arguments;
+  bool openContainer;
+  String groupName;
 }

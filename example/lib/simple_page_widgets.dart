@@ -58,7 +58,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
                 child: Text('Open native page'),
                 onPressed: () {
                   print("open native page!");
-                  BoostNavigator.of(context).push("native");
+                  BoostNavigator.of().push("native");
 
                   // FlutterBoost.singleton.open("native").then((Map<dynamic,dynamic> value) {
                   //   print(
@@ -75,7 +75,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
 //                    print(
 //                        "call me when page is finished. did receive FF route result $value");
 //                  });
-                  BoostNavigator.of(context).push("firstFirst");
+                  BoostNavigator.of().push("firstFirst");
 
                 },
               ),
@@ -88,7 +88,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget>{
 //                        "call me when page is finished. did receive second route result $value");
 //                  });
 
-                  BoostNavigator.of(context).push("second",openContainer: true);
+                  BoostNavigator.of().push("second",openContainer: true);
 
                 },
               ),
@@ -412,7 +412,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () =>  BoostNavigator.of(context).push("native"),
+                  onTap: () =>  BoostNavigator.of().push("native"),
                 ),
                 InkWell(
                   child: Container(
@@ -426,7 +426,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () => BoostNavigator.of(context).push("imagepick"),
+                  onTap: () => BoostNavigator.of().push("imagepick"),
                 ),
                 // InkWell(
                 //   child: Container(
@@ -474,7 +474,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () =>  BoostNavigator.of(context).push("flutterPage",openContainer: false),
+                  onTap: () =>  BoostNavigator.of().push("flutterPage",openContainer: false),
                 ),
                 InkWell(
                   child: Container(

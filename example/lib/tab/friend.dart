@@ -43,7 +43,7 @@ class FriendWidget extends StatelessWidget {
                           'open native page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of(context).push("native"),
+                    onTap: () =>  BoostNavigator.of().push("native"),
                   ),
                   InkWell(
                     child: Container(
@@ -54,7 +54,7 @@ class FriendWidget extends StatelessWidget {
                           'open flutter page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of(context).push("flutterPage",openContainer: false),
+                    onTap: () =>  BoostNavigator.of().push("flutterPage",openContainer: false),
                   ),
                   Container(
                     height: 300,

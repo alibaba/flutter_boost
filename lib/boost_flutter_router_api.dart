@@ -18,6 +18,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
       _instance = BoostFlutterRouterApi(appState);
       FlutterRouterApi.setup(_instance);
     }
+
     return _instance;
   }
 
@@ -26,8 +27,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void pushRoute(String pageName, Map arguments) {
-    BoostNavigator.of(null, appState: appState)
-        .push(pageName, arguments: arguments);
+    BoostNavigator.of().push(pageName, arguments: arguments);
   }
 
   ///
@@ -35,7 +35,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void popRoute() {
-    BoostNavigator.of(null, appState: appState).pop();
+    BoostNavigator.of().pop();
   }
 
   ///
@@ -45,9 +45,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   @override
   void pushOrShowRoute(
       String pageName, String uniqueId, Map arguments, bool openContainer) {
-    BoostNavigator.of(null, appState: appState).pushOrShowRoute(
-        pageName, uniqueId,
-        arguments: arguments, openContainer: openContainer);
+    // BoostNavigator.of().pushOrShowRoute(
+    //     pageName, uniqueId,
+    //     arguments: arguments, openContainer: openContainer);
   }
 
   @override

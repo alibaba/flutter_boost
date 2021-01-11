@@ -4,12 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_channel.dart';
 import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
+import 'package:flutter_boost/boost_navigator.dart';
 
-final _navigatorKey = GlobalKey<NavigatorState>();
+final  navigatorKey = GlobalKey<NavigatorState>();
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
-typedef PageBuilder = Widget Function(
+typedef WidgetBuild =Widget Function(
     String pageName, Map params, String uniqueId);
 
 ///
@@ -17,13 +18,13 @@ typedef PageBuilder = Widget Function(
 ///
 ///
 class FlutterBoostApp extends StatefulWidget {
-  const FlutterBoostApp(Map<String, PageBuilder> routeMap,
+  const FlutterBoostApp(Map<String, BoostPageRouteBuilder> routeMap,
       {FlutterBoostAppBuilder appBuilder, String initialRoute})
       : routeMap = routeMap,
         appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
-  final Map<String, PageBuilder> routeMap;
+  final Map<String, BoostPageRouteBuilder> routeMap;
   final FlutterBoostAppBuilder appBuilder;
   final String initialRoute;
 
@@ -44,8 +45,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostFlutterRouterApi get boostFlutterRouterApi => _boostFlutterRouterApi;
 
-  Map<String, PageBuilder> get routeMap => widget.routeMap;
-
+  Map<String, BoostPageRouteBuilder> get routeMap => widget.routeMap;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           }
         },
         child: Navigator(
-            key: _navigatorKey, pages: List.of(pages), onPopPage: _onPopPage)));
+            key: navigatorKey, pages: List.of(pages), onPopPage: _onPopPage)));
   }
 
   bool _onPopPage(Route<dynamic> route, dynamic result) {
@@ -84,14 +84,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// 创建页面
   BoostPage _createPage(PageInfo pageInfo) {
     if (widget.routeMap.containsKey(pageInfo.pageName)) {
-      final PageBuilder builder = widget.routeMap[pageInfo.pageName];
+      final BoostPageRouteBuilder builder = widget.routeMap[pageInfo.pageName];
       pageInfo.uniqueId ??= getUniqueId(pageInfo.pageName);
       return BoostPage<dynamic>(
           key: ValueKey(pageInfo.uniqueId),
           pageInfo: pageInfo,
           builder: builder);
     } else {
-      return  PageNameUnkonw();
+      return PageNameUnkonw();
     }
   }
 
@@ -155,7 +155,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         Logger.error('uniqueId=$uniqueId not find');
         return;
       }
-    }else{
+    } else {
       page = pages.last;
     }
     final bool r = await page?.navKey?.currentState?.maybePop();
@@ -203,7 +203,7 @@ class BoostPage<T> extends Page<T> {
     this.pageInfo})
       : super(key: key);
 
-  final PageBuilder builder;
+  final BoostPageRouteBuilder builder;
   final PageInfo pageInfo;
 
   GlobalKey<NavigatorState> navKey;
@@ -216,9 +216,16 @@ class BoostPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
-    return MaterialPageRoute<T>(
-        settings: this,
-        builder: (BuildContext context) {
+    return PageRouteBuilder(
+        settings:this,
+        transitionDuration: builder.transitionDuration,
+        reverseTransitionDuration: builder.reverseTransitionDuration,
+        opaque: builder.opaque,
+        barrierDismissible: builder.barrierDismissible,
+        barrierColor: builder.barrierColor,
+        barrierLabel: builder.barrierLabel,
+        maintainState: builder.maintainState,
+        pageBuilder: (context, animation, secondaryAnimation) {
           return Navigator(
             key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
             onPopPage: (Route<dynamic> route, dynamic result) {
@@ -229,34 +236,94 @@ class BoostPage<T> extends Page<T> {
               return MaterialPageRoute<T>(
                   settings: settings,
                   builder: (BuildContext context) {
-                    return builder(pageInfo.pageName, pageInfo.arguments,
-                        pageInfo.uniqueId);
+                    return builder.widgetBuild(
+                        pageInfo.pageName, pageInfo.arguments,
+                        pageInfo.uniqueId);;
                   });
             },
           );
-        });
+        },
+        transitionsBuilder: builder.transitionsBuilder
+    );
+
+
+    // return MaterialPageRoute<T>(
+    //     settings: this,
+    //     builder: (BuildContext context) {
+    //       return Navigator(
+    //         key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
+    //         onPopPage: (Route<dynamic> route, dynamic result) {
+    //           return false;
+    //         },
+    //         initialRoute: pageInfo.pageName,
+    //         onGenerateRoute: (RouteSettings settings) {
+    //           return MaterialPageRoute<T>(
+    //               settings: settings,
+    //               builder: (BuildContext context) {
+    //                 return builder.widgetBuild(pageInfo.pageName, pageInfo.arguments,
+    //                     pageInfo.uniqueId);
+    //               });
+    //         },
+    //       );
+    //     });
   }
 }
 
+class BoostPageRouteBuilder {
+  BoostPageRouteBuilder({
+    this.widgetBuild,
+    this.transitionsBuilder = _defaultTransitionsBuilder,
+    this.transitionDuration = const Duration(milliseconds: 300),
+    this.reverseTransitionDuration = const Duration(milliseconds: 300),
+    this.opaque = true,
+    this.barrierDismissible = false,
+    this.barrierColor,
+    this.barrierLabel,
+    this.maintainState = true});
+
+  final WidgetBuild widgetBuild;
+
+  final RouteTransitionsBuilder transitionsBuilder;
+
+  @override
+  final Duration transitionDuration;
+
+  @override
+  final Duration reverseTransitionDuration;
+
+  @override
+  final bool opaque;
+
+  @override
+  final bool barrierDismissible;
+
+  @override
+  final Color barrierColor;
+
+  @override
+  final String barrierLabel;
+
+  @override
+  final bool maintainState;
+
+
+}
+
+Widget _defaultTransitionsBuilder(BuildContext context,
+    Animation<double> animation, Animation<double> secondaryAnimation,
+    Widget child) {
+  return child;
+}
 // enum PageLocation {
 //   native,
 //   flutter,
 // }
 //
-class PageInfo {
-  PageInfo(
-      {this.pageName, this.uniqueId, this.arguments, this.openContainer, this.groupName});
 
-  String pageName;
-  String uniqueId;
-  Map arguments;
-  bool openContainer;
-  String groupName;
-}
 //
 
 class PageNameUnkonw extends BoostPage<dynamic> {
-   PageNameUnkonw() : super(key: const ValueKey('PageNameUnkonw'));
+  PageNameUnkonw() : super(key: const ValueKey('PageNameUnkonw'));
 
   @override
   Route<dynamic> createRoute(BuildContext context) {
@@ -270,3 +337,4 @@ class PageNameUnkonw extends BoostPage<dynamic> {
     );
   }
 }
+
