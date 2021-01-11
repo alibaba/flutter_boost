@@ -31,8 +31,8 @@ public class ActivityAndFragmentPatch {
     /**
      * 重写onBackPressed
      */
-    public static void onBackPressed(String unqueId) {
-        FlutterBoost.instance().getFlutterRouterApi().popRoute(unqueId, null);
+    public static void onBackPressed() {
+        FlutterBoost.instance().getPlugin().popRoute(null, null);
     }
 
     /**

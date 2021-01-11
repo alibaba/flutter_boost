@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
-import com.idlefish.flutterboost.FlutterRouterApi;
 import com.idlefish.flutterboost.example.R;
 
 

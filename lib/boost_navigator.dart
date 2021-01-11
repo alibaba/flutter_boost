@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
+import 'package:flutter_boost/messages.dart';
 
 ///
 ///
@@ -38,15 +39,23 @@ class BoostNavigator {
     if (isFlutterPage(pageName)) {
       String uniqueId = appState.getUniqueId(pageName);
       if (openContainer) {
+        CommonParams params = CommonParams()
+          ..pageName = pageName
+          ..uniqueId = uniqueId
+          ..arguments = arguments;
         appState.nativeRouterApi
-            .pushFlutterRoute(pageName, uniqueId, arguments);
+            .pushFlutterRoute(params);
       }
       appState.push(pageName,
           uniqueId: uniqueId,
           arguments: arguments,
           openContainer: openContainer);
     } else {
-      appState.nativeRouterApi.pushNativeRoute(pageName, null, arguments);
+      CommonParams params = CommonParams()
+        ..pageName = pageName
+        ..uniqueId = null
+        ..arguments = arguments;
+      appState.nativeRouterApi.pushNativeRoute(params);
     }
   }
 

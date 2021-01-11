@@ -1,6 +1,6 @@
-import 'package:flutter_boost/boost_channel.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
+import 'package:flutter_boost/messages.dart';
 
 ///
 ///
@@ -26,16 +26,16 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   /// push 一个页面
   ///
   @override
-  void pushRoute(String pageName, Map arguments) {
-    BoostNavigator.of().push(pageName, arguments: arguments);
+  void pushRoute(CommonParams arg) {
+    BoostNavigator.of().push(arg.pageName, arguments: arg.arguments);
   }
 
   ///
   ///关闭页面
   ///
   @override
-  void popRoute() {
-    BoostNavigator.of().pop();
+  void popRoute(CommonParams arg) {
+    BoostNavigator.of().pop(uniqueId:arg.uniqueId);
   }
 
   ///
@@ -43,8 +43,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   ///
   @override
-  void pushOrShowRoute(
-      String pageName, String uniqueId, Map arguments, bool openContainer) {
+  void pushOrShowRoute(CommonParams arg) {
     // BoostNavigator.of().pushOrShowRoute(
     //     pageName, uniqueId,
     //     arguments: arguments, openContainer: openContainer);
@@ -52,14 +51,14 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   @override
   void showTabRoute(
-      String groupName, String pageName, String uniqueId, Map arguments) {
-    final bool isShow = appState.show(uniqueId);
+      CommonParams arg) {
+    final bool isShow = appState.show(arg.uniqueId);
     if (!isShow) {
-      appState.push(pageName,
-          uniqueId: uniqueId,
-          arguments: arguments,
+      appState.push(arg.pageName,
+          uniqueId: arg.uniqueId,
+          arguments: arg.arguments,
           openContainer: true,
-          groupName: groupName);
+          groupName: arg.groupName);
     }
   }
 }

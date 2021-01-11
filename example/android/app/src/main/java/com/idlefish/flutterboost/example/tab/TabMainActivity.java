@@ -50,7 +50,7 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
     @Override
     public void onBackPressed() {
 //        delegate.onBackPressed();
-        ActivityAndFragmentPatch.onBackPressed(null);
+        ActivityAndFragmentPatch.onBackPressed();
     }
     //初始化元素
     private void init() {

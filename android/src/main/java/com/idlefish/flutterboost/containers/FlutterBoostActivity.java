@@ -78,7 +78,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed(this.getUniqueId());
+        ActivityAndFragmentPatch.onBackPressed();
     }
 
     @Override
