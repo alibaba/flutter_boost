@@ -152,22 +152,36 @@ class ContainerManagerState extends State<BoostContainerManager> {
       return;
     }
 
-    if (_leastEntries != null && _leastEntries.isNotEmpty) {
-      for (final _ContainerOverlayEntry entry in _leastEntries) {
-        entry.remove();
-      }
-    }
-
     final List<BoostContainer> containers = <BoostContainer>[];
     containers.addAll(_offstage);
 
     assert(_onstage != null, 'Should have a least one BoostContainer');
     containers.add(_onstage);
 
-    _leastEntries = containers
-        .map<_ContainerOverlayEntry>(
-            (BoostContainer container) => _ContainerOverlayEntry(container))
-        .toList(growable: false);
+    // 每次重新生成 Entries, 会导致不显示UI会被rebuild
+    List<_ContainerOverlayEntry> leastEntries =
+        containers.map<_ContainerOverlayEntry>((BoostContainer container) {
+      if (_leastEntries != null && _leastEntries.isNotEmpty) {
+        var index = _leastEntries.indexWhere((element) {
+          return element.uniqueId == container.settings.uniqueId;
+        });
+
+        if (index >= 0) {
+          _ContainerOverlayEntry entry = _leastEntries[index];
+          return entry;
+        }
+      }
+
+      return _ContainerOverlayEntry(container);
+    }).toList(growable: false);
+
+    if (_leastEntries != null && _leastEntries.isNotEmpty) {
+      for (final _ContainerOverlayEntry entry in _leastEntries) {
+        entry.remove();
+      }
+    }
+
+    _leastEntries = leastEntries;
 
     overlayState.insertAll(_leastEntries);
 
@@ -336,22 +350,13 @@ class ContainerManagerState extends State<BoostContainerManager> {
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
+  final String uniqueId;
+
   _ContainerOverlayEntry(BoostContainer container)
-      : super(
+      : uniqueId = container.settings.uniqueId,
+        super(
           builder: (BuildContext ctx) => container,
           opaque: true,
           maintainState: true,
         );
-
-  bool _removed = false;
-
-  @override
-  void remove() {
-    assert(!_removed);
-    if (_removed) {
-      return;
-    }
-    _removed = true;
-    super.remove();
-  }
 }
