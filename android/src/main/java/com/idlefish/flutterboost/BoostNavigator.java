@@ -22,26 +22,6 @@ public class BoostNavigator {
         FlutterBoost.instance().getPlugin().pushRoute(pageName, arguments, null);
     }
 
-    /**
-     * 生成一个uniqueid，flutter页面的唯一标示
-     *
-     * @param pageName
-     * @return
-     */
-    public static String generateUniqueId(String pageName) {
-        return FlutterBoost.instance().getPlugin().generateUniqueId(pageName);
-    }
-
-    /**
-     *  场景为，tabs 中 部分tab是flutter，部分tab 是native 场景下
-     * @param groupName
-     * @param uniqueId
-     * @param pageName
-     * @param arguments
-     */
-    public static void showTabRoute(String groupName, String uniqueId, String pageName, HashMap<String, Object> arguments) {
-        FlutterBoost.instance().getPlugin().showTabRoute(groupName, uniqueId, pageName, arguments);
-    }
 
     /**
      * 根据uniqueId 关闭 flutter页面，如果有容器，则关闭容器.
