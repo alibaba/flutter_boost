@@ -255,7 +255,7 @@ class BoostContainerState extends NavigatorState {
 
     Future<T> future = super.push<T>(newRoute ?? route);
 
-    routerHistory.add(route);
+    routerHistory.add(newRoute ?? route);
 
     if (FlutterBoost.containerManager.postPushRoute != null) {
       FlutterBoost.containerManager
@@ -268,6 +268,150 @@ class BoostContainerState extends NavigatorState {
     }
 
     return future;
+  }
+
+  @override
+  Future<T> pushAndRemoveUntil<T extends Object>(Route<T> newRoute, RoutePredicate predicate) {
+    Route<T> boostRoute;
+    if (FlutterBoost.containerManager.prePushRoute != null) {
+      boostRoute = FlutterBoost.containerManager
+          .prePushRoute(name, uniqueId, params, newRoute);
+    }
+
+    if (multipleRouteMode) {
+      ContainerNavigatorObserver.bindContainerManager().willPush(newRoute, routerHistory.isNotEmpty ? routerHistory.last : null);
+    }
+
+    final Future<T> future = super.pushAndRemoveUntil<T>(boostRoute ?? newRoute, (Route<dynamic> route) {
+      final bool p = predicate(route);
+      if(!p) {
+        if (route != null) {
+          GlobalRouteSettingsManager.instance.removeSettings(route);
+          routerHistory.remove(route);
+        }
+      }
+      return p;
+    });
+    routerHistory.add(boostRoute ?? newRoute);
+
+    if (FlutterBoost.containerManager.postPushRoute != null) {
+      FlutterBoost.containerManager
+          .postPushRoute(name, uniqueId, params, boostRoute ?? newRoute, future);
+    }
+
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
+    return future;
+  }
+
+  @override
+  Future<T> pushReplacement<T extends Object, TO extends Object>(Route<T> newRoute, { TO result }) {
+    assert(newRoute != null);
+    assert(routerHistory.isNotEmpty);
+    Route<dynamic> removedRoute;
+    if (routerHistory.isNotEmpty) {
+      removedRoute = routerHistory.removeLast();
+    }
+    Route<T> boostRoute;
+    if (FlutterBoost.containerManager.prePushRoute != null) {
+      boostRoute = FlutterBoost.containerManager
+          .prePushRoute(name, uniqueId, params, newRoute);
+    }
+
+    if (removedRoute != null) {
+      GlobalRouteSettingsManager.instance.removeSettings(removedRoute);
+    }
+
+    if (multipleRouteMode) {
+      ContainerNavigatorObserver.bindContainerManager().willPush(newRoute, routerHistory.isNotEmpty ? routerHistory.last : null);
+    }
+
+    final Future<T> future = super.pushReplacement<T, TO>(boostRoute ?? newRoute, result: result);
+
+    routerHistory.add(boostRoute ?? newRoute);
+
+    if (FlutterBoost.containerManager.postPushRoute != null) {
+      FlutterBoost.containerManager
+          .postPushRoute(name, uniqueId, params, boostRoute ?? newRoute, future);
+    }
+
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
+
+    return future;
+  }
+
+  @override
+  void replace<T extends Object>({ @required Route<dynamic> oldRoute, @required Route<T> newRoute }) {
+    assert(oldRoute != null);
+    assert(newRoute != null);
+    if (oldRoute == newRoute)
+      return;
+
+    final int index = routerHistory.indexWhere((Route<dynamic> route) => route == oldRoute);
+    assert(index >= 0, 'This Navigator does not contain the specified oldRoute.');
+    super.replace(oldRoute: oldRoute, newRoute: newRoute);
+    routerHistory.insert(index + 1, newRoute);
+    routerHistory.removeAt(index);
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
+  }
+
+  @override
+  void replaceRouteBelow<T extends Object>({ @required Route<dynamic> anchorRoute, @required Route<T> newRoute }) {
+    assert(false, 'FlutterBoost not support Navigator replaceRouteBelow for now.');
+    assert(anchorRoute != null);
+    assert(newRoute != null);
+    final int anchorIndex = routerHistory.indexWhere((Route<dynamic> route) => route == anchorRoute);
+    assert(anchorIndex >= 0, 'This Navigator does not contain the specified anchorRoute.');
+    int index = anchorIndex - 1;
+    if (index >= 0) {
+      index -= 1;
+    }
+    assert(index >= 0, 'There are no routes below the specified anchorRoute.');
+    super.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute);
+    routerHistory.insert(index + 1, newRoute);
+    routerHistory.removeAt(index);
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
+  }
+
+  @override
+  void removeRoute(Route<dynamic> route) {
+    final Route<dynamic> entry = routerHistory.firstWhere((Route<dynamic> e) => e == route, orElse: () => null);
+    assert(entry != null);
+    routerHistory.remove(entry);
+    super.removeRoute(route);
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
+  }
+
+  @override
+  void removeRouteBelow(Route<dynamic> anchorRoute) {
+    assert(anchorRoute != null);
+    final int anchorIndex = routerHistory.indexWhere((Route<dynamic> route) => route == anchorRoute);
+    assert(anchorIndex >= 0, 'This Navigator does not contain the specified anchorRoute.');
+    int index = anchorIndex - 1;
+    if (index >= 0) {
+      index -= 1;
+    }
+    assert(index >= 0, 'There are no routes below the specified anchorRoute.');
+    super.removeRouteBelow(anchorRoute);
+    routerHistory.removeAt(index);
+    if (Platform.isIOS && multipleRouteMode && canPop()) {
+      FlutterBoost.singleton.channel
+          .invokeMethod<dynamic>('disablePopGesture', null);
+    }
   }
 
   VoidCallback addLifeCycleObserver(BoostContainerLifeCycleObserver observer) {
