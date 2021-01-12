@@ -9,6 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.idlefish.flutterboost.BoostNavigator;
+import com.idlefish.flutterboost.FlutterBoost;
+
+import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterFragment;
@@ -23,11 +27,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private FlutterView flutterView;
     private  String uniqueId;
     private  String pageName;
+
     boolean isTabSelect=true;
-    public void setContainerInfo( String uniqueId,String pageName){
-        this.uniqueId=uniqueId;
-        this.pageName=pageName;
-    }
+
 
     private void findFlutterView(View view) {
         if (view instanceof ViewGroup) {
@@ -56,6 +58,16 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         return super.onCreateView(inflater, container, savedInstanceState);
 
     }
+
+    public void showTabRoute(String pageName, HashMap<String, Object> arguments){
+        if(uniqueId==null){
+            uniqueId =  FlutterBoost.instance().getPlugin().generateUniqueId(pageName);
+        }
+        this.pageName=pageName;
+        FlutterBoost.instance().getPlugin().showTabRoute(String.valueOf(this.getActivity().hashCode()), uniqueId, pageName, arguments);
+
+    }
+
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -97,7 +109,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onPause();
         ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if( this.getFlutterEngine()!=null){
+            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
 
     }
 

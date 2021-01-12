@@ -17,10 +17,7 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        uniqueId = BoostNavigator.generateUniqueId("tab_message");
-        BoostNavigator.showTabRoute("maintab", uniqueId, "tab_message", null);
-        this.setContainerInfo(uniqueId,"tab_message");
+        super.showTabRoute("tab_message", null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -32,7 +29,7 @@ public class MsgFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            BoostNavigator.showTabRoute("maintab", uniqueId, "tab_message", null);
+            super.showTabRoute("tab_message", null);
         }
         super.onHiddenChanged(hidden);
 
