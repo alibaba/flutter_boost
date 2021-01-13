@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
@@ -81,6 +82,10 @@ public class FlutterBoost {
                 mCurrentActiveActivity = activity;
                 if (mPlatform.whenEngineStart() == ConfigBuilder.ANY_ACTIVITY_CREATED) {
                     doInitialFlutter();
+                }else if(mPlatform.whenEngineStart()==ConfigBuilder.FLUTTER_TARGET_ACTIVITY_CREATED){
+                    if(mPlatform.whenCustomEngineStart(activity.getClass().getName())){
+                        doInitialFlutter();
+                    }
                 }
             }
 
@@ -206,6 +211,7 @@ public class FlutterBoost {
 
         public static int FLUTTER_ACTIVITY_CREATED = 2; //当有flutterActivity创建时,启动引擎
 
+        public static int FLUTTER_TARGET_ACTIVITY_CREATED = 3; //当指定Activity创建时,启动引擎
 
         public static int APP_EXit = 0; //所有flutter Activity destory 时，销毁engine
         public static int All_FLUTTER_ACTIVITY_DESTROY = 1; //所有flutter Activity destory 时，销毁engine
@@ -215,6 +221,7 @@ public class FlutterBoost {
         private int whenEngineStart = ANY_ACTIVITY_CREATED;
         private int whenEngineDestory = APP_EXit;
 
+        private String whenEngineStartActivityClassName;
 
         private boolean isDebug = false;
 
@@ -259,6 +266,11 @@ public class FlutterBoost {
             return this;
         }
 
+        public ConfigBuilder whenEngineStart(String className){
+            this.whenEngineStartActivityClassName = className;
+            return this;
+        }
+
 
         public ConfigBuilder lifecycleListener(BoostLifecycleListener lifecycleListener) {
             this.lifecycleListener = lifecycleListener;
@@ -295,6 +307,10 @@ public class FlutterBoost {
                     return ConfigBuilder.this.whenEngineStart;
                 }
 
+                @Override
+                public boolean whenCustomEngineStart(String className) {
+                    return !TextUtils.isEmpty(className) && className.equals(whenEngineStartActivityClassName);
+                }
 
                 public FlutterView.RenderMode renderMode() {
                     return ConfigBuilder.this.renderMode;

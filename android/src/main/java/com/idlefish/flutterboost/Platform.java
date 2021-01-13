@@ -33,6 +33,7 @@ public abstract class Platform {
 
     public abstract int whenEngineStart();
 
+    public abstract boolean whenCustomEngineStart(String className);
 
     public abstract FlutterView.RenderMode renderMode();
 
