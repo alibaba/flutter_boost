@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import com.idlefish.flutterboost.interfaces.*;
@@ -294,8 +295,8 @@ public class FlutterBoost {
                 }
 
                 @Override
-                public boolean whenCustomEngineStart(String className) {
-                    return !TextUtils.isEmpty(className) && className.equals(whenEngineStartActivityClassName);
+                public boolean whenCustomEngineStart(String activityClassName) {
+                    return !TextUtils.isEmpty(activityClassName) && activityClassName.equals(whenEngineStartActivityClassName);
                 }
 
                 public FlutterView.RenderMode renderMode() {
