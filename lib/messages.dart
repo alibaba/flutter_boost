@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
-  bool openContainer;
   Map<Object, Object> arguments;
 
   // ignore: unused_element
@@ -18,7 +17,6 @@ class CommonParams {
     final Map<Object, Object> pigeonMap = <Object, Object>{};
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
-    pigeonMap['openContainer'] = openContainer;
     pigeonMap['arguments'] = arguments;
     return pigeonMap;
   }
@@ -29,7 +27,6 @@ class CommonParams {
     return CommonParams()
       ..pageName = pigeonMap['pageName'] as String
       ..uniqueId = pigeonMap['uniqueId'] as String
-      ..openContainer = pigeonMap['openContainer'] as bool
       ..arguments = pigeonMap['arguments'] as Map<Object, Object>;
   }
 }

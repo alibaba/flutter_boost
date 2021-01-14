@@ -12,7 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FBCommonParams : NSObject
 @property(nonatomic, copy, nullable) NSString * pageName;
 @property(nonatomic, copy, nullable) NSString * uniqueId;
-@property(nonatomic, strong, nullable) NSNumber * openContainer;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
 @end
 

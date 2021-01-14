@@ -34,7 +34,7 @@ class BoostNavigator {
   /// openContainer=true 是指打开对用的native的容器。如android 的activity。
   /// 在当前页面是flutter页面时候，不打开容器，能提升用户体验
   ///
-  void push(String pageName, {Map arguments, bool openContainer = true}) {
+  void push(String pageName, {Map arguments, bool openContainer = false}) {
     if (isFlutterPage(pageName)) {
       if (openContainer) {
         CommonParams params = CommonParams()
@@ -49,7 +49,6 @@ class BoostNavigator {
     } else {
       CommonParams params = CommonParams()
         ..pageName = pageName
-        ..uniqueId = null
         ..arguments = arguments;
       appState.nativeRouterApi.pushNativeRoute(params);
     }

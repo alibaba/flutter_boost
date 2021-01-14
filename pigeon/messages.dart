@@ -3,7 +3,6 @@ import 'package:pigeon/pigeon.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
-  bool openContainer;
   Map<String, String> arguments;
 }
 

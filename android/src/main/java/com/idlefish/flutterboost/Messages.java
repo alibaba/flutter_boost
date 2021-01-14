@@ -23,10 +23,6 @@ public class Messages {
     public String getUniqueId() { return uniqueId; }
     public void setUniqueId(String setterArg) { this.uniqueId = setterArg; }
 
-    private Boolean openContainer;
-    public Boolean getOpenContainer() { return openContainer; }
-    public void setOpenContainer(Boolean setterArg) { this.openContainer = setterArg; }
-
     private HashMap arguments;
     public HashMap getArguments() { return arguments; }
     public void setArguments(HashMap setterArg) { this.arguments = setterArg; }
@@ -35,7 +31,6 @@ public class Messages {
       HashMap<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
-      toMapResult.put("openContainer", openContainer);
       toMapResult.put("arguments", arguments);
       return toMapResult;
     }
@@ -45,8 +40,6 @@ public class Messages {
       fromMapResult.pageName = (String)pageName;
       Object uniqueId = map.get("uniqueId");
       fromMapResult.uniqueId = (String)uniqueId;
-      Object openContainer = map.get("openContainer");
-      fromMapResult.openContainer = (Boolean)openContainer;
       Object arguments = map.get("arguments");
       fromMapResult.arguments = (HashMap)arguments;
       return fromMapResult;

@@ -38,10 +38,6 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
   if ((NSNull *)result.uniqueId == [NSNull null]) {
     result.uniqueId = nil;
   }
-  result.openContainer = dict[@"openContainer"];
-  if ((NSNull *)result.openContainer == [NSNull null]) {
-    result.openContainer = nil;
-  }
   result.arguments = dict[@"arguments"];
   if ((NSNull *)result.arguments == [NSNull null]) {
     result.arguments = nil;
@@ -49,7 +45,7 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.openContainer ? self.openContainer : [NSNull null]), @"openContainer", (self.arguments ? self.arguments : [NSNull null]), @"arguments", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", nil];
 }
 @end
 

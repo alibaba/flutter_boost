@@ -128,7 +128,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     }
     Logger.log(
-        'push page ,  uniqueId=$uniqueId, pageName=$pageName, openContainer=$openContainer');
+        'push page, uniqueId=$uniqueId, pageName=$pageName, openContainer=$openContainer');
   }
 
   ///
@@ -137,7 +137,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   bool show(String uniqueId) {
     if (_isCurrentPage(uniqueId)) {
       Logger.log(
-          'show page ,  uniqueId=${uniqueId} ,pageName= ${pages.last?.pageInfo.pageName} ');
+          'show page, uniqueId=${uniqueId} ,pageName= ${pages.last?.pageInfo.pageName}');
       return true;
     }
     final BoostPage page = _findByUniqueId(uniqueId);
@@ -146,7 +146,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         pages.remove(page);
         pages.add(page);
         Logger.log(
-            'show page ,  uniqueId=${uniqueId} ,pageName= ${page.pageInfo.pageName} ');
+            'show page, uniqueId=${uniqueId} ,pageName= ${page.pageInfo.pageName}');
       });
       return true;
     } else {
@@ -236,7 +236,6 @@ class BoostPage<T> extends Page<T> {
                   builder: (BuildContext context) {
                     return builder.widgetBuild(pageInfo.pageName,
                         pageInfo.arguments, pageInfo.uniqueId);
-                    ;
                   });
             },
           );
