@@ -23,10 +23,6 @@ public class Messages {
     public String getUniqueId() { return uniqueId; }
     public void setUniqueId(String setterArg) { this.uniqueId = setterArg; }
 
-    private String groupName;
-    public String getGroupName() { return groupName; }
-    public void setGroupName(String setterArg) { this.groupName = setterArg; }
-
     private Boolean openContainer;
     public Boolean getOpenContainer() { return openContainer; }
     public void setOpenContainer(Boolean setterArg) { this.openContainer = setterArg; }
@@ -39,7 +35,6 @@ public class Messages {
       HashMap<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
-      toMapResult.put("groupName", groupName);
       toMapResult.put("openContainer", openContainer);
       toMapResult.put("arguments", arguments);
       return toMapResult;
@@ -50,8 +45,6 @@ public class Messages {
       fromMapResult.pageName = (String)pageName;
       Object uniqueId = map.get("uniqueId");
       fromMapResult.uniqueId = (String)uniqueId;
-      Object groupName = map.get("groupName");
-      fromMapResult.groupName = (String)groupName;
       Object openContainer = map.get("openContainer");
       fromMapResult.openContainer = (Boolean)openContainer;
       Object arguments = map.get("arguments");
@@ -72,22 +65,6 @@ public class Messages {
     public void pushRoute(CommonParams argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.pushRoute", new StandardMessageCodec());
-      HashMap inputMap = argInput.toMap();
-      channel.send(inputMap, channelReply -> {
-        callback.reply(null);
-      });
-    }
-    public void pushOrShowRoute(CommonParams argInput, Reply<Void> callback) {
-      BasicMessageChannel<Object> channel =
-          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.pushOrShowRoute", new StandardMessageCodec());
-      HashMap inputMap = argInput.toMap();
-      channel.send(inputMap, channelReply -> {
-        callback.reply(null);
-      });
-    }
-    public void showTabRoute(CommonParams argInput, Reply<Void> callback) {
-      BasicMessageChannel<Object> channel =
-          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.showTabRoute", new StandardMessageCodec());
       HashMap inputMap = argInput.toMap();
       channel.send(inputMap, channelReply -> {
         callback.reply(null);

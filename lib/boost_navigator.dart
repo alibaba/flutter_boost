@@ -8,7 +8,6 @@ import 'package:flutter_boost/messages.dart';
 ///
 ///
 class BoostNavigator {
-
   const BoostNavigator(this.appState);
 
   final FlutterBoostAppState appState;
@@ -37,19 +36,16 @@ class BoostNavigator {
   ///
   void push(String pageName, {Map arguments, bool openContainer = true}) {
     if (isFlutterPage(pageName)) {
-      String uniqueId = appState.getUniqueId(pageName);
       if (openContainer) {
         CommonParams params = CommonParams()
           ..pageName = pageName
-          ..uniqueId = uniqueId
           ..arguments = arguments;
-        appState.nativeRouterApi
-            .pushFlutterRoute(params);
+        appState.nativeRouterApi.pushFlutterRoute(params);
+      } else {
+        String uniqueId = appState.getUniqueId(pageName);
+        appState.push(pageName, uniqueId,
+            arguments: arguments, openContainer: openContainer);
       }
-      appState.push(pageName,
-          uniqueId: uniqueId,
-          arguments: arguments,
-          openContainer: openContainer);
     } else {
       CommonParams params = CommonParams()
         ..pageName = pageName
@@ -64,9 +60,7 @@ class BoostNavigator {
   ///
   void show(String uniqueId) {
     final bool isShow = appState.show(uniqueId);
-    if (!isShow) {
-
-    }
+    if (!isShow) {}
   }
 
   ///
@@ -82,13 +76,13 @@ class BoostNavigator {
   /// page是否有容器，是打开时候的openContainer属性定的。
   ///
   void pop({String uniqueId}) {
-    appState.pop(uniqueId:uniqueId);
+    appState.pop(uniqueId: uniqueId);
   }
 
   ///
   ///获取当前栈顶页面的页面信息，包括uniqueId，pagename
   ///
-  PageInfo getTopPageInfo(){
+  PageInfo getTopPageInfo() {
     return appState.pages.last?.pageInfo;
   }
 
@@ -96,23 +90,16 @@ class BoostNavigator {
   /// 获取页面总个数
   ///
   ///
-  int pageSize(){
+  int pageSize() {
     return appState.pages.length;
   }
-
 }
 
 class PageInfo {
-  PageInfo(
-      {this.pageName,
-      this.uniqueId,
-      this.arguments,
-      this.openContainer,
-      this.groupName});
+  PageInfo({this.pageName, this.uniqueId, this.arguments, this.openContainer});
 
   String pageName;
   String uniqueId;
   Map arguments;
   bool openContainer;
-  String groupName;
 }

@@ -7,24 +7,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.idlefish.flutterboost.FlutterBoost;
+
+import java.util.HashMap;
 import java.util.Map;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
+
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.PAGE_NAME;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private FlutterView flutterView;
+    private FlutterViewContainerObserver observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        observer = ContainerShadowNode.create(this);
         super.onCreate(savedInstanceState);
         ActivityAndFragmentPatch.pushContainer(this);
+        observer.onCreateView();
     }
 
     private void findFlutterView(View view) {
@@ -52,13 +61,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
+        observer.onResume();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-
+        observer.onStop();
     }
 
     @Override
@@ -67,13 +77,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        observer.onPause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-
+        observer.onDestroyView();
     }
 
     @Override
@@ -97,13 +108,18 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     @Override
-    public String getContainerUrl() {
-        return getIntent().getStringExtra(PAGE_NAME);
+    public String getUrl() {
+        return getIntent().getStringExtra(EXTRA_URL);
+    }
+
+    @Override
+    public HashMap<String, String> getUrlParams() {
+        return (HashMap<String, String>)getIntent().getSerializableExtra(EXTRA_URL_PARAM);
     }
 
     @Override
     public String getUniqueId() {
-        return getIntent().getStringExtra(UNIQUE_ID);
+        return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
     }
 
 
@@ -112,8 +128,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         private final String cachedEngineId;
         private boolean destroyEngineWithActivity = false;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
-        private String uniqueId;
-        private String pageName;
+        private String url;
+        private HashMap<String, String> params;
 
         public CachedEngineIntentBuilder(
                 Class<? extends FlutterBoostActivity> activityClass, String engineId) {
@@ -133,13 +149,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder pageName(String pageName) {
-            this.pageName = pageName;
+        public FlutterBoostActivity.CachedEngineIntentBuilder url(String url) {
+            this.url = url;
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder uniqueId(String uniqueId) {
-            this.uniqueId = uniqueId;
+        public FlutterBoostActivity.CachedEngineIntentBuilder urlParams(HashMap<String, String> params) {
+            this.params = params;
             return this;
         }
 
@@ -148,8 +164,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_CACHED_ENGINE_ID, cachedEngineId)
                     .putExtra(EXTRA_DESTROY_ENGINE_WITH_ACTIVITY, destroyEngineWithActivity)
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
-                    .putExtra(PAGE_NAME, pageName)
-                    .putExtra(UNIQUE_ID, uniqueId);
+                    .putExtra(EXTRA_URL, url)
+                    .putExtra(EXTRA_URL_PARAM, params)
+                    .putExtra(EXTRA_UNIQUE_ID, FlutterBoost.generateUniqueId(url));
         }
     }
 

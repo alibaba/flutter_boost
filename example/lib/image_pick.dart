@@ -62,23 +62,23 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
       await _playVideo(file);
     } else {
       await _displayPickImageDialog(context,
-              (double maxWidth, double maxHeight, int quality) async {
-            try {
-              final pickedFile = await _picker.getImage(
-                source: source,
-                maxWidth: maxWidth,
-                maxHeight: maxHeight,
-                imageQuality: quality,
-              );
-              setState(() {
-                _imageFile = pickedFile;
-              });
-            } catch (e) {
-              setState(() {
-                _pickImageError = e;
-              });
-            }
+          (double maxWidth, double maxHeight, int quality) async {
+        try {
+          final pickedFile = await _picker.getImage(
+            source: source,
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            imageQuality: quality,
+          );
+          setState(() {
+            _imageFile = pickedFile;
           });
+        } catch (e) {
+          setState(() {
+            _pickImageError = e;
+          });
+        }
+      });
     }
   }
 
@@ -182,32 +182,32 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
       body: Center(
         child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
             ? FutureBuilder<void>(
-          future: retrieveLostData(),
-          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return const Text(
-                  'You have not yet picked an image.',
-                  textAlign: TextAlign.center,
-                );
-              case ConnectionState.done:
-                return isVideo ? _previewVideo() : _previewImage();
-              default:
-                if (snapshot.hasError) {
-                  return Text(
-                    'Pick image/video error: ${snapshot.error}}',
-                    textAlign: TextAlign.center,
-                  );
-                } else {
-                  return const Text(
-                    'You have not yet picked an image.',
-                    textAlign: TextAlign.center,
-                  );
-                }
-            }
-          },
-        )
+                future: retrieveLostData(),
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return const Text(
+                        'You have not yet picked an image.',
+                        textAlign: TextAlign.center,
+                      );
+                    case ConnectionState.done:
+                      return isVideo ? _previewVideo() : _previewImage();
+                    default:
+                      if (snapshot.hasError) {
+                        return Text(
+                          'Pick image/video error: ${snapshot.error}}',
+                          textAlign: TextAlign.center,
+                        );
+                      } else {
+                        return const Text(
+                          'You have not yet picked an image.',
+                          textAlign: TextAlign.center,
+                        );
+                      }
+                  }
+                },
+              )
             : (isVideo ? _previewVideo() : _previewImage()),
       ),
       floatingActionButton: Column(
@@ -291,19 +291,19 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                   controller: maxWidthController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration:
-                  InputDecoration(hintText: "Enter maxWidth if desired"),
+                      InputDecoration(hintText: "Enter maxWidth if desired"),
                 ),
                 TextField(
                   controller: maxHeightController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration:
-                  InputDecoration(hintText: "Enter maxHeight if desired"),
+                      InputDecoration(hintText: "Enter maxHeight if desired"),
                 ),
                 TextField(
                   controller: qualityController,
                   keyboardType: TextInputType.number,
                   decoration:
-                  InputDecoration(hintText: "Enter quality if desired"),
+                      InputDecoration(hintText: "Enter quality if desired"),
                 ),
               ],
             ),

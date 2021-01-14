@@ -7,29 +7,26 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class HRCommonParams;
+@class FBCommonParams;
 
-@interface HRCommonParams : NSObject
+@interface FBCommonParams : NSObject
 @property(nonatomic, copy, nullable) NSString * pageName;
 @property(nonatomic, copy, nullable) NSString * uniqueId;
-@property(nonatomic, copy, nullable) NSString * groupName;
 @property(nonatomic, strong, nullable) NSNumber * openContainer;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
 @end
 
-@interface HRFlutterRouterApi : NSObject
+@interface FBFlutterRouterApi : NSObject
 - (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
-- (void)pushRoute:(HRCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
-- (void)pushOrShowRoute:(HRCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
-- (void)showTabRoute:(HRCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
-- (void)popRoute:(HRCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)pushRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)popRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 @end
-@protocol HRNativeRouterApi
--(void)pushNativeRoute:(HRCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
--(void)pushFlutterRoute:(HRCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
--(void)popRoute:(HRCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
+@protocol FBNativeRouterApi
+-(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
-extern void HRNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<HRNativeRouterApi> _Nullable api);
+extern void FBNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<FBNativeRouterApi> _Nullable api);
 
 NS_ASSUME_NONNULL_END

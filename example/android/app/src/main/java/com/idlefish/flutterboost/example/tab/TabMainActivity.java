@@ -67,10 +67,12 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         fragmentList = new ArrayList<>();
         mesFragment = new MsgFlutterFragment
                 .CachedEngineFragmentBuilder(MsgFlutterFragment.class, FlutterBoost.ENGINE_ID)
+                .url("tab_message")
                 .build();
 
         friendFragment = new FriendFlutterFragment
                 .CachedEngineFragmentBuilder(FriendFlutterFragment.class, FlutterBoost.ENGINE_ID)
+                .url("tab_friend")
                 .build();
 
         nativeFragment = new NativeFragment();

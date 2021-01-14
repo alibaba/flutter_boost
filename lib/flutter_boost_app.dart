@@ -6,11 +6,11 @@ import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 
-final  navigatorKey = GlobalKey<NavigatorState>();
+final navigatorKey = GlobalKey<NavigatorState>();
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
-typedef WidgetBuild =Widget Function(
+typedef WidgetBuild = Widget Function(
     String pageName, Map params, String uniqueId);
 
 ///
@@ -102,27 +102,40 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return '__container_uniqueId_key__${DateTime.now().millisecondsSinceEpoch}_$pageName';
   }
 
-  void push(String pageName,
-      {String uniqueId, Map arguments, bool openContainer, String groupName}) {
-    setState(() {
-      PageInfo pageInfo = PageInfo(
-          pageName: pageName,
-          uniqueId: uniqueId,
-          arguments: arguments,
-          openContainer: openContainer,
-          groupName: groupName);
-      final BoostPage page = _createPage(pageInfo);
-      pages.add(page);
-      Logger.log(
-          'push page ,  uniqueId=${page.pageInfo.uniqueId} , pageName= ${page.pageInfo.pageName}');
-    });
+  void push(String pageName, String uniqueId,
+      {Map arguments, bool openContainer}) {
+    final BoostPage existedPage = _findByUniqueId(uniqueId);
+    if (existedPage != null) {
+      if (!_isCurrentPage(uniqueId)) {
+        setState(() {
+          pages.remove(existedPage);
+          pages.add(existedPage);
+        });
+      }
+    } else {
+      if (openContainer) {
+        setState(() {
+          PageInfo pageInfo = PageInfo(
+              pageName: pageName,
+              uniqueId: uniqueId,
+              arguments: arguments,
+              openContainer: openContainer);
+          final BoostPage page = _createPage(pageInfo);
+          pages.add(page);
+        });
+      } else {
+        pages.last.navKey.currentState.pushNamed(pageName);
+      }
+    }
+    Logger.log(
+        'push page ,  uniqueId=$uniqueId, pageName=$pageName, openContainer=$openContainer');
   }
 
   ///
   /// 展示页面
   ///
   bool show(String uniqueId) {
-    if (pages.last?.pageInfo?.uniqueId == uniqueId) {
+    if (_isCurrentPage(uniqueId)) {
       Logger.log(
           'show page ,  uniqueId=${uniqueId} ,pageName= ${pages.last?.pageInfo.pageName} ');
       return true;
@@ -158,14 +171,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final bool r = await page?.navKey?.currentState?.maybePop();
     if (!r) {
       setState(() {
-        if (page.pageInfo.groupName != null) {
-          _removeByGroupName(page.pageInfo.groupName);
-        } else {
-          pages.remove(page);
-        }
+        pages.remove(page);
         if (page.pageInfo.openContainer) {
-          Logger.log(
-              'pop container ,  uniqueId=${page.pageInfo.uniqueId} , groupName= ${page.pageInfo.groupName}');
+          Logger.log('pop container ,  uniqueId=${page.pageInfo.uniqueId}');
           CommonParams params = CommonParams()
             ..pageName = page.pageInfo.pageName
             ..uniqueId = page.pageInfo.uniqueId
@@ -176,21 +184,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
+  bool _isCurrentPage(String uniqueId) {
+    return pages.last?.pageInfo?.uniqueId == uniqueId;
+  }
+
   BoostPage _findByUniqueId(String uniqueId) {
     return pages?.singleWhere(
         (BoostPage element) => element.pageInfo.uniqueId == uniqueId,
         orElse: () {});
-  }
-
-  void _removeByGroupName(String groupName) {
-    pages.removeWhere((BoostPage element) {
-      bool test = (element.pageInfo.groupName == groupName);
-      if (test) {
-        Logger.log(
-            'pop page , uniqueId=${element.pageInfo.uniqueId} , groupName= ${element.pageInfo.groupName}');
-      }
-      return test;
-    });
   }
 }
 
@@ -214,7 +215,7 @@ class BoostPage<T> extends Page<T> {
   @override
   Route<T> createRoute(BuildContext context) {
     return PageRouteBuilder(
-        settings:this,
+        settings: this,
         transitionDuration: builder.transitionDuration,
         reverseTransitionDuration: builder.reverseTransitionDuration,
         opaque: builder.opaque,
@@ -233,16 +234,14 @@ class BoostPage<T> extends Page<T> {
               return MaterialPageRoute<T>(
                   settings: settings,
                   builder: (BuildContext context) {
-                    return builder.widgetBuild(
-                        pageInfo.pageName, pageInfo.arguments,
-                        pageInfo.uniqueId);;
+                    return builder.widgetBuild(pageInfo.pageName,
+                        pageInfo.arguments, pageInfo.uniqueId);
+                    ;
                   });
             },
           );
         },
-        transitionsBuilder: builder.transitionsBuilder
-    );
-
+        transitionsBuilder: builder.transitionsBuilder);
 
     // return MaterialPageRoute<T>(
     //     settings: this,
@@ -267,16 +266,16 @@ class BoostPage<T> extends Page<T> {
 }
 
 class BoostPageRouteBuilder {
-  BoostPageRouteBuilder({
-    this.widgetBuild,
-    this.transitionsBuilder = _defaultTransitionsBuilder,
-    this.transitionDuration = const Duration(milliseconds: 300),
-    this.reverseTransitionDuration = const Duration(milliseconds: 300),
-    this.opaque = true,
-    this.barrierDismissible = false,
-    this.barrierColor,
-    this.barrierLabel,
-    this.maintainState = true});
+  BoostPageRouteBuilder(
+      {this.widgetBuild,
+      this.transitionsBuilder = _defaultTransitionsBuilder,
+      this.transitionDuration = const Duration(milliseconds: 300),
+      this.reverseTransitionDuration = const Duration(milliseconds: 300),
+      this.opaque = true,
+      this.barrierDismissible = false,
+      this.barrierColor,
+      this.barrierLabel,
+      this.maintainState = true});
 
   final WidgetBuild widgetBuild;
 
@@ -302,12 +301,12 @@ class BoostPageRouteBuilder {
 
   @override
   final bool maintainState;
-
-
 }
 
-Widget _defaultTransitionsBuilder(BuildContext context,
-    Animation<double> animation, Animation<double> secondaryAnimation,
+Widget _defaultTransitionsBuilder(
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
     Widget child) {
   return child;
 }
@@ -327,4 +326,3 @@ class PageNameUnkonw extends BoostPage<dynamic> {
     );
   }
 }
-

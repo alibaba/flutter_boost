@@ -21,19 +21,18 @@ public class MyApplication extends FlutterApplication {
         FlutterBoost.withDefaultEngine().init(this, new NativeRouterApi() {
 
             @Override
-            public void pushNativeRoute(String pageName, HashMap<String,Object> arguments) {
+            public void pushNativeRoute(String pageName, HashMap<String, String> arguments) {
                 Intent intent = new Intent(FlutterBoost.instance().getTopActivity(), NativePageActivity.class);
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }
 
             @Override
-            public void pushFlutterRoute(String pageName, String uniqueId, HashMap<String,Object> arguments) {
-
+            public void pushFlutterRoute(String pageName, HashMap<String, String> arguments) {
                 Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                         .destroyEngineWithActivity(false)
-                        .pageName(pageName)
-                        .uniqueId(uniqueId)
+                        .url(pageName)
+                        .urlParams(arguments)
                         .build(FlutterBoost.instance().getTopActivity());
                 FlutterBoost.instance().getTopActivity().startActivity(intent);
             }

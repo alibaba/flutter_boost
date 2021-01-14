@@ -27,7 +27,8 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void pushRoute(CommonParams arg) {
-    BoostNavigator.of().push(arg.pageName, arguments: arg.arguments);
+    appState.push(arg.pageName, arg.uniqueId,
+        arguments: arg.arguments, openContainer: true);
   }
 
   ///
@@ -35,30 +36,6 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void popRoute(CommonParams arg) {
-    BoostNavigator.of().pop(uniqueId:arg.uniqueId);
-  }
-
-  ///
-  /// push 一个 指定uniqueId的页面，并展示在栈最顶
-  ///
-  ///
-  @override
-  void pushOrShowRoute(CommonParams arg) {
-    // BoostNavigator.of().pushOrShowRoute(
-    //     pageName, uniqueId,
-    //     arguments: arguments, openContainer: openContainer);
-  }
-
-  @override
-  void showTabRoute(
-      CommonParams arg) {
-    final bool isShow = appState.show(arg.uniqueId);
-    if (!isShow) {
-      appState.push(arg.pageName,
-          uniqueId: arg.uniqueId,
-          arguments: arg.arguments,
-          openContainer: true,
-          groupName: arg.groupName);
-    }
+    BoostNavigator.of().pop(uniqueId: arg.uniqueId);
   }
 }

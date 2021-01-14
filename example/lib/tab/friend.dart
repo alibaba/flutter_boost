@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/boost_navigator.dart';
+
 class FriendWidget extends StatelessWidget {
   final Map params;
 
@@ -43,7 +44,7 @@ class FriendWidget extends StatelessWidget {
                           'open native page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of().push("native"),
+                    onTap: () => BoostNavigator.of().push("native"),
                   ),
                   InkWell(
                     child: Container(
@@ -54,7 +55,8 @@ class FriendWidget extends StatelessWidget {
                           'open flutter page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of().push("flutterPage",openContainer: false),
+                    onTap: () => BoostNavigator.of()
+                        .push("flutterPage", openContainer: false),
                   ),
                   Container(
                     height: 300,
@@ -68,5 +70,4 @@ class FriendWidget extends StatelessWidget {
               ))),
     );
   }
-
 }

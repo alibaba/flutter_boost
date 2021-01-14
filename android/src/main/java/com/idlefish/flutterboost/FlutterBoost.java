@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Date;
+
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
@@ -40,6 +42,10 @@ public class FlutterBoost {
         return sInstance;
     }
 
+    public static String generateUniqueId(String pageName) {
+        Date date = new Date();
+        return "__container_uniqueId_key__" + date.getTime()+"_"+ pageName;
+    }
 
     public static DefaultEngineConfig withDefaultEngine() {
         return new DefaultEngineConfig();
@@ -88,7 +94,7 @@ public class FlutterBoost {
         if (plugin == null) {
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
-                throw new RuntimeException("FlutterBoost might not have been initialized yet!!!");
+                throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
             }
 
             try {

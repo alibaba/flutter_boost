@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
-  String groupName;
   bool openContainer;
   Map<Object, Object> arguments;
 
@@ -19,7 +18,6 @@ class CommonParams {
     final Map<Object, Object> pigeonMap = <Object, Object>{};
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
-    pigeonMap['groupName'] = groupName;
     pigeonMap['openContainer'] = openContainer;
     pigeonMap['arguments'] = arguments;
     return pigeonMap;
@@ -31,7 +29,6 @@ class CommonParams {
     return CommonParams()
       ..pageName = pigeonMap['pageName'] as String
       ..uniqueId = pigeonMap['uniqueId'] as String
-      ..groupName = pigeonMap['groupName'] as String
       ..openContainer = pigeonMap['openContainer'] as bool
       ..arguments = pigeonMap['arguments'] as Map<Object, Object>;
   }
@@ -39,8 +36,6 @@ class CommonParams {
 
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams arg);
-  void pushOrShowRoute(CommonParams arg);
-  void showTabRoute(CommonParams arg);
   void popRoute(CommonParams arg);
   static void setup(FlutterRouterApi api) {
     {
@@ -55,38 +50,6 @@ abstract class FlutterRouterApi {
           }
           final CommonParams input = CommonParams.decode(message);
           api.pushRoute(input);
-          return;
-        });
-      }
-    }
-    {
-      const BasicMessageChannel<Object> channel =
-          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.pushOrShowRoute', StandardMessageCodec());
-      if (api == null) {
-        channel.setMessageHandler(null);
-      } else {
-        channel.setMessageHandler((Object message) async {
-          if (message == null) {
-            return;
-          }
-          final CommonParams input = CommonParams.decode(message);
-          api.pushOrShowRoute(input);
-          return;
-        });
-      }
-    }
-    {
-      const BasicMessageChannel<Object> channel =
-          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.showTabRoute', StandardMessageCodec());
-      if (api == null) {
-        channel.setMessageHandler(null);
-      } else {
-        channel.setMessageHandler((Object message) async {
-          if (message == null) {
-            return;
-          }
-          final CommonParams input = CommonParams.decode(message);
-          api.showTabRoute(input);
           return;
         });
       }

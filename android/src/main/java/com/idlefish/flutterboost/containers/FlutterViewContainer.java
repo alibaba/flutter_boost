@@ -2,7 +2,12 @@ package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
 
+import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * A container which contains the FlutterView
+ */
 
 public interface FlutterViewContainer {
 
@@ -10,7 +15,8 @@ public interface FlutterViewContainer {
 
     void finishContainer(Map<String, Object> result);
 
-    String getContainerUrl();
+    String getUrl();
+    HashMap<String, String> getUrlParams();
 
     String getUniqueId();
 

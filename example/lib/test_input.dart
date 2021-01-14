@@ -33,80 +33,80 @@ class _TestPageState extends State<TestPage> {
       body: SafeArea(
           bottom: false,
           child: ListView(
-        children: <Widget>[
-          Container(
-            child: Text(
-              'You have pushed the button this many times:',
-            ),
-            margin: const EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-          ),
-          Container(
-            child: Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            margin: const EdgeInsets.all(8.0),
-            alignment: Alignment.center,
-          ),
-          Container(
-            child: TextField(
-              minLines: 2,
-              maxLines: 10,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          TestTextField(),
-          Container(
-            child: Container(
-              color: Colors.red,
-              width: double.infinity,
-              height: 128.0,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            child: Container(
-              color: Colors.orange,
-              width: double.infinity,
-              height: 128.0,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            child: Container(
-              color: Colors.green,
-              width: double.infinity,
-              height: 128.0,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            child: Container(
-              color: Colors.blue,
-              width: double.infinity,
-              height: 128.0,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            child: Container(
-              color: Colors.yellow,
-              width: double.infinity,
-              height: 128.0,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          Container(
-            child: TextField(
-              minLines: 2,
-              maxLines: 10,
-            ),
-            padding: const EdgeInsets.all(8.0),
-          ),
-          TestTextField(),
-        ],
-      )),
+            children: <Widget>[
+              Container(
+                child: Text(
+                  'You have pushed the button this many times:',
+                ),
+                margin: const EdgeInsets.all(8.0),
+                alignment: Alignment.center,
+              ),
+              Container(
+                child: Text(
+                  '$_counter',
+                  style: Theme.of(context).textTheme.display1,
+                ),
+                margin: const EdgeInsets.all(8.0),
+                alignment: Alignment.center,
+              ),
+              Container(
+                child: TextField(
+                  minLines: 2,
+                  maxLines: 10,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              TestTextField(),
+              Container(
+                child: Container(
+                  color: Colors.red,
+                  width: double.infinity,
+                  height: 128.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                child: Container(
+                  color: Colors.orange,
+                  width: double.infinity,
+                  height: 128.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                child: Container(
+                  color: Colors.green,
+                  width: double.infinity,
+                  height: 128.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                child: Container(
+                  color: Colors.blue,
+                  width: double.infinity,
+                  height: 128.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                child: Container(
+                  color: Colors.yellow,
+                  width: double.infinity,
+                  height: 128.0,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              Container(
+                child: TextField(
+                  minLines: 2,
+                  maxLines: 10,
+                ),
+                padding: const EdgeInsets.all(8.0),
+              ),
+              TestTextField(),
+            ],
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',

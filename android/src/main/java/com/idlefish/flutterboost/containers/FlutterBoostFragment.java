@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 
-import com.idlefish.flutterboost.BoostNavigator;
 import com.idlefish.flutterboost.FlutterBoost;
 
 import java.util.HashMap;
@@ -20,17 +20,15 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.PAGE_NAME;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
     private FlutterView flutterView;
-    private  String uniqueId;
-    private  String pageName;
+    private FlutterViewContainerObserver observer;
 
     boolean isTabSelect=true;
-
-
     private void findFlutterView(View view) {
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
@@ -46,28 +44,19 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             }
         }
     }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        observer = ContainerShadowNode.create(this);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ActivityAndFragmentPatch.pushContainer(this);
-        if(getArguments().getString(UNIQUE_ID)!=null){
-            uniqueId=getArguments().getString(UNIQUE_ID);
-        }
-        if(getArguments().getString(PAGE_NAME)!=null){
-            pageName=getArguments().getString(PAGE_NAME);
-        }
+        observer.onCreateView();
         return super.onCreateView(inflater, container, savedInstanceState);
-
     }
-
-    public void showTabRoute(String pageName, HashMap<String, Object> arguments){
-        if(uniqueId==null){
-            uniqueId =  FlutterBoost.instance().getPlugin().generateUniqueId(pageName);
-        }
-        this.pageName=pageName;
-        FlutterBoost.instance().getPlugin().showTabRoute(String.valueOf(this.getActivity().hashCode()), uniqueId, pageName, arguments);
-
-    }
-
 
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -84,7 +73,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     public void setTabSelected(boolean isTabSelect) {
         this.isTabSelect=isTabSelect;
+        if (isTabSelect && observer != null) {
+            observer.onResume();
+        }
     }
+
     @Override
     public void onResume() {
         if (flutterView == null) {
@@ -96,7 +89,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onResume();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-
+        observer.onResume();
     }
 
     @Override
@@ -112,7 +105,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-
+        observer.onPause();
     }
 
     @Override
@@ -121,12 +114,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
+        observer.onStop();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
+        observer.onDestroyView();
     }
 
     @Override
@@ -145,16 +139,19 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
-    public String getContainerUrl() {
-        return this.pageName;
+    public String getUrl() {
+        return getArguments().getString(EXTRA_URL);
+    }
+
+    @Override
+    public HashMap<String, String> getUrlParams() {
+        return (HashMap<String, String>)getArguments().getSerializable(EXTRA_URL_PARAM);
     }
 
     @Override
     public String getUniqueId() {
-        return this.uniqueId;
+        return getArguments().getString(EXTRA_UNIQUE_ID);
     }
-
-
 
     public static class CachedEngineFragmentBuilder {
         private final Class<? extends FlutterBoostFragment> fragmentClass;
@@ -163,8 +160,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         private RenderMode renderMode = RenderMode.surface;
         private TransparencyMode transparencyMode = TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
-        private  String pageName;
-        private  String uniqueId;
+        private String url = "/";
+        private HashMap<String, String> params;
+
         public CachedEngineFragmentBuilder( String engineId) {
             this(FlutterBoostFragment.class, engineId);
         }
@@ -175,12 +173,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             this.engineId = engineId;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder pageName(String pageName) {
-            this.pageName =pageName;
+        public FlutterBoostFragment.CachedEngineFragmentBuilder url(String url) {
+            this.url = url;
             return this;
         }
-        public FlutterBoostFragment.CachedEngineFragmentBuilder uniqueId(String uniqueId) {
-            this.uniqueId = uniqueId;
+
+        public FlutterBoostFragment.CachedEngineFragmentBuilder urlParams(HashMap<String, String> param) {
+            this.params = params;
             return this;
         }
 
@@ -226,8 +225,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
                     ARG_FLUTTERVIEW_TRANSPARENCY_MODE,
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
-            args.putString(PAGE_NAME, pageName);
-            args.putString(UNIQUE_ID, uniqueId);
+            args.putString(EXTRA_URL, url);
+            args.putSerializable(EXTRA_URL_PARAM, params);
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.generateUniqueId(url));
             return args;
         }
 

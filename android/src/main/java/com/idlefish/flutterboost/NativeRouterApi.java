@@ -7,10 +7,10 @@ import java.util.HashMap;
 public abstract class NativeRouterApi {
 
     public abstract void pushNativeRoute(
-            String pageName, HashMap<String, Object> arguments);
+            String pageName, HashMap<String, String> arguments);
 
     public abstract void pushFlutterRoute(
-            String pageName, String uniqueId, HashMap<String, Object> arguments);
+            String pageName, HashMap<String, String> arguments);
 
     public void popRoute(String pageName, String uniqueId) {
         FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);

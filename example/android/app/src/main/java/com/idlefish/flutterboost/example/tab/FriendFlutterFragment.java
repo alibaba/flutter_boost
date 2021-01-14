@@ -17,7 +17,7 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        super.showTabRoute("tab_friend", null);
+//        super.showTabRoute("tab_friend", null);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -29,7 +29,7 @@ public class FriendFlutterFragment extends FlutterBoostFragment {
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
-            super.showTabRoute("tab_friend", null);
+//            super.showTabRoute("tab_friend", null);
         }
         super.onHiddenChanged(hidden);
 

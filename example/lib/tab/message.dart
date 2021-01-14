@@ -7,7 +7,6 @@ class MessageWidget extends StatelessWidget {
 
   final Map params;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +45,7 @@ class MessageWidget extends StatelessWidget {
                           'open native page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>  BoostNavigator.of().push("native"),
+                    onTap: () => BoostNavigator.of().push("native"),
                   ),
                   InkWell(
                     child: Container(
@@ -57,7 +56,7 @@ class MessageWidget extends StatelessWidget {
                           'open flutter page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () =>BoostNavigator.of().push("flutterPage"),
+                    onTap: () => BoostNavigator.of().push("flutterPage"),
                   ),
                 ],
               ))),

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 class F2FFirstPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return new F2FFirstPageState();
   }
 }
 
-class F2FFirstPageState extends State<F2FFirstPage>{
+class F2FFirstPageState extends State<F2FFirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,11 +15,9 @@ class F2FFirstPageState extends State<F2FFirstPage>{
         title: Text('First Route'),
       ),
       body: Center(
-        child:
-        Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children:
-          <Widget>[
+          children: <Widget>[
             RaisedButton(
               child: Text('Open second with native container'),
               onPressed: () {
@@ -41,14 +38,13 @@ class F2FFirstPageState extends State<F2FFirstPage>{
 }
 
 class F2FSecondPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return new F2FSecondPageState();
   }
 }
 
-class F2FSecondPageState extends State<F2FSecondPage>{
+class F2FSecondPageState extends State<F2FSecondPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,11 +52,9 @@ class F2FSecondPageState extends State<F2FSecondPage>{
         title: Text('Second Route'),
       ),
       body: Center(
-        child:
-        Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children:
-          <Widget>[
+          children: <Widget>[
             RaisedButton(
               child: Text('close'),
               onPressed: () {

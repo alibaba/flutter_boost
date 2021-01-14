@@ -18,9 +18,9 @@ public class BoostNavigator {
      * @param pageName
      * @param arguments
      */
-    public static void pushRoute(String pageName, HashMap<String, Object> arguments) {
-        FlutterBoost.instance().getPlugin().pushRoute(pageName, arguments, null);
-    }
+//    public static void pushRoute(String pageName, HashMap<String, String> arguments) {
+//        FlutterBoost.instance().getPlugin().pushRoute(pageName, arguments, null);
+//    }
 
 
     /**
@@ -28,13 +28,13 @@ public class BoostNavigator {
      * uniqueId 可以为null，为null 时候，回退最上层的页面。
      *  @param uniqueId
      */
-    public static void popRoute(String uniqueId) {
-        FlutterBoost.instance().getPlugin().popRoute(uniqueId, null);
-        FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
-        if(container!=null){
-            container.finishContainer(null);
-        }
-    }
+//    public static void popRoute(String uniqueId) {
+//        FlutterBoost.instance().getPlugin().popRoute(uniqueId, null);
+//        FlutterViewContainer container=FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
+//        if(container!=null){
+//            container.finishContainer(null);
+//        }
+//    }
 
     /**
      * 根据unqueid，返回容器
