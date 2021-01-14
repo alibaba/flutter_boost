@@ -70,7 +70,7 @@ public class FlutterBoost {
             return this;
         }
 
-        public void init(Application application, NativeRouterApi api) {
+        public void init(Application application, FlutterBoostDelegate delegate) {
             // 1. initialize default engine
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
@@ -82,7 +82,7 @@ public class FlutterBoost {
             }
 
             // 2. set delegate
-            FlutterBoost.instance().getPlugin().setDelegate(api);
+            FlutterBoost.instance().getPlugin().setDelegate(delegate);
 
             //3. register ActivityLifecycleCallbacks
             FlutterBoost.instance().setupActivityLifecycleCallback(application);

@@ -4,7 +4,7 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.HashMap;
 
-public abstract class NativeRouterApi {
+public abstract class FlutterBoostDelegate {
 
     public abstract void pushNativeRoute(
             String pageName, HashMap<String, String> arguments);

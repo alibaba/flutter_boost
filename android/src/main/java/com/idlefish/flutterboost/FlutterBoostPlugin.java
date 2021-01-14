@@ -1,15 +1,14 @@
 package com.idlefish.flutterboost;
 
-import java.util.Date;
 import java.util.HashMap;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
 public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi {
     private Messages.FlutterRouterApi mApi;
-    private NativeRouterApi mDelegate;
+    private FlutterBoostDelegate mDelegate;
 
-    public void setDelegate(NativeRouterApi delegate) {
+    public void setDelegate(FlutterBoostDelegate delegate) {
         this.mDelegate = delegate;
     }
 

@@ -3,7 +3,7 @@ package com.idlefish.flutterboost.example;
 import android.content.Intent;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.NativeRouterApi;
+import com.idlefish.flutterboost.FlutterBoostDelegate;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.HashMap;
@@ -18,7 +18,7 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterBoost.withDefaultEngine().init(this, new NativeRouterApi() {
+        FlutterBoost.withDefaultEngine().init(this, new FlutterBoostDelegate() {
 
             @Override
             public void pushNativeRoute(String pageName, HashMap<String, String> arguments) {
