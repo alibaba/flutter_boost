@@ -266,8 +266,8 @@ public class FlutterBoost {
             return this;
         }
 
-        public ConfigBuilder whenEngineStart(String className){
-            this.whenEngineStartActivityClassName = className;
+        public ConfigBuilder whenEngineStart(String activityClassName){
+            this.whenEngineStartActivityClassName = activityClassName;
             return this;
         }
 
@@ -308,8 +308,8 @@ public class FlutterBoost {
                 }
 
                 @Override
-                public boolean whenCustomEngineStart(String className) {
-                    return !TextUtils.isEmpty(className) && className.equals(whenEngineStartActivityClassName);
+                public boolean whenCustomEngineStart(String activityClassName) {
+                    return !TextUtils.isEmpty(activityClassName) && activityClassName.equals(whenEngineStartActivityClassName);
                 }
 
                 public FlutterView.RenderMode renderMode() {
