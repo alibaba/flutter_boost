@@ -243,7 +243,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         }
 
         if (host.shouldAttachEngineToActivity()&&
-                (ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE != 0 || ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE == this.host.getActivity().hashCode())) {
+                ACTIVITY_CONTROL_SURFACE_ATTACH_TO_ACTVITY_HASH_CODE == this.host.getActivity().hashCode()) {
             // Notify plugins that they are no longer attached to an Activity.
             Log.v(TAG, "Detaching FlutterEngine from the Activity that owns this Fragment.");
             if (host.getActivity().isChangingConfigurations()) {
