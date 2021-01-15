@@ -21,9 +21,9 @@ public class FlutterActivityLaunchConfigs {
     static final String DEFAULT_DART_ENTRYPOINT = "main";
     static final String DEFAULT_INITIAL_ROUTE = "/";
 
-    static final String EXTRA_URL = "url";
-    static final String EXTRA_URL_PARAM = "url_param";
-    static final String EXTRA_UNIQUE_ID = "unique_id";
+    public static final String EXTRA_URL = "url";
+    public static final String EXTRA_URL_PARAM = "url_param";
+    public static final String EXTRA_UNIQUE_ID = "unique_id";
 
 
     static final String DEFAULT_BACKGROUND_MODE = io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode.opaque.name();

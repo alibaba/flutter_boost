@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_native"
+        android:icon="@drawable/ic_home"
+        android:title="@string/native_view" />
+    <item
+        android:id="@+id/navigation_flutter1"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/flutter1" />
+    <item
+        android:id="@+id/navigation_flutter2"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/flutter2" />
+</menu>
