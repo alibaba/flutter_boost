@@ -1,7 +1,6 @@
 package com.idlefish.flutterboost.example.tab;
 
 import android.os.Bundle;
-
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,9 +17,7 @@ import com.idlefish.flutterboost.example.R;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class TabMainActivity extends FragmentActivity implements View.OnClickListener {
-
     private LinearLayout mes;
     private LinearLayout friend;
     private LinearLayout address;
@@ -47,14 +44,8 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         setSelect(0);
     }
 
-    @Override
-    public void onBackPressed() {
-//        delegate.onBackPressed();
-        ActivityAndFragmentPatch.onBackPressed();
-    }
     //初始化元素
     private void init() {
-
         mes = (LinearLayout) findViewById(R.id.mes);
         friend = (LinearLayout) findViewById(R.id.friend);
         address = (LinearLayout) findViewById(R.id.address);
@@ -80,8 +71,6 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
 //        fragmentList.add(mesFragment);
 //        fragmentList.add(friendFragment);
 //        fragmentList.add(nativeFragment);
-
-
     }
 
     //初始化监听
@@ -93,15 +82,19 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
     }
 
     private void showFragment(Fragment fragment) {
-
         FragmentManager fm = getSupportFragmentManager();
-        if (currentFragment != fragment) {//  判断传入的fragment是不是当前的currentFragmentgit
+        if (currentFragment != fragment) {
+            // 判断传入的fragment是不是当前的currentFragment
             FragmentTransaction transaction = fm.beginTransaction();
             if (currentFragment != null) {
-                transaction.hide(currentFragment);//  不是则隐藏
+                // 不是则隐藏
+                transaction.hide(currentFragment);
             }
-            currentFragment = fragment;  //  然后将传入的fragment赋值给currentFragment
-            if (!fragment.isAdded()) { //  判断传入的fragment是否已经被add()过
+            // 然后将传入的fragment赋值给currentFragment
+            currentFragment = fragment;
+
+            // 判断传入的fragment是否已经被add()过
+            if (!fragment.isAdded()) {
                 transaction.add(R.id.fragment_stub, fragment).show(fragment).commit();
             } else {
                 transaction.show(fragment).commit();
@@ -139,19 +132,11 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         switch (i) {
             case 0:
                 mesImag.setImageResource(R.drawable.tab1_selected);
-                mesFragment.setTabSelected(true);
-                friendFragment.setTabSelected(false);
                 showFragment(mesFragment);
-
                 break;
             case 1:
                 friendImag.setImageResource(R.drawable.tab2_selected);
-//                mesFragment.hidden();
-                friendFragment.setTabSelected(true);
-                mesFragment.setTabSelected(false);
-
                 showFragment(friendFragment);
-
                 break;
             case 2:
                 addressImag.setImageResource(R.drawable.tab3_selected);
@@ -159,5 +144,4 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
                 break;
         }
     }
-
 }

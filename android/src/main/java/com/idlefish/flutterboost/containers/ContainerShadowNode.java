@@ -25,23 +25,17 @@ public class ContainerShadowNode implements FlutterViewContainerObserver {
     }
 
     @Override
-    public void onStop() {
-        // todo:
-        android.util.Log.e("xlog", "## FlutterViewContainerObserver#onStop: " + container.get().getUniqueId());
-    }
-
-    @Override
-    public void onResume() {
+    public void onAppear() {
         // todo:
         assert container.get() != null;
         FlutterBoost.instance().getPlugin().pushRoute(container.get().getUniqueId(), container.get().getUrl(), container.get().getUrlParams(),null);
-        android.util.Log.e("xlog", "## FlutterViewContainerObserver#onResume: " + container.get().getUniqueId());
+        android.util.Log.e("xlog", "## FlutterViewContainerObserver#onAppear: " + container.get().getUniqueId());
     }
 
     @Override
-    public void onPause() {
+    public void onDisappear() {
         // todo:
-        android.util.Log.e("xlog", "## FlutterViewContainerObserver#onPause: " + container.get().getUniqueId());
+        android.util.Log.e("xlog", "## FlutterViewContainerObserver#onDisappear: " + container.get().getUniqueId());
     }
 
     @Override

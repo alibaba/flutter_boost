@@ -56,7 +56,8 @@ class MessageWidget extends StatelessWidget {
                           'open flutter page',
                           style: TextStyle(fontSize: 22.0, color: Colors.black),
                         )),
-                    onTap: () => BoostNavigator.of().push("flutterPage"),
+                    onTap: () => BoostNavigator.of()
+                        .push("flutterPage", openContainer: true),
                   ),
                 ],
               ))),

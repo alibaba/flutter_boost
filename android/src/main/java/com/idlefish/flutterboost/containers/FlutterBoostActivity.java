@@ -61,14 +61,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
-        observer.onResume();
+        observer.onAppear();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onStop();
+        observer.onDisappear();
     }
 
     @Override
@@ -77,7 +77,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onPause();
     }
 
     @Override

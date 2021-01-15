@@ -28,7 +28,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private FlutterView flutterView;
     private FlutterViewContainerObserver observer;
 
-    boolean isTabSelect=true;
     private void findFlutterView(View view) {
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
@@ -60,22 +59,30 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-
         if (hidden) {
             ActivityAndFragmentPatch.removeStackTop(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+            observer.onDisappear();
         } else {
             ActivityAndFragmentPatch.setStackTop(this);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+            observer.onAppear();
         }
         super.onHiddenChanged(hidden);
     }
 
-    public void setTabSelected(boolean isTabSelect) {
-        this.isTabSelect=isTabSelect;
-        if (isTabSelect && observer != null) {
-            observer.onResume();
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        if (isVisibleToUser) {
+            ActivityAndFragmentPatch.setStackTop(this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+            observer.onAppear();
+        } else {
+            ActivityAndFragmentPatch.removeStackTop(this);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+            observer.onDisappear();
         }
+        super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
@@ -83,13 +90,16 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (flutterView == null) {
             findFlutterView(this.getView().getRootView());
         }
-        if(isTabSelect){
+        if(!isHidden()){
             ActivityAndFragmentPatch.setStackTop(this);
         }
         super.onResume();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onResume();
+
+        if (!isHidden()) {
+            observer.onAppear();
+        }
     }
 
     @Override
@@ -105,7 +115,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        observer.onPause();
     }
 
     @Override
@@ -114,7 +123,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        observer.onStop();
+        observer.onDisappear();
     }
 
     @Override
@@ -126,6 +135,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onBackPressed() {
+        ActivityAndFragmentPatch.onBackPressed();
     }
 
     @Override

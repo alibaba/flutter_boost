@@ -471,8 +471,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                 ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                 ///例如：sample://nativePage?aaa=bbb
-                onTap: () => BoostNavigator.of()
-                    .push("flutterPage", openContainer: false),
+                onTap: () => BoostNavigator.of().push("flutterPage"),
               ),
               InkWell(
                 child: Container(
