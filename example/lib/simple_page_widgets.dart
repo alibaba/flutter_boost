@@ -62,7 +62,9 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+    WillPopScope(child:
+      Scaffold(
       appBar: AppBar(title: const Text('First Route')),
       body: Center(
         child: Column(
@@ -137,7 +139,11 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
           ],
         ),
       ),
-    );
+    ) , onWillPop: (){
+
+      print('Present second page!');
+      return Future.value(true);
+    });
   }
 }
 
