@@ -51,7 +51,9 @@ public class ActivityAndFragmentPatch {
         Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
 
         if ((object == null) || (object == container)) {
-            flutterView.attachToFlutterEngine(flutterEngine);
+            if(!flutterView.isAttachedToFlutterEngine()){
+                flutterView.attachToFlutterEngine(flutterEngine);
+            }
         }
         flutterEngine.getLifecycleChannel().appIsResumed();
     }
