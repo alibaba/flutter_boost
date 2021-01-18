@@ -5,7 +5,7 @@ import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/logger.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
-  FlutterRouteWidget({this.params, this.message,this.uniqueId});
+  FlutterRouteWidget({this.params, this.message, this.uniqueId});
   final Map params;
   final String message;
   final String uniqueId;
@@ -23,10 +23,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Logger.log('${MediaQuery.of(context).padding.top} uniqueId=${widget.uniqueId}');
-    Logger.log('${MediaQuery.of(context).padding.bottom} uniqueId=${widget.uniqueId}');
-    Logger.log('${MediaQuery.of(context).size.width} uniqueId=${widget.uniqueId}');
-    Logger.log('${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
+    Logger.log(
+        '${MediaQuery.of(context).padding.top} uniqueId=${widget.uniqueId}');
+    Logger.log(
+        '${MediaQuery.of(context).padding.bottom} uniqueId=${widget.uniqueId}');
+    Logger.log(
+        '${MediaQuery.of(context).size.width} uniqueId=${widget.uniqueId}');
+    Logger.log(
+        '${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
 
     final String message = widget.message;
     return Scaffold(
@@ -108,7 +112,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                 ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                 ///例如：sample://nativePage?aaa=bbb
-                onTap: () => BoostNavigator.of().push("imagepick",openContainer:true),
+                onTap: () =>
+                    BoostNavigator.of().push("imagepick", openContainer: true),
               ),
               InkWell(
                   child: Container(
@@ -122,8 +127,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () =>  BoostNavigator.of().push("willPop",openContainer:true)
-              ),
+                  onTap: () =>
+                      BoostNavigator.of().push("willPop", openContainer: true)),
               InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),
@@ -136,8 +141,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
                   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
                   ///例如：sample://nativePage?aaa=bbb
-                  onTap: () =>  BoostNavigator.of().push("mediaquery",openContainer:true)
-              ),
+                  onTap: () => BoostNavigator.of()
+                      .push("mediaquery", openContainer: true)),
 
               // InkWell(
               //   child: Container(
@@ -220,7 +225,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     );
   }
 }
-
 
 class PushWidget extends StatefulWidget {
   @override

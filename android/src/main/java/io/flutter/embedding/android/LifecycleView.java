@@ -179,6 +179,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     delegate.onAttach(getContext());
     mFlutterView = delegate.onCreateView(null, null, null);
     addView(mFlutterView);
+    ActivityAndFragmentPatch.pushContainer(this);
     observer = ContainerShadowNode.create(this);
     observer.onCreateView();
   }
@@ -227,7 +228,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   }
 
   public void onBackPressed() {
-    delegate.onBackPressed();
+    ActivityAndFragmentPatch.onBackPressed();
   }
 
 

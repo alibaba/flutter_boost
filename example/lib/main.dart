@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost_example/tab/friend.dart';
-import 'package:flutter_boost_example/tab/message.dart';
+import 'package:flutter_boost_example/tab/simple_widget.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
@@ -34,9 +33,8 @@ class _MyAppState extends State<MyApp> {
       'embedded': BoostPageRouteBuilder(
           widgetBuild: (pageName, params, _) => EmbeddedFirstRouteWidget()),
       'imagepick': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) => ImagePickerPage(
-                title: "xxx",uniqueId:uniqueId
-              )),
+          widgetBuild: (pageName, params, uniqueId) =>
+              ImagePickerPage(title: "xxx", uniqueId: uniqueId)),
       'firstFirst': BoostPageRouteBuilder(
           widgetBuild: (pageName, params, _) => FirstFirstRouteWidget()),
       'willPop': BoostPageRouteBuilder(
@@ -47,21 +45,30 @@ class _MyAppState extends State<MyApp> {
           widgetBuild: (pageName, params, _) => PlatformRouteWidget()),
 
       ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage': BoostPageRouteBuilder(widgetBuild: (pageName, params, uniqueId) {
+      'flutterPage':
+          BoostPageRouteBuilder(widgetBuild: (pageName, params, uniqueId) {
         print("flutterPage params:$params");
-        return FlutterRouteWidget(params: params,uniqueId:uniqueId);
+        return FlutterRouteWidget(params: params, uniqueId: uniqueId);
       }),
       'tab_friend': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => FriendWidget(params)),
+          widgetBuild: (pageName, params, _) =>
+              SimpleWidget(params, "This is a flutter fragment", "Friends")),
       'tab_message': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => MessageWidget(params)),
+          widgetBuild: (pageName, params, _) =>
+              SimpleWidget(params, "This is a flutter fragment", "Message")),
+      'tab_flutter1': BoostPageRouteBuilder(
+          widgetBuild: (pageName, params, _) =>
+              SimpleWidget(params, "This is a custom FlutterView", "flutter1")),
+      'tab_flutter2': BoostPageRouteBuilder(
+          widgetBuild: (pageName, params, _) =>
+              SimpleWidget(params, "This is a custom FlutterView", "flutter2")),
       'f2f_first': BoostPageRouteBuilder(
           widgetBuild: (pageName, params, _) => F2FFirstPage()),
       'f2f_second': BoostPageRouteBuilder(
           widgetBuild: (pageName, params, _) => F2FSecondPage()),
       'mediaquery': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params,uniqueId) => MediaQueryRouteWidget(params: params,uniqueId:uniqueId)),
-
+          widgetBuild: (pageName, params, uniqueId) =>
+              MediaQueryRouteWidget(params: params, uniqueId: uniqueId)),
     };
   }
 

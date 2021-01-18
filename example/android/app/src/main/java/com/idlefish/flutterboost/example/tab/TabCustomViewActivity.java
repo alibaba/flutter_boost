@@ -44,8 +44,8 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
 
         FrameLayout container = findViewById(R.id.container);
 
-        mTabs.put(R.id.navigation_flutter1, createLifecycleView("tab_message"));
-        mTabs.put(R.id.navigation_flutter2, createLifecycleView("tab_friend"));
+        mTabs.put(R.id.navigation_flutter1, createLifecycleView("tab_flutter1"));
+        mTabs.put(R.id.navigation_flutter2, createLifecycleView("tab_flutter2"));
         mTabView = new TabView(this);
 
         container.addView(mTabView, -1, -1);
