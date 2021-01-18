@@ -59,6 +59,18 @@ class SimpleWidget extends StatelessWidget {
                         )),
                     onTap: () => BoostNavigator.of().push("flutterPage"),
                   ),
+                  InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(30.0),
+                        color: Colors.yellow,
+                        child: Text(
+                          'open flutter page with FlutterView',
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
+                        )),
+                    onTap: () => BoostNavigator.of()
+                        .push("flutterPage", openContainer: true),
+                  ),
                   Container(
                     height: 300,
                     width: 200,

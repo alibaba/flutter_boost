@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
+import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 import com.idlefish.flutterboost.example.R;
 
 import java.util.ArrayList;
@@ -42,6 +43,14 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
         initClick();
         //默认选中第1个
         setSelect(0);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (currentFragment instanceof FlutterBoostFragment) {
+            ((FlutterBoostFragment)currentFragment).onBackPressed();
+        }
     }
 
     //初始化元素
