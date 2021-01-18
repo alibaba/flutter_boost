@@ -7,12 +7,13 @@ import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flutter_boost/logger.dart';
 
 class ImagePickerPage extends StatefulWidget {
-  ImagePickerPage({Key key, this.title}) : super(key: key);
+  ImagePickerPage({Key key, this.title,this.uniqueId}) : super(key: key);
 
   final String title;
-
+  final String  uniqueId;
   @override
   _ImagePickerPageState createState() => _ImagePickerPageState();
 }
@@ -175,6 +176,11 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
 
   @override
   Widget build(BuildContext context) {
+    Logger.log('${MediaQuery.of(context).padding.top} uniqueId=${widget.uniqueId}');
+    Logger.log('${MediaQuery.of(context).padding.bottom} uniqueId=${widget.uniqueId}');
+    Logger.log('${MediaQuery.of(context).size.width} uniqueId=${widget.uniqueId}');
+    Logger.log('${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
