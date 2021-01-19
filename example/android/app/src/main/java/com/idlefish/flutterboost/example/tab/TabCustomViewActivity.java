@@ -59,6 +59,28 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (lastId == R.id.navigation_native) {
+            mTabView.onPause();
+        } else {
+            mTabs.get(lastId).onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (lastId == R.id.navigation_native) {
+            mTabView.onResume();
+        } else {
+            mTabs.get(lastId).onResume();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         for (int i = 0; i < mTabs.size(); i++) {
@@ -77,15 +99,11 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
             case R.id.navigation_flutter2: {
                 if (lastId == R.id.navigation_native) {
                     mTabView.setVisibility(View.GONE);
-                    mTabView.onPause();
                 } else {
-                    LifecycleView prevTab = mTabs.get(lastId);
-                    prevTab.setVisibility(View.GONE);
-                    prevTab.onPause();
+                    mTabs.get(lastId).setVisibility(View.GONE);
                 }
 
                 LifecycleView selectedTab = mTabs.get(id);
-                selectedTab.onResume();
                 selectedTab.setVisibility(View.VISIBLE);
 
                 android.util.Log.e("xlog", "#onNavigationItemSelected: selectedTab=" + selectedTab);
@@ -93,12 +111,8 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
             }
             case R.id.navigation_native:{
                 mTabView.setVisibility(View.VISIBLE);
-                mTabView.onResume();
-
                 if (lastId != R.id.navigation_native) {
-                    LifecycleView prevTab = mTabs.get(lastId);
-                    prevTab.setVisibility(View.GONE);
-                    prevTab.onPause();
+                    mTabs.get(lastId).setVisibility(View.GONE);
                 }
                 android.util.Log.e("xlog", "#onNavigationItemSelected: selectedTab=" + mTabView);
                 break;

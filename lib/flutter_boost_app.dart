@@ -105,6 +105,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void push(String pageName, String uniqueId,
       {Map arguments, bool openContainer}) {
     final BoostPage existedPage = _findByUniqueId(uniqueId);
+    Logger.log(
+        'push page, uniqueId=$uniqueId, existedPage=$existedPage, openContainer=$openContainer');
     if (existedPage != null) {
       if (!_isCurrentPage(uniqueId)) {
         setState(() {
@@ -114,21 +116,19 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     } else {
       if (openContainer) {
+        PageInfo pageInfo = PageInfo(
+            pageName: pageName,
+            uniqueId: uniqueId,
+            arguments: arguments,
+            openContainer: openContainer);
+        final BoostPage page = _createPage(pageInfo);
         setState(() {
-          PageInfo pageInfo = PageInfo(
-              pageName: pageName,
-              uniqueId: uniqueId,
-              arguments: arguments,
-              openContainer: openContainer);
-          final BoostPage page = _createPage(pageInfo);
           pages.add(page);
         });
       } else {
         pages.last.navKey.currentState.pushNamed(pageName);
       }
     }
-    Logger.log(
-        'push page, uniqueId=$uniqueId, pageName=$pageName, openContainer=$openContainer');
   }
 
   ///

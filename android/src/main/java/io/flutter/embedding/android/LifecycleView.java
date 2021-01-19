@@ -17,13 +17,6 @@ import androidx.lifecycle.LifecycleRegistry;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.embedding.android.FlutterActivityAndFragmentDelegate;
-import io.flutter.embedding.android.FlutterEngineProvider;
-import io.flutter.embedding.android.FlutterSurfaceView;
-import io.flutter.embedding.android.FlutterTextureView;
-import io.flutter.embedding.android.RenderMode;
-import io.flutter.embedding.android.SplashScreen;
-import io.flutter.embedding.android.TransparencyMode;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
@@ -49,16 +42,17 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   protected static final String ARG_FLUTTERVIEW_TRANSPARENCY_MODE = "flutterview_transparency_mode";
   protected static final String ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY = "should_attach_engine_to_activity";
   protected static final String ARG_CACHED_ENGINE_ID = "cached_engine_id";
-  protected static final String ARG_DESTROY_ENGINE_WITH_FRAGMENT = "destroy_engine_with_fragment";
   protected static final String ARG_ENABLE_STATE_RESTORATION = "enable_state_restoration";
 
-  private Activity mActivty;
+  private final Activity mActivty;
   private View mFlutterView;
   private Bundle mArguments;
   private Callback mCallback;
-  private FlutterActivityAndFragmentDelegate delegate;
+  private FlutterActivityAndFragmentDelegate mDelegate;
   private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
-  private FlutterViewContainerObserver observer;
+  private FlutterViewContainerObserver mObserver;
+  private boolean mCreateAndStart;
+  private boolean mIsDestroyed;
 
 
   @NonNull
@@ -125,8 +119,6 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
       LifecycleView view = new LifecycleView(context, callback);
       Bundle args = createArgs();
       view.setArguments(args);
-      view.onCreate();
-      view.onStart();
       return view;
     }
 
@@ -173,55 +165,84 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     return null;
   }
 
+  private boolean isDestroyed() {
+    return mIsDestroyed;
+  }
+
   public void onCreate() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
-    delegate = new FlutterActivityAndFragmentDelegate(this);
-    delegate.onAttach(getContext());
-    mFlutterView = delegate.onCreateView(null, null, null);
+    mDelegate = new FlutterActivityAndFragmentDelegate(this);
+    mDelegate.onAttach(getContext());
+    mFlutterView = mDelegate.onCreateView(null, null, null);
     addView(mFlutterView);
     ActivityAndFragmentPatch.pushContainer(this);
-    observer = ContainerShadowNode.create(this);
-    observer.onCreateView();
+    mObserver = ContainerShadowNode.create(this);
+    mObserver.onCreateView();
   }
 
   public void onStart() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START);
-    delegate.onStart();
+    mDelegate.onStart();
   }
 
   public void onResume() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-    delegate.onResume();
+    mDelegate.onResume();
     ActivityAndFragmentPatch.setStackTop(this);
     ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(findFlutterView(mFlutterView), getFlutterEngine(), this);
-    observer.onAppear();
+    getFlutterEngine().getLifecycleChannel().appIsResumed();
+    mObserver.onAppear();
   }
 
   public void onPause() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
-    delegate.onPause();
+    mDelegate.onPause();
     ActivityAndFragmentPatch.removeStackTop(this);
     ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(findFlutterView(mFlutterView), getFlutterEngine());
-    observer.onDisappear();
+    getFlutterEngine().getLifecycleChannel().appIsResumed();
+    mObserver.onDisappear();
   }
 
   public void onStop() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
     // delegate.onStop();
   }
 
   public void onDestroy() {
+    if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     removeView(mFlutterView);
-    delegate.onDestroyView();
-    delegate = null;
+    mDelegate.onDestroyView();
+    mDelegate = null;
     mFlutterView = null;
-    observer.onDestroyView();
+    mObserver.onDestroyView();
+    mIsDestroyed = true;
+  }
+
+  @Override
+  public void setVisibility(int visibility) {
+    super.setVisibility(visibility);
+    if (!mCreateAndStart) {
+      onCreate();
+      onStart();
+      mCreateAndStart = true;
+    }
+
+    if (getVisibility() == View.VISIBLE) {
+      onResume();
+    } else if (getVisibility() == View.GONE) {
+      onPause();
+    }
   }
 
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     try {
-        delegate.onActivityResult(requestCode, resultCode, data);
+        mDelegate.onActivityResult(requestCode, resultCode, data);
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -234,7 +255,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @Nullable
   protected FlutterEngine getFlutterEngine() {
-    return delegate.getFlutterEngine();
+    return mDelegate.getFlutterEngine();
   }
 
   /**

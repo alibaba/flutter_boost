@@ -47,9 +47,7 @@ public class ActivityAndFragmentPatch {
      * @param
      */
     public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
-
         Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
-
         if ((object == null) || (object == container)) {
             if(!flutterView.isAttachedToFlutterEngine()){
                 flutterView.attachToFlutterEngine(flutterEngine);
