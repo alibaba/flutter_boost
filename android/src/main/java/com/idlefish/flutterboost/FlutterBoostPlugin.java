@@ -6,11 +6,9 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -28,11 +26,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         mApi = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
+        FlutterBoost.instance().registerVisibilityChangedObserver(this);
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
         mApi = null;
+        FlutterBoost.instance().unregisterVisibilityChangedObserver(this);
     }
 
     @Override
@@ -102,6 +102,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
+    public void onForeground() {
+        android.util.Log.e("xlog", "## onForeground");
+    }
+
+    public void onBackground() {
+        android.util.Log.e("xlog", "## onBackground");
+    }
+
     private final Map<String, FlutterViewContainer> mAllContainers = new LinkedHashMap<>();
 
     public FlutterViewContainer findContainerById(String uniqueId) {
@@ -133,8 +141,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public static class ContainerShadowNode implements FlutterViewContainerObserver {
-        private WeakReference<FlutterViewContainer> container;
-        private FlutterBoostPlugin plugin;
+        private WeakReference<FlutterViewContainer> mContainer;
+        private FlutterBoostPlugin mPlugin;
 
         public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
             return new ContainerShadowNode(container, plugin);
@@ -142,12 +150,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
         private ContainerShadowNode(FlutterViewContainer container, FlutterBoostPlugin plugin) {
             assert container != null;
-            this.container = new WeakReference<>(container);
-            this.plugin = plugin;
+            mContainer = new WeakReference<>(container);
+            mPlugin = plugin;
         }
 
         public FlutterViewContainer container() {
-            return container.get();
+            return mContainer.get();
         }
 
         @Override
@@ -158,9 +166,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
         @Override
         public void onAppear() {
-            assert container.get() != null;
-            plugin.updateContainer(container().getUniqueId(), container());
-            plugin.pushRoute(container().getUniqueId(), container().getUrl(), container().getUrlParams(),null);
+            assert container() != null;
+            mPlugin.updateContainer(container().getUniqueId(), container());
+            mPlugin.pushRoute(container().getUniqueId(), container().getUrl(), container().getUrlParams(),null);
             android.util.Log.e("xlog", "## FlutterViewContainerObserver#onAppear: " + container().getUniqueId());
         }
 
@@ -172,8 +180,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
         @Override
         public void onDestroyView() {
-            plugin.popRoute(container().getUniqueId(), null);
-            plugin.removeContainer(container().getUniqueId());
+            mPlugin.popRoute(container().getUniqueId(), null);
+            mPlugin.removeContainer(container().getUniqueId());
             android.util.Log.e("xlog", "## FlutterViewContainerObserver#onDestroyView: " + container().getUniqueId());
         }
     }

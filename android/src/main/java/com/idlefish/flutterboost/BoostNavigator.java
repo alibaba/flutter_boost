@@ -4,8 +4,6 @@ import android.app.Activity;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.HashMap;
-
 /**
  * android 测 boost操作路由提供的接口
  */

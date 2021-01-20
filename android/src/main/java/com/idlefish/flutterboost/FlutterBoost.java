@@ -2,12 +2,15 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -21,9 +24,9 @@ public class FlutterBoost {
 
     private static FlutterBoost sInstance = null;
 
-    private Activity topActivity = null;
+    private Activity mTopActivity = null;
 
-    private FlutterBoostPlugin plugin;
+    private FlutterBoostPlugin mPlugin;
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -55,21 +58,21 @@ public class FlutterBoost {
     }
 
     public static class DefaultEngineConfig {
-        private String initialRoute = "/";
-        private String dartEntrypointFunctionName = "main";
+        private String mInitialRoute = "/";
+        private String mDartEntrypointFunctionName = "main";
 
         public DefaultEngineConfig() {
         }
 
         @NonNull
         public DefaultEngineConfig initialRoute(@NonNull String initialRoute) {
-            this.initialRoute = initialRoute;
+            mInitialRoute = initialRoute;
             return this;
         }
 
         @NonNull
         public DefaultEngineConfig entrypoint(@NonNull String dartEntrypointFunctionName) {
-            this.dartEntrypointFunctionName = dartEntrypointFunctionName;
+            mDartEntrypointFunctionName = dartEntrypointFunctionName;
             return this;
         }
 
@@ -78,9 +81,9 @@ public class FlutterBoost {
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
                 engine = new FlutterEngine(application);
-                engine.getNavigationChannel().setInitialRoute(this.initialRoute);
+                engine.getNavigationChannel().setInitialRoute(mInitialRoute);
                 engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                        FlutterMain.findAppBundlePath(), this.dartEntrypointFunctionName));
+                        FlutterMain.findAppBundlePath(), mDartEntrypointFunctionName));
                 FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
             }
 
@@ -94,14 +97,14 @@ public class FlutterBoost {
     }
 
     public FlutterBoostPlugin getPlugin() {
-        if (plugin == null) {
+        if (mPlugin == null) {
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
                 throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
             }
-            plugin = getFlutterBoostPlugin(engine);
+            mPlugin = getFlutterBoostPlugin(engine);
         }
-        return plugin;
+        return mPlugin;
     }
 
     public void setupActivityLifecycleCallback(Application application) {
@@ -109,23 +112,75 @@ public class FlutterBoost {
     }
 
     public Activity getTopActivity() {
-        return topActivity;
+        return mTopActivity;
+    }
+
+    private List<FlutterBoostPlugin> mVisibilityChangedObservers = new ArrayList<>();
+    public void unregisterVisibilityChangedObserver(FlutterBoostPlugin observer) {
+        if (observer != null) {
+            mVisibilityChangedObservers.remove(observer);
+        }
+    }
+
+    public void registerVisibilityChangedObserver(FlutterBoostPlugin observer) {
+        if (observer != null) {
+            mVisibilityChangedObservers.add(observer);
+        }
+    }
+
+    private void callForeground() {
+        for (FlutterBoostPlugin observer : mVisibilityChangedObservers) {
+            observer.onForeground();
+        }
+    }
+
+    private void callBackground() {
+        for (FlutterBoostPlugin observer : mVisibilityChangedObservers) {
+            observer.onBackground();
+        }
     }
 
     class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
+        private Activity mCurrentActiveActivity;
+        private boolean mEnterActivityCreate = false;
 
         @Override
         public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-            topActivity = activity;
+            mTopActivity = activity;
+            // fix bug : The LauncherActivity will be launch by clicking app icon when app
+            // enter background in HuaWei Rom, cause missing foreground event
+            if (mEnterActivityCreate && mCurrentActiveActivity == null) {
+                Intent intent = activity.getIntent();
+                if (!activity.isTaskRoot()
+                        && intent != null
+                        && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                        && intent.getAction() != null
+                        && intent.getAction().equals(Intent.ACTION_MAIN)) {
+                    return;
+                }
+            }
+            mEnterActivityCreate = true;
+            mCurrentActiveActivity = activity;
         }
 
         @Override
         public void onActivityStarted(@NonNull Activity activity) {
+            if (!mEnterActivityCreate) {
+                return;
+            }
+            if (mCurrentActiveActivity == null) {
+                callForeground();
+            }
+            mCurrentActiveActivity = activity;
         }
 
         @Override
         public void onActivityResumed(@NonNull Activity activity) {
-            topActivity = activity;
+            mTopActivity = activity;
+            if (!mEnterActivityCreate) {
+                return;
+            }
+            mCurrentActiveActivity = activity;
         }
 
         @Override
@@ -134,6 +189,13 @@ public class FlutterBoost {
 
         @Override
         public void onActivityStopped(@NonNull Activity activity) {
+            if (!mEnterActivityCreate) {
+                return;
+            }
+            if (mCurrentActiveActivity == activity) {
+                callBackground();
+                mCurrentActiveActivity = null;
+            }
         }
 
         @Override
@@ -142,6 +204,13 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(@NonNull Activity activity) {
+            if (!mEnterActivityCreate) {
+                return;
+            }
+            if (mCurrentActiveActivity == activity) {
+                callBackground();
+                mCurrentActiveActivity = null;
+            }
         }
     }
 }
