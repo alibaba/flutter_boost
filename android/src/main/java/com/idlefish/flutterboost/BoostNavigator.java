@@ -43,7 +43,7 @@ public class BoostNavigator {
      * @return
      */
     public static FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
-        return FlutterBoost.instance().getContainerManager().findContainerById(uniqueId);
+        return FlutterBoost.instance().getPlugin().findContainerById(uniqueId);
     }
 
     /**
@@ -52,7 +52,7 @@ public class BoostNavigator {
      * @return
      */
     public static FlutterViewContainer getTopFlutterViewContainer() {
-        return FlutterBoost.instance().getContainerManager().getCurrentStackTop();
+        return FlutterBoost.instance().getPlugin().getTopContainer();
     }
 
     /**

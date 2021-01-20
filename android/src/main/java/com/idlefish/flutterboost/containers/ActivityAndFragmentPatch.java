@@ -47,7 +47,7 @@ public class ActivityAndFragmentPatch {
      * @param
      */
     public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
-        Object object = FlutterBoost.instance().getContainerManager().getCurrentStackTop();
+        Object object = FlutterBoost.instance().getPlugin().getTopContainer();
         if ((object == null) || (object == container)) {
             if(!flutterView.isAttachedToFlutterEngine()){
                 flutterView.attachToFlutterEngine(flutterEngine);
@@ -65,21 +65,5 @@ public class ActivityAndFragmentPatch {
     public static void onPauseDetachFromFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
         flutterView.detachFromFlutterEngine();
         flutterEngine.getLifecycleChannel().appIsInactive();
-    }
-
-    public static void setStackTop(FlutterViewContainer object) {
-        FlutterBoost.instance().getContainerManager().setStackTop(object);
-    }
-
-    public static void removeStackTop(FlutterViewContainer object) {
-        FlutterBoost.instance().getContainerManager().removeStackTop(object);
-    }
-
-    public static void pushContainer(FlutterViewContainer container) {
-        FlutterBoost.instance().getContainerManager().addContainer(container);
-    }
-
-    public static void removeContainer(FlutterViewContainer container) {
-        FlutterBoost.instance().getContainerManager().removeContainer(container.getUniqueId());
     }
 }

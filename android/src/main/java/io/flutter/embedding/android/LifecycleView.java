@@ -14,6 +14,12 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
+import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.FlutterBoostPlugin;
+import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
+import com.idlefish.flutterboost.containers.FlutterViewContainer;
+import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,15 +29,9 @@ import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
 import io.flutter.plugin.platform.PlatformPlugin;
 import io.flutter.view.FlutterMain;
 
-import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
-import com.idlefish.flutterboost.containers.ContainerShadowNode;
-import com.idlefish.flutterboost.containers.FlutterViewContainer;
-import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
-
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
-import com.idlefish.flutterboost.FlutterBoost;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host, FlutterViewContainer {
   protected static final String ARG_DART_ENTRYPOINT = "dart_entrypoint";
@@ -176,8 +176,8 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     mDelegate.onAttach(getContext());
     mFlutterView = mDelegate.onCreateView(null, null, null);
     addView(mFlutterView);
-    ActivityAndFragmentPatch.pushContainer(this);
-    mObserver = ContainerShadowNode.create(this);
+
+    mObserver = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
     mObserver.onCreateView();
   }
 
@@ -191,7 +191,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
     mDelegate.onResume();
-    ActivityAndFragmentPatch.setStackTop(this);
+
     ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(findFlutterView(mFlutterView), getFlutterEngine(), this);
     getFlutterEngine().getLifecycleChannel().appIsResumed();
     mObserver.onAppear();
@@ -201,7 +201,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     if (isDestroyed()) return;
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
     mDelegate.onPause();
-    ActivityAndFragmentPatch.removeStackTop(this);
+
     ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(findFlutterView(mFlutterView), getFlutterEngine());
     getFlutterEngine().getLifecycleChannel().appIsResumed();
     mObserver.onDisappear();

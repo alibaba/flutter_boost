@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.FlutterBoostPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,14 +33,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
             for (int i = 0; i < vp.getChildCount(); i++) {
-                View viewchild = vp.getChildAt(i);
-                if (viewchild instanceof FlutterView) {
-                    flutterView = (FlutterView) viewchild;
+                View child = vp.getChildAt(i);
+                if (child instanceof FlutterView) {
+                    flutterView = (FlutterView) child;
                     return;
                 } else {
-                    findFlutterView(viewchild);
+                    findFlutterView(child);
                 }
-
             }
         }
     }
@@ -47,12 +47,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        observer = ContainerShadowNode.create(this);
+        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ActivityAndFragmentPatch.pushContainer(this);
         observer.onCreateView();
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -60,11 +59,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
-            ActivityAndFragmentPatch.removeStackTop(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
             observer.onDisappear();
         } else {
-            ActivityAndFragmentPatch.setStackTop(this);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             observer.onAppear();
         }
@@ -74,11 +71,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
-            ActivityAndFragmentPatch.setStackTop(this);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             observer.onAppear();
         } else {
-            ActivityAndFragmentPatch.removeStackTop(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
             observer.onDisappear();
         }
@@ -89,9 +84,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onResume() {
         if (flutterView == null) {
             findFlutterView(this.getView().getRootView());
-        }
-        if(!isHidden()){
-            ActivityAndFragmentPatch.setStackTop(this);
         }
         super.onResume();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
@@ -110,7 +102,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();

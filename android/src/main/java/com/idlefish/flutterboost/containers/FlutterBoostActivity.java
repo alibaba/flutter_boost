@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.FlutterBoostPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +31,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        observer = ContainerShadowNode.create(this);
         super.onCreate(savedInstanceState);
-        ActivityAndFragmentPatch.pushContainer(this);
+        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
         observer.onCreateView();
     }
 
@@ -40,14 +40,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
             for (int i = 0; i < vp.getChildCount(); i++) {
-                View viewchild = vp.getChildAt(i);
-                if (viewchild instanceof FlutterView) {
-                    flutterView = (FlutterView) viewchild;
+                View child = vp.getChildAt(i);
+                if (child instanceof FlutterView) {
+                    flutterView = (FlutterView) child;
                     return;
                 } else {
-                    findFlutterView(viewchild);
+                    findFlutterView(child);
                 }
-
             }
         }
     }
@@ -58,7 +57,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             findFlutterView(this.getWindow().getDecorView());
         }
         super.onResume();
-        ActivityAndFragmentPatch.setStackTop(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
         observer.onAppear();
@@ -74,7 +72,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.removeStackTop(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
     }

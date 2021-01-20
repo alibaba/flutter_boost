@@ -23,17 +23,7 @@ public class FlutterBoost {
 
     private Activity topActivity = null;
 
-    private ContainerManager containerManager;
-
     private FlutterBoostPlugin plugin;
-
-    FlutterBoost(){
-        containerManager=new ContainerManager();
-    }
-
-    public ContainerManager getContainerManager() {
-        return containerManager;
-    }
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -44,7 +34,20 @@ public class FlutterBoost {
 
     public static String generateUniqueId(String pageName) {
         Date date = new Date();
-        return "__container_uniqueId_key__" + date.getTime()+"_"+ pageName;
+        return "__container_uniqueId_key__" + date.getTime() + "_" + pageName;
+    }
+
+    public static FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
+        if (engine != null) {
+            try {
+                Class<? extends FlutterPlugin> pluginClass =
+                        (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
+                return (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     public static DefaultEngineConfig withDefaultEngine() {
@@ -96,14 +99,7 @@ public class FlutterBoost {
             if (engine == null) {
                 throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
             }
-
-            try {
-                Class<? extends FlutterPlugin> pluginClass =
-                        (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
-                plugin = (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            plugin = getFlutterBoostPlugin(engine);
         }
         return plugin;
     }
@@ -121,33 +117,27 @@ public class FlutterBoost {
         @Override
         public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
             topActivity = activity;
-
         }
 
         @Override
         public void onActivityStarted(@NonNull Activity activity) {
-
         }
 
         @Override
         public void onActivityResumed(@NonNull Activity activity) {
             topActivity = activity;
-
         }
 
         @Override
         public void onActivityPaused(@NonNull Activity activity) {
-
         }
 
         @Override
         public void onActivityStopped(@NonNull Activity activity) {
-
         }
 
         @Override
         public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
-
         }
 
         @Override
