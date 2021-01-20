@@ -11,24 +11,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.containers.FlutterBoostView;
 import com.idlefish.flutterboost.example.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.embedding.android.LifecycleView;
+import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 
-public class TabCustomViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, LifecycleView.Callback {
-    SparseArray<LifecycleView> mTabs = new SparseArray<>();
+public class TabCustomViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FlutterBoostView.Callback {
+    SparseArray<FlutterBoostView> mTabs = new SparseArray<>();
     TabView mTabView;
     private int lastId = -1;
 
-    private  LifecycleView createLifecycleView(String url) {
+    private  FlutterBoostView createFlutterBoostView(String url) {
         HashMap<String, String> params = new HashMap<>();
         params.put("url", url);
-        return LifecycleView.withCachedEngine(FlutterBoost.ENGINE_ID)
+        return FlutterBoostView.withCachedEngine(FlutterBoost.ENGINE_ID)
                 .transparencyMode(TransparencyMode.transparent)
+                .renderMode(RenderMode.texture)
                 .url(url)
                 .params(params)
                 .build(this, this);
@@ -44,13 +46,13 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
 
         FrameLayout container = findViewById(R.id.container);
 
-        mTabs.put(R.id.navigation_flutter1, createLifecycleView("tab_flutter1"));
-        mTabs.put(R.id.navigation_flutter2, createLifecycleView("tab_flutter2"));
+        mTabs.put(R.id.navigation_flutter1, createFlutterBoostView("tab_flutter1"));
+        mTabs.put(R.id.navigation_flutter2, createFlutterBoostView("tab_flutter2"));
         mTabView = new TabView(this);
 
         container.addView(mTabView, -1, -1);
         for (int i = 0; i < mTabs.size(); i++) {
-            LifecycleView tabContainer = mTabs.valueAt(i);
+            FlutterBoostView tabContainer = mTabs.valueAt(i);
             container.addView(tabContainer, -1, -1);
         }
 
@@ -84,7 +86,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     protected void onDestroy() {
         super.onDestroy();
         for (int i = 0; i < mTabs.size(); i++) {
-            LifecycleView tabContainer = mTabs.valueAt(i);
+            FlutterBoostView tabContainer = mTabs.valueAt(i);
             tabContainer.onDestroy();
         }
         mTabView.onDestroy();
@@ -103,7 +105,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
                     mTabs.get(lastId).setVisibility(View.GONE);
                 }
 
-                LifecycleView selectedTab = mTabs.get(id);
+                FlutterBoostView selectedTab = mTabs.get(id);
                 selectedTab.setVisibility(View.VISIBLE);
 
                 android.util.Log.e("xlog", "#onNavigationItemSelected: selectedTab=" + selectedTab);
@@ -127,7 +129,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         if (lastId == R.id.navigation_native) {
             finish();
         } else {
-            LifecycleView currentTab = mTabs.get(lastId);
+            FlutterBoostView currentTab = mTabs.get(lastId);
             currentTab.onBackPressed();
         }
     }

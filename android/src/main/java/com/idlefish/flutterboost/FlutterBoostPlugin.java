@@ -128,6 +128,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void removeContainer(String uniqueId) {
+        if (uniqueId == null) return;
         mAllContainers.remove(uniqueId);
     }
 

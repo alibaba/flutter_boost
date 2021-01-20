@@ -106,7 +106,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       {Map arguments, bool openContainer}) {
     final BoostPage existedPage = _findByUniqueId(uniqueId);
     Logger.log(
-        'push page, uniqueId=$uniqueId, existedPage=$existedPage, openContainer=$openContainer');
+        'push page, uniqueId=$uniqueId, existedPage=$existedPage, openContainer=$openContainer, $pages');
     if (existedPage != null) {
       if (!_isCurrentPage(uniqueId)) {
         setState(() {

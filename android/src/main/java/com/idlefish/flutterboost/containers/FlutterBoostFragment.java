@@ -86,10 +86,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             findFlutterView(this.getView().getRootView());
         }
         super.onResume();
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-
         if (!isHidden()) {
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
             observer.onAppear();
         }
     }

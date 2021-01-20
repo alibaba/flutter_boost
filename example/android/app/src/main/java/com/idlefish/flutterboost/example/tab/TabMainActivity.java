@@ -50,6 +50,8 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
     public void onBackPressed() {
         if (currentFragment instanceof FlutterBoostFragment) {
             ((FlutterBoostFragment)currentFragment).onBackPressed();
+        } else {
+            finish();
         }
     }
 
