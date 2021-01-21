@@ -2,9 +2,14 @@ package com.idlefish.flutterboost;
 
 import android.util.Log;
 
+import androidx.annotation.IntDef;
+
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
+import com.idlefish.flutterboost.containers.ChangeReason;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -57,11 +62,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void popRoute(Messages.CommonParams params) {
         String uniqueId = params.getUniqueId();
         if (uniqueId != null) {
-            FlutterViewContainer container = findContainerById(uniqueId);
-            if (container != null) {
-                container.finishContainer(params.getArguments());
+            ContainerShadowNode node = mAllContainers.get(uniqueId);
+            if (node != null) {
+                if (node.container() != null) {
+                    node.container().finishContainer(params.getArguments());
+                }
+                node.setIsPopping();
             } else {
-                Log.e(TAG, "Something wrong ?! Can't find container: " + uniqueId);
+                Log.v(TAG, "Something wrong ?! Can't find container: " + uniqueId);
             }
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
@@ -72,12 +80,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         void reply(T reply);
     }
 
-    public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments, final Reply<Void> callback) {
+    public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments,
+                          @ChangeReason int hint, final Reply<Void> callback) {
         if (mApi != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments(arguments);
+            params.setHint((long) hint);
             mApi.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -102,24 +112,46 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
+    @IntDef({VisibilityEvent.NONE, VisibilityEvent.FOREGROUND, VisibilityEvent.BACKGROUND})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface VisibilityEvent {
+        int NONE = 0;
+        int FOREGROUND = 1;
+        int BACKGROUND = 2;
+    }
+
     public void onForeground() {
-        android.util.Log.e("xlog", "## onForeground");
+        ContainerShadowNode node = getStackTop();
+        if (node != null) {
+            node.setVisibilityEvent(VisibilityEvent.FOREGROUND);
+        }
+
+        if (mApi != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            mApi.onForeground(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        android.util.Log.e(TAG, "## onForeground: " + mApi);
     }
 
     public void onBackground() {
-        android.util.Log.e("xlog", "## onBackground");
-    }
-
-    private final Map<String, FlutterViewContainer> mAllContainers = new LinkedHashMap<>();
-
-    public FlutterViewContainer findContainerById(String uniqueId) {
-        if (mAllContainers.containsKey(uniqueId)) {
-            return mAllContainers.get(uniqueId);
+        ContainerShadowNode node = getStackTop();
+        if (node != null) {
+            node.setVisibilityEvent(VisibilityEvent.BACKGROUND);
         }
-        return null;
+
+        if (mApi != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            mApi.onBackground(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        android.util.Log.e(TAG, "## onBackground: " + mApi);
     }
 
-    public FlutterViewContainer getTopContainer() {
+    private final Map<String, ContainerShadowNode> mAllContainers = new LinkedHashMap<>();
+    private ContainerShadowNode getStackTop() {
         if (mAllContainers.size() > 0) {
             LinkedList<String> listKeys = new LinkedList<String>(mAllContainers.keySet());
             return mAllContainers.get(listKeys.getLast());
@@ -127,7 +159,19 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return null;
     }
 
-    public void updateContainer(String uniqueId, FlutterViewContainer container) {
+    public FlutterViewContainer findContainerById(String uniqueId) {
+        if (mAllContainers.containsKey(uniqueId)) {
+            return mAllContainers.get(uniqueId).container();
+        }
+        return null;
+    }
+
+    public FlutterViewContainer getTopContainer() {
+        ContainerShadowNode top = getStackTop();
+        return top != null ? top.container() : null;
+    }
+
+    public void updateContainer(String uniqueId, ContainerShadowNode container) {
         if (uniqueId == null || container == null) return;
         if (mAllContainers.containsKey(uniqueId)) {
             mAllContainers.remove(uniqueId);
@@ -140,9 +184,15 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         mAllContainers.remove(uniqueId);
     }
 
+    public LinkedList<String> getContainers() {
+        return new LinkedList<String>(mAllContainers.keySet());
+    }
+
     public static class ContainerShadowNode implements FlutterViewContainerObserver {
         private WeakReference<FlutterViewContainer> mContainer;
         private FlutterBoostPlugin mPlugin;
+        private @VisibilityEvent int mEvent;
+        private boolean mIsPopping;
 
         public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
             return new ContainerShadowNode(container, plugin);
@@ -152,37 +202,124 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             assert container != null;
             mContainer = new WeakReference<>(container);
             mPlugin = plugin;
+            mIsPopping = false;
+            setVisibilityEvent(VisibilityEvent.NONE);
         }
 
         public FlutterViewContainer container() {
             return mContainer.get();
         }
+        public void setVisibilityEvent(@VisibilityEvent int event) {
+            mEvent = event;
+        }
+
+        public void setIsPopping() {
+            mIsPopping = true;
+        }
+
+        public String getUniqueId() {
+            if (container() != null) {
+                return container().getUniqueId();
+            }
+            return null;
+        }
+
+        public String getUrl() {
+            if (container() != null) {
+                return container().getUrl();
+            }
+            return null;
+        }
+
+        public HashMap<String, String> getUrlParams() {
+            if (container() != null) {
+                return container().getUrlParams();
+            }
+            return null;
+        }
 
         @Override
         public void onCreateView() {
-            // todo:
-            android.util.Log.e("xlog", "## FlutterViewContainerObserver#onCreateView: " + container().getUniqueId());
+            Log.v(TAG, "#onCreateView: " + getUniqueId() + ", " + mPlugin.getContainers());
         }
 
         @Override
-        public void onAppear() {
+        public void onAppear(@ChangeReason int reason) {
             assert container() != null;
-            mPlugin.updateContainer(container().getUniqueId(), container());
-            mPlugin.pushRoute(container().getUniqueId(), container().getUrl(), container().getUrlParams(),null);
-            android.util.Log.e("xlog", "## FlutterViewContainerObserver#onAppear: " + container().getUniqueId());
+            @ChangeReason int hint = reason;
+            if (ChangeReason.UNSPECIFIED == hint) {
+                if (mPlugin.findContainerById(getUniqueId()) == null) {
+                    // create new FlutterView
+                    hint = ChangeReason.PUSH_VIEW;
+                } else {
+                    if (VisibilityEvent.FOREGROUND == mEvent) {
+                        assert mPlugin.getTopContainer().getUniqueId() == getUniqueId();
+                        // switch to foreground
+                        hint = ChangeReason.FOREGROUND;
+                    } else {
+                        // The previous view was popped
+                        hint = ChangeReason.POP_VIEW;
+                    }
+                }
+            }
+            setVisibilityEvent(VisibilityEvent.NONE);
+
+            mPlugin.updateContainer(getUniqueId(), this);
+            mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), hint, null);
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + StateChangeReasonToString(hint) + ", " + mPlugin.getContainers());
         }
 
         @Override
-        public void onDisappear() {
+        public void onDisappear(@ChangeReason int reason) {
             // todo:
-            android.util.Log.e("xlog", "## FlutterViewContainerObserver#onDisappear: " + container().getUniqueId());
+            @ChangeReason int hint = reason;
+            if (ChangeReason.UNSPECIFIED == hint) {
+                FlutterViewContainer top = mPlugin.getTopContainer();
+                if (top != null && top.getUniqueId() == getUniqueId() &&
+                        VisibilityEvent.BACKGROUND == mEvent) {
+                    // switch to background
+                    hint = ChangeReason.BACKGROUND;
+                } else {
+                    if (mIsPopping) {
+                        hint = ChangeReason.POP_VIEW;
+                    } else {
+                        // The native view was pushed
+                        hint = ChangeReason.PUSH_VIEW;
+                    }
+                }
+            }
+            setVisibilityEvent(VisibilityEvent.NONE);
+            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + StateChangeReasonToString(hint) + ", " + mPlugin.getContainers());
         }
 
         @Override
         public void onDestroyView() {
-            mPlugin.popRoute(container().getUniqueId(), null);
-            mPlugin.removeContainer(container().getUniqueId());
-            android.util.Log.e("xlog", "## FlutterViewContainerObserver#onDestroyView: " + container().getUniqueId());
+            mPlugin.popRoute(getUniqueId(), null);
+            mPlugin.removeContainer(getUniqueId());
+            Log.v(TAG, "#onDestroyView: " + getUniqueId() + ", " + mPlugin.getContainers());
+        }
+    }
+
+    static String StateChangeReasonToString(@ChangeReason int reason) {
+        switch (reason) {
+            case ChangeReason.UNSPECIFIED:
+                return "UNSPECIFIED";
+            case ChangeReason.PUSH_ROUTE:
+                return "PUSH_ROUTE";
+            case ChangeReason.POP_ROUTE:
+                return "POP_ROUTE";
+            case ChangeReason.PUSH_VIEW:
+                return "PUSH_VIEW";
+            case ChangeReason.POP_VIEW:
+                return "POP_VIEW";
+            case ChangeReason.SWITCH_TAB:
+                return "SWITCH_TAB";
+            case ChangeReason.FOREGROUND:
+                return "FOREGROUND";
+            case ChangeReason.BACKGROUND:
+                return "BACKGROUND";
+            default:
+                return "ERROR_XXX";
         }
     }
 }

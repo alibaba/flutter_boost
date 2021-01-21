@@ -1,4 +1,3 @@
-import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
 
@@ -36,6 +35,26 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void popRoute(CommonParams arg) {
-    BoostNavigator.of().pop(uniqueId: arg.uniqueId);
+    appState.pop(uniqueId: arg.uniqueId);
+  }
+
+  @override
+  void onForeground(CommonParams arg) {
+    appState.onForeground();
+  }
+
+  @override
+  void onBackground(CommonParams arg) {
+    appState.onBackground();
+  }
+
+  @override
+  void onAppear(CommonParams arg) {
+    appState.onAppear(arg);
+  }
+
+  @override
+  void onDisappear(CommonParams arg) {
+    appState.onDisappear(arg);
   }
 }

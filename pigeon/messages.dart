@@ -3,6 +3,7 @@ import 'package:pigeon/pigeon.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
+  int hint;
   Map<String, String> arguments;
 }
 
@@ -17,6 +18,10 @@ abstract class NativeRouterApi {
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams param);
   void popRoute(CommonParams param);
+  void onForeground(CommonParams param);
+  void onBackground(CommonParams param);
+  void onAppear(CommonParams param);
+  void onDisappear(CommonParams param);
 }
 
 void configurePigeon(PigeonOptions opts) {

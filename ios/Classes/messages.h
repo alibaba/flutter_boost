@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface FBCommonParams : NSObject
 @property(nonatomic, copy, nullable) NSString * pageName;
 @property(nonatomic, copy, nullable) NSString * uniqueId;
+@property(nonatomic, strong, nullable) NSNumber * hint;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
 @end
 
@@ -19,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
 - (void)pushRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)popRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)onForeground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)onBackground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)onAppear:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)onDisappear:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 @end
 @protocol FBNativeRouterApi
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;

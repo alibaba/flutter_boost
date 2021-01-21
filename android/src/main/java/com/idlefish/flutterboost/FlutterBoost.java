@@ -8,8 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.idlefish.flutterboost.containers.FlutterViewContainer;
+
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -36,8 +37,7 @@ public class FlutterBoost {
     }
 
     public static String generateUniqueId(String pageName) {
-        Date date = new Date();
-        return "__container_uniqueId_key__" + date.getTime() + "_" + pageName;
+        return System.currentTimeMillis() + "_" + pageName;
     }
 
     public static FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
@@ -111,8 +111,31 @@ public class FlutterBoost {
         application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
+    /**
+     * 提供给业务 最上层的activity。
+     * @return
+     */
     public Activity getTopActivity() {
         return mTopActivity;
+    }
+
+    /**
+     * 根据unqueid，返回容器
+     * 兼容老版本
+     * @param uniqueId
+     * @return
+     */
+    public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
+        return getPlugin().findContainerById(uniqueId);
+    }
+
+    /**
+     * 根据unqueid，返回容器
+     * 兼容老版本
+     * @return
+     */
+    public FlutterViewContainer getTopFlutterViewContainer() {
+        return getPlugin().getTopContainer();
     }
 
     private List<FlutterBoostPlugin> mVisibilityChangedObservers = new ArrayList<>();

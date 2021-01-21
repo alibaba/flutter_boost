@@ -5,6 +5,7 @@ import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/page_lifecycle.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -99,7 +100,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// 生成UniqueId
   ///
   String getUniqueId(String pageName) {
-    return '__container_uniqueId_key__${DateTime.now().millisecondsSinceEpoch}_$pageName';
+    return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
   }
 
   void push(String pageName, String uniqueId,
@@ -182,6 +183,30 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         }
       });
     }
+  }
+
+  void onForeground() {
+    // Todo(rulong.crl): consider internal route
+    PageLifecycleBinding.instance.onForeground(
+        pages.last?.pageInfo.uniqueId, pages.last?.pageInfo.pageName);
+  }
+
+  void onBackground() {
+    // Todo(rulong.crl): consider internal route
+    PageLifecycleBinding.instance.onBackground(
+        pages.last?.pageInfo.uniqueId, pages.last?.pageInfo.pageName);
+  }
+
+  void onAppear(CommonParams arg) {
+    // Todo(rulong.crl): consider internal route
+    PageLifecycleBinding.instance.onAppear(pages.last?.pageInfo.uniqueId,
+        pages.last?.pageInfo.pageName, ChangeReason.values[arg.hint]);
+  }
+
+  void onDisappear(CommonParams arg) {
+    // Todo(rulong.crl): consider internal route
+    PageLifecycleBinding.instance.onDisappear(pages.last?.pageInfo.uniqueId,
+        pages.last?.pageInfo.pageName, ChangeReason.values[arg.hint]);
   }
 
   bool _isCurrentPage(String uniqueId) {

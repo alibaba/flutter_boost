@@ -28,6 +28,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     private  FlutterBoostView createFlutterBoostView(String url) {
         HashMap<String, String> params = new HashMap<>();
         params.put("url", url);
+        // #1. create FlutterBoostView
         return FlutterBoostView.withCachedEngine(FlutterBoost.ENGINE_ID)
                 .transparencyMode(TransparencyMode.transparent)
                 .renderMode(RenderMode.texture)
@@ -60,13 +61,19 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         bottomNavigation.setSelectedItemId(lastId);
     }
 
+    // #2. override these onResume/onPause/onStop lifecycle callbacks
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (lastId != R.id.navigation_native) {
+            mTabs.get(lastId).onStop();
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
-
-        if (lastId == R.id.navigation_native) {
-            mTabView.onPause();
-        } else {
+        if (lastId != R.id.navigation_native) {
             mTabs.get(lastId).onPause();
         }
     }
@@ -74,10 +81,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     @Override
     protected void onResume() {
         super.onResume();
-
-        if (lastId == R.id.navigation_native) {
-            mTabView.onResume();
-        } else {
+        if (lastId != R.id.navigation_native) {
             mTabs.get(lastId).onResume();
         }
     }
@@ -92,10 +96,10 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         mTabView.onDestroy();
     }
 
+    // #3. handle view visibility via setVisibility
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        android.util.Log.e("xlog", "#onNavigationItemSelected: id=" + id + ", lastId=" + lastId);
         switch (id) {
             case R.id.navigation_flutter1:
             case R.id.navigation_flutter2: {
@@ -107,8 +111,6 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
 
                 FlutterBoostView selectedTab = mTabs.get(id);
                 selectedTab.setVisibility(View.VISIBLE);
-
-                android.util.Log.e("xlog", "#onNavigationItemSelected: selectedTab=" + selectedTab);
                 break;
             }
             case R.id.navigation_native:{
@@ -116,7 +118,6 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
                 if (lastId != R.id.navigation_native) {
                     mTabs.get(lastId).setVisibility(View.GONE);
                 }
-                android.util.Log.e("xlog", "#onNavigationItemSelected: selectedTab=" + mTabView);
                 break;
             }
         }
@@ -124,6 +125,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         return true;
     }
 
+    // #4. handle back event
     @Override
     public void onBackPressed() {
         if (lastId == R.id.navigation_native) {
@@ -134,19 +136,19 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         }
     }
 
+    // #5. handle view close event and other callback
     @Override
     public void finishContainer(Map<String, Object> result) {
-        android.util.Log.e("xlog", "#finishContainer, " + this);
         finish();
     }
 
     @Override
     public void onFlutterUiDisplayed() {
-        android.util.Log.e("xlog", "#onFlutterUiDisplayed, " + this);
+        // Todo:
     }
 
     @Override
     public void onFlutterUiNoLongerDisplayed() {
-        android.util.Log.e("xlog", "#onFlutterUiNoLongerDisplayed, " + this);
+        // Todo:
     }
 }

@@ -23,6 +23,10 @@ public class Messages {
     public String getUniqueId() { return uniqueId; }
     public void setUniqueId(String setterArg) { this.uniqueId = setterArg; }
 
+    private Long hint;
+    public Long getHint() { return hint; }
+    public void setHint(Long setterArg) { this.hint = setterArg; }
+
     private HashMap arguments;
     public HashMap getArguments() { return arguments; }
     public void setArguments(HashMap setterArg) { this.arguments = setterArg; }
@@ -31,6 +35,7 @@ public class Messages {
       HashMap<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
+      toMapResult.put("hint", hint);
       toMapResult.put("arguments", arguments);
       return toMapResult;
     }
@@ -40,6 +45,8 @@ public class Messages {
       fromMapResult.pageName = (String)pageName;
       Object uniqueId = map.get("uniqueId");
       fromMapResult.uniqueId = (String)uniqueId;
+      Object hint = map.get("hint");
+      fromMapResult.hint = (hint == null) ? null : ((hint instanceof Integer) ? (Integer)hint : (Long)hint);
       Object arguments = map.get("arguments");
       fromMapResult.arguments = (HashMap)arguments;
       return fromMapResult;
@@ -66,6 +73,38 @@ public class Messages {
     public void popRoute(CommonParams argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.popRoute", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
+    public void onForeground(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onForeground", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
+    public void onBackground(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onBackground", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
+    public void onAppear(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onAppear", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
+    public void onDisappear(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onDisappear", new StandardMessageCodec());
       HashMap inputMap = argInput.toMap();
       channel.send(inputMap, channelReply -> {
         callback.reply(null);

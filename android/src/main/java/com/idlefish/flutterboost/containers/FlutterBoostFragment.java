@@ -60,10 +60,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-            observer.onDisappear();
+            observer.onDisappear(ChangeReason.SWITCH_TAB);
         } else {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-            observer.onAppear();
+            observer.onAppear(ChangeReason.SWITCH_TAB);
         }
         super.onHiddenChanged(hidden);
     }
@@ -72,10 +72,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-            observer.onAppear();
+            observer.onAppear(ChangeReason.SWITCH_TAB);
         } else {
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-            observer.onDisappear();
+            observer.onDisappear(ChangeReason.SWITCH_TAB);
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -89,7 +89,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (!isHidden()) {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-            observer.onAppear();
+            observer.onAppear(ChangeReason.UNSPECIFIED);
         }
     }
 
@@ -101,9 +101,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-        if( this.getFlutterEngine()!=null){
-            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if (!isHidden()) {
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+            if (this.getFlutterEngine() != null) {
+                this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+            }
         }
     }
 
@@ -113,7 +115,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if( this.getFlutterEngine()!=null){
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        observer.onDisappear();
+
+        if (!isHidden()) {
+            observer.onDisappear(ChangeReason.UNSPECIFIED);
+        }
     }
 
     @Override

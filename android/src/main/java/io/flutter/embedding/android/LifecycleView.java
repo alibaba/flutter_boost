@@ -101,8 +101,8 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public void onDestroy() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
-    removeView(mView);
     mDelegate.onDestroyView();
+    removeView(mView);
     mDelegate = null;
     mView = null;
   }

@@ -51,17 +51,17 @@ class _MyAppState extends State<MyApp> {
         return FlutterRouteWidget(params: params, uniqueId: uniqueId);
       }),
       'tab_friend': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) =>
-              SimpleWidget(params, "This is a flutter fragment", "Friends")),
+          widgetBuild: (pageName, params, uniqueId) =>
+              SimpleWidget(uniqueId, params, "This is a flutter fragment")),
       'tab_message': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) =>
-              SimpleWidget(params, "This is a flutter fragment", "Message")),
+          widgetBuild: (pageName, params, uniqueId) =>
+              SimpleWidget(uniqueId, params, "This is a flutter fragment")),
       'tab_flutter1': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) =>
-              SimpleWidget(params, "This is a custom FlutterView", "flutter1")),
+          widgetBuild: (pageName, params, uniqueId) =>
+              SimpleWidget(uniqueId, params, "This is a custom FlutterView")),
       'tab_flutter2': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) =>
-              SimpleWidget(params, "This is a custom FlutterView", "flutter2")),
+          widgetBuild: (pageName, params, uniqueId) =>
+              SimpleWidget(uniqueId, params, "This is a custom FlutterView")),
       'f2f_first': BoostPageRouteBuilder(
           widgetBuild: (pageName, params, _) => F2FFirstPage()),
       'f2f_second': BoostPageRouteBuilder(

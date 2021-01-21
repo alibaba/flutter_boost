@@ -134,7 +134,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         super.onResume();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        mObserver.onAppear();
+        mObserver.onAppear(ChangeReason.UNSPECIFIED);
     }
 
     @Override
@@ -143,7 +143,13 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         super.onPause();
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        mObserver.onDisappear();
+    }
+
+    @Override
+    public void onStop() {
+        if(isDestroyed()) return;
+        super.onStop();
+        mObserver.onDisappear(ChangeReason.UNSPECIFIED);
     }
 
     @Override
@@ -163,9 +169,11 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         if (getVisibility() == View.VISIBLE) {
-            onResume();
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+            mObserver.onAppear(ChangeReason.SWITCH_TAB);
         } else if (getVisibility() == View.GONE) {
-            onPause();
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
+            mObserver.onDisappear(ChangeReason.SWITCH_TAB);
         }
     }
 

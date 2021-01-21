@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
+  int hint;
   Map<Object, Object> arguments;
 
   // ignore: unused_element
@@ -17,6 +18,7 @@ class CommonParams {
     final Map<Object, Object> pigeonMap = <Object, Object>{};
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
+    pigeonMap['hint'] = hint;
     pigeonMap['arguments'] = arguments;
     return pigeonMap;
   }
@@ -27,6 +29,7 @@ class CommonParams {
     return CommonParams()
       ..pageName = pigeonMap['pageName'] as String
       ..uniqueId = pigeonMap['uniqueId'] as String
+      ..hint = pigeonMap['hint'] as int
       ..arguments = pigeonMap['arguments'] as Map<Object, Object>;
   }
 }
@@ -34,6 +37,10 @@ class CommonParams {
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams arg);
   void popRoute(CommonParams arg);
+  void onForeground(CommonParams arg);
+  void onBackground(CommonParams arg);
+  void onAppear(CommonParams arg);
+  void onDisappear(CommonParams arg);
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<Object> channel =
@@ -63,6 +70,70 @@ abstract class FlutterRouterApi {
           }
           final CommonParams input = CommonParams.decode(message);
           api.popRoute(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onForeground', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          if (message == null) {
+            return;
+          }
+          final CommonParams input = CommonParams.decode(message);
+          api.onForeground(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onBackground', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          if (message == null) {
+            return;
+          }
+          final CommonParams input = CommonParams.decode(message);
+          api.onBackground(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onAppear', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          if (message == null) {
+            return;
+          }
+          final CommonParams input = CommonParams.decode(message);
+          api.onAppear(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onDisappear', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          if (message == null) {
+            return;
+          }
+          final CommonParams input = CommonParams.decode(message);
+          api.onDisappear(input);
           return;
         });
       }

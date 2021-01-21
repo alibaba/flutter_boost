@@ -2,17 +2,16 @@ package com.idlefish.flutterboost.example;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.idlefish.flutterboost.BoostNavigator;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 

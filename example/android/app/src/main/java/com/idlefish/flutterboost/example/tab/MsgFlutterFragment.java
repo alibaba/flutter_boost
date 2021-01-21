@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.idlefish.flutterboost.BoostNavigator;
 import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 
 public class MsgFlutterFragment extends FlutterBoostFragment {
