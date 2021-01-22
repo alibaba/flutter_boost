@@ -8,7 +8,7 @@
 
 #import "UIViewControllerDemo.h"
 #import <Flutter/Flutter.h>
-#import <flutter_boost/FlutterBoostPlugin.h>
+#import <flutter_boost/FlutterBoost.h>
 
 
 @interface UIViewControllerDemo ()
@@ -17,17 +17,36 @@
 
 @implementation UIViewControllerDemo
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
-        NSLog(@"page is opened");
-    }];
+    
+    FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
+    engine.viewController = nil;
+    FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
+    [[NewFlutterBoost instance].navigationController pushViewController:vc animated:YES];
+    
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName=@"flutterPage";
+    
+    
+    FBFlutterRouterApi* flutterApi = [NewFlutterBoost instance].flutterBoostPlugin.flutterApi;
+    
+    [flutterApi pushRoute:params completion : ^(NSError* error) {
+
+    } ];
+     
+//    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+//        NSLog(@"call me when page finished, and your result is:%@", result);
+//    } completion:^(BOOL f) {
+//        NSLog(@"page is opened");
+//    }];
+    
+    
 }
 
 - (IBAction)present:(id)sender {

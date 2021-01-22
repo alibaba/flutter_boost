@@ -20,5 +20,9 @@ dev_dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.idlefish.flutterboost
-    pluginClass: FlutterBoostPlugin
+    platforms:
+      android:
+        package: com.idlefish.flutterboost
+        pluginClass: FlutterBoostPlugin
+      ios:
+        pluginClass: NewFlutterBoostPlugin

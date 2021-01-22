@@ -16,8 +16,8 @@
 @import video_player;
 #endif
 
-#if __has_include(<flutter_boost/FlutterBoostPlugin.h>)
-#import <flutter_boost/FlutterBoostPlugin.h>
+#if __has_include(<flutter_boost/NewFlutterBoostPlugin.h>)
+#import <flutter_boost/NewFlutterBoostPlugin.h>
 #else
 @import flutter_boost;
 #endif
@@ -27,7 +27,7 @@
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [FLTVideoPlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTVideoPlayerPlugin"]];
-  [FlutterBoostPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterBoostPlugin"]];
+  [NewFlutterBoostPlugin registerWithRegistrar:[registry registrarForPlugin:@"NewFlutterBoostPlugin"]];
 }
 
 @end

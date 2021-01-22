@@ -20,11 +20,11 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    PlatformRouterImp *router = [PlatformRouterImp new];
-    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterEngine *engine) {
-                                                            
-                                                        }];
+//    PlatformRouterImp *router = [PlatformRouterImp new];
+//    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
+//                                                        onStart:^(FlutterEngine *engine) {
+//
+//                                                        }];
     
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
@@ -36,18 +36,20 @@
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
    
     
-    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
-    [fvc setName:@"tab" params:@{}];
-    fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
+//    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
+//    [fvc setName:@"tab" params:@{}];
+//    fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
+//
+//
+//    UITabBarController *tabVC = [[UITabBarController alloc] init];
+//    tabVC.viewControllers = @[vc,fvc];
+
     
-    
-    UITabBarController *tabVC = [[UITabBarController alloc] init];
-    UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:tabVC];
+    UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:vc];
     
    
-    router.navigationController = rvc;
+//    router.navigationController = rvc;
     
-    tabVC.viewControllers = @[vc,fvc];
     
     self.window.rootViewController = rvc;
     
@@ -55,32 +57,62 @@
     nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 50, 200, 100, 40);
     nativeButton.backgroundColor = [UIColor redColor];
     [nativeButton setTitle:@"push native" forState:UIControlStateNormal];
-    [nativeButton addTarget:self action:@selector(pushNative) forControlEvents:UIControlEventTouchUpInside];
+//    [nativeButton addTarget:self action:@selector(pushNative) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:nativeButton];
     
     UIButton *pushEmbeded = [UIButton buttonWithType:UIButtonTypeCustom];
     pushEmbeded.frame = CGRectMake(self.window.frame.size.width * 0.5 - 70, 150, 140, 40);
     pushEmbeded.backgroundColor = [UIColor redColor];
     [pushEmbeded setTitle:@"push embedded" forState:UIControlStateNormal];
-    [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
+//    [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:pushEmbeded];
+    
+    
+    
+    //boost3.0代码
+    FlutterBoostDelegate* delegate=[FlutterBoostDelegate new];
+    delegate.initialRoute=@"/";
+    delegate.dartEntrypointFunctionName=@"main";
+    
+    delegate.pushNativeHandler= ^(FBCommonParams *params) {
+        UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
+        [[NewFlutterBoost instance].navigationController pushViewController:nvc animated:YES];
+    };
+    delegate.pushFlutterHandler = ^(FBCommonParams *params) {
+          FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
+          engine.viewController = nil;
+          FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
+          [[NewFlutterBoost instance].navigationController pushViewController:vc animated:YES];
+     
+    };
+    delegate.popHandler = ^(FBCommonParams *params) {
+        [[NewFlutterBoost instance].navigationController popViewControllerAnimated:YES];
+
+    } ;
+    
+    [NewFlutterBoost instance].navigationController = rvc;
+    
+    [[NewFlutterBoost instance ] setup:application  delegate:delegate];
+    
+    
+
     
     return YES;
 }
 
-- (void)pushNative
-{
-    UINavigationController *nvc = (id)self.window.rootViewController;
-    UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
-    [nvc pushViewController:vc animated:YES];
-}
-
-- (void)pushEmbeded
-{
-    UINavigationController *nvc = (id)self.window.rootViewController;
-    UIViewController *vc = [[NativeViewController alloc] init];
-    [nvc pushViewController:vc animated:YES];
-}
+//- (void)pushNative
+//{
+//    UINavigationController *nvc = (id)self.window.rootViewController;
+//    UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
+//    [nvc pushViewController:vc animated:YES];
+//}
+//
+//- (void)pushEmbeded
+//{
+//    UINavigationController *nvc = (id)self.window.rootViewController;
+//    UIViewController *vc = [[NativeViewController alloc] init];
+//    [nvc pushViewController:vc animated:YES];
+//}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

@@ -22,7 +22,14 @@ A new Flutter plugin make flutter better to use!
     'Classes/Boost/FLBTypes.h',
     'Classes/Boost/FlutterBoost.h',
     'Classes/Boost/BoostChannel.h',
-    'Classes/container/FLBFlutterViewContainer.h'
+    'Classes/container/FLBFlutterViewContainer.h',
+    'Classes/NewBoost/NewFlutterBoost.h',
+    'Classes/NewBoost/FlutterBoostDelegate.h',
+    'Classes/NewBoost/NewFlutterBoostPlugin.h',
+    'Classes/messages.h'
+
+
+
     
   s.dependency 'Flutter'
   s.libraries = 'c++'

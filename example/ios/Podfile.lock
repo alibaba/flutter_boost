@@ -2,20 +2,44 @@ PODS:
   - Flutter (1.0.0)
   - flutter_boost (0.0.2):
     - Flutter
+  - flutter_plugin_android_lifecycle (0.0.1):
+    - Flutter
+  - image_picker (0.0.1):
+    - Flutter
+  - video_player (0.0.1):
+    - Flutter
+  - video_player_web (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
   - flutter_boost (from `/Users/wubian/flutter_boost2/ios`)
+  - flutter_plugin_android_lifecycle (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios`)
+  - "image_picker (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios`)"
+  - "video_player (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios`)"
+  - "video_player_web (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios`)"
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_boost:
     :path: "/Users/wubian/flutter_boost2/ios"
+  flutter_plugin_android_lifecycle:
+    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios"
+  image_picker:
+    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios"
+  video_player:
+    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios"
+  video_player_web:
+    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_boost: a7cfa776b75329d5e7d101d0cd33e75042bcde69
+  flutter_boost: 7ffae6c24df1fb330f819f6102a38e303bc4c72c
+  flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
+  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
+  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
+  video_player_web: da8cadb8274ed4f8dbee8d7171b420dedd437ce7
 
 PODFILE CHECKSUM: 2a757a7bdc03b37a2814666652fdff1cf694243f
 
