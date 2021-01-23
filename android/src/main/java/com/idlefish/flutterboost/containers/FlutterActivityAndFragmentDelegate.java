@@ -115,6 +115,10 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
                     .getActivityControlSurface()
                     .attachToActivity(host.getActivity(), host.getLifecycle());
         }
+
+        // 注册插件
+        FlutterBoost.instance().registerPlugins(flutterEngine);
+
     }
 
 

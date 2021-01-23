@@ -358,7 +358,14 @@ public class FlutterBoost {
                 mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
             }
 
-            registerPlugins(mEngine);
+//            registerPlugins(mEngine);
+
+            if (mPlatform.whenEngineStart() == ConfigBuilder.FLUTTER_ACTIVITY_CREATED) {
+                // 如果是启动FlutterActivity时，在启动页面时注册插件
+            } else {
+                registerPlugins(mEngine);
+            }
+
           //  mRegistry = new BoostPluginRegistry(createEngine());
           //  mPlatform.registerPlugins(mRegistry);
         }
@@ -366,7 +373,7 @@ public class FlutterBoost {
 
     }
 
-    private void registerPlugins(FlutterEngine engine) {
+    public void registerPlugins(FlutterEngine engine) {
         try {
             Class<?> generatedPluginRegistrant = Class.forName("io.flutter.plugins.GeneratedPluginRegistrant");
             Method registrationMethod = generatedPluginRegistrant.getDeclaredMethod("registerWith", FlutterEngine.class);
