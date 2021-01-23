@@ -231,9 +231,9 @@ class BoostContainerState extends NavigatorState {
            //开启native返回手势
          }
     } else {
-      if (T is Map<String, dynamic>) {
+      if (result is Map<String, dynamic>) {
         FlutterBoost.singleton
-            .closeInternal(uniqueId, result: result as Map<String, dynamic>);
+            .closeInternal(uniqueId, result: result);
       } else {
         FlutterBoost.singleton.closeInternal(uniqueId,);
       }
@@ -463,7 +463,7 @@ class ContainerNavigatorObserver extends NavigatorObserver {
     for (NavigatorObserver observer in boostObservers) {
       if(observer is ContainerNavigatorObserver){
         if (observer == this) continue;
-        ContainerNavigatorObserver  containerNavigatorObserver = observer as ContainerNavigatorObserver;
+        ContainerNavigatorObserver  containerNavigatorObserver = observer;
         containerNavigatorObserver.willPush(route, previousRoute);
       }
     }
