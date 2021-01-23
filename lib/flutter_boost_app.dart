@@ -15,6 +15,13 @@ typedef WidgetBuild = Widget Function(
     String pageName, Map params, String uniqueId);
 
 ///
+/// 生成UniqueId
+///
+String getUniqueId(String pageName) {
+  return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
+}
+
+///
 ///
 ///
 ///
@@ -94,13 +101,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     } else {
       return PageNameUnkonw();
     }
-  }
-
-  ///
-  /// 生成UniqueId
-  ///
-  String getUniqueId(String pageName) {
-    return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
   }
 
   void push(String pageName, String uniqueId,
@@ -259,8 +259,12 @@ class BoostPage<T> extends Page<T> {
               return MaterialPageRoute<T>(
                   settings: settings,
                   builder: (BuildContext context) {
-                    return builder.widgetBuild(pageInfo.pageName,
-                        pageInfo.arguments, pageInfo.uniqueId);
+                    return builder.widgetBuild(
+                        settings.name,
+                        settings.arguments,
+                        pageInfo.pageName == settings.name
+                            ? pageInfo.uniqueId
+                            : getUniqueId(settings.name));
                   });
             },
           );

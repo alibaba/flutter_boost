@@ -42,8 +42,7 @@ class BoostNavigator {
           ..arguments = arguments;
         appState.nativeRouterApi.pushFlutterRoute(params);
       } else {
-        String uniqueId = appState.getUniqueId(pageName);
-        appState.push(pageName, uniqueId,
+        appState.push(pageName, null,
             arguments: arguments, openContainer: openContainer);
       }
     } else {

@@ -19,7 +19,8 @@ import java.util.Map;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
 public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi {
-    private static final String TAG = "FlutterBoostPlugin";
+    private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
+
     private Messages.FlutterRouterApi mApi;
     private FlutterBoostDelegate mDelegate;
 
@@ -132,7 +133,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        android.util.Log.e(TAG, "## onForeground: " + mApi);
+        Log.v(TAG, "## onForeground: " + mApi);
     }
 
     public void onBackground() {
@@ -147,7 +148,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        android.util.Log.e(TAG, "## onBackground: " + mApi);
+        Log.v(TAG, "## onBackground: " + mApi);
     }
 
     private final Map<String, ContainerShadowNode> mAllContainers = new LinkedHashMap<>();
@@ -266,7 +267,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
             mPlugin.updateContainer(getUniqueId(), this);
             mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), hint, null);
-            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + StateChangeReasonToString(hint) + ", " + mPlugin.getContainers());
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + ChangeReasonToString(hint) + ", " + mPlugin.getContainers());
         }
 
         @Override
@@ -289,7 +290,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 }
             }
             setVisibilityEvent(VisibilityEvent.NONE);
-            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + StateChangeReasonToString(hint) + ", " + mPlugin.getContainers());
+            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + ChangeReasonToString(hint) + ", " + mPlugin.getContainers());
         }
 
         @Override
@@ -300,7 +301,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    static String StateChangeReasonToString(@ChangeReason int reason) {
+    static String ChangeReasonToString(@ChangeReason int reason) {
         switch (reason) {
             case ChangeReason.UNSPECIFIED:
                 return "UNSPECIFIED";
