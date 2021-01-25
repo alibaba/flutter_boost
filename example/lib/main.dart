@@ -19,62 +19,112 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Map<String, PageBuilder> routerMap = {};
-  Map<String, BoostPageRouteBuilder> routerMap =
-      <String, BoostPageRouteBuilder>{};
+  static Map<String, FlutterBoostRouteFactory> routerMap = {
+    '/': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings, pageBuilder: (_, __, ___) => Container());
+    },
+    'embedded': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => EmbeddedFirstRouteWidget());
+    },
+    'imagepick': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) =>
+              ImagePickerPage(title: "xxx", uniqueId: uniqueId));
+    },
+    'firstFirst': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => FirstFirstRouteWidget());
+    },
+    'willPop': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => WillPopRouteWidget());
+    },
+    'secondStateful': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => SecondStatefulRouteWidget());
+    },
+    'platformView': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => PlatformRouteWidget());
+    },
+
+    ///可以在native层通过 getContainerParams 来传递参数
+    'flutterPage': (settings, uniqueId) {
+      print("flutterPage params:${settings.arguments}");
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => FlutterRouteWidget(
+                params: settings.arguments,
+                uniqueId: uniqueId,
+              ));
+    },
+    'tab_friend': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => SimpleWidget(
+              uniqueId, settings.arguments, "This is a flutter fragment"));
+    },
+    'tab_message': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => SimpleWidget(
+              uniqueId, settings.arguments, "This is a flutter fragment"));
+    },
+    'tab_flutter1': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => SimpleWidget(
+              uniqueId, settings.arguments, "This is a custom FlutterView"));
+    },
+    'tab_flutter2': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => SimpleWidget(
+              uniqueId, settings.arguments, "This is a custom FlutterView"));
+    },
+
+    'f2f_first': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings, pageBuilder: (_, __, ___) => F2FFirstPage());
+    },
+    'f2f_second': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings, pageBuilder: (_, __, ___) => F2FSecondPage());
+    },
+    'mediaquery': (settings, uniqueId) {
+      return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
+                params: settings.arguments,
+                uniqueId: uniqueId,
+              ));
+    },
+  };
+
+  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
+    FlutterBoostRouteFactory func = routerMap[settings.name];
+    if (func == null) {
+      return null;
+    }
+    return func(settings, uniqueId);
+  }
 
   @override
   void initState() {
     super.initState();
-
-    routerMap = <String, BoostPageRouteBuilder>{
-      '/': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) => Container()),
-      'embedded': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => EmbeddedFirstRouteWidget()),
-      'imagepick': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              ImagePickerPage(title: "xxx", uniqueId: uniqueId)),
-      'firstFirst': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => FirstFirstRouteWidget()),
-      'willPop': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => WillPopRouteWidget()),
-      'secondStateful': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => SecondStatefulRouteWidget()),
-      'platformView': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => PlatformRouteWidget()),
-
-      ///可以在native层通过 getContainerParams 来传递参数
-      'flutterPage':
-          BoostPageRouteBuilder(widgetBuild: (pageName, params, uniqueId) {
-        print("flutterPage params:$params");
-        return FlutterRouteWidget(params: params, uniqueId: uniqueId);
-      }),
-      'tab_friend': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              SimpleWidget(uniqueId, params, "This is a flutter fragment")),
-      'tab_message': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              SimpleWidget(uniqueId, params, "This is a flutter fragment")),
-      'tab_flutter1': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              SimpleWidget(uniqueId, params, "This is a custom FlutterView")),
-      'tab_flutter2': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              SimpleWidget(uniqueId, params, "This is a custom FlutterView")),
-      'f2f_first': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => F2FFirstPage()),
-      'f2f_second': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, _) => F2FSecondPage()),
-      'mediaquery': BoostPageRouteBuilder(
-          widgetBuild: (pageName, params, uniqueId) =>
-              MediaQueryRouteWidget(params: params, uniqueId: uniqueId)),
-    };
   }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterBoostApp(routerMap);
+    return FlutterBoostApp(routeFactory);
   }
 
   static Widget appBuilder(Widget home) {

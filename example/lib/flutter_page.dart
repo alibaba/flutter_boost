@@ -50,11 +50,15 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
             children: <Widget>[
               Container(
                 margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-                child: Text(
-                  message ??
-                      "This is a flutter activity \n params:${widget.params}",
-                  style: TextStyle(fontSize: 28.0, color: Colors.blue),
-                ),
+                child: Text.rich(TextSpan(text: '', children: <TextSpan>[
+                  TextSpan(
+                      text: message ??
+                          "This is a flutter activity.\nuniqueId:${widget.uniqueId}",
+                      style: TextStyle(color: Colors.blue)),
+                  TextSpan(
+                      text: "\nparams: ${widget?.params}",
+                      style: TextStyle(fontStyle: FontStyle.italic)),
+                ])),
                 alignment: AlignmentDirectional.center,
               ),
 //                Expanded(child: Container()),

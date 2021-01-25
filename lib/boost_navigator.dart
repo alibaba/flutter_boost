@@ -26,7 +26,8 @@ class BoostNavigator {
   /// 判断是否是一个flutter 页面
   ///
   bool isFlutterPage(String pageName) {
-    return appState.routeMap?.containsKey(pageName);
+    RouteSettings settings = RouteSettings(name: pageName);
+    return appState.routeFactory(settings, null) != null;
   }
 
   ///
