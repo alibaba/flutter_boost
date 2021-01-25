@@ -2,7 +2,6 @@ package io.flutter.embedding.android;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
-
-import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -28,7 +25,6 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   protected static final String ARG_FLUTTER_INITIALIZATION_ARGS = "initialization_args";
   protected static final String ARG_FLUTTERVIEW_RENDER_MODE = "flutterview_render_mode";
   protected static final String ARG_FLUTTERVIEW_TRANSPARENCY_MODE = "flutterview_transparency_mode";
-  protected static final String ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY = "should_attach_engine_to_activity";
   protected static final String ARG_CACHED_ENGINE_ID = "cached_engine_id";
 
   private final Activity mActivty;
