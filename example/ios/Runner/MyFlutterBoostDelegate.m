@@ -7,13 +7,34 @@
 //
 #import <Foundation/Foundation.h>
 #import "MyFlutterBoostDelegate.h"
+#import "UIViewControllerDemo.h"
 
 @implementation MyFlutterBoostDelegate
     
+- (void) pushNativeRoute:(FBCommonParams*) params
+         present:(BOOL)present
+              completion:(void (^)(BOOL finished))completion{
+    
+    UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
+    [self.navigationController pushViewController:nvc animated:YES];
+}
 
-//-(NativeRouterHandler* )pushNativeHandler
-//-(NativeRouterHandler* )pushFlutterHandler;
-//-(NativeRouterHandler* )popHandler;
+- (void) pushFlutterRoute:(FBCommonParams*)params
+         present:(BOOL)present
+               completion:(void (^)(BOOL finished))completion{
+    
+    FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
+    engine.viewController = nil;
+    FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (void) popRoute:(FBCommonParams*)params
+         result:(NSDictionary *)result
+       completion:(void (^)(BOOL finished))completion{
+    [self.navigationController popViewControllerAnimated:YES];
+
+}
 
 @end
 

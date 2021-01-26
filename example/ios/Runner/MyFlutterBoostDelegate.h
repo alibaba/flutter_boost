@@ -8,8 +8,9 @@
 #import <flutter_boost/FlutterBoost.h>
 #import <Foundation/Foundation.h>
 
-@interface MyFlutterBoostDelegate : FlutterBoostDelegate
+@interface MyFlutterBoostDelegate : NSObject<FlutterBoostDelegate>
     
+@property (nonatomic,strong) UINavigationController *navigationController;
 
 
 @end

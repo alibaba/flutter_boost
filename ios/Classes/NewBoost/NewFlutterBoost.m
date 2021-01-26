@@ -9,32 +9,33 @@
 #import <Flutter/Flutter.h>
 #import "NewFlutterBoost.h"
 #import "NewFlutterBoostPlugin.h"
+@interface NewFlutterBoost ()
+
+@property(nonatomic, copy) id<FlutterBoostDelegate> delegate;
+@property(nonatomic, copy)  NewFlutterBoostPlugin*  flutterBoostPlugin;
+@property (nonatomic,assign) BOOL isRunning;
+
+@end
 
 @implementation NewFlutterBoost
-//- DefaultEngineConfig withDefaultEngine ;
-//- init:()
 
-//public final static String ENGINE_ID = "flutter_boost_default_engine";
-
-- (void) setup: (UIApplication*)application delegate:(FlutterBoostDelegate*)delegate{
-    _engine=[[FlutterEngine alloc ] initWithName:@"io.flutter" project:nil] ;
-    [_engine runWithEntrypoint:delegate.dartEntrypointFunctionName  initialRoute : delegate.initialRoute];
-
+- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate{
+    if(delegate.engine){
+        self.engine=delegate.engine;
+    }else{
+        self.engine=[[FlutterEngine alloc ] initWithName:@"io.flutter" project:nil] ;
+    }
+    [self.engine runWithEntrypoint:delegate.dartEntrypointFunctionName  initialRoute : delegate.initialRoute];
+    self.isRunning=YES;
     Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-    if (clazz && _engine) {
+    if (clazz && self.engine) {
         if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
             [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
-                        withObject:_engine];
+                        withObject:self.engine];
         }
     }
-//
-
-
-    _flutterBoostPlugin= [self flutterBoostPlugin:_engine];
-    _flutterBoostPlugin.popHandler=delegate.popHandler;
-    _flutterBoostPlugin.pushFlutterHandler=delegate.pushFlutterHandler;
-    _flutterBoostPlugin.pushNativeHandler=delegate.pushNativeHandler;
-    
+    self.delegate=delegate;
+    self.flutterBoostPlugin= [self flutterBoostPlugin:self.engine];
 }
 
 - (NewFlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
@@ -56,6 +57,43 @@
     return _instance;
 }
 
+#pragma mark - Some properties.
 
+- (BOOL)isRunning{
+    return  self.isRunning;
+}
+
+- (FlutterViewController *) currentViewController{
+    
+}
+
+#pragma mark - open/close Page
+- (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams  completion:(void (^)(BOOL))completion{
+   
+        FBCommonParams* params = [[FBCommonParams alloc] init];
+        params.pageName=url;
+        params.arguments=urlParams;
+        [[NewFlutterBoost instance].delegate pushFlutterRoute:params present: FALSE completion:completion];
+}
+
+- (void)present:(NSString *)url urlParams:(NSDictionary *)urlParams  completion:(void (^)(BOOL))completion{
+    
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName=url;
+    params.arguments=urlParams;
+    
+    [[NewFlutterBoost instance].delegate pushFlutterRoute:params present: YES completion:completion] ;
+    
+}
+
+- (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData completion:(void (^)(BOOL))completion{
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.uniqueId=uniqueId;
+    [[NewFlutterBoost instance].delegate popRoute :params result: resultData completion:completion];
+}
+
+- (void)destroyPluginContext{
+   
+}
 
 @end

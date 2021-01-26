@@ -10,6 +10,8 @@
 #import "UIViewControllerDemo.h"
 #import "PlatformRouterImp.h"
 #import "NativeViewController.h"
+#import "MyFlutterBoostDelegate.h"
+
 #import <flutter_boost/FlutterBoost.h>
 
 @interface AppDelegate ()
@@ -69,32 +71,14 @@
     
     
     
-    //boost3.0代码
-    FlutterBoostDelegate* delegate=[FlutterBoostDelegate new];
-    delegate.initialRoute=@"/";
-    delegate.dartEntrypointFunctionName=@"main";
-    
-    delegate.pushNativeHandler= ^(FBCommonParams *params) {
-        UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
-        [[NewFlutterBoost instance].navigationController pushViewController:nvc animated:YES];
-    };
-    delegate.pushFlutterHandler = ^(FBCommonParams *params) {
-          FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
-          engine.viewController = nil;
-          FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
-          [[NewFlutterBoost instance].navigationController pushViewController:vc animated:YES];
-     
-    };
-    delegate.popHandler = ^(FBCommonParams *params) {
-        [[NewFlutterBoost instance].navigationController popViewControllerAnimated:YES];
 
-    } ;
     
-    [NewFlutterBoost instance].navigationController = rvc;
+    //boost3.0代码
+    MyFlutterBoostDelegate* delegate=[MyFlutterBoostDelegate new];
+    delegate.navigationController= rvc;
     
-    [[NewFlutterBoost instance ] setup:application  delegate:delegate];
-    
-    
+    [[NewFlutterBoost instance] setup:application delegate:delegate];
+
 
     
     return YES;

@@ -12,14 +12,24 @@
 
 typedef void (^NativeRouterHandler)(FBCommonParams* params);
 
-@interface  FlutterBoostDelegate : NSObject<NSObject>
+@protocol  FlutterBoostDelegate <NSObject>
 
-@property(nonatomic, copy) NSString* initialRoute;
-@property(nonatomic, copy) NSString* dartEntrypointFunctionName;
+@optional
+- (NSString*) initialRoute=@"/";
+- (NSString*) dartEntrypointFunctionName=@"main";
+- (FlutterEngine*)  engine;
+@required
+- (void) pushNativeRoute:(FBCommonParams*) params
+         present:(BOOL)present
+         completion:(void (^)(BOOL finished))completion;
 
-@property(nonatomic, copy) NativeRouterHandler pushNativeHandler;
-@property(nonatomic, copy) NativeRouterHandler pushFlutterHandler;
-@property(nonatomic, copy) NativeRouterHandler popHandler;
+- (void) pushFlutterRoute:(FBCommonParams*)params
+         present:(BOOL)present
+         completion:(void (^)(BOOL finished))completion ;
+
+- (void) popRoute:(FBCommonParams*)params
+         result:(NSDictionary *)result
+        completion:(void (^)(BOOL finished))completion;
 
 @end
 
