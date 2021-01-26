@@ -64,7 +64,7 @@
 }
 
 - (FlutterViewController *) currentViewController{
-    
+    return self.engine.viewController;
 }
 
 #pragma mark - open/close Page

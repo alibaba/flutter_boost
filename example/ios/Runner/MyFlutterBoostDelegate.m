@@ -16,7 +16,13 @@
               completion:(void (^)(BOOL finished))completion{
     
     UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
-    [self.navigationController pushViewController:nvc animated:YES];
+    if(present){
+        [self.navigationController presentViewController:nvc animated:YES completion:^{
+        }];
+    }else{
+        [self.navigationController pushViewController:nvc animated:YES];
+    }
+    if(completion) completion(YES);
 }
 
 - (void) pushFlutterRoute:(FBCommonParams*)params
@@ -26,13 +32,22 @@
     FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
     engine.viewController = nil;
     FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
-    [self.navigationController pushViewController:vc animated:YES];
+    
+    if(present){
+        [self.navigationController presentViewController:vc animated:YES completion:^{
+        }];
+    }else{
+        [self.navigationController pushViewController:vc animated:YES];
+
+    }
+    if(completion) completion(YES);
 }
 
 - (void) popRoute:(FBCommonParams*)params
          result:(NSDictionary *)result
        completion:(void (^)(BOOL finished))completion{
     [self.navigationController popViewControllerAnimated:YES];
+    if(completion) completion(YES);
 
 }
 

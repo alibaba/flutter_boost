@@ -25,21 +25,12 @@
 
 - (IBAction)pushFlutterPage:(id)sender {
     
-    FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
-    engine.viewController = nil;
-    FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
-    [[NewFlutterBoost instance].navigationController pushViewController:vc animated:YES];
     
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.pageName=@"flutterPage";
-    
-    
-    FBFlutterRouterApi* flutterApi = [NewFlutterBoost instance].flutterBoostPlugin.flutterApi;
-    
-    [flutterApi pushRoute:params completion : ^(NSError* error) {
-
+    [[NewFlutterBoost instance] open:@"flutterPage" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
+        NSLog(@"page is open ");
     } ];
-     
+    
+
 //    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
 //        NSLog(@"call me when page finished, and your result is:%@", result);
 //    } completion:^(BOOL f) {
@@ -50,11 +41,16 @@
 }
 
 - (IBAction)present:(id)sender {
-    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
+    
+    [[NewFlutterBoost instance] present:@"second" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
         NSLog(@"page is presented");
-    }];
+    } ];
+
+//    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+//        NSLog(@"call me when page finished, and your result is:%@", result);
+//    } completion:^(BOOL f) {
+//        NSLog(@"page is presented");
+//    }];
 }
 
 /*
