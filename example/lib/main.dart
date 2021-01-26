@@ -33,9 +33,9 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterRouteWidget(
-            params: settings.arguments,
-            uniqueId: uniqueId,
-          ));
+                params: settings.arguments,
+                uniqueId: uniqueId,
+              ));
     },
     'imagepick': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
 
     ///可以在native层通过 getContainerParams 来传递参数
     'flutterPage': (settings, uniqueId) {
-      print("flutterPage params:${settings.arguments}");
+      print('flutterPage settings:$settings, uniqueId:$uniqueId');
       return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => FlutterRouteWidget(

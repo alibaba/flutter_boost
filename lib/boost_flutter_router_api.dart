@@ -26,8 +26,8 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   ///
   @override
   void pushRoute(CommonParams arg) {
-    appState.push(arg.pageName, arg.uniqueId,
-        arguments: arg.arguments, openContainer: true);
+    appState.push(arg.pageName,
+        uniqueId: arg.uniqueId, arguments: arg.arguments, withContainer: true);
   }
 
   ///

@@ -23,28 +23,33 @@ class BoostNavigator {
   }
 
   ///
-  /// 判断是否是一个flutter 页面
+  /// 判断是否是一个flutter页面
+  ///
+  /// 如果路由表中有注册[pageName]，那么返回true；否则，返回false。
   ///
   bool isFlutterPage(String pageName) {
-    RouteSettings settings = RouteSettings(name: pageName);
-    return appState.routeFactory(settings, null) != null;
+    return appState.routeFactory(RouteSettings(name: pageName), null) != null;
   }
 
   ///
   /// push 一个page，并展示在栈顶
-  /// openContainer=true 是指打开对用的native的容器。如android 的activity。
-  /// 在当前页面是flutter页面时候，不打开容器，能提升用户体验
   ///
-  void push(String pageName, {Map arguments, bool openContainer = false}) {
+  /// [withContainer]参数用来控制是否创建新的native容器（例如，android的Activity），
+  /// 1. 如果[withContainer]参数的值为true，那么会创建一个Native容器，同时Dart侧会
+  /// 为该页面创建一个嵌套的Navigator（[pageName]作为该嵌套Navigator的栈底），用于
+  /// 维护复用该容器的所有页面。
+  /// 2. 如果[withContainer]参数的值为false（当前正在显示的是一个Flutter页面），那么
+  /// 会复用当前容器，[pageName]被压人嵌套Navigator中。
+  ///
+  void push(String pageName, {Map arguments, bool withContainer = false}) {
     if (isFlutterPage(pageName)) {
-      if (openContainer) {
+      if (withContainer) {
         CommonParams params = CommonParams()
           ..pageName = pageName
           ..arguments = arguments;
         appState.nativeRouterApi.pushFlutterRoute(params);
       } else {
-        appState.push(pageName, null,
-            arguments: arguments, openContainer: openContainer);
+        appState.push(pageName, arguments: arguments, withContainer: false);
       }
     } else {
       CommonParams params = CommonParams()
@@ -55,50 +60,49 @@ class BoostNavigator {
   }
 
   ///
-  /// 根据uniqueId查找page ,移动到栈顶展示
+  /// 关闭栈顶页面
   ///
-  void show(String uniqueId) {
-    final bool isShow = appState.show(uniqueId);
-    if (!isShow) {}
-  }
-
-  ///
-  /// 关闭一个页面
-  /// 1.如果uniqueId 指定，关闭uniqueId对应的 page 和容器
-  /// 2.如果未指定uniqueId，关闭栈顶页面，和页面对应的容器
   /// 注意：
-  /// 1.每个page，都包含了一个自己的navigator，执行关闭时候先执行，
-  /// 页面里面的navigator.pop ，让子路由pop.
+  /// 1.每个带容器的页面，都包含了一个自己的navigator，用于维护复用该容器的所有页面。
+  /// 执行关闭时，先执行页面里面的navigator.pop ，让子路由pop.
   ///
   /// 2.执行关闭时候，页面内的子路由 maybePop=false ，才会关闭整个页面，
   /// 如果page有对应的容native 容器， 则会关闭容器
-  /// page是否有容器，是打开时候的openContainer属性定的。
+  /// page是否有容器，是打开时候的withContainer属性定的。
   ///
-  void pop({String uniqueId}) {
-    appState.pop(uniqueId: uniqueId);
+  void pop() {
+    appState.pop();
+  }
+
+  ///
+  /// 从栈中删除指定的页面
+  ///
+  void remove(String uniqueId) {
+    appState.remove(uniqueId);
   }
 
   ///
   ///获取当前栈顶页面的页面信息，包括uniqueId，pagename
   ///
   PageInfo getTopPageInfo() {
-    return appState.pages.last?.pageInfo;
+    return appState.getTopPageInfo();
   }
 
   ///
   /// 获取页面总个数
   ///
+  /// 注意：通过原生Navigator.push打开的页面未被计入
   ///
   int pageSize() {
-    return appState.pages.length;
+    return appState.pageSize();
   }
 }
 
 class PageInfo {
-  PageInfo({this.pageName, this.uniqueId, this.arguments, this.openContainer});
+  PageInfo({this.pageName, this.uniqueId, this.arguments, this.withContainer});
 
   String pageName;
   String uniqueId;
   Map arguments;
-  bool openContainer;
+  bool withContainer;
 }

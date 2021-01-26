@@ -103,8 +103,8 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open flutter page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of()
-                    .push("flutterPage", arguments: <String,String>{'from': widget.uniqueId}),
+                onTap: () => BoostNavigator.of().push("flutterPage",
+                    arguments: <String, String>{'from': widget.uniqueId}),
               ),
               InkWell(
                 child: Container(
@@ -116,7 +116,33 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.of().push("flutterPage",
-                    openContainer: true, arguments: <String,String>{'from': widget.uniqueId}),
+                    withContainer: true,
+                    arguments: <String, String>{'from': widget.uniqueId}),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(30.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'Navigator.push',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => Navigator.push(context, MaterialPageRoute<void>(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Navigator.push')),
+                      body: Center(
+                        child: TextButton(
+                          child: Text('POP'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                )),
               ),
               Container(
                 height: 300,

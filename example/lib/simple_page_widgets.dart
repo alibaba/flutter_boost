@@ -87,7 +87,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 //                        "call me when page is finished. did receive second route result $value");
 //                  });
 
-                BoostNavigator.of().push("willPop", openContainer: true);
+                BoostNavigator.of().push("willPop", withContainer: true);
               },
             ),
             RaisedButton(
@@ -247,8 +247,8 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             // FlutterBoost.singleton.close(settings.uniqueId,
             //     result: <String,dynamic>{"result": "data from second"});
 
-            PageInfo pageInfo=BoostNavigator.of().getTopPageInfo();
-            BoostNavigator.of().pop(uniqueId: pageInfo.uniqueId);
+            PageInfo pageInfo = BoostNavigator.of().getTopPageInfo();
+            BoostNavigator.of().remove(pageInfo?.uniqueId);
           },
           child: Text('Go back with result!'),
         ),
