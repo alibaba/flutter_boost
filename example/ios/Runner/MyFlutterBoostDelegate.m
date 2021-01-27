@@ -35,7 +35,7 @@
     FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
     engine.viewController = nil;
     
-    FBFlutterViewContainer *vc = FBFlutterViewContainer.new;
+    FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
     
     [vc setName:params.pageName params:params.arguments];
     

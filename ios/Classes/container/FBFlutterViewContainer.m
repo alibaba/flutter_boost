@@ -136,13 +136,13 @@ static NSUInteger kInstanceCounter = 0;
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     if (parent && _name) {
         //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
-        FBCommonParams* params =[[FBCommonParams alloc] init ];
-        params.pageName=_name;
-        params.arguments=_params;
-        params.uniqueId=[self uniqueIDString];
-        [FLUTTER_API pushRoute: params completion:^(NSError * e) {
-               
-                }];
+//        FBCommonParams* params =[[FBCommonParams alloc] init ];
+//        params.pageName=_name;
+//        params.arguments=_params;
+//        params.uniqueId=[self uniqueIDString];
+//        [FLUTTER_API pushRoute: params completion:^(NSError * e) {
+//               
+//                }];
         
     }
     [super willMoveToParentViewController:parent];
@@ -184,6 +184,13 @@ static NSUInteger kInstanceCounter = 0;
 
 //    [FLUTTER_APP removeViewController:self];
     
+    FBCommonParams* params =[[FBCommonParams alloc] init ];
+    params.pageName=_name;
+    params.arguments=_params;
+    params.uniqueId=[self uniqueIDString];
+    [FLUTTER_API popRoute: params  completion:^(NSError * e) {
+           
+            }];
     [self.class instanceCounterDecrease];
 }
 
@@ -229,8 +236,16 @@ static NSUInteger kInstanceCounter = 0;
 {
     //For new page we should attach flutter view in view will appear
     //for better performance.
- 
+   
     [self attatchFlutterEngine];
+    
+    FBCommonParams* params =[[FBCommonParams alloc] init ];
+    params.pageName=_name;
+    params.arguments=_params;
+    params.uniqueId=[self uniqueIDString];
+    [FLUTTER_API pushRoute: params completion:^(NSError * e) {
+           
+            }];
     
     [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
@@ -243,13 +258,7 @@ static NSUInteger kInstanceCounter = 0;
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
  
-    FBCommonParams* params =[[FBCommonParams alloc] init ];
-    params.pageName=_name;
-    params.arguments=_params;
-    params.uniqueId=[self uniqueIDString];
-    [FLUTTER_API pushRoute: params completion:^(NSError * e) {
-           
-            }];
+
     
     //根据淘宝特价版日志证明，即使在UIViewController的viewDidAppear下，application也可能在inactive模式，此时如果提交渲染会导致GPU后台渲染而crash
     //参考：https://github.com/flutter/flutter/issues/57973
@@ -273,13 +282,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewWillDisappear:(BOOL)animated
 {
     
-    FBCommonParams* params =[[FBCommonParams alloc] init ];
-    params.pageName=_name;
-    params.arguments=_params;
-    params.uniqueId=[self uniqueIDString];
-    [FLUTTER_API popRoute: params  completion:^(NSError * e) {
-           
-            }];
+  
 
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
