@@ -7,6 +7,9 @@
 #import <Foundation/Foundation.h>
 #import "NewFlutterBoostPlugin.h"
 #import "messages.h"
+#import "NewFlutterBoost.h"
+
+
 @interface NewFlutterBoostPlugin ()<FBNativeRouterApi>
 //@property(nonatomic, strong) FBFlutterRouterApi* flutterApi;
 @end
@@ -31,25 +34,25 @@
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
 
-    if(self.pushNativeHandler){
-        self.pushNativeHandler(input);
-    }else{
-        *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
-    }
+    [[NewFlutterBoost instance].delegate pushNativeRoute:input present:FALSE completion:^(BOOL finished) {
+    
+    }];
+    
+    
+//    *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
+
 }
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
-    if(self.pushFlutterHandler){
-        self.pushFlutterHandler(input);
-    }else{
-        *error=[FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
-    }
+    
+    [[NewFlutterBoost instance].delegate pushFlutterRoute:input present: YES completion:^(BOOL finished) {
+    }] ;
+
+    
 }
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
-    if (self.popHandler) {
-      self.popHandler(input);
-    } else {
-      *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
-    }
+    [[NewFlutterBoost instance].delegate  popRoute: input result: nil completion:^(BOOL finished) {
+    
+    }];
 }
 
 @end

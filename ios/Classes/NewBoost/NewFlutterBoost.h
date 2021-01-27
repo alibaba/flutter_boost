@@ -29,9 +29,9 @@
 
 @interface NewFlutterBoost : NSObject
 
-@property(nonatomic, copy)  FlutterEngine*  engine;
-
-@property(nonatomic, strong) UINavigationController* navigationController;
+@property(nonatomic, strong)  FlutterEngine*  engine;
+@property(nonatomic, strong)  FBFlutterRouterApi* flutterApi;
+@property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
 
 + (instancetype)instance;
 

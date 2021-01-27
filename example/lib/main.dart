@@ -21,37 +21,45 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   static Map<String, FlutterBoostRouteFactory> routerMap = {
     '/': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
     },
     'embedded': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => EmbeddedFirstRouteWidget());
     },
+    'presentFlutterPage': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => FlutterRouteWidget(
+            params: settings.arguments,
+            uniqueId: uniqueId,
+          ));
+    },
     'imagepick': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) =>
               ImagePickerPage(title: "xxx", uniqueId: uniqueId));
     },
     'firstFirst': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FirstFirstRouteWidget());
     },
     'willPop': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => WillPopRouteWidget());
     },
     'secondStateful': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SecondStatefulRouteWidget());
     },
     'platformView': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => PlatformRouteWidget());
     },
@@ -59,7 +67,7 @@ class _MyAppState extends State<MyApp> {
     ///可以在native层通过 getContainerParams 来传递参数
     'flutterPage': (settings, uniqueId) {
       print("flutterPage params:${settings.arguments}");
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => FlutterRouteWidget(
           params: settings.arguments,
@@ -84,40 +92,40 @@ class _MyAppState extends State<MyApp> {
       );
     },
     'tab_friend': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
               uniqueId, settings.arguments, "This is a flutter fragment"));
     },
     'tab_message': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
               uniqueId, settings.arguments, "This is a flutter fragment"));
     },
     'tab_flutter1': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
               uniqueId, settings.arguments, "This is a custom FlutterView"));
     },
     'tab_flutter2': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
               uniqueId, settings.arguments, "This is a custom FlutterView"));
     },
 
     'f2f_first': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => F2FFirstPage());
     },
     'f2f_second': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => F2FSecondPage());
     },
     'mediaquery': (settings, uniqueId) {
-      return PageRouteBuilder(
+      return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
                 params: settings.arguments,

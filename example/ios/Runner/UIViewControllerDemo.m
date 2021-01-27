@@ -42,7 +42,7 @@
 
 - (IBAction)present:(id)sender {
     
-    [[NewFlutterBoost instance] present:@"second" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
+    [[NewFlutterBoost instance] present:@"presentFlutterPage" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
         NSLog(@"page is presented");
     } ];
 

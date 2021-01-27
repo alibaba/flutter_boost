@@ -74,13 +74,13 @@
 
     
     //boost3.0代码
-    MyFlutterBoostDelegate* delegate=[MyFlutterBoostDelegate new];
-    delegate.navigationController= rvc;
+    MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
+    
+    delegate.navigationController=rvc;
     
     [[NewFlutterBoost instance] setup:application delegate:delegate];
 
 
-    
     return YES;
 }
 

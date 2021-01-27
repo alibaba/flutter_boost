@@ -5,12 +5,15 @@
 //  Created by wubian on 2021/1/21.
 //  Copyright © 2021 The Chromium Authors. All rights reserved.
 //
+
 #import <Foundation/Foundation.h>
 #import "MyFlutterBoostDelegate.h"
 #import "UIViewControllerDemo.h"
+#import <flutter_boost/FlutterBoost.h>
 
 @implementation MyFlutterBoostDelegate
-    
+
+
 - (void) pushNativeRoute:(FBCommonParams*) params
          present:(BOOL)present
               completion:(void (^)(BOOL finished))completion{
@@ -31,7 +34,10 @@
     
     FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
     engine.viewController = nil;
-    FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:engine nibName:nil bundle:nil];
+    
+    FBFlutterViewContainer *vc = FBFlutterViewContainer.new;
+    
+    [vc setName:params.pageName params:params.arguments];
     
     if(present){
         [self.navigationController presentViewController:vc animated:YES completion:^{

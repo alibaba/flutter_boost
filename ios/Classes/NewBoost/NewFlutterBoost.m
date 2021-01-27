@@ -11,8 +11,7 @@
 #import "NewFlutterBoostPlugin.h"
 @interface NewFlutterBoost ()
 
-@property(nonatomic, copy) id<FlutterBoostDelegate> delegate;
-@property(nonatomic, copy)  NewFlutterBoostPlugin*  flutterBoostPlugin;
+@property(nonatomic, strong)  NewFlutterBoostPlugin*  flutterBoostPlugin;
 @property (nonatomic,assign) BOOL isRunning;
 
 @end
@@ -20,13 +19,26 @@
 @implementation NewFlutterBoost
 
 - (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate{
-    if(delegate.engine){
+    if([delegate respondsToSelector:@selector(engine)]){
         self.engine=delegate.engine;
     }else{
         self.engine=[[FlutterEngine alloc ] initWithName:@"io.flutter" project:nil] ;
     }
-    [self.engine runWithEntrypoint:delegate.dartEntrypointFunctionName  initialRoute : delegate.initialRoute];
+    
+    NSString*  initialRoute=@"/";
+    NSString*  dartEntrypointFunctionName=@"main";
+    
+    if([delegate respondsToSelector:@selector(dartEntrypointFunctionName)]){
+        dartEntrypointFunctionName= delegate.dartEntrypointFunctionName ;
+    }
+    
+    if([ delegate respondsToSelector:@selector(initialRoute)] ){
+        initialRoute =delegate.initialRoute ;
+    }
+    
+    [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
     self.isRunning=YES;
+    
     Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
     if (clazz && self.engine) {
         if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
@@ -36,6 +48,7 @@
     }
     self.delegate=delegate;
     self.flutterBoostPlugin= [self flutterBoostPlugin:self.engine];
+    self.flutterApi=[self.flutterBoostPlugin flutterApi];
 }
 
 - (NewFlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {

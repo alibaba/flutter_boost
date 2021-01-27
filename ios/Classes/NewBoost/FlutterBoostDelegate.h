@@ -15,8 +15,8 @@ typedef void (^NativeRouterHandler)(FBCommonParams* params);
 @protocol  FlutterBoostDelegate <NSObject>
 
 @optional
-- (NSString*) initialRoute=@"/";
-- (NSString*) dartEntrypointFunctionName=@"main";
+- (NSString*) initialRoute;
+- (NSString*) dartEntrypointFunctionName;
 - (FlutterEngine*)  engine;
 @required
 - (void) pushNativeRoute:(FBCommonParams*) params
