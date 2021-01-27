@@ -52,9 +52,18 @@
 - (void) popRoute:(FBCommonParams*)params
          result:(NSDictionary *)result
        completion:(void (^)(BOOL finished))completion{
-    [self.navigationController popViewControllerAnimated:YES];
-    if(completion) completion(YES);
+    
+//    [self.navigationController popViewControllerAnimated:YES];
 
+    FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
+    
+    if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: params.uniqueId]){
+        [vc dismissViewControllerAnimated:FALSE completion:^{}];
+    }else{
+        [self.navigationController popViewControllerAnimated:FALSE];
+    }
+    
+    if(completion) completion(YES);
 }
 
 @end

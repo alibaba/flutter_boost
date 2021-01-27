@@ -33,11 +33,9 @@
 
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-
     [[NewFlutterBoost instance].delegate pushNativeRoute:input present:FALSE completion:^(BOOL finished) {
     
     }];
-    
     
 //    *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
 
@@ -50,6 +48,7 @@
     
 }
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
+    
     [[NewFlutterBoost instance].delegate  popRoute: input result: nil completion:^(BOOL finished) {
     
     }];

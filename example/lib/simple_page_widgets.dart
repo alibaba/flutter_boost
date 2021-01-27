@@ -246,6 +246,9 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             //     BoostContainer.of(context).settings;
             // FlutterBoost.singleton.close(settings.uniqueId,
             //     result: <String,dynamic>{"result": "data from second"});
+
+            PageInfo pageInfo=BoostNavigator.of().getTopPageInfo();
+            BoostNavigator.of().pop(uniqueId: pageInfo.uniqueId);
           },
           child: Text('Go back with result!'),
         ),

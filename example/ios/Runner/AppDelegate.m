@@ -59,14 +59,14 @@
     nativeButton.frame = CGRectMake(self.window.frame.size.width * 0.5 - 50, 200, 100, 40);
     nativeButton.backgroundColor = [UIColor redColor];
     [nativeButton setTitle:@"push native" forState:UIControlStateNormal];
-//    [nativeButton addTarget:self action:@selector(pushNative) forControlEvents:UIControlEventTouchUpInside];
+    [nativeButton addTarget:self action:@selector(pushNative) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:nativeButton];
     
     UIButton *pushEmbeded = [UIButton buttonWithType:UIButtonTypeCustom];
     pushEmbeded.frame = CGRectMake(self.window.frame.size.width * 0.5 - 70, 150, 140, 40);
     pushEmbeded.backgroundColor = [UIColor redColor];
     [pushEmbeded setTitle:@"push embedded" forState:UIControlStateNormal];
-//    [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
+    [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:pushEmbeded];
     
     
@@ -84,19 +84,19 @@
     return YES;
 }
 
-//- (void)pushNative
-//{
-//    UINavigationController *nvc = (id)self.window.rootViewController;
-//    UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
-//    [nvc pushViewController:vc animated:YES];
-//}
+- (void)pushNative
+{
+    UINavigationController *nvc = (id)self.window.rootViewController;
+    UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
+    [nvc pushViewController:vc animated:YES];
+}
 //
-//- (void)pushEmbeded
-//{
-//    UINavigationController *nvc = (id)self.window.rootViewController;
-//    UIViewController *vc = [[NativeViewController alloc] init];
-//    [nvc pushViewController:vc animated:YES];
-//}
+- (void)pushEmbeded
+{
+    UINavigationController *nvc = (id)self.window.rootViewController;
+    UIViewController *vc = [[NativeViewController alloc] init];
+    [nvc pushViewController:vc animated:YES];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
