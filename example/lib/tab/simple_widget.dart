@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/page_lifecycle.dart';
+import '../main.dart';
 
 class SimpleWidget extends StatefulWidget {
   final Map params;
@@ -15,7 +16,13 @@ class SimpleWidget extends StatefulWidget {
 }
 
 class _SimpleWidgetState extends State<SimpleWidget>
-    with PageLifecycleObserver {
+    with PageLifecycleObserver, RouteAware {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +33,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
   @override
   void dispose() {
     PageLifecycleBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
     print('#dispose, ${widget.uniqueId}, $this');
     super.dispose();
   }
@@ -41,13 +49,27 @@ class _SimpleWidgetState extends State<SimpleWidget>
   }
 
   @override
-  void onAppear(ChangeReason reason) {
-    print('#onAppear, $reason, $this');
+  void didPush() {
+    final route = ModalRoute.of(context).settings.name;
+    print('#didPush ${widget.uniqueId}, route: $route');
   }
 
   @override
-  void onDisappear(ChangeReason reason) {
-    print('#onDisappear, $reason, $this');
+  void didPopNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('#didPopNext ${widget.uniqueId}, route: $route');
+  }
+
+  @override
+  void didPushNext() {
+    final route = ModalRoute.of(context).settings.name;
+    print('#didPushNext ${widget.uniqueId}, route: $route');
+  }
+
+  @override
+  void didPop() {
+    final route = ModalRoute.of(context).settings.name;
+    print('#didPop ${widget.uniqueId}, route: $route');
   }
 
   @override

@@ -26,14 +26,14 @@ String getUniqueId(String pageName) {
 ///
 ///
 class FlutterBoostApp extends StatefulWidget {
-  const FlutterBoostApp(FlutterBoostRouteFactory routeFactory,
-      {FlutterBoostAppBuilder appBuilder, String initialRoute})
-      : routeFactory = routeFactory,
-        appBuilder = appBuilder ?? _materialAppBuilder,
+  const FlutterBoostApp(this.routeFactory,
+      {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
+      : appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
   final FlutterBoostRouteFactory routeFactory;
   final FlutterBoostAppBuilder appBuilder;
+  final List<NavigatorObserver> observers;
   final String initialRoute;
 
   static Widget _materialAppBuilder(Widget home) {
@@ -94,7 +94,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return BoostPageWithNavigator<dynamic>(
         key: ValueKey(pageInfo.uniqueId),
         pageInfo: pageInfo,
-        routeFactory: widget.routeFactory);
+        routeFactory: widget.routeFactory,
+        observers: widget.observers);
   }
 
   void push(String pageName,
@@ -103,7 +104,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log(
         'push page, uniqueId=$uniqueId, existedPage=$existedPage, withContainer=$withContainer, arguments:$arguments, $pages');
     if (existedPage != null) {
-      if (!_isCurrentPage(uniqueId)) {
+      if (pages.last?.pageInfo?.uniqueId != uniqueId) {
         setState(() {
           pages.remove(existedPage);
           pages.add(existedPage);
@@ -159,27 +160,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    // Todo(rulong.crl): consider internal route
-    PageLifecycleBinding.instance.onForeground(
-        pages.last?.pageInfo.uniqueId, pages.last?.pageInfo.pageName);
+    PageLifecycleBinding.instance.onForeground(_getCurrentPage());
   }
 
   void onBackground() {
-    // Todo(rulong.crl): consider internal route
-    PageLifecycleBinding.instance.onBackground(
-        pages.last?.pageInfo.uniqueId, pages.last?.pageInfo.pageName);
+    PageLifecycleBinding.instance.onBackground(_getCurrentPage());
   }
 
-  void onAppear(CommonParams arg) {
-    // Todo(rulong.crl): consider internal route
-    PageLifecycleBinding.instance.onAppear(pages.last?.pageInfo.uniqueId,
-        pages.last?.pageInfo.pageName, ChangeReason.values[arg.hint]);
-  }
-
-  void onDisappear(CommonParams arg) {
-    // Todo(rulong.crl): consider internal route
-    PageLifecycleBinding.instance.onDisappear(pages.last?.pageInfo.uniqueId,
-        pages.last?.pageInfo.pageName, ChangeReason.values[arg.hint]);
+  String _getCurrentPage() {
+    return pages.last?.pages.last?.pageInfo?.uniqueId;
   }
 
   bool _isCurrentPage(String uniqueId) {
@@ -250,14 +239,71 @@ class BoostPage<T> extends Page<T> {
   }
 }
 
+class _BoostNavigatorObserver extends NavigatorObserver {
+  final List<NavigatorObserver> observers;
+  _BoostNavigatorObserver(this.observers);
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    observers?.forEach((element) {
+      element.didPush(route, previousRoute);
+    });
+    super.didPush(route, previousRoute);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    observers?.forEach((element) {
+      element.didPop(route, previousRoute);
+    });
+    super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    observers?.forEach((element) {
+      element.didRemove(route, previousRoute);
+    });
+    super.didRemove(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    observers?.forEach((element) {
+      element.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    });
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    observers?.forEach((element) {
+      element.didStartUserGesture(route, previousRoute);
+    });
+    super.didStartUserGesture(route, previousRoute);
+  }
+
+  @override
+  void didStopUserGesture() {
+    observers?.forEach((element) {
+      element.didStopUserGesture();
+    });
+    super.didStopUserGesture();
+  }
+}
+
 class BoostPageWithNavigator<T> extends BoostPage<T> {
   BoostPageWithNavigator(
-      {LocalKey key, FlutterBoostRouteFactory routeFactory, PageInfo pageInfo})
+      {LocalKey key,
+      FlutterBoostRouteFactory routeFactory,
+      PageInfo pageInfo,
+      this.observers})
       : super(key: key, routeFactory: routeFactory, pageInfo: pageInfo) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
   }
 
   final List<BoostPage<dynamic>> pages = <BoostPage<dynamic>>[];
+  final List<NavigatorObserver> observers;
   GlobalKey<NavigatorState> navKey;
 
   GlobalKey<NavigatorState> keySave(
@@ -289,6 +335,9 @@ class BoostPageWithNavigator<T> extends BoostPage<T> {
               }
               return false;
             },
+            observers: [
+              _BoostNavigatorObserver(observers),
+            ],
           );
         });
   }
