@@ -187,11 +187,10 @@ class BoostContainerState extends NavigatorState {
 
   @override
   Future<bool> maybePop<T extends Object>([T result]) async {
-    if(routerHistory.isEmpty){
+    if (routerHistory.isEmpty) {
       pop(result);
       return true;
     }
-
 
     final Route<T> route = routerHistory.last;
     final RoutePopDisposition disposition = await route.willPop();
@@ -221,21 +220,23 @@ class BoostContainerState extends NavigatorState {
     }
 
     if (canPop()) {
-         super.pop<T>(result);
-         if (removedRoute != null) {
-           GlobalRouteSettingsManager.instance.removeSettings(removedRoute);
-         }
-         if (Platform.isIOS && multipleRouteMode && !canPop()) {
-           FlutterBoost.singleton.channel
-               .invokeMethod<dynamic>('enablePopGesture', null);
-           //开启native返回手势
-         }
+      super.pop<T>(result);
+      if (removedRoute != null) {
+        GlobalRouteSettingsManager.instance.removeSettings(removedRoute);
+      }
+      if (Platform.isIOS && multipleRouteMode && !canPop()) {
+        FlutterBoost.singleton.channel
+            .invokeMethod<dynamic>('enablePopGesture', null);
+        //开启native返回手势
+      }
     } else {
       if (T is Map<String, dynamic>) {
         FlutterBoost.singleton
             .closeInternal(uniqueId, result: result as Map<String, dynamic>);
       } else {
-        FlutterBoost.singleton.closeInternal(uniqueId,);
+        FlutterBoost.singleton.closeInternal(
+          uniqueId,
+        );
       }
     }
     return true;
@@ -250,7 +251,8 @@ class BoostContainerState extends NavigatorState {
     }
 
     if (multipleRouteMode) {
-      ContainerNavigatorObserver.bindContainerManager().willPush(route, routerHistory.last);
+      ContainerNavigatorObserver.bindContainerManager()
+          .willPush(route, routerHistory.isEmpty ? null : routerHistory.last);
     }
 
     Future<T> future = super.push<T>(newRoute ?? route);
@@ -317,13 +319,15 @@ class ContainerNavigatorObserver extends NavigatorObserver {
 
   void willPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
-      if(observer is ContainerNavigatorObserver){
+      if (observer is ContainerNavigatorObserver) {
         if (observer == this) continue;
-        ContainerNavigatorObserver  containerNavigatorObserver = observer as ContainerNavigatorObserver;
+        ContainerNavigatorObserver containerNavigatorObserver =
+            observer as ContainerNavigatorObserver;
         containerNavigatorObserver.willPush(route, previousRoute);
       }
     }
   }
+
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     for (NavigatorObserver observer in boostObservers) {
@@ -358,14 +362,14 @@ class ContainerNavigatorObserver extends NavigatorObserver {
 }
 
 class GlobalRouteSettingsManager {
-
   GlobalRouteSettingsManager._();
 
   static GlobalRouteSettingsManager instance = GlobalRouteSettingsManager._();
 
-  final Map<Route,BoostRouteSettings> _routeSettingsMap = <Route,BoostRouteSettings>{};
+  final Map<Route, BoostRouteSettings> _routeSettingsMap =
+      <Route, BoostRouteSettings>{};
 
-  void addSettings(Route route,BoostRouteSettings settings) {
+  void addSettings(Route route, BoostRouteSettings settings) {
     _routeSettingsMap[route] = settings;
   }
 
