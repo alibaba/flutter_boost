@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostPlugin;
 
@@ -45,7 +43,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
         observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
     }

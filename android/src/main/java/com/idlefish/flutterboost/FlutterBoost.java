@@ -5,9 +5,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.ArrayList;
@@ -64,14 +61,12 @@ public class FlutterBoost {
         public DefaultEngineConfig() {
         }
 
-        @NonNull
-        public DefaultEngineConfig initialRoute(@NonNull String initialRoute) {
+        public DefaultEngineConfig initialRoute(String initialRoute) {
             mInitialRoute = initialRoute;
             return this;
         }
 
-        @NonNull
-        public DefaultEngineConfig entrypoint(@NonNull String dartEntrypointFunctionName) {
+        public DefaultEngineConfig entrypoint(String dartEntrypointFunctionName) {
             mDartEntrypointFunctionName = dartEntrypointFunctionName;
             return this;
         }
@@ -168,7 +163,7 @@ public class FlutterBoost {
         private boolean mEnterActivityCreate = false;
 
         @Override
-        public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             mTopActivity = activity;
             // fix bug : The LauncherActivity will be launch by clicking app icon when app
             // enter background in HuaWei Rom, cause missing foreground event
@@ -187,7 +182,7 @@ public class FlutterBoost {
         }
 
         @Override
-        public void onActivityStarted(@NonNull Activity activity) {
+        public void onActivityStarted(Activity activity) {
             if (!mEnterActivityCreate) {
                 return;
             }
@@ -198,7 +193,7 @@ public class FlutterBoost {
         }
 
         @Override
-        public void onActivityResumed(@NonNull Activity activity) {
+        public void onActivityResumed(Activity activity) {
             mTopActivity = activity;
             if (!mEnterActivityCreate) {
                 return;
@@ -207,11 +202,11 @@ public class FlutterBoost {
         }
 
         @Override
-        public void onActivityPaused(@NonNull Activity activity) {
+        public void onActivityPaused(Activity activity) {
         }
 
         @Override
-        public void onActivityStopped(@NonNull Activity activity) {
+        public void onActivityStopped(Activity activity) {
             if (!mEnterActivityCreate) {
                 return;
             }
@@ -222,11 +217,11 @@ public class FlutterBoost {
         }
 
         @Override
-        public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         }
 
         @Override
-        public void onActivityDestroyed(@NonNull Activity activity) {
+        public void onActivityDestroyed(Activity activity) {
             if (!mEnterActivityCreate) {
                 return;
             }

@@ -2,14 +2,10 @@ package com.idlefish.flutterboost;
 
 import android.util.Log;
 
-import androidx.annotation.IntDef;
-
+import com.idlefish.flutterboost.containers.ChangeReason;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
-import com.idlefish.flutterboost.containers.ChangeReason;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -82,13 +78,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments,
-                          @ChangeReason int hint, final Reply<Void> callback) {
+                          ChangeReason hint, final Reply<Void> callback) {
         if (mApi != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments(arguments);
-            params.setHint((long) hint);
+            params.setHint((long) hint.ordinal());
             mApi.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -113,12 +109,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    @IntDef({VisibilityEvent.NONE, VisibilityEvent.FOREGROUND, VisibilityEvent.BACKGROUND})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface VisibilityEvent {
-        int NONE = 0;
-        int FOREGROUND = 1;
-        int BACKGROUND = 2;
+    public enum VisibilityEvent {
+        NONE,
+        FOREGROUND,
+        BACKGROUND,
     }
 
     public void onForeground() {
@@ -192,7 +186,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public static class ContainerShadowNode implements FlutterViewContainerObserver {
         private WeakReference<FlutterViewContainer> mContainer;
         private FlutterBoostPlugin mPlugin;
-        private @VisibilityEvent int mEvent;
+        private VisibilityEvent mEvent;
         private boolean mIsPopping;
 
         public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
@@ -210,7 +204,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         public FlutterViewContainer container() {
             return mContainer.get();
         }
-        public void setVisibilityEvent(@VisibilityEvent int event) {
+        public void setVisibilityEvent(VisibilityEvent event) {
             mEvent = event;
         }
 
@@ -245,9 +239,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
 
         @Override
-        public void onAppear(@ChangeReason int reason) {
+        public void onAppear(ChangeReason reason) {
             assert container() != null;
-            @ChangeReason int hint = reason;
+            ChangeReason hint = reason;
             if (ChangeReason.UNSPECIFIED == hint) {
                 if (mPlugin.findContainerById(getUniqueId()) == null) {
                     // create new FlutterView
@@ -267,13 +261,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
             mPlugin.updateContainer(getUniqueId(), this);
             mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), hint, null);
-            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + ChangeReasonToString(hint) + ", " + mPlugin.getContainers());
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + hint.toString()  + "(" + hint.ordinal() + "), " + mPlugin.getContainers());
         }
 
         @Override
-        public void onDisappear(@ChangeReason int reason) {
-            // todo:
-            @ChangeReason int hint = reason;
+        public void onDisappear(ChangeReason reason) {
+            ChangeReason hint = reason;
             if (ChangeReason.UNSPECIFIED == hint) {
                 FlutterViewContainer top = mPlugin.getTopContainer();
                 if (top != null && top.getUniqueId() == getUniqueId() &&
@@ -290,7 +283,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 }
             }
             setVisibilityEvent(VisibilityEvent.NONE);
-            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + ChangeReasonToString(hint) + ", " + mPlugin.getContainers());
+            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + hint.toString() + "(" + hint.ordinal() + "), " + mPlugin.getContainers());
         }
 
         @Override
@@ -298,29 +291,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             mPlugin.popRoute(getUniqueId(), null);
             mPlugin.removeContainer(getUniqueId());
             Log.v(TAG, "#onDestroyView: " + getUniqueId() + ", " + mPlugin.getContainers());
-        }
-    }
-
-    static String ChangeReasonToString(@ChangeReason int reason) {
-        switch (reason) {
-            case ChangeReason.UNSPECIFIED:
-                return "UNSPECIFIED";
-            case ChangeReason.PUSH_ROUTE:
-                return "PUSH_ROUTE";
-            case ChangeReason.POP_ROUTE:
-                return "POP_ROUTE";
-            case ChangeReason.PUSH_VIEW:
-                return "PUSH_VIEW";
-            case ChangeReason.POP_VIEW:
-                return "POP_VIEW";
-            case ChangeReason.SWITCH_TAB:
-                return "SWITCH_TAB";
-            case ChangeReason.FOREGROUND:
-                return "FOREGROUND";
-            case ChangeReason.BACKGROUND:
-                return "BACKGROUND";
-            default:
-                return "ERROR_XXX";
         }
     }
 }
