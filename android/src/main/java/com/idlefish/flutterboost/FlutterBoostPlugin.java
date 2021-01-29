@@ -242,18 +242,18 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         public void onAppear(ChangeReason reason) {
             assert container() != null;
             ChangeReason hint = reason;
-            if (ChangeReason.UNSPECIFIED == hint) {
+            if (ChangeReason.Unspecified == hint) {
                 if (mPlugin.findContainerById(getUniqueId()) == null) {
                     // create new FlutterView
-                    hint = ChangeReason.PUSH_VIEW;
+                    hint = ChangeReason.ViewPushed;
                 } else {
                     if (VisibilityEvent.FOREGROUND == mEvent) {
                         assert mPlugin.getTopContainer().getUniqueId() == getUniqueId();
                         // switch to foreground
-                        hint = ChangeReason.FOREGROUND;
+                        hint = ChangeReason.Foreground;
                     } else {
                         // The previous view was popped
-                        hint = ChangeReason.POP_VIEW;
+                        hint = ChangeReason.ViewPopped;
                     }
                 }
             }
@@ -267,18 +267,18 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         @Override
         public void onDisappear(ChangeReason reason) {
             ChangeReason hint = reason;
-            if (ChangeReason.UNSPECIFIED == hint) {
+            if (ChangeReason.Unspecified == hint) {
                 FlutterViewContainer top = mPlugin.getTopContainer();
                 if (top != null && top.getUniqueId() == getUniqueId() &&
                         VisibilityEvent.BACKGROUND == mEvent) {
                     // switch to background
-                    hint = ChangeReason.BACKGROUND;
+                    hint = ChangeReason.Background;
                 } else {
                     if (mIsPopping) {
-                        hint = ChangeReason.POP_VIEW;
+                        hint = ChangeReason.ViewPopped;
                     } else {
                         // The native view was pushed
-                        hint = ChangeReason.PUSH_VIEW;
+                        hint = ChangeReason.ViewPushed;
                     }
                 }
             }

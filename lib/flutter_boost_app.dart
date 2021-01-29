@@ -5,7 +5,9 @@ import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/page_lifecycle.dart';
+import 'package:flutter_boost/page_visibility.dart';
+
+import 'page_visibility.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -109,6 +111,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           pages.remove(existedPage);
           pages.add(existedPage);
         });
+        PageVisibilityBinding.instance
+            .onAppear(_getCurrentPage(), ChangeReason.routeReorder);
+        if (pages.length > 1) {
+          String prevPage =
+              pages[pages.length - 2]?.pages?.last?.pageInfo?.uniqueId;
+          PageVisibilityBinding.instance
+              .onDisappear(prevPage, ChangeReason.routeReorder);
+        }
       }
     } else {
       PageInfo pageInfo = PageInfo(
@@ -120,6 +130,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         setState(() {
           pages.add(_createPage(pageInfo));
         });
+        PageVisibilityBinding.instance
+            .onAppear(_getCurrentPage(), ChangeReason.routePushed);
+        if (pages.length > 1) {
+          String prevPage =
+              pages[pages.length - 2]?.pages?.last?.pageInfo?.uniqueId;
+          PageVisibilityBinding.instance
+              .onDisappear(prevPage, ChangeReason.routePushed);
+        }
       } else {
         setState(() {
           pages.last.pages
@@ -145,6 +163,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
     final bool handled = await page?.navKey?.currentState?.maybePop();
     if (handled != null && !handled) {
+      if (_getCurrentPage() == page?.pageInfo?.uniqueId) {
+        PageVisibilityBinding.instance
+            .onDisappear(_getCurrentPage(), ChangeReason.routePopped);
+        if (pages.length > 1) {
+          String prevPage =
+              pages[pages.length - 2]?.pages?.last?.pageInfo?.uniqueId;
+          PageVisibilityBinding.instance
+              .onAppear(prevPage, ChangeReason.routePushed);
+        }
+      }
       setState(() {
         pages.remove(page);
         if (page.pageInfo.withContainer) {
@@ -160,11 +188,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    PageLifecycleBinding.instance.onForeground(_getCurrentPage());
+    PageVisibilityBinding.instance.onForeground(_getCurrentPage());
   }
 
   void onBackground() {
-    PageLifecycleBinding.instance.onBackground(_getCurrentPage());
+    PageVisibilityBinding.instance.onBackground(_getCurrentPage());
   }
 
   String _getCurrentPage() {
@@ -248,6 +276,14 @@ class _BoostNavigatorObserver extends NavigatorObserver {
     observers?.forEach((element) {
       element.didPush(route, previousRoute);
     });
+
+    //handle internal route
+    if (previousRoute != null) {
+      PageVisibilityBinding.instance
+          .onAppearWithRoute(route, ChangeReason.routePushed);
+      PageVisibilityBinding.instance
+          .onDisappearWithRoute(previousRoute, ChangeReason.routePushed);
+    }
     super.didPush(route, previousRoute);
   }
 
@@ -256,6 +292,13 @@ class _BoostNavigatorObserver extends NavigatorObserver {
     observers?.forEach((element) {
       element.didPop(route, previousRoute);
     });
+
+    if (previousRoute != null) {
+      PageVisibilityBinding.instance
+          .onDisappearWithRoute(route, ChangeReason.routePopped);
+      PageVisibilityBinding.instance
+          .onAppearWithRoute(previousRoute, ChangeReason.routePopped);
+    }
     super.didPop(route, previousRoute);
   }
 

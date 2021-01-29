@@ -58,10 +58,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-            observer.onDisappear(ChangeReason.SWITCH_TAB);
+            observer.onDisappear(ChangeReason.RouteReorder);
         } else {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-            observer.onAppear(ChangeReason.SWITCH_TAB);
+            observer.onAppear(ChangeReason.RouteReorder);
         }
         super.onHiddenChanged(hidden);
     }
@@ -70,10 +70,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-            observer.onAppear(ChangeReason.SWITCH_TAB);
+            observer.onAppear(ChangeReason.RouteReorder);
         } else {
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-            observer.onDisappear(ChangeReason.SWITCH_TAB);
+            observer.onDisappear(ChangeReason.RouteReorder);
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -87,7 +87,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (!isHidden()) {
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-            observer.onAppear(ChangeReason.UNSPECIFIED);
+            observer.onAppear(ChangeReason.Unspecified);
         }
     }
 
@@ -115,7 +115,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
 
         if (!isHidden()) {
-            observer.onDisappear(ChangeReason.UNSPECIFIED);
+            observer.onDisappear(ChangeReason.Unspecified);
         }
     }
 

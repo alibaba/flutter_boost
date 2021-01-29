@@ -59,14 +59,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onResume();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
-        observer.onAppear(ChangeReason.UNSPECIFIED);
+        observer.onAppear(ChangeReason.Unspecified);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onDisappear(ChangeReason.UNSPECIFIED);
+        observer.onDisappear(ChangeReason.Unspecified);
     }
 
     @Override
