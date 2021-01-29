@@ -43,7 +43,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: 700,
+          height: 1000,
           margin: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,5 +1,6 @@
 package com.idlefish.flutterboost.example;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
@@ -15,30 +17,30 @@ import java.util.HashMap;
 
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
-public class NativePageActivity extends AppCompatActivity implements View.OnClickListener {
+public class TransparencyPageActivity  extends FragmentActivity implements View.OnClickListener {
 
     private TextView mOpenNative;
     private TextView mOpenFlutter;
     private TextView mOpenFlutterFragment;
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.native_page);
-
-        mOpenNative = findViewById(R.id.open_native);
-        mOpenFlutter = findViewById(R.id.open_flutter);
-//        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
-
-        mOpenNative.setOnClickListener(this);
-        mOpenFlutter.setOnClickListener(this);
+        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
+                .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
+                .destroyEngineWithActivity(false)
+                .url("flutterPage")
+                .build(this);
+        intent.setAction("android.intent.action.idlefish");
+        startActivity(intent);
+        finish();
 //        mOpenFlutterFragment.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

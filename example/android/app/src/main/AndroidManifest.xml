@@ -87,6 +87,14 @@
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name="com.idlefish.flutterboost.example.TransparencyPageActivity"
+            android:theme="@style/TranTheme.Translucente"
+            android:configChanges="screenSize|smallestScreenSize|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
         <meta-data android:name="flutterEmbedding"
                    android:value="2">
         </meta-data>
