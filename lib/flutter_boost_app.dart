@@ -158,6 +158,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         Logger.error('uniqueId=$uniqueId not find');
         return;
       }
+      if(page!=pages.last){
+        _removePage(page);
+        return;
+      }
     } else {
       page = pages.last;
     }
@@ -184,6 +188,17 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           _nativeRouterApi.popRoute(params);
         }
       });
+    }
+  }
+  void _removePage(BoostPage page) {
+    pages.remove(page);
+    if (page.pageInfo.withContainer) {
+      Logger.log('pop container ,  uniqueId=${page.pageInfo.uniqueId}');
+      CommonParams params = CommonParams()
+        ..pageName = page.pageInfo.pageName
+        ..uniqueId = page.pageInfo.uniqueId
+        ..arguments =  page.pageInfo.arguments;
+      _nativeRouterApi.popRoute(params);
     }
   }
 
@@ -371,7 +386,7 @@ class BoostPageWithNavigator<T> extends BoostPage<T> {
           return Navigator(
             key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
             pages: List.of(pages),
-            onPopPage: (route, result) {
+            onPopPage: (route, dynamic result) {
               if (route.didPop(result)) {
                 _updatePagesList();
                 return true;

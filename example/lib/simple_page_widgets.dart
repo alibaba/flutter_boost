@@ -248,7 +248,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             //     result: <String,dynamic>{"result": "data from second"});
 
             PageInfo pageInfo = BoostNavigator.of().getTopPageInfo();
-            BoostNavigator.of().remove(pageInfo?.uniqueId);
+            BoostNavigator.of().pop();
           },
           child: Text('Go back with result!'),
         ),

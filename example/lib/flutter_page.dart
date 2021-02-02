@@ -35,6 +35,19 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     final String message = widget.message;
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                // 如果有抽屉的话的就打开
+                onPressed: () {
+                  BoostNavigator.of().pop();
+                },
+                // 显示描述信息
+                tooltip:
+                MaterialLocalizations.of(context).openAppDrawerTooltip,
+              );
+            }),
         // brightness:Brightness.light,
         // backgroundColor: Colors.white,
         // textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
@@ -268,6 +281,10 @@ class _PushWidgetState extends State<PushWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      color: Colors.red,
+      width: 100,
+      height: 100,
+    );
   }
 }

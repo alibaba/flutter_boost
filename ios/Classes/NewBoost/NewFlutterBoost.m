@@ -11,7 +11,6 @@
 #import "NewFlutterBoostPlugin.h"
 @interface NewFlutterBoost ()
 
-@property(nonatomic, strong)  NewFlutterBoostPlugin*  flutterBoostPlugin;
 @property (nonatomic,assign) BOOL isRunning;
 
 @end
@@ -48,7 +47,6 @@
     }
     self.delegate=delegate;
     self.flutterBoostPlugin= [self flutterBoostPlugin:self.engine];
-    self.flutterApi=[self.flutterBoostPlugin flutterApi];
 }
 
 - (NewFlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {

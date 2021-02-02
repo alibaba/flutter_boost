@@ -30,7 +30,7 @@
 @interface NewFlutterBoost : NSObject
 
 @property(nonatomic, strong)  FlutterEngine*  engine;
-@property(nonatomic, strong)  FBFlutterRouterApi* flutterApi;
+@property(nonatomic, strong)  NewFlutterBoostPlugin*  flutterBoostPlugin;
 @property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
 
 + (instancetype)instance;

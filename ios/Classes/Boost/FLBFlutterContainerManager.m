@@ -49,6 +49,10 @@
     
     return NO;
 }
+- (BOOL)containUniqueId:(NSString* ) uniqueId {
+    return _existedID[uniqueId]?YES:NO;
+}
+
 
 - (void)addUnique:(id<FLBFlutterContainer>)vc
 {

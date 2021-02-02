@@ -58,9 +58,9 @@
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
     if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: params.uniqueId]){
-        [vc dismissViewControllerAnimated:FALSE completion:^{}];
+        [vc dismissViewControllerAnimated:YES completion:^{}];
     }else{
-        [self.navigationController popViewControllerAnimated:FALSE];
+        [self.navigationController popViewControllerAnimated:YES];
     }
     
     if(completion) completion(YES);
