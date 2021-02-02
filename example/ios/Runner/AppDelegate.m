@@ -22,37 +22,36 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-//    PlatformRouterImp *router = [PlatformRouterImp new];
-//    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-//                                                        onStart:^(FlutterEngine *engine) {
-//
-//                                                        }];
     
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
     
     [self.window makeKeyAndVisible];
     
-   
+    
+    MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
+        
+    [[NewFlutterBoost instance] setup:application delegate:delegate];
+    
+    
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
    
-    
-//    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
-//    [fvc setName:@"tab" params:@{}];
-//    fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
-//
-//
-//    UITabBarController *tabVC = [[UITabBarController alloc] init];
-//    tabVC.viewControllers = @[vc,fvc];
+    FBFlutterViewContainer *fvc = FBFlutterViewContainer.new ;
+
+    [fvc setName:@"tab_friend" params:@{}];
+    fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
+
+
+    UITabBarController *tabVC = [[UITabBarController alloc] init];
+    tabVC.viewControllers = @[vc,fvc];
 
     
-    UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:vc];
+    UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:tabVC];
     
-   
-//    router.navigationController = rvc;
-    
-    
+    delegate.navigationController=rvc;
+
+
     self.window.rootViewController = rvc;
     
     UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -69,16 +68,6 @@
     [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:pushEmbeded];
     
-    
-    
-
-    
-    //boost3.0代码
-    MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
-    
-    delegate.navigationController=rvc;
-    
-    [[NewFlutterBoost instance] setup:application delegate:delegate];
 
 
     return YES;

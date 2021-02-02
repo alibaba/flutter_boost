@@ -149,10 +149,7 @@ static NSUInteger kInstanceCounter = 0;
         params.arguments=_params;
         params.uniqueId=[self uniqueIDString];
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-
                 }];
-        
-        
     }
     [super willMoveToParentViewController:parent];
 }

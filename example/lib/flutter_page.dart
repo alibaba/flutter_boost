@@ -6,6 +6,7 @@ import 'package:flutter_boost/logger.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params, this.message, this.uniqueId});
+
   final Map params;
   final String message;
   final String uniqueId;
@@ -16,6 +17,7 @@ class FlutterRouteWidget extends StatefulWidget {
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
   final TextEditingController _usernameController = TextEditingController();
+
   @override
   void dispose() {
     super.dispose();
@@ -35,19 +37,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     final String message = widget.message;
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.arrow_back),
-                // 如果有抽屉的话的就打开
-                onPressed: () {
-                  BoostNavigator.of().pop();
-                },
-                // 显示描述信息
-                tooltip:
-                MaterialLocalizations.of(context).openAppDrawerTooltip,
-              );
-            }),
+        leading: Builder(builder: (BuildContext context) {
+          return IconButton(
+            icon: const Icon(Icons.arrow_back),
+            // 如果有抽屉的话的就打开
+            onPressed: () {
+              BoostNavigator.of().pop();
+            },
+            // 显示描述信息
+            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          );
+        }),
         // brightness:Brightness.light,
         // backgroundColor: Colors.white,
         // textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
@@ -281,10 +281,29 @@ class _PushWidgetState extends State<PushWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red,
-      width: 100,
-      height: 100,
-    );
+    return Scaffold(
+        appBar: AppBar(
+          leading: Builder(builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              // 如果有抽屉的话的就打开
+              onPressed: () {
+                BoostNavigator.of().pop();
+              },
+              // 显示描述信息
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          }),
+          // brightness:Brightness.light,
+          // backgroundColor: Colors.white,
+          // textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
+
+          title: Text('flutter_boost_example'),
+        ),
+        body: Container(
+          color: Colors.red,
+          width: 100,
+          height: 100,
+        ));
   }
 }
