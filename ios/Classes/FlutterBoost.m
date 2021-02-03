@@ -46,7 +46,7 @@
         }
     }
     self.delegate=delegate;
-    self.flutterBoostPlugin= [self flutterBoostPlugin:self.engine];
+    self.plugin= [self flutterBoostPlugin:self.engine];
 }
 
 - (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
@@ -100,11 +100,13 @@
 - (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData completion:(void (^)(BOOL))completion{
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId=uniqueId;
-    [[FlutterBoost instance].delegate popRoute :params result: resultData completion:completion];
+    
+
+    [[FlutterBoost instance].plugin.flutterApi popRoute:params completion:^(NSError* error) {
+      } ];
+    
+    if(completion) completion(YES);
 }
 
-- (void)destroyPluginContext{
-   
-}
 
 @end

@@ -45,7 +45,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
+        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.instance().getPlugin());
     }
 
     @Override
@@ -234,7 +234,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, params);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.generateUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
             return args;
         }
 

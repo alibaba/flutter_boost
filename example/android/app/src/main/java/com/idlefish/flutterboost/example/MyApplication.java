@@ -18,12 +18,12 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterBoost.withDefaultEngine().init(this, new FlutterBoostDelegate() {
+        FlutterBoost.instance().setup(this, new FlutterBoostDelegate() {
 
             @Override
             public void pushNativeRoute(String pageName, HashMap<String, String> arguments) {
-                Intent intent = new Intent(FlutterBoost.instance().getTopActivity(), NativePageActivity.class);
-                FlutterBoost.instance().getTopActivity().startActivity(intent);
+                Intent intent = new Intent(FlutterBoost.instance().currentActivity(), NativePageActivity.class);
+                FlutterBoost.instance().currentActivity().startActivity(intent);
             }
 
             @Override
@@ -33,8 +33,8 @@ public class MyApplication extends FlutterApplication {
                         .destroyEngineWithActivity(false)
                         .url(pageName)
                         .urlParams(arguments)
-                        .build(FlutterBoost.instance().getTopActivity());
-                FlutterBoost.instance().getTopActivity().startActivity(intent);
+                        .build(FlutterBoost.instance().currentActivity());
+                FlutterBoost.instance().currentActivity().startActivity(intent);
             }
 
         });

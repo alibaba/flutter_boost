@@ -32,7 +32,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
+        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.instance().getPlugin());
         observer.onCreateView();
     }
 
@@ -162,7 +162,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, FlutterBoost.generateUniqueId(url));
+                    .putExtra(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
         }
     }
 

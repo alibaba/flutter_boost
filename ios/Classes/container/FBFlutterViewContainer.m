@@ -12,7 +12,7 @@
 #import <objc/runtime.h>
 
 #define ENGINE [FlutterBoost instance].engine
-#define FB_PLUGIN [FlutterBoost instance].flutterBoostPlugin
+#define FB_PLUGIN [FlutterBoost instance].plugin
 
 //#define FLUTTER_VIEW ENGINE.flutterViewController.view
 //#define FLUTTER_VC ENGINE.flutterViewController

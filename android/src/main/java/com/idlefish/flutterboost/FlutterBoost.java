@@ -2,13 +2,13 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
-import android.os.Bundle;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -24,6 +24,8 @@ public class FlutterBoost {
 
     private Activity mTopActivity = null;
 
+    private boolean isRunning = false;
+
     private FlutterBoostPlugin mPlugin;
 
     public static FlutterBoost instance() {
@@ -33,11 +35,110 @@ public class FlutterBoost {
         return sInstance;
     }
 
-    public static String generateUniqueId(String pageName) {
+    /**
+     * 初始化
+     *
+     * @param application
+     * @param delegate
+     */
+    public void setup(Application application, FlutterBoostDelegate delegate) {
+        // 1. initialize default engine
+        FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+        if (engine == null) {
+            engine = new FlutterEngine(application);
+            engine.getNavigationChannel().setInitialRoute(delegate.initialRoute());
+            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
+                    FlutterMain.findAppBundlePath(), delegate.dartEntrypointFunctionName()));
+            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
+            isRunning = true;
+        }
+        // 2. set delegate
+        getPlugin().setDelegate(delegate);
+
+        //3. register ActivityLifecycleCallbacks
+        setupActivityLifecycleCallback(application);
+
+    }
+
+    /**
+     * 获取插件
+     *
+     * @return
+     */
+    public FlutterBoostPlugin getPlugin() {
+        if (mPlugin == null) {
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+            if (engine == null) {
+                throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
+            }
+            mPlugin = getFlutterBoostPlugin(engine);
+        }
+        return mPlugin;
+    }
+
+    /**
+     * 判断engine 是否运行中
+     *
+     * @return
+     */
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    /**
+     * 获取engine
+     *
+     * @return
+     */
+    public FlutterEngine getEngine() {
+        return FlutterEngineCache.getInstance().get(ENGINE_ID);
+    }
+
+    public String generateUniqueId(String pageName) {
         return System.currentTimeMillis() + "_" + pageName;
     }
 
-    public static FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
+    /**
+     * 提供给业务 最上层的activity。
+     *
+     * @return
+     */
+    public Activity currentActivity() {
+        return mTopActivity;
+    }
+
+    public void setCurrentActivity(Activity activity) {
+        this.mTopActivity = activity;
+    }
+
+    /**
+     * 根据unqueid，返回容器
+     * 兼容老版本
+     *
+     * @param uniqueId
+     * @return
+     */
+    public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
+        return getPlugin().findContainerById(uniqueId);
+    }
+
+    /**
+     * 根据unqueid，返回容器
+     * 兼容老版本
+     *
+     * @return
+     */
+    public FlutterViewContainer getFlutterViewContainer() {
+        return getPlugin().getTopContainer();
+    }
+
+
+    private void setupActivityLifecycleCallback(Application application) {
+        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
+    }
+
+
+    private FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
         if (engine != null) {
             try {
                 Class<? extends FlutterPlugin> pluginClass =
@@ -50,185 +151,12 @@ public class FlutterBoost {
         return null;
     }
 
-    public static DefaultEngineConfig withDefaultEngine() {
-        return new DefaultEngineConfig();
+    public void open(String pageName, HashMap<String, String> arguments) {
+        this.getPlugin().getDelegate().pushFlutterRoute(pageName, arguments);
     }
 
-    public static class DefaultEngineConfig {
-        private String mInitialRoute = "/";
-        private String mDartEntrypointFunctionName = "main";
+    public void close(Messages.CommonParams params) {
+        this.getPlugin().popRoute(params);
 
-        public DefaultEngineConfig() {
-        }
-
-        public DefaultEngineConfig initialRoute(String initialRoute) {
-            mInitialRoute = initialRoute;
-            return this;
-        }
-
-        public DefaultEngineConfig entrypoint(String dartEntrypointFunctionName) {
-            mDartEntrypointFunctionName = dartEntrypointFunctionName;
-            return this;
-        }
-
-        public void init(Application application, FlutterBoostDelegate delegate) {
-            // 1. initialize default engine
-            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
-            if (engine == null) {
-                engine = new FlutterEngine(application);
-                engine.getNavigationChannel().setInitialRoute(mInitialRoute);
-                engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                        FlutterMain.findAppBundlePath(), mDartEntrypointFunctionName));
-                FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
-            }
-
-            // 2. set delegate
-            FlutterBoost.instance().getPlugin().setDelegate(delegate);
-
-            //3. register ActivityLifecycleCallbacks
-            FlutterBoost.instance().setupActivityLifecycleCallback(application);
-
-        }
-    }
-
-    public FlutterBoostPlugin getPlugin() {
-        if (mPlugin == null) {
-            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
-            if (engine == null) {
-                throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
-            }
-            mPlugin = getFlutterBoostPlugin(engine);
-        }
-        return mPlugin;
-    }
-
-    public void setupActivityLifecycleCallback(Application application) {
-        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
-    }
-
-    /**
-     * 提供给业务 最上层的activity。
-     * @return
-     */
-    public Activity getTopActivity() {
-        return mTopActivity;
-    }
-
-    /**
-     * 根据unqueid，返回容器
-     * 兼容老版本
-     * @param uniqueId
-     * @return
-     */
-    public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
-        return getPlugin().findContainerById(uniqueId);
-    }
-
-    /**
-     * 根据unqueid，返回容器
-     * 兼容老版本
-     * @return
-     */
-    public FlutterViewContainer getTopFlutterViewContainer() {
-        return getPlugin().getTopContainer();
-    }
-
-    private List<FlutterBoostPlugin> mVisibilityChangedObservers = new ArrayList<>();
-    public void unregisterVisibilityChangedObserver(FlutterBoostPlugin observer) {
-        if (observer != null) {
-            mVisibilityChangedObservers.remove(observer);
-        }
-    }
-
-    public void registerVisibilityChangedObserver(FlutterBoostPlugin observer) {
-        if (observer != null) {
-            mVisibilityChangedObservers.add(observer);
-        }
-    }
-
-    private void callForeground() {
-        for (FlutterBoostPlugin observer : mVisibilityChangedObservers) {
-            observer.onForeground();
-        }
-    }
-
-    private void callBackground() {
-        for (FlutterBoostPlugin observer : mVisibilityChangedObservers) {
-            observer.onBackground();
-        }
-    }
-
-    class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
-        private Activity mCurrentActiveActivity;
-        private boolean mEnterActivityCreate = false;
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            mTopActivity = activity;
-            // fix bug : The LauncherActivity will be launch by clicking app icon when app
-            // enter background in HuaWei Rom, cause missing foreground event
-            if (mEnterActivityCreate && mCurrentActiveActivity == null) {
-                Intent intent = activity.getIntent();
-                if (!activity.isTaskRoot()
-                        && intent != null
-                        && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                        && intent.getAction() != null
-                        && intent.getAction().equals(Intent.ACTION_MAIN)) {
-                    return;
-                }
-            }
-            mEnterActivityCreate = true;
-            mCurrentActiveActivity = activity;
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-            if (!mEnterActivityCreate) {
-                return;
-            }
-            if (mCurrentActiveActivity == null) {
-                callForeground();
-            }
-            mCurrentActiveActivity = activity;
-        }
-
-        @Override
-        public void onActivityResumed(Activity activity) {
-            mTopActivity = activity;
-            if (!mEnterActivityCreate) {
-                return;
-            }
-            mCurrentActiveActivity = activity;
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-            if (!mEnterActivityCreate) {
-                return;
-            }
-            if (mCurrentActiveActivity == activity) {
-                callBackground();
-                mCurrentActiveActivity = null;
-            }
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-            if (!mEnterActivityCreate) {
-                return;
-            }
-            if (mCurrentActiveActivity == activity) {
-                callBackground();
-                mCurrentActiveActivity = null;
-            }
-        }
     }
 }

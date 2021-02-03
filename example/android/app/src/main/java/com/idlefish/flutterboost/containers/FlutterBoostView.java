@@ -79,7 +79,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, urlParam);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.generateUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
             return args;
         }
 
@@ -118,7 +118,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     @Override
     public void onCreate() {
         super.onCreate();
-        mObserver = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.getFlutterBoostPlugin(getFlutterEngine()));
+        mObserver = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.instance().getPlugin());
         mObserver.onCreateView();
         onStart();
         mCreateAndStart = true;

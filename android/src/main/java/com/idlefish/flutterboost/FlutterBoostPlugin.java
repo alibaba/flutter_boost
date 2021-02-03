@@ -20,21 +20,23 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     private Messages.FlutterRouterApi mApi;
     private FlutterBoostDelegate mDelegate;
 
+
+
     public void setDelegate(FlutterBoostDelegate delegate) {
         this.mDelegate = delegate;
     }
-
+    public FlutterBoostDelegate getDelegate() {
+        return this.mDelegate ;
+    }
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         mApi = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
-        FlutterBoost.instance().registerVisibilityChangedObserver(this);
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
         mApi = null;
-        FlutterBoost.instance().unregisterVisibilityChangedObserver(this);
     }
 
     @Override
