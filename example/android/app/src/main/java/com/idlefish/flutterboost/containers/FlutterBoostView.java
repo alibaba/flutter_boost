@@ -129,12 +129,11 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         if(isDestroyed()) return;
         if (!mCreateAndStart) {
             onCreate();
-            mCreateAndStart = true;
         }
         super.onResume();
+        mObserver.onAppear(ChangeReason.Unspecified);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        mObserver.onAppear(ChangeReason.Unspecified);
     }
 
     @Override
@@ -165,15 +164,14 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         super.setVisibility(visibility);
         if (!mCreateAndStart) {
             onCreate();
-            mCreateAndStart = true;
         }
 
         if (getVisibility() == View.VISIBLE) {
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
             mObserver.onAppear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         } else if (getVisibility() == View.GONE) {
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
             mObserver.onDisappear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         }
     }
 

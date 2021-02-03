@@ -52,6 +52,8 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         mTabView = new TabView(this);
 
         container.addView(mTabView, -1, -1);
+        mTabView.setVisibility(View.INVISIBLE);
+
         for (int i = 0; i < mTabs.size(); i++) {
             FlutterBoostView tabContainer = mTabs.valueAt(i);
             container.addView(tabContainer, -1, -1);
