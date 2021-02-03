@@ -57,11 +57,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
             observer.onDisappear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         } else {
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             observer.onAppear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         }
         super.onHiddenChanged(hidden);
     }
@@ -69,11 +69,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             observer.onAppear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         } else {
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
             observer.onDisappear(ChangeReason.RouteReorder);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -85,9 +85,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
         super.onResume();
         if (!isHidden()) {
+            observer.onAppear(ChangeReason.Unspecified);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-            observer.onAppear(ChangeReason.Unspecified);
         }
     }
 

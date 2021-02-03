@@ -57,9 +57,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             findFlutterView(this.getWindow().getDecorView());
         }
         super.onResume();
+        observer.onAppear(ChangeReason.Unspecified);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
-        observer.onAppear(ChangeReason.Unspecified);
     }
 
     @Override

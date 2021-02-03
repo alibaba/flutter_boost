@@ -166,7 +166,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return top != null ? top.container() : null;
     }
 
-    public void updateContainer(String uniqueId, ContainerShadowNode container) {
+    public void reorderContainer(String uniqueId, ContainerShadowNode container) {
         if (uniqueId == null || container == null) return;
         if (mAllContainers.containsKey(uniqueId)) {
             mAllContainers.remove(uniqueId);
@@ -259,7 +259,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             }
             setVisibilityEvent(VisibilityEvent.NONE);
 
-            mPlugin.updateContainer(getUniqueId(), this);
+            mPlugin.reorderContainer(getUniqueId(), this);
             mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), hint, null);
             Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + hint.toString()  + "(" + hint.ordinal() + "), " + mPlugin.getContainers());
         }
