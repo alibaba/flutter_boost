@@ -52,8 +52,7 @@ class _MyAppState extends State<MyApp> {
     },
     'willPop': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings,
-          pageBuilder: (_, __, ___) => WillPopRouteWidget());
+          settings: settings, pageBuilder: (_, __, ___) => WillPopRoute());
     },
     'secondStateful': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
