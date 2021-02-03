@@ -7,14 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import "FBFlutterViewContainer.h"
-#import "NewFlutterBoost.h"
-#import "FLBFlutterViewContainer.h"
-#import "FLBFlutterContainerManager.h"
+#import "FlutterBoost.h"
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-#define ENGINE [NewFlutterBoost instance].engine
-#define FB_PLUGIN [NewFlutterBoost instance].flutterBoostPlugin
+#define ENGINE [FlutterBoost instance].engine
+#define FB_PLUGIN [FlutterBoost instance].flutterBoostPlugin
 
 //#define FLUTTER_VIEW ENGINE.flutterViewController.view
 //#define FLUTTER_VC ENGINE.flutterViewController

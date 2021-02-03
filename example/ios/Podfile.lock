@@ -35,7 +35,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_boost: cf47d931fd35ffe08fc0189d73648bab1b652e91
+  flutter_boost: 22d0c8fc40816397221041713e6e67acf41849ca
   flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e

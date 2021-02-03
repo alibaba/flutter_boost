@@ -9,12 +9,12 @@
 #import <Flutter/Flutter.h>
 #import "messages.h"
 #import "FlutterBoostDelegate.h"
-#import "FLBFlutterContainer.h"
+#import "FBFlutterContainer.h"
 
-@interface NewFlutterBoostPlugin : NSObject <FlutterPlugin>
-//FlutterBoostDelegate
+@interface FlutterBoostPlugin : NSObject <FlutterPlugin>
+
 @property(nonatomic, strong) FBFlutterRouterApi* flutterApi;
 
-- (void)addContainer:(id<FLBFlutterContainer>)vc;
-- (void)removeContainer:(id<FLBFlutterContainer>)vc;
+- (void)addContainer:(id<FBFlutterContainer>)vc;
+- (void)removeContainer:(id<FBFlutterContainer>)vc;
 @end

@@ -6,9 +6,9 @@
 //
 #import <UIKit/UIKit.h>
 #import <Flutter/Flutter.h>
-#import "FLBFlutterContainer.h"
+#import "FBFlutterContainer.h"
 
-@interface FBFlutterViewContainer  : FlutterViewController<FLBFlutterContainer>
+@interface FBFlutterViewContainer  : FlutterViewController<FBFlutterContainer>
 
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic, strong) NSNumber *disablePopGesture;

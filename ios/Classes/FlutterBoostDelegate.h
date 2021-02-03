@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "messages.h"
+#import <Flutter/Flutter.h>
 
 @class FBCommonParams;
 

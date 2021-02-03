@@ -7,15 +7,15 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "NewFlutterBoost.h"
-#import "NewFlutterBoostPlugin.h"
-@interface NewFlutterBoost ()
+#import "FlutterBoost.h"
+#import "FlutterBoostPlugin.h"
+@interface FlutterBoost ()
 
 @property (nonatomic,assign) BOOL isRunning;
 
 @end
 
-@implementation NewFlutterBoost
+@implementation FlutterBoost
 
 - (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate{
     if([delegate respondsToSelector:@selector(engine)]){
@@ -49,10 +49,10 @@
     self.flutterBoostPlugin= [self flutterBoostPlugin:self.engine];
 }
 
-- (NewFlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
-    NSObject *published= [engine valuePublishedByPlugin:@"NewFlutterBoostPlugin" ];
-    if ([published isKindOfClass:[NewFlutterBoostPlugin class]]) {
-        NewFlutterBoostPlugin *plugin = (NewFlutterBoostPlugin *)published;
+- (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
+    NSObject *published= [engine valuePublishedByPlugin:@"FlutterBoostPlugin" ];
+    if ([published isKindOfClass:[FlutterBoostPlugin class]]) {
+        FlutterBoostPlugin *plugin = (FlutterBoostPlugin *)published;
         return  plugin;
     }
     return nil;
@@ -84,7 +84,7 @@
         FBCommonParams* params = [[FBCommonParams alloc] init];
         params.pageName=url;
         params.arguments=urlParams;
-        [[NewFlutterBoost instance].delegate pushFlutterRoute:params present: FALSE completion:completion];
+        [[FlutterBoost instance].delegate pushFlutterRoute:params present: FALSE completion:completion];
 }
 
 - (void)present:(NSString *)url urlParams:(NSDictionary *)urlParams  completion:(void (^)(BOOL))completion{
@@ -93,14 +93,14 @@
     params.pageName=url;
     params.arguments=urlParams;
     
-    [[NewFlutterBoost instance].delegate pushFlutterRoute:params present: YES completion:completion] ;
+    [[FlutterBoost instance].delegate pushFlutterRoute:params present: YES completion:completion] ;
     
 }
 
 - (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData completion:(void (^)(BOOL))completion{
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId=uniqueId;
-    [[NewFlutterBoost instance].delegate popRoute :params result: resultData completion:completion];
+    [[FlutterBoost instance].delegate popRoute :params result: resultData completion:completion];
 }
 
 - (void)destroyPluginContext{

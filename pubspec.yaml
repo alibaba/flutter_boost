@@ -25,4 +25,4 @@ flutter:
         package: com.idlefish.flutterboost
         pluginClass: FlutterBoostPlugin
       ios:
-        pluginClass: NewFlutterBoostPlugin
+        pluginClass: FlutterBoostPlugin

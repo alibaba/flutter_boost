@@ -32,7 +32,7 @@
          present:(BOOL)present
                completion:(void (^)(BOOL finished))completion{
     
-    FlutterEngine* engine =  [[NewFlutterBoost instance ] engine];
+    FlutterEngine* engine =  [[FlutterBoost instance ] engine];
     engine.viewController = nil;
     
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;

@@ -20,7 +20,6 @@
 		DF544AA62177253600931378 /* UIViewControllerDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF544AA42177253600931378 /* UIViewControllerDemo.m */; };
 		DF544AA72177253600931378 /* UIViewControllerDemo.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF544AA52177253600931378 /* UIViewControllerDemo.xib */; };
 		DF544AD4217838EF00931378 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DF544AD3217838EF00931378 /* libc++.tbd */; };
-		DFD80BFA217DF95400E3F036 /* PlatformRouterImp.m in Sources */ = {isa = PBXBuildFile; fileRef = DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */; };
 		FA32AEF623B4A56E00449D68 /* NativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA32AEF523B4A56D00449D68 /* NativeViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -79,8 +78,6 @@
 		DF544AA52177253600931378 /* UIViewControllerDemo.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UIViewControllerDemo.xib; sourceTree = "<group>"; };
 		DF544ACF217836F600931378 /* libstdc++.6.0.9.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.6.0.9.tbd"; path = "usr/lib/libstdc++.6.0.9.tbd"; sourceTree = SDKROOT; };
 		DF544AD3217838EF00931378 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		DFD80BF8217DF95400E3F036 /* PlatformRouterImp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlatformRouterImp.h; sourceTree = "<group>"; };
-		DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlatformRouterImp.m; sourceTree = "<group>"; };
 		FA32AEEA23B4685A00449D68 /* products.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = products.xcodeproj; path = ../../../engine_github/src/out/ios_debug_unopt/products.xcodeproj; sourceTree = "<group>"; };
 		FA32AEF423B4A56D00449D68 /* NativeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeViewController.h; sourceTree = "<group>"; };
 		FA32AEF523B4A56D00449D68 /* NativeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeViewController.m; sourceTree = "<group>"; };
@@ -155,8 +152,6 @@
 				DF544AA32177253600931378 /* UIViewControllerDemo.h */,
 				DF544AA42177253600931378 /* UIViewControllerDemo.m */,
 				DF544AA52177253600931378 /* UIViewControllerDemo.xib */,
-				DFD80BF8217DF95400E3F036 /* PlatformRouterImp.h */,
-				DFD80BF9217DF95400E3F036 /* PlatformRouterImp.m */,
 				7AFFD8ED1D35381100E5BB4D /* AppDelegate.h */,
 				7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
@@ -354,7 +349,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFD80BFA217DF95400E3F036 /* PlatformRouterImp.m in Sources */,
 				8E9D8AD025B982C60080BBA7 /* MyFlutterBoostDelegate.m in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				97C146F31CF9000F007C117D /* main.m in Sources */,

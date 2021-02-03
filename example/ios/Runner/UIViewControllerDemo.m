@@ -26,7 +26,7 @@
 - (IBAction)pushFlutterPage:(id)sender {
     
     
-    [[NewFlutterBoost instance] open:@"flutterPage" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
+    [[FlutterBoost instance] open:@"flutterPage" urlParams:nil completion:^(BOOL f) {
         NSLog(@"page is open ");
     } ];
     
@@ -42,7 +42,7 @@
 
 - (IBAction)present:(id)sender {
     
-    [[NewFlutterBoost instance] present:@"secondStateful" urlParams:@{kPageCallBackId:@"MycallbackId#2"} completion:^(BOOL f) {
+    [[FlutterBoost instance] present:@"secondStateful" urlParams:nil completion:^(BOOL f) {
         NSLog(@"page is presented");
     } ];
 

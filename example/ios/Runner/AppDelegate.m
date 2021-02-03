@@ -8,7 +8,6 @@
 
 #import "AppDelegate.h"
 #import "UIViewControllerDemo.h"
-#import "PlatformRouterImp.h"
 #import "NativeViewController.h"
 #import "MyFlutterBoostDelegate.h"
 
@@ -31,7 +30,7 @@
     
     MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
         
-    [[NewFlutterBoost instance] setup:application delegate:delegate];
+    [[FlutterBoost instance] setup:application delegate:delegate];
     
     
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];

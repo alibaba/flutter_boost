@@ -24,13 +24,19 @@
 
 #import <Foundation/Foundation.h>
 #import "FlutterBoostDelegate.h"
-#import "NewFlutterBoostPlugin.h"
+#import "FlutterBoostPlugin.h"
+#import "FBFlutterViewContainer.h"
+#import "FlutterBoostDelegate.h"
+#import "FlutterBoost.h"
+#import "FlutterBoostPlugin.h"
+#import "FBFlutterViewContainer.h"
+#import "messages.h"
 
 
-@interface NewFlutterBoost : NSObject
+@interface FlutterBoost : NSObject
 
 @property(nonatomic, strong)  FlutterEngine*  engine;
-@property(nonatomic, strong)  NewFlutterBoostPlugin*  flutterBoostPlugin;
+@property(nonatomic, strong)  FlutterBoostPlugin*  flutterBoostPlugin;
 @property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
 
 + (instancetype)instance;
