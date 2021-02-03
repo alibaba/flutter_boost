@@ -65,8 +65,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                     node.container().finishContainer(params.getArguments());
                 }
                 node.setIsPopping();
-            } else {
-                Log.v(TAG, "Something wrong ?! Can't find container: " + uniqueId);
             }
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");

@@ -208,7 +208,18 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   // Navigator.of(context).maybePop();
                 },
               ),
-
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'close with params',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.of()
+                    .pop(arguments: <String, String>{'from': widget.uniqueId}),
+              ),
               // InkWell(
               //   child: Container(
               //       padding: const EdgeInsets.all(8.0),

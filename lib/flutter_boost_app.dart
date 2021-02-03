@@ -158,7 +158,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         Logger.error('uniqueId=$uniqueId not find');
         return;
       }
-      if(page!=pages.last){
+      if (page != pages.last) {
         _removePage(page);
         return;
       }
@@ -180,7 +180,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       setState(() {
         pages.remove(page);
         if (page.pageInfo.withContainer) {
-          Logger.log('pop container ,  uniqueId=${page.pageInfo.uniqueId}');
+          Logger.log(
+              'pop container,  uniqueId=${page.pageInfo.uniqueId}, arguments:$arguments');
           CommonParams params = CommonParams()
             ..pageName = page.pageInfo.pageName
             ..uniqueId = page.pageInfo.uniqueId
@@ -190,6 +191,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       });
     }
   }
+
   void _removePage(BoostPage page) {
     pages.remove(page);
     if (page.pageInfo.withContainer) {
@@ -197,7 +199,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       CommonParams params = CommonParams()
         ..pageName = page.pageInfo.pageName
         ..uniqueId = page.pageInfo.uniqueId
-        ..arguments =  page.pageInfo.arguments;
+        ..arguments = page.pageInfo.arguments;
       _nativeRouterApi.popRoute(params);
     }
   }

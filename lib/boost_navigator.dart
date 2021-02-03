@@ -64,14 +64,14 @@ class BoostNavigator {
   ///
   /// 注意：
   /// 1.每个带容器的页面，都包含了一个自己的navigator，用于维护复用该容器的所有页面。
-  /// 执行关闭时，先执行页面里面的navigator.pop ，让子路由pop.
+  /// 执行关闭时，先执行页面里面的navigator.pop ，让子路由pop。
   ///
   /// 2.执行关闭时候，页面内的子路由 maybePop=false ，才会关闭整个页面，
-  /// 如果page有对应的容native 容器， 则会关闭容器
-  /// page是否有容器，是打开时候的withContainer属性定的。
+  /// 如果page有对应的native容器， 则会一并关闭容器。page是否有容器，由push的
+  /// withContainer参数决定。
   ///
-  void pop() {
-    appState.pop();
+  void pop({Map arguments}) {
+    appState.pop(arguments: arguments);
   }
 
   ///
