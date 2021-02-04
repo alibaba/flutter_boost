@@ -17,7 +17,8 @@
 
 @implementation FlutterBoost
 
-- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback {
+- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback
+    {
     if([delegate respondsToSelector:@selector(engine)]){
         self.engine=delegate.engine;
     }else{
@@ -47,8 +48,19 @@
                         withObject:self.engine];
         }
     }
+        
     self.delegate=delegate;
     self.plugin= [self flutterBoostPlugin:self.engine];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillEnterForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationDidEnterBackground:)
+                                                 name:UIApplicationDidEnterBackgroundNotification
+                                               object:nil];
 }
 
 - (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
@@ -87,7 +99,7 @@
         params.pageName=pageName;
         params.arguments=arguments;
         [[FlutterBoost instance].delegate pushFlutterRoute:params ];
-    
+
 }
 
 - (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData {
@@ -99,5 +111,24 @@
     
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    [ [FlutterBoost instance].plugin.flutterApi onBackground: params completion:^(NSError * error) {
+    
+    }];
+}
+
+- (void)applicationWillEnterForeground:(UIApplication *)application {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    [ [FlutterBoost instance].plugin.flutterApi onForeground:params completion:^(NSError * error) {
+       
+    }];
+}
+
+- (void)destroy{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
+
+}
 
 @end

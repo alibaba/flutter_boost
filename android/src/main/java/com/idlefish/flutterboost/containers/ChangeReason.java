@@ -7,8 +7,6 @@ package com.idlefish.flutterboost.containers;
  */
 public enum ChangeReason {
     Unspecified,
-    RoutePushed,
-    RoutePopped,
     RouteReorder,
     ViewPushed,
     ViewPopped,
