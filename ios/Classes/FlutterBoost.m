@@ -17,7 +17,7 @@
 
 @implementation FlutterBoost
 
-- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate{
+- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback {
     if([delegate respondsToSelector:@selector(engine)]){
         self.engine=delegate.engine;
     }else{
@@ -38,6 +38,8 @@
     [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
     self.isRunning=YES;
     
+    callback(self.engine);
+
     Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
     if (clazz && self.engine) {
         if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
@@ -79,33 +81,22 @@
 }
 
 #pragma mark - open/close Page
-- (void)open:(NSString *)url urlParams:(NSDictionary *)urlParams  completion:(void (^)(BOOL))completion{
+- (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments  {
    
         FBCommonParams* params = [[FBCommonParams alloc] init];
-        params.pageName=url;
-        params.arguments=urlParams;
-        [[FlutterBoost instance].delegate pushFlutterRoute:params present: FALSE completion:completion];
-}
-
-- (void)present:(NSString *)url urlParams:(NSDictionary *)urlParams  completion:(void (^)(BOOL))completion{
-    
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.pageName=url;
-    params.arguments=urlParams;
-    
-    [[FlutterBoost instance].delegate pushFlutterRoute:params present: YES completion:completion] ;
+        params.pageName=pageName;
+        params.arguments=arguments;
+        [[FlutterBoost instance].delegate pushFlutterRoute:params ];
     
 }
 
-- (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData completion:(void (^)(BOOL))completion{
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.uniqueId=uniqueId;
+- (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData {
+        FBCommonParams* params = [[FBCommonParams alloc] init];
+        params.uniqueId=uniqueId;
+        
+        [[FlutterBoost instance].plugin.flutterApi popRoute:params completion:^(NSError* error) {
+          } ];
     
-
-    [[FlutterBoost instance].plugin.flutterApi popRoute:params completion:^(NSError* error) {
-      } ];
-    
-    if(completion) completion(YES);
 }
 
 

@@ -20,17 +20,12 @@ typedef void (^NativeRouterHandler)(FBCommonParams* params);
 - (NSString*) dartEntrypointFunctionName;
 - (FlutterEngine*)  engine;
 @required
-- (void) pushNativeRoute:(FBCommonParams*) params
-         present:(BOOL)present
-         completion:(void (^)(BOOL finished))completion;
+- (void) pushNativeRoute:(FBCommonParams*) params;
 
-- (void) pushFlutterRoute:(FBCommonParams*)params
-         present:(BOOL)present
-         completion:(void (^)(BOOL finished))completion ;
+- (void) pushFlutterRoute:(FBCommonParams*)params ;
 
 - (void) popRoute:(FBCommonParams*)params
-         result:(NSDictionary *)result
-        completion:(void (^)(BOOL finished))completion;
+         result:(NSDictionary *)result;
 
 @end
 

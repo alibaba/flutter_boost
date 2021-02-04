@@ -26,9 +26,7 @@
 - (IBAction)pushFlutterPage:(id)sender {
     
     
-    [[FlutterBoost instance] open:@"flutterPage" urlParams:nil completion:^(BOOL f) {
-        NSLog(@"page is open ");
-    } ];
+    [[FlutterBoost instance] open:@"flutterPage" arguments:nil  ];
     
 
 //    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
@@ -42,9 +40,7 @@
 
 - (IBAction)present:(id)sender {
     
-    [[FlutterBoost instance] present:@"secondStateful" urlParams:nil completion:^(BOOL f) {
-        NSLog(@"page is presented");
-    } ];
+    [[FlutterBoost instance] open:@"secondStateful" arguments:@{@"present":@(YES)}];
 
 //    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
 //        NSLog(@"call me when page finished, and your result is:%@", result);

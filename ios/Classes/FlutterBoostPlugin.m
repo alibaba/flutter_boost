@@ -47,25 +47,20 @@
 
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[FlutterBoost instance].delegate pushNativeRoute:input present:FALSE completion:^(BOOL finished) {
-    
-    }];
+    [[FlutterBoost instance].delegate pushNativeRoute:input];
     
 //    *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
 
 }
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[FlutterBoost instance].delegate pushFlutterRoute:input present: FALSE completion:^(BOOL finished) {
-    }] ;
+    [[FlutterBoost instance].delegate pushFlutterRoute:input ] ;
 
 }
 
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     if([self.containerManager containUniqueId:input.uniqueId]){
-        [[FlutterBoost instance].delegate  popRoute: input result: nil completion:^(BOOL finished) {
-        
-        }];
+        [[FlutterBoost instance].delegate  popRoute: input result: nil ];
     };
 }
 

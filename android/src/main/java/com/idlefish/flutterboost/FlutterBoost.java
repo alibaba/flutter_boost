@@ -27,13 +27,17 @@ public class FlutterBoost {
         return sInstance;
     }
 
+    public interface Callback {
+        void onStart( FlutterEngine engine);
+    }
+
     /**
      * 初始化
      *
      * @param application
      * @param delegate
      */
-    public void setup(Application application, FlutterBoostDelegate delegate) {
+    public void setup(Application application, FlutterBoostDelegate delegate,Callback callback) {
         // 1. initialize default engine
         FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
         if (engine == null) {
@@ -41,6 +45,7 @@ public class FlutterBoost {
             engine.getNavigationChannel().setInitialRoute(delegate.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
                     FlutterMain.findAppBundlePath(), delegate.dartEntrypointFunctionName()));
+            if(callback!=null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
             isRunning = true;
         }
@@ -142,11 +147,19 @@ public class FlutterBoost {
         return null;
     }
 
+    /**
+     *
+     * @param pageName
+     * @param arguments
+     */
     public void open(String pageName, HashMap<String, String> arguments) {
         this.getPlugin().getDelegate().pushFlutterRoute(pageName, arguments);
     }
 
-    public void close(Messages.CommonParams params) {
+    public void close(String uniqueId,HashMap<String, String> result) {
+        Messages.CommonParams params= new Messages.CommonParams();
+        params.setUniqueId(uniqueId);
+        params.setArguments(result);
         this.getPlugin().popRoute(params);
     }
 }

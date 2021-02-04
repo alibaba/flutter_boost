@@ -37,7 +37,9 @@ public class MyApplication extends FlutterApplication {
                 FlutterBoost.instance().currentActivity().startActivity(intent);
             }
 
-        });
+        },engine->{
+            engine.getPlugins();
+        } );
 
 
     }

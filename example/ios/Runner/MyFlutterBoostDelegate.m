@@ -14,23 +14,19 @@
 @implementation MyFlutterBoostDelegate
 
 
-- (void) pushNativeRoute:(FBCommonParams*) params
-         present:(BOOL)present
-              completion:(void (^)(BOOL finished))completion{
-    
+- (void) pushNativeRoute:(FBCommonParams*) params{
+    BOOL animated = [params.arguments[@"animated"] boolValue];
+    BOOL present= [params.arguments[@"present"] boolValue];
     UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     if(present){
-        [self.navigationController presentViewController:nvc animated:YES completion:^{
+        [self.navigationController presentViewController:nvc animated:animated completion:^{
         }];
     }else{
-        [self.navigationController pushViewController:nvc animated:YES];
+        [self.navigationController pushViewController:nvc animated:animated];
     }
-    if(completion) completion(YES);
 }
 
-- (void) pushFlutterRoute:(FBCommonParams*)params
-         present:(BOOL)present
-               completion:(void (^)(BOOL finished))completion{
+- (void) pushFlutterRoute:(FBCommonParams*)params {
     
     FlutterEngine* engine =  [[FlutterBoost instance ] engine];
     engine.viewController = nil;
@@ -39,19 +35,19 @@
     
     [vc setName:params.pageName params:params.arguments];
     
+    BOOL animated = [params.arguments[@"animated"] boolValue];
+    BOOL present= [params.arguments[@"present"] boolValue];
     if(present){
-        [self.navigationController presentViewController:vc animated:YES completion:^{
+        [self.navigationController presentViewController:vc animated:animated completion:^{
         }];
     }else{
-        [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:vc animated:animated];
 
     }
-    if(completion) completion(YES);
 }
 
 - (void) popRoute:(FBCommonParams*)params
-         result:(NSDictionary *)result
-       completion:(void (^)(BOOL finished))completion{
+         result:(NSDictionary *)result{
     
 //    [self.navigationController popViewControllerAnimated:YES];
 
@@ -63,7 +59,6 @@
         [self.navigationController popViewControllerAnimated:YES];
     }
     
-    if(completion) completion(YES);
 }
 
 @end

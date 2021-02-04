@@ -27,10 +27,11 @@
     
     [self.window makeKeyAndVisible];
     
-    
     MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
         
-    [[FlutterBoost instance] setup:application delegate:delegate];
+    [[FlutterBoost instance] setup:application delegate:delegate callback:^(FlutterEngine *engine) {
+        
+    } ];
     
     
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];

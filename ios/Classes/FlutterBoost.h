@@ -41,7 +41,7 @@
 
 + (instancetype)instance;
 
-- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate;
+- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback;
 
 #pragma mark - Some properties.
 
@@ -57,34 +57,19 @@
  *
  * @param uniqueId 关闭的页面唯一ID符
  * @param resultData 页面要返回的结果（给上一个页面），会作为页面返回函数的回调参数
- * @param completion 关闭页面的即时回调，页面一旦关闭即回调
  */
 - (void)close:(NSString *)uniqueId
-       result:(NSDictionary *)resultData
-   completion:(void (^)(BOOL))completion;
+       result:(NSDictionary *)resultData;
 
 /**
- * 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口；通过urlParams可以设置为以present方式打开页面：urlParams:@{@"present":@(YES)}
+ * 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口；
+ * 通过arguments可以设置为以present方式打开页面：arguments:@{@"present":@(YES)}
  *
- * @param url 打开的页面资源定位符
- * @param urlParams 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
- * @param completion 打开页面的即时回调，页面一旦打开即回调
+ * @param pageName 打开的页面资源定位符
+ * @param arguments 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
  */
-- (void)open:(NSString *)url
-   urlParams:(NSDictionary *)urlParams
-  completion:(void (^)(BOOL))completion;
-
-/**
- * Present方式打开新页面，混合栈推荐使用的用于操作页面的接口
- *
- * @param url 打开的页面资源定位符
- * @param urlParams 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
- * @param completion 打开页面的即时回调，页面一旦打开即回调
- */
-- (void)present:(NSString *)url
-   urlParams:(NSDictionary *)urlParams
-  completion:(void (^)(BOOL))completion;
-
+- (void)open:(NSString *)pageName
+   arguments:(NSDictionary *)arguments;
 
 
 @end
