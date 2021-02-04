@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
 - (void)pushRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)popRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)removeRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onForeground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onBackground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onAppear:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;

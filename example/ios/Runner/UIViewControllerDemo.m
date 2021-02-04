@@ -26,7 +26,7 @@
 - (IBAction)pushFlutterPage:(id)sender {
     
     
-    [[FlutterBoost instance] open:@"flutterPage" arguments:nil  ];
+    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"animated":@(YES)}  ];
     
 
 //    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {

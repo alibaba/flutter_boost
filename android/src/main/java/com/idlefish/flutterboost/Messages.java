@@ -78,6 +78,14 @@ public class Messages {
         callback.reply(null);
       });
     }
+    public void removeRoute(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.removeRoute", new StandardMessageCodec());
+      HashMap inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
     public void onForeground(CommonParams argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onForeground", new StandardMessageCodec());

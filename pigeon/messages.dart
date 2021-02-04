@@ -18,6 +18,7 @@ abstract class NativeRouterApi {
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams param);
   void popRoute(CommonParams param);
+  void removeRoute(CommonParams param);
   void onForeground(CommonParams param);
   void onBackground(CommonParams param);
   void onAppear(CommonParams param);

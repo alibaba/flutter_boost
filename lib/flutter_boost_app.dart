@@ -177,18 +177,19 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               .onAppear(prevPage, ChangeReason.routePushed);
         }
       }
-      setState(() {
-        pages.remove(page);
-        if (page.pageInfo.withContainer) {
-          Logger.log(
-              'pop container,  uniqueId=${page.pageInfo.uniqueId}, arguments:$arguments');
-          CommonParams params = CommonParams()
-            ..pageName = page.pageInfo.pageName
-            ..uniqueId = page.pageInfo.uniqueId
-            ..arguments = arguments;
-          _nativeRouterApi.popRoute(params);
-        }
-      });
+      if (page.pageInfo.withContainer) {
+        Logger.log(
+            'pop container,  uniqueId=${page.pageInfo.uniqueId}, arguments:$arguments');
+        CommonParams params = CommonParams()
+          ..pageName = page.pageInfo.pageName
+          ..uniqueId = page.pageInfo.uniqueId
+          ..arguments = arguments;
+        _nativeRouterApi.popRoute(params);
+      }
+      // setState(() {
+      //   // pages.remove(page);
+      //
+      // });
     }
   }
 
@@ -230,16 +231,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void remove(String uniqueId) {
     if (uniqueId == null) return;
     setState(() {
-      pages.forEach((entry) {
-        entry.pages.forEach((element) {
-          if (element.pageInfo?.uniqueId == uniqueId) {
-            entry.pages.remove(element);
-            if (entry.pages.isEmpty) {
-              pages.remove(entry);
-            }
-            return;
-          }
-        });
+      pages?.forEach((entry) {
+        if (entry.pageInfo?.uniqueId == uniqueId) {
+          pages?.remove(entry);
+          return;
+        }
       });
     });
   }
@@ -382,10 +378,10 @@ class BoostPageWithNavigator<T> extends BoostPage<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
-    return MaterialPageRoute<T>(
+    return PageRouteBuilder<T>(
         settings: this,
-        builder: (BuildContext context) {
-          return Navigator(
+        pageBuilder: (_, __, ___){
+        return Navigator(
             key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
             pages: List.of(pages),
             onPopPage: (route, dynamic result) {

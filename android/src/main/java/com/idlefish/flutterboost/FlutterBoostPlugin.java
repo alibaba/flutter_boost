@@ -108,7 +108,19 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
     }
-
+    public void removeRoute(String uniqueId,final Reply<Void> callback) {
+        if (mApi != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            mApi.removeRoute(params,reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
     public enum VisibilityEvent {
         NONE,
         FOREGROUND,
@@ -288,7 +300,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
         @Override
         public void onDestroyView() {
-            mPlugin.popRoute(getUniqueId(), null);
+            mPlugin.removeRoute(getUniqueId(), null);
             mPlugin.removeContainer(getUniqueId());
             Log.v(TAG, "#onDestroyView: " + getUniqueId() + ", " + mPlugin.getContainers());
         }

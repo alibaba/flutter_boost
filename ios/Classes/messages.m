@@ -86,6 +86,16 @@ static NSDictionary* wrapResult(NSDictionary *result, FlutterError *error) {
     completion(nil);
   }];
 }
+- (void)removeRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.FlutterRouterApi.removeRoute"
+      binaryMessenger:self.binaryMessenger];
+  NSDictionary* inputMap = [input toMap];
+  [channel sendMessage:inputMap reply:^(id reply) {
+    completion(nil);
+  }];
+}
 - (void)onForeground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion {
   FlutterBasicMessageChannel *channel =
     [FlutterBasicMessageChannel

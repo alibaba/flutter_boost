@@ -177,7 +177,7 @@ static NSUInteger kInstanceCounter = 0;
     params.pageName=_name;
     params.arguments=_params;
     params.uniqueId=[self uniqueIDString];
-    [FB_PLUGIN.flutterApi popRoute: params  completion:^(NSError * e) {
+    [FB_PLUGIN.flutterApi removeRoute: params  completion:^(NSError * e) {
 
             }];
     [FB_PLUGIN removeContainer:self];
