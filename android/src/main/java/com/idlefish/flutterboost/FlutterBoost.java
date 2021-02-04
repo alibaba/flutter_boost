@@ -5,10 +5,7 @@ import android.app.Application;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -17,15 +14,10 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
-
     public final static String ENGINE_ID = "flutter_boost_default_engine";
-
     private static FlutterBoost sInstance = null;
-
     private Activity mTopActivity = null;
-
     private boolean isRunning = false;
-
     private FlutterBoostPlugin mPlugin;
 
     public static FlutterBoost instance() {
@@ -137,7 +129,6 @@ public class FlutterBoost {
         application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
-
     private FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
         if (engine != null) {
             try {
@@ -157,6 +148,5 @@ public class FlutterBoost {
 
     public void close(Messages.CommonParams params) {
         this.getPlugin().popRoute(params);
-
     }
 }
