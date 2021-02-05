@@ -102,7 +102,7 @@
 
 }
 
-- (void)close:(NSString *)uniqueId result:(NSDictionary *)resultData {
+- (void)close:(NSString *)uniqueId {
         FBCommonParams* params = [[FBCommonParams alloc] init];
         params.uniqueId=uniqueId;
         

@@ -32,10 +32,12 @@ public class FlutterBoost {
     }
 
     /**
-     * 初始化
-     *
+     * 初始化接口
      * @param application
      * @param delegate
+     *  用户自定义设置
+     * @param callback
+     *  engine启动后回调
      */
     public void setup(Application application, FlutterBoostDelegate delegate,Callback callback) {
         // 1. initialize default engine
@@ -120,12 +122,12 @@ public class FlutterBoost {
     }
 
     /**
-     * 根据unqueid，返回容器
+     * 最上层容器
      * 兼容老版本
      *
      * @return
      */
-    public FlutterViewContainer getFlutterViewContainer() {
+    public FlutterViewContainer getTopContainer() {
         return getPlugin().getTopContainer();
     }
 
@@ -148,7 +150,7 @@ public class FlutterBoost {
     }
 
     /**
-     *
+     * 打开一个flutter页面
      * @param pageName
      * @param arguments
      */
@@ -156,10 +158,13 @@ public class FlutterBoost {
         this.getPlugin().getDelegate().pushFlutterRoute(pageName, arguments);
     }
 
-    public void close(String uniqueId,HashMap<String, String> result) {
+    /**
+     * 关闭flutter 页面
+     * @param uniqueId
+     */
+    public void close(String uniqueId) {
         Messages.CommonParams params= new Messages.CommonParams();
         params.setUniqueId(uniqueId);
-        params.setArguments(result);
         this.getPlugin().popRoute(params);
     }
 }

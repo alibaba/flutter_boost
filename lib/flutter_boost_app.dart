@@ -29,7 +29,7 @@ String getUniqueId(String pageName) {
 ///
 class FlutterBoostApp extends StatefulWidget {
   const FlutterBoostApp(this.routeFactory,
-      {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
+      {FlutterBoostAppBuilder appBuilder,String initialRoute, this.observers})
       : appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 

@@ -56,10 +56,8 @@
  * 关闭页面，混合栈推荐使用的用于操作页面的接口
  *
  * @param uniqueId 关闭的页面唯一ID符
- * @param resultData 页面要返回的结果（给上一个页面），会作为页面返回函数的回调参数
  */
-- (void)close:(NSString *)uniqueId
-       result:(NSDictionary *)resultData;
+- (void)close:(NSString *)uniqueId;
 
 /**
  * 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口；
