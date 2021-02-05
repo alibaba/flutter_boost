@@ -35,9 +35,11 @@
 
 @interface FlutterBoost : NSObject
 
-@property(nonatomic, strong)  FlutterEngine*  engine;
-@property(nonatomic, strong)  FlutterBoostPlugin*  plugin;
-@property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
+- (FlutterEngine*)  getEngine;
+
+- (FlutterBoostPlugin*)  getPlugin;
+
+- (id<FlutterBoostDelegate>)  getDelegate ;
 
 + (instancetype)instance;
 

@@ -12,6 +12,9 @@
 @interface FlutterBoost ()
 
 @property (nonatomic,assign) BOOL isRunning;
+@property(nonatomic, strong)  FlutterEngine*  engine;
+@property(nonatomic, strong)  FlutterBoostPlugin*  plugin;
+@property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
 
 @end
 
@@ -82,11 +85,18 @@
     return _instance;
 }
 
-#pragma mark - Some properties.
-
-- (BOOL)isRunning{
-    return  self.isRunning;
+- (FlutterEngine*)  getEngine{
+    return  self.engine;
 }
+
+- (FlutterBoostPlugin*)   getPlugin{
+    return  self.plugin;
+}
+- (id<FlutterBoostDelegate>)getDelegate{
+    return  self.delegate;
+}
+
+#pragma mark - Some properties.
 
 - (FlutterViewController *) currentViewController{
     return self.engine.viewController;

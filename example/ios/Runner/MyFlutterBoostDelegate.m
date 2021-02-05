@@ -28,7 +28,7 @@
 
 - (void) pushFlutterRoute:(FBCommonParams*)params {
     
-    FlutterEngine* engine =  [[FlutterBoost instance ] engine];
+    FlutterEngine* engine =  [[FlutterBoost instance ] getEngine];
     engine.viewController = nil;
     
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
