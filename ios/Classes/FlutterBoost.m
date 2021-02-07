@@ -111,10 +111,7 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments  {
    
-        FBCommonParams* params = [[FBCommonParams alloc] init];
-        params.pageName=pageName;
-        params.arguments=arguments;
-        [[FlutterBoost instance].delegate pushFlutterRoute:params ];
+    [[[FlutterBoost instance] getDelegate] pushFlutterRoute:pageName arguments:arguments];
 
 }
 
