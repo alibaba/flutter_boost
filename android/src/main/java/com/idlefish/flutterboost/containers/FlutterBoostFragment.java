@@ -169,6 +169,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         private boolean shouldAttachEngineToActivity = true;
         private String url = "/";
         private HashMap<String, String> params;
+        private String uniqueId;
 
         public CachedEngineFragmentBuilder( String engineId) {
             this(FlutterBoostFragment.class, engineId);
@@ -187,6 +188,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         public FlutterBoostFragment.CachedEngineFragmentBuilder urlParams(HashMap<String, String> param) {
             this.params = params;
+            return this;
+        }
+
+        public FlutterBoostFragment.CachedEngineFragmentBuilder uniqueId(String uniqueId) {
+            this.uniqueId = uniqueId;
             return this;
         }
 
@@ -234,7 +240,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, params);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().generateUniqueId(url));
             return args;
         }
 

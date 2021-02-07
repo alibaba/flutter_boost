@@ -10,5 +10,5 @@ public abstract class FlutterBoostDelegate {
         return  "main";
     }
     public abstract void pushNativeRoute(String pageName, HashMap<String, String> arguments);
-    public abstract void pushFlutterRoute(String pageName, HashMap<String, String> arguments);
+    public abstract void pushFlutterRoute(String pageName, String uniqueId, HashMap<String, String> arguments);
 }

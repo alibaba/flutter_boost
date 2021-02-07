@@ -126,6 +126,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url;
         private HashMap<String, String> params;
+        private String uniqueId;
 
         public CachedEngineIntentBuilder(
                 Class<? extends FlutterBoostActivity> activityClass, String engineId) {
@@ -155,6 +156,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             return this;
         }
 
+        public FlutterBoostActivity.CachedEngineIntentBuilder uniqueId(String uniqueId) {
+            this.uniqueId = uniqueId;
+            return this;
+        }
+
         public Intent build(Context context) {
             return new Intent(context, activityClass)
                     .putExtra(EXTRA_CACHED_ENGINE_ID, cachedEngineId)
@@ -162,7 +168,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
+                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().generateUniqueId(url));
         }
     }
 

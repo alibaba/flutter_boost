@@ -48,10 +48,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
           );
         }),
-        // brightness:Brightness.light,
-        // backgroundColor: Colors.white,
-        // textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
-
         title: Text('flutter_boost_example'),
       ),
       body: SingleChildScrollView(
@@ -74,7 +70,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                 ])),
                 alignment: AlignmentDirectional.center,
               ),
-//                Expanded(child: Container()),
               const CupertinoTextField(
                 prefix: Icon(
                   CupertinoIcons.person_solid,
@@ -112,9 +107,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-
-                ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-                ///例如：sample://nativePage?aaa=bbb
                 onTap: () => BoostNavigator.of().push("native"),
               ),
               InkWell(
@@ -126,9 +118,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       'open imagepick demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-
-                ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-                ///例如：sample://nativePage?aaa=bbb
                 onTap: () =>
                     BoostNavigator.of().push("imagepick", withContainer: true),
               ),
@@ -141,9 +130,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                         'open willPop demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-
-                  ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-                  ///例如：sample://nativePage?aaa=bbb
                   onTap: () =>
                       BoostNavigator.of().push("willPop", withContainer: true)),
               InkWell(
@@ -155,44 +141,36 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                         'mediaquery demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-
-                  ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-                  ///例如：sample://nativePage?aaa=bbb
                   onTap: () => BoostNavigator.of()
                       .push("mediaquery", withContainer: true)),
-
-              // InkWell(
-              //   child: Container(
-              //       padding: const EdgeInsets.all(8.0),
-              //       margin: const EdgeInsets.all(8.0),
-              //       color: Colors.yellow,
-              //       child: Text(
-              //         'open tab',
-              //         style: TextStyle(fontSize: 22.0, color: Colors.black),
-              //       )),
-              //
-              //   ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-              //   ///例如：sample://nativePage?aaa=bbb
-              //   // onTap: () => FlutterBoost.singleton
-              //   //     .open("tab", urlParams:<String,dynamic> {
-              //   //   "query": {"aaa": "bbb"}
-              //   // }),
-              // ),
               InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(8.0),
-                    color: Colors.yellow,
-                    child: Text(
-                      'open flutter page',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
-                    )),
-
-                ///后面的参数会在native的IPlatform.startActivity方法回调中拼接到url的query部分。
-                ///例如：sample://nativePage?aaa=bbb
-                onTap: () => BoostNavigator.of()
-                    .push("flutterPage", withContainer: true),
-              ),
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'open flutter page',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () async {
+                    String result =
+                        await BoostNavigator.of().push<String>("flutterPage");
+                    print('xlog, Get result without container: $result');
+                  }),
+              InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'open flutter page with container',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () async {
+                    String result = await BoostNavigator.of()
+                        .push("flutterPage", withContainer: true);
+                    print('xlog, Get result with container: $result');
+                  }),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
@@ -217,35 +195,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                       'close with params',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of()
-                    .pop(arguments: <String, String>{'from': widget.uniqueId}),
+                onTap: () =>
+                    BoostNavigator.of().pop('I am result for pop.'),
               ),
-              // InkWell(
-              //   child: Container(
-              //       padding: const EdgeInsets.all(8.0),
-              //       margin: const EdgeInsets.all(8.0),
-              //       color: Colors.yellow,
-              //       child: Text(
-              //         'push Platform demo',
-              //         style: TextStyle(fontSize: 22.0, color: Colors.black),
-              //       )),
-              //   onTap: () {
-              //     Navigator.push<dynamic>(context,
-              //         MaterialPageRoute<dynamic>(builder: (_) => PlatformRouteWidget()));
-              //   }
-              // ),
-              //   InkWell(
-              //     child: Container(
-              //         padding: const EdgeInsets.all(8.0),
-              //         margin: const EdgeInsets.all(8.0),
-              //         color: Colors.yellow,
-              //         child: Text(
-              //           'open flutter fragment page',
-              //           style: TextStyle(fontSize: 22.0, color: Colors.black),
-              //         )),
-              //     // onTap: () => FlutterBoost.singleton
-              //     //     .open("sample://flutterFragmentPage"),
-              //   ),
             ],
           ),
         ),
@@ -272,16 +224,6 @@ class _PushWidgetState extends State<PushWidget> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-
-//    if (_backPressedListenerUnsub == null) {
-//      _backPressedListenerUnsub =
-//          BoostContainer.of(context).addBackPressedListener(() {
-//        if (BoostContainer.of(context).onstage &&
-//            ModalRoute.of(context).isCurrent) {
-//          Navigator.pop(context);
-//        }
-//      });
-//    }
   }
 
   @override
@@ -305,10 +247,6 @@ class _PushWidgetState extends State<PushWidget> {
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             );
           }),
-          // brightness:Brightness.light,
-          // backgroundColor: Colors.white,
-          // textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
-
           title: Text('flutter_boost_example'),
         ),
         body: Container(

@@ -155,7 +155,7 @@ public class FlutterBoost {
      * @param arguments
      */
     public void open(String pageName, HashMap<String, String> arguments) {
-        this.getPlugin().getDelegate().pushFlutterRoute(pageName, arguments);
+        this.getPlugin().getDelegate().pushFlutterRoute(pageName, null, arguments);
     }
 
     /**

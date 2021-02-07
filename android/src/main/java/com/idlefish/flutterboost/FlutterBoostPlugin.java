@@ -51,7 +51,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     @Override
     public void pushFlutterRoute(Messages.CommonParams params) {
         if (mDelegate != null) {
-            mDelegate.pushFlutterRoute(params.getPageName(), params.getArguments());
+            mDelegate.pushFlutterRoute(params.getPageName(), params.getUniqueId(), params.getArguments());
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }

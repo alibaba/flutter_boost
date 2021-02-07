@@ -27,10 +27,11 @@ public class MyApplication extends FlutterApplication {
             }
 
             @Override
-            public void pushFlutterRoute(String pageName, HashMap<String, String> arguments) {
+            public void pushFlutterRoute(String pageName, String uniqueId, HashMap<String, String> arguments) {
                 Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                         .destroyEngineWithActivity(false)
+                        .uniqueId(uniqueId)
                         .url(pageName)
                         .urlParams(arguments)
                         .build(FlutterBoost.instance().currentActivity());

@@ -42,21 +42,18 @@ class BoostNavigator {
   /// 2. 如果[withContainer]参数的值为false（当前正在显示的是一个Flutter页面），那么
   /// 会复用当前容器，[pageName]被压人嵌套Navigator中。
   ///
-  void push(String pageName, {Map arguments, bool withContainer = false}) {
+
+  Future<T> push<T extends Object>(String pageName,
+      {Map arguments, bool withContainer = false}) {
     if (isFlutterPage(pageName)) {
-      if (withContainer) {
-        CommonParams params = CommonParams()
-          ..pageName = pageName
-          ..arguments = arguments;
-        appState.nativeRouterApi.pushFlutterRoute(params);
-      } else {
-        appState.push(pageName, arguments: arguments, withContainer: false);
-      }
+      return appState.pushWithResult(pageName,
+          arguments: arguments, withContainer: withContainer);
     } else {
       CommonParams params = CommonParams()
         ..pageName = pageName
         ..arguments = arguments;
       appState.nativeRouterApi.pushNativeRoute(params);
+      return new Future(null);
     }
   }
 
@@ -71,8 +68,8 @@ class BoostNavigator {
   /// 如果page有对应的native容器， 则会一并关闭容器。page是否有容器，由push的
   /// withContainer参数决定。
   ///
-  void pop({Map arguments}) {
-    appState.pop(arguments: arguments);
+  void pop<T extends Object>([T result]) {
+    appState.popWithResult(result);
   }
 
   ///
