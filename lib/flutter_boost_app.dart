@@ -29,7 +29,7 @@ String getUniqueId(String pageName) {
 ///
 class FlutterBoostApp extends StatefulWidget {
   const FlutterBoostApp(this.routeFactory,
-      {FlutterBoostAppBuilder appBuilder,String initialRoute, this.observers})
+      {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
       : appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
@@ -231,12 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void remove(String uniqueId) {
     if (uniqueId == null) return;
     setState(() {
-      pages?.forEach((entry) {
-        if (entry.pageInfo?.uniqueId == uniqueId) {
-          pages?.remove(entry);
-          return;
-        }
-      });
+      pages?.removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
     });
   }
 
@@ -380,8 +375,8 @@ class BoostPageWithNavigator<T> extends BoostPage<T> {
   Route<T> createRoute(BuildContext context) {
     return PageRouteBuilder<T>(
         settings: this,
-        pageBuilder: (_, __, ___){
-        return Navigator(
+        pageBuilder: (_, __, ___) {
+          return Navigator(
             key: keySave(pageInfo.uniqueId, GlobalKey<NavigatorState>()),
             pages: List.of(pages),
             onPopPage: (route, dynamic result) {
