@@ -35,17 +35,16 @@
 
 @interface FlutterBoost : NSObject
 
+
++ (instancetype)instance;
+
 - (FlutterEngine*)  getEngine;
 
 - (FlutterBoostPlugin*)  getPlugin;
 
 - (id<FlutterBoostDelegate>)  getDelegate ;
 
-+ (instancetype)instance;
-
 - (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback;
-
-#pragma mark - Some properties.
 
 - (BOOL)isRunning;
 

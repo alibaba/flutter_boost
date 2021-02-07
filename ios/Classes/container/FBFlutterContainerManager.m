@@ -18,8 +18,8 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        _idStk= [NSMutableArray new];
-        _existedID = [NSMutableDictionary dictionary];
+        self.idStk= [NSMutableArray new];
+        self.existedID = [NSMutableDictionary dictionary];
     }
     
     return self;
@@ -28,23 +28,23 @@
 - (BOOL)contains:(id<FBFlutterContainer>)vc
 {
     if (vc) {
-        return _existedID[vc.uniqueIDString]?YES:NO;
+        return self.existedID[vc.uniqueIDString]?YES:NO;
     }
     
     return NO;
 }
 - (BOOL)containUniqueId:(NSString* ) uniqueId {
-    return _existedID[uniqueId]?YES:NO;
+    return self.existedID[uniqueId]?YES:NO;
 }
 
 
 - (void)addUnique:(id<FBFlutterContainer>)vc
 {
     if (vc) {
-        if(!_existedID[vc.uniqueIDString]){
-            [_idStk addObject:vc.uniqueIDString];
+        if(!self.existedID[vc.uniqueIDString]){
+            [self.idStk addObject:vc.uniqueIDString];
         }
-        _existedID[vc.uniqueIDString] = vc.name;
+        self.existedID[vc.uniqueIDString] = vc.name;
     }
 #if DEBUG
     [self dump:@"ADD"];
@@ -54,8 +54,8 @@
 - (void)remove:(id<FBFlutterContainer>)vc
 {
     if (vc) {
-        [_existedID removeObjectForKey:vc.uniqueIDString];
-        [_idStk removeObject:vc.uniqueIDString];
+        [self.existedID removeObjectForKey:vc.uniqueIDString];
+        [self.idStk removeObject:vc.uniqueIDString];
     }
 #if DEBUG
     [self dump:@"REMOVE"];
@@ -64,18 +64,18 @@
 
 - (NSString *)peak
 {
-    return _idStk.lastObject;
+    return self.idStk.lastObject;
 }
 
 - (NSInteger)pageCount{
-    return _idStk.count;
+    return self.idStk.count;
 }
 
 #if DEBUG
 - (void)dump:(NSString*)flag{
     NSMutableString *log = [[NSMutableString alloc]initWithFormat:@"[DEBUG]--%@--PageStack uid/name", flag];
-    for(NSString *uid in _idStk){
-        [log appendFormat:@"-->%@/%@",uid, _existedID[uid]];
+    for(NSString *uid in self.idStk){
+        [log appendFormat:@"-->%@/%@",uid, self.existedID[uid]];
     }
     NSLog(@"%@\n", log);
 }

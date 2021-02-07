@@ -9,9 +9,6 @@
 #import "messages.h"
 #import <Flutter/Flutter.h>
 
-@class FBCommonParams;
-
-typedef void (^NativeRouterHandler)(FBCommonParams* params);
 
 @protocol  FlutterBoostDelegate <NSObject>
 
@@ -19,13 +16,12 @@ typedef void (^NativeRouterHandler)(FBCommonParams* params);
 - (NSString*) initialRoute;
 - (NSString*) dartEntrypointFunctionName;
 - (FlutterEngine*)  engine;
-@required
-- (void) pushNativeRoute:(FBCommonParams*) params;
+@required  ;
+- (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
 
-- (void) pushFlutterRoute:(FBCommonParams*)params ;
+- (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
 
-- (void) popRoute:(FBCommonParams*)params
-         result:(NSDictionary *)result;
+- (void) popRoute:(NSString *)uniqueId ;
 
 @end
 

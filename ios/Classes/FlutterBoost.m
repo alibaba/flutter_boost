@@ -11,7 +11,7 @@
 #import "FlutterBoostPlugin.h"
 @interface FlutterBoost ()
 
-@property (nonatomic,assign) BOOL isRunning;
+@property (nonatomic,assign) BOOL running;
 @property(nonatomic, strong)  FlutterEngine*  engine;
 @property(nonatomic, strong)  FlutterBoostPlugin*  plugin;
 @property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
@@ -40,9 +40,11 @@
     }
     
     [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
-    self.isRunning=YES;
-    
-    callback(self.engine);
+    self.running=YES;
+        
+    if(callback){
+        callback(self.engine);
+    }
 
     Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
     if (clazz && self.engine) {
@@ -66,7 +68,8 @@
                                                object:nil];
 }
 
-- (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine {
+- (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine
+{
     NSObject *published= [engine valuePublishedByPlugin:@"FlutterBoostPlugin" ];
     if ([published isKindOfClass:[FlutterBoostPlugin class]]) {
         FlutterBoostPlugin *plugin = (FlutterBoostPlugin *)published;
@@ -94,6 +97,9 @@
 }
 - (id<FlutterBoostDelegate>)getDelegate{
     return  self.delegate;
+}
+- (BOOL)isRunning{
+    return  self.running;
 }
 
 #pragma mark - Some properties.

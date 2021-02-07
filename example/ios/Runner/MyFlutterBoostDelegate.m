@@ -14,9 +14,9 @@
 @implementation MyFlutterBoostDelegate
 
 
-- (void) pushNativeRoute:(FBCommonParams*) params{
-    BOOL animated = [params.arguments[@"animated"] boolValue];
-    BOOL present= [params.arguments[@"present"] boolValue];
+- (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments {
+    BOOL animated = [arguments[@"animated"] boolValue];
+    BOOL present= [arguments[@"present"] boolValue];
     UIViewControllerDemo *nvc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     if(present){
         [self.navigationController presentViewController:nvc animated:animated completion:^{
@@ -26,17 +26,17 @@
     }
 }
 
-- (void) pushFlutterRoute:(FBCommonParams*)params {
+- (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments {
     
     FlutterEngine* engine =  [[FlutterBoost instance ] getEngine];
     engine.viewController = nil;
     
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
     
-    [vc setName:params.pageName params:params.arguments];
+    [vc setName:pageName params:arguments];
     
-    BOOL animated = [params.arguments[@"animated"] boolValue];
-    BOOL present= [params.arguments[@"present"] boolValue];
+    BOOL animated = [arguments[@"animated"] boolValue];
+    BOOL present= [arguments[@"present"] boolValue];
     if(present){
         [self.navigationController presentViewController:vc animated:animated completion:^{
         }];
@@ -46,14 +46,11 @@
     }
 }
 
-- (void) popRoute:(FBCommonParams*)params
-         result:(NSDictionary *)result{
+- (void) popRoute:(NSString *)uniqueId {
     
-//    [self.navigationController popViewControllerAnimated:YES];
-
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
-    if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: params.uniqueId]){
+    if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uniqueId]){
         [vc dismissViewControllerAnimated:YES completion:^{}];
     }else{
         [self.navigationController popViewControllerAnimated:YES];

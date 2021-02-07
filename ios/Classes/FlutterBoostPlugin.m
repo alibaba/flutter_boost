@@ -47,20 +47,18 @@
 
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[[FlutterBoost instance] getDelegate] pushNativeRoute:input];
+    [[[FlutterBoost instance] getDelegate] pushNativeRoute:input.pageName arguments:input.arguments];
     
-//    *error = [FlutterError errorWithCode:@"FlutterBoostPlugin" message:@"no handler set" details:nil];
-
 }
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[[FlutterBoost instance] getDelegate] pushFlutterRoute:input ] ;
+    [[[FlutterBoost instance] getDelegate] pushFlutterRoute:input.pageName arguments:input.arguments] ;
 
 }
 
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     if([self.containerManager containUniqueId:input.uniqueId]){
-        [[[FlutterBoost instance] getDelegate]  popRoute: input result: nil ];
+        [[[FlutterBoost instance] getDelegate] popRoute:input.uniqueId];
     };
 }
 
