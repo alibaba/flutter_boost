@@ -154,8 +154,10 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     @Override
     public void onDestroy() {
         if(isDestroyed()) return;
-        super.onDestroy();
-        mObserver.onDestroyView();
+        if (mCreateAndStart) {
+            super.onDestroy();
+            mObserver.onDestroyView();
+        }
         mIsDestroyed = true;
     }
 
