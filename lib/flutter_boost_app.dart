@@ -226,8 +226,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..arguments = arguments;
       _nativeRouterApi.popRoute(params);
     }
-
     _pendingResult.remove(uniqueId);
+ 
     Logger.log(
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
@@ -270,16 +270,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (uniqueId == null) return;
     final BoostContainer container = _findContainerByUniqueId(uniqueId);
     if (container != null) {
-      setState(() {
+      // setState(() {
         containers.removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
-      });
+      // });
     } else {
-      setState(() {
+      // setState(() {
         containers.forEach((container) {
           container.pages
               .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
         });
-      });
+      // });
     }
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
