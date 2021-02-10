@@ -35,38 +35,37 @@
 
 @interface FlutterBoost : NSObject
 
+#pragma mark - 以上API待讨论中，是否必要
 
-+ (instancetype)instance;
+- (FlutterEngine*)engine;
 
-- (FlutterEngine*)  getEngine;
-
-- (FlutterBoostPlugin*)  getPlugin;
-
-- (id<FlutterBoostDelegate>)  getDelegate ;
-
-- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback;
+- (id<FlutterBoostDelegate>)delegate;
 
 - (BOOL)isRunning;
 
-- (FlutterViewController *) currentViewController;
+- (FlutterViewController *)currentViewController;
 
 
-#pragma mark - open/close Page
+#pragma mark - 已确认的必要API
 
-/**
- * 关闭页面，混合栈推荐使用的用于操作页面的接口
- *
- * @param uniqueId 关闭的页面唯一ID符
- */
+/// Boost全局单例
++ (instancetype)instance;
+
+/// 初始化
+/// @param application 全局Application实例，如未设置engine参数，则默认从Application做engine的绑定
+/// @param delegate FlutterBoostDelegate的实例，用于实现Push和Pop的具体策略（Native侧如何Push，以及需要Push一个新的FlutterViewController时的具体动作），以及Engine的部分初始化策略
+/// @param callback 初始化完成以后的回调，
+/// TODO 设计需要再review下 callback并不是异步的感觉没有必要。
+- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback;
+
+/// 关闭页面，混合栈推荐使用的用于操作页面的接口
+/// @param uniqueId 关闭的页面唯一ID符
 - (void)close:(NSString *)uniqueId;
 
-/**
- * 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口；
- * 通过arguments可以设置为以present方式打开页面：arguments:@{@"present":@(YES)}
- *
- * @param pageName 打开的页面资源定位符
- * @param arguments 传人页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
- */
+/// 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口
+/// 通过arguments可以设置为以present方式打开页面：arguments:@{@"present":@(YES)}
+/// @param pageName 打开的页面资源定位符
+/// @param arguments 传入页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
 - (void)open:(NSString *)pageName
    arguments:(NSDictionary *)arguments;
 

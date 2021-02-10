@@ -47,18 +47,18 @@
 
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[[FlutterBoost instance] getDelegate] pushNativeRoute:input.pageName arguments:input.arguments];
+    [[[FlutterBoost instance] delegate] pushNativeRoute:input.pageName arguments:input.arguments];
     
 }
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     
-    [[[FlutterBoost instance] getDelegate] pushFlutterRoute:input.pageName arguments:input.arguments] ;
+    [[[FlutterBoost instance] delegate] pushFlutterRoute:input.pageName arguments:input.arguments] ;
 
 }
 
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
     if([self.containerManager containUniqueId:input.uniqueId]){
-        [[[FlutterBoost instance] getDelegate] popRoute:input.uniqueId];
+        [[[FlutterBoost instance] delegate] popRoute:input.uniqueId];
     };
 }
 

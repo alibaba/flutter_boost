@@ -2,13 +2,13 @@ package com.idlefish.flutterboost;
 
 import java.util.HashMap;
 
-public abstract class FlutterBoostDelegate {
-    public String initialRoute(){
+public interface FlutterBoostDelegate {
+    default String initialRoute(){
         return "/";
     }
-    public String dartEntrypointFunctionName(){
+    default String dartEntrypointFunctionName(){
         return  "main";
     }
-    public abstract void pushNativeRoute(String pageName, HashMap<String, String> arguments);
-    public abstract void pushFlutterRoute(String pageName, String uniqueId, HashMap<String, String> arguments);
+    void pushNativeRoute(String pageName, HashMap<String, String> arguments);
+    void pushFlutterRoute(String pageName, String uniqueId, HashMap<String, String> arguments);
 }

@@ -11,8 +11,8 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
-#define ENGINE [[FlutterBoost instance] getEngine]
-#define FB_PLUGIN [[FlutterBoost instance] getPlugin]
+#define ENGINE [[FlutterBoost instance] engine]
+#define FB_PLUGIN [[FlutterBoost instance] plugin]
 
 //#define FLUTTER_VIEW ENGINE.flutterViewController.view
 //#define FLUTTER_VC ENGINE.flutterViewController
