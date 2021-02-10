@@ -11,16 +11,16 @@
 #import "FlutterBoostPlugin.h"
 @interface FlutterBoost ()
 
-@property (nonatomic,assign) BOOL running;
-@property(nonatomic, strong)  FlutterEngine*  engine;
-@property(nonatomic, strong)  FlutterBoostPlugin*  plugin;
-@property(nonatomic, strong) id<FlutterBoostDelegate> delegate;
+@property (nonatomic, assign) BOOL running;
+@property (nonatomic, strong) FlutterEngine*  engine;
+@property (nonatomic, strong) FlutterBoostPlugin*  plugin;
+@property (nonatomic, strong) id<FlutterBoostDelegate> delegate;
 
 @end
 
 @implementation FlutterBoost
 
-- (void) setup: (UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback: (void (^)(FlutterEngine *engine))callback
+- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback
     {
     if([delegate respondsToSelector:@selector(engine)]){
         self.engine=delegate.engine;
@@ -35,7 +35,7 @@
         dartEntrypointFunctionName= delegate.dartEntrypointFunctionName ;
     }
     
-    if([ delegate respondsToSelector:@selector(initialRoute)] ){
+    if([delegate respondsToSelector:@selector(initialRoute)] ){
         initialRoute =delegate.initialRoute ;
     }
     
@@ -47,10 +47,10 @@
     }
 
     Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-    if (clazz && self.engine) {
-        if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
-            [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
-                        withObject:self.engine];
+    SEL selector = NSSelectorFromString(@"registerWithRegistry:");
+    if (clazz && selector && self.engine) {
+        if ([clazz respondsToSelector:selector]) {
+            ((void (*)(id, SEL, NSObject<FlutterPluginRegistry>*registry))[clazz methodForSelector:selector])(clazz, selector, self.engine);
         }
     }
         
@@ -68,12 +68,12 @@
                                                object:nil];
 }
 
-- (FlutterBoostPlugin* ) flutterBoostPlugin: (FlutterEngine* )engine
+- (FlutterBoostPlugin* )flutterBoostPlugin:(FlutterEngine* )engine
 {
-    NSObject *published= [engine valuePublishedByPlugin:@"FlutterBoostPlugin" ];
+    NSObject *published = [engine valuePublishedByPlugin:@"FlutterBoostPlugin"];
     if ([published isKindOfClass:[FlutterBoostPlugin class]]) {
         FlutterBoostPlugin *plugin = (FlutterBoostPlugin *)published;
-        return  plugin;
+        return plugin;
     }
     return nil;
 }
@@ -88,16 +88,6 @@
     return _instance;
 }
 
-- (FlutterEngine*)  getEngine{
-    return  self.engine;
-}
-
-- (FlutterBoostPlugin*)   getPlugin{
-    return  self.plugin;
-}
-- (id<FlutterBoostDelegate>)getDelegate{
-    return  self.delegate;
-}
 - (BOOL)isRunning{
     return  self.running;
 }
@@ -111,7 +101,7 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments  {
    
-    [[[FlutterBoost instance] getDelegate] pushFlutterRoute:pageName arguments:arguments];
+    [[[FlutterBoost instance] delegate] pushFlutterRoute:pageName arguments:arguments];
 
 }
 
@@ -138,7 +128,7 @@
     }];
 }
 
-- (void)destroy{
+- (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 

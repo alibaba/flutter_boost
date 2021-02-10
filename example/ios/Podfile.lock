@@ -13,25 +13,25 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `.symlinks/flutter/ios`)
-  - flutter_boost (from `/Users/wubian/flutter_boost2/ios`)
-  - flutter_plugin_android_lifecycle (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios`)
-  - "image_picker (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios`)"
-  - "video_player (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios`)"
-  - "video_player_web (from `/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios`)"
+  - flutter_boost (from `/Users/christ.yuj/flutter_boost/ios`)
+  - flutter_plugin_android_lifecycle (from `/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios`)
+  - "image_picker (from `/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios`)"
+  - "video_player (from `/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios`)"
+  - "video_player_web (from `/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios`)"
 
 EXTERNAL SOURCES:
   Flutter:
     :path: ".symlinks/flutter/ios"
   flutter_boost:
-    :path: "/Users/wubian/flutter_boost2/ios"
+    :path: "/Users/christ.yuj/flutter_boost/ios"
   flutter_plugin_android_lifecycle:
-    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios"
+    :path: "/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-1.0.11/ios"
   image_picker:
-    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios"
+    :path: "/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+17/ios"
   video_player:
-    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios"
+    :path: "/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/video_player-0.10.12+5/ios"
   video_player_web:
-    :path: "/Users/wubian/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios"
+    :path: "/Users/christ.yuj/.pub-cache/hosted/pub.dartlang.org/video_player_web-0.1.4+1/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
@@ -43,4 +43,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 2a757a7bdc03b37a2814666652fdff1cf694243f
 
-COCOAPODS: 1.9.0.beta.2
+COCOAPODS: 1.8.4

@@ -28,7 +28,7 @@
 
 - (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments {
     
-    FlutterEngine* engine =  [[FlutterBoost instance ] getEngine];
+    FlutterEngine* engine =  [[FlutterBoost instance ] engine];
     engine.viewController = nil;
     
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
