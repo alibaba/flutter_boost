@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost_example/tab/simple_widget.dart';
-import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
+import 'package:flutter_boost_example/case/media_query.dart';
+import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
-import 'package:flutter_boost_example/case/media_query.dart';
+import 'package:flutter_boost_example/simple_page_widgets.dart';
+import 'package:flutter_boost_example/tab/simple_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -53,6 +53,10 @@ class _MyAppState extends State<MyApp> {
     'willPop': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WillPopRoute());
+    },
+    'returnData': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ReturnDataWidget());
     },
     'secondStateful': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

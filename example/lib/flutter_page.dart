@@ -144,34 +144,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                   onTap: () => BoostNavigator.of()
                       .push("mediaquery", withContainer: true)),
               InkWell(
-                  child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      color: Colors.yellow,
-                      child: Text(
-                        'open flutter page',
-                        style: TextStyle(fontSize: 22.0, color: Colors.black),
-                      )),
-                  onTap: () async {
-                    String result =
-                        await BoostNavigator.of().push<String>("flutterPage");
-                    print('xlog, Get result without container: $result');
-                  }),
-              InkWell(
-                  child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      color: Colors.yellow,
-                      child: Text(
-                        'open flutter page with container',
-                        style: TextStyle(fontSize: 22.0, color: Colors.black),
-                      )),
-                  onTap: () async {
-                    String result = await BoostNavigator.of()
-                        .push("flutterPage", withContainer: true);
-                    print('xlog, Get result with container: $result');
-                  }),
-              InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
@@ -183,21 +155,25 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                 onTap: () {
                   Navigator.push<dynamic>(context,
                       MaterialPageRoute<dynamic>(builder: (_) => PushWidget()));
-                  // Navigator.of(context).maybePop();
                 },
               ),
               InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(8.0),
-                    color: Colors.yellow,
-                    child: Text(
-                      'close with params',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
-                    )),
-                onTap: () =>
-                    BoostNavigator.of().pop('I am result for pop.'),
-              ),
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'returning data demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  // onTap: () async {
+                  //   final result = await BoostNavigator.of()
+                  //       .push("returnData", withContainer: true);
+                  //   print('Get result: $result');
+                  // }),
+                  onTap: () => BoostNavigator.of()
+                      .push("returnData", withContainer: true)
+                      .then((onValue) => print('Get result: $onValue'))),
             ],
           ),
         ),
