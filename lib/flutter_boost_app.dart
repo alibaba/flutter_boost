@@ -6,6 +6,7 @@ import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/page_visibility.dart';
+import 'package:uuid/uuid.dart';
 
 import 'page_visibility.dart';
 import 'dart:async';
@@ -20,8 +21,8 @@ typedef FlutterBoostRouteFactory = Route<dynamic> Function(
 ///
 /// 生成UniqueId
 ///
-String getUniqueId(String pageName) {
-  return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
+String createUniqueId(String pageName) {
+  return Uuid().v4();
 }
 
 ///
@@ -98,7 +99,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   /// 创建页面
   BoostContainer _createContainer(PageInfo pageInfo) {
-    pageInfo.uniqueId ??= getUniqueId(pageInfo.pageName);
+    pageInfo.uniqueId ??= createUniqueId(pageInfo.pageName);
     return BoostContainer<dynamic>(
         key: ValueKey(pageInfo.uniqueId),
         pageInfo: pageInfo,
@@ -109,7 +110,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Future<T> pushWithResult<T extends Object>(String pageName,
       {String uniqueId, Map arguments, bool withContainer}) {
     final Completer completer = Completer<T>();
-    uniqueId ??= getUniqueId(pageName);
+    uniqueId ??= createUniqueId(pageName);
     if (withContainer) {
       CommonParams params = CommonParams()
         ..pageName = pageName
@@ -148,7 +149,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     } else {
       PageInfo pageInfo = PageInfo(
           pageName: pageName,
-          uniqueId: uniqueId ?? getUniqueId(pageName),
+          uniqueId: uniqueId ?? createUniqueId(pageName),
           arguments: arguments,
           withContainer: withContainer);
       if (withContainer) {
@@ -227,7 +228,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _nativeRouterApi.popRoute(params);
     }
     _pendingResult.remove(uniqueId);
- 
+
     Logger.log(
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
@@ -271,14 +272,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final BoostContainer container = _findContainerByUniqueId(uniqueId);
     if (container != null) {
       // setState(() {
-        containers.removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
+      containers.removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
       // });
     } else {
       // setState(() {
-        containers.forEach((container) {
-          container.pages
-              .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
-        });
+      containers.forEach((container) {
+        container.pages
+            .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
+      });
       // });
     }
     Logger.log('remove,  uniqueId=$uniqueId, $containers');

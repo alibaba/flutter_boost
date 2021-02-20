@@ -120,13 +120,11 @@ static NSUInteger kInstanceCounter = 0;
 
 - (NSString *)uniqueIDString
 {
-    return @(_identifier).stringValue;
+    return [[NSUUID UUID] UUIDString];
 }
 
 - (void)_setup
 {
-    static long long sCounter = 0;
-    _identifier = sCounter++;
     [self.class instanceCounterIncrease];
 }
 

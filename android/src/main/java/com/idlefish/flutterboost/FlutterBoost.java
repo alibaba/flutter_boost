@@ -6,6 +6,7 @@ import android.app.Application;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -93,8 +94,8 @@ public class FlutterBoost {
         return FlutterEngineCache.getInstance().get(ENGINE_ID);
     }
 
-    public String generateUniqueId(String pageName) {
-        return System.currentTimeMillis() + "_" + pageName;
+    public String createUniqueId() {
+        return UUID.randomUUID().toString();
     }
 
     /**

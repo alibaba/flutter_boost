@@ -39,6 +39,8 @@
 
 - (FlutterEngine*)engine;
 
+- (FlutterBoostPlugin*)plugin;
+
 - (id<FlutterBoostDelegate>)delegate;
 
 - (BOOL)isRunning;

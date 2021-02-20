@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  uuid: ^2.2.2
 
 dev_dependencies:
   pedantic: ^1.8.0

@@ -79,7 +79,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, urlParam);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().generateUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().createUniqueId());
             return args;
         }
 

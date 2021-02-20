@@ -168,7 +168,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().generateUniqueId(url));
+                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId());
         }
     }
 
