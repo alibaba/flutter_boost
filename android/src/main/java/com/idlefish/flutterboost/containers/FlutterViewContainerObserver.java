@@ -2,8 +2,8 @@ package com.idlefish.flutterboost.containers;
 
 public interface FlutterViewContainerObserver {
     void onCreateView();
-    void onAppear(ChangeReason reason);
-    void onDisappear(ChangeReason reason);
+    void onAppear(InitiatorLocation location);
+    void onDisappear(InitiatorLocation location);
     void onDestroyView();
 }
 

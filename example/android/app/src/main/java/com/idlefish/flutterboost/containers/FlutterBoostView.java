@@ -79,7 +79,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, urlParam);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().createUniqueId());
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().createUniqueId(url));
             return args;
         }
 
@@ -131,7 +131,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
             onCreate();
         }
         super.onResume();
-        mObserver.onAppear(ChangeReason.Unspecified);
+        mObserver.onAppear(InitiatorLocation.Others);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
@@ -148,7 +148,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     public void onStop() {
         if(isDestroyed()) return;
         super.onStop();
-        mObserver.onDisappear(ChangeReason.Unspecified);
+        mObserver.onDisappear(InitiatorLocation.Others);
     }
 
     @Override
@@ -169,10 +169,10 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         if (getVisibility() == View.VISIBLE) {
-            mObserver.onAppear(ChangeReason.RouteReorder);
+            mObserver.onAppear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         } else if (getVisibility() == View.GONE) {
-            mObserver.onDisappear(ChangeReason.RouteReorder);
+            mObserver.onDisappear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         }
     }

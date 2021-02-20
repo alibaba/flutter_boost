@@ -49,10 +49,14 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   }
 
   @override
-  void onAppear(CommonParams arg) {}
+  void onNativeViewShow(CommonParams arg) {
+    appState.onNativeViewShow();
+  }
 
   @override
-  void onDisappear(CommonParams arg) {}
+  void onNativeViewHide(CommonParams arg) {
+    appState.onNativeViewHide();
+  }
 
   @override
   void removeRoute(CommonParams arg) {

@@ -57,10 +57,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
-            observer.onDisappear(ChangeReason.RouteReorder);
+            observer.onDisappear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         } else {
-            observer.onAppear(ChangeReason.RouteReorder);
+            observer.onAppear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         }
         super.onHiddenChanged(hidden);
@@ -69,10 +69,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
-            observer.onAppear(ChangeReason.RouteReorder);
+            observer.onAppear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
         } else {
-            observer.onDisappear(ChangeReason.RouteReorder);
+            observer.onDisappear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
         }
         super.setUserVisibleHint(isVisibleToUser);
@@ -85,7 +85,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
         super.onResume();
         if (!isHidden()) {
-            observer.onAppear(ChangeReason.Unspecified);
+            observer.onAppear(InitiatorLocation.Others);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
             this.getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
@@ -115,7 +115,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
 
         if (!isHidden()) {
-            observer.onDisappear(ChangeReason.Unspecified);
+            observer.onDisappear(InitiatorLocation.Others);
         }
     }
 
@@ -240,7 +240,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, params);
-            args.putString(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId());
+            args.putString(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId(url));
             return args;
         }
 

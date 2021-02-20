@@ -2,7 +2,7 @@ package com.idlefish.flutterboost;
 
 import android.util.Log;
 
-import com.idlefish.flutterboost.containers.ChangeReason;
+import com.idlefish.flutterboost.containers.InitiatorLocation;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
 
@@ -66,7 +66,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 if (node.container() != null) {
                     node.container().finishContainer(params.getArguments());
                 }
-                node.setIsPopping();
             }
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
@@ -78,13 +77,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments,
-                          ChangeReason hint, final Reply<Void> callback) {
+                          final Reply<Void> callback) {
         if (mApi != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments(arguments);
-            params.setHint((long) hint.ordinal());
             mApi.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -108,6 +106,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
     }
+
     public void removeRoute(String uniqueId,final Reply<Void> callback) {
         if (mApi != null) {
             Messages.CommonParams params = new Messages.CommonParams();
@@ -121,7 +120,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
     }
-    public enum VisibilityEvent {
+
+    public enum BackForeGroundEvent {
         NONE,
         FOREGROUND,
         BACKGROUND,
@@ -130,7 +130,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onForeground() {
         ContainerShadowNode node = getStackTop();
         if (node != null) {
-            node.setVisibilityEvent(VisibilityEvent.FOREGROUND);
+            node.setBackForeGroundEvent(BackForeGroundEvent.FOREGROUND);
         }
 
         if (mApi != null) {
@@ -145,7 +145,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onBackground() {
         ContainerShadowNode node = getStackTop();
         if (node != null) {
-            node.setVisibilityEvent(VisibilityEvent.BACKGROUND);
+            node.setBackForeGroundEvent(BackForeGroundEvent.BACKGROUND);
         }
 
         if (mApi != null) {
@@ -155,6 +155,26 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
         Log.v(TAG, "## onBackground: " + mApi);
+    }
+
+    public void onNativeViewShow() {
+        if (mApi != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            mApi.onNativeViewShow(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onNativeViewShow: " + mApi);
+    }
+
+    public void onNativeViewHide() {
+        if (mApi != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            mApi.onNativeViewHide(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onNativeViewHide: " + mApi);
     }
 
     private final Map<String, ContainerShadowNode> mAllContainers = new LinkedHashMap<>();
@@ -198,8 +218,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public static class ContainerShadowNode implements FlutterViewContainerObserver {
         private WeakReference<FlutterViewContainer> mContainer;
         private FlutterBoostPlugin mPlugin;
-        private VisibilityEvent mEvent;
-        private boolean mIsPopping;
+        private BackForeGroundEvent mEvent;
 
         public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
             return new ContainerShadowNode(container, plugin);
@@ -209,19 +228,23 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             assert container != null;
             mContainer = new WeakReference<>(container);
             mPlugin = plugin;
-            mIsPopping = false;
-            setVisibilityEvent(VisibilityEvent.NONE);
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+        }
+
+        private boolean isCurrentTopContainer() {
+            assert getUniqueId() != null;
+            FlutterViewContainer top = mPlugin.getTopContainer();
+            if (top != null && top.getUniqueId() == getUniqueId()) {
+                return true;
+            }
+            return false;
         }
 
         public FlutterViewContainer container() {
             return mContainer.get();
         }
-        public void setVisibilityEvent(VisibilityEvent event) {
+        public void setBackForeGroundEvent(BackForeGroundEvent event) {
             mEvent = event;
-        }
-
-        public void setIsPopping() {
-            mIsPopping = true;
         }
 
         public String getUniqueId() {
@@ -251,51 +274,31 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
 
         @Override
-        public void onAppear(ChangeReason reason) {
-            assert container() != null;
-            ChangeReason hint = reason;
-            if (ChangeReason.Unspecified == hint) {
-                if (mPlugin.findContainerById(getUniqueId()) == null) {
-                    // create new FlutterView
-                    hint = ChangeReason.ViewPushed;
-                } else {
-                    if (VisibilityEvent.FOREGROUND == mEvent) {
-                        assert mPlugin.getTopContainer().getUniqueId() == getUniqueId();
-                        // switch to foreground
-                        hint = ChangeReason.Foreground;
-                    } else {
-                        // The previous view was popped
-                        hint = ChangeReason.ViewPopped;
-                    }
-                }
+        public void onAppear(InitiatorLocation location) {
+            if (isCurrentTopContainer() &&
+                    InitiatorLocation.Others == location &&
+                    BackForeGroundEvent.FOREGROUND != mEvent) {
+                // The native view was popped
+                mPlugin.onNativeViewHide();
             }
-            setVisibilityEvent(VisibilityEvent.NONE);
 
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
             mPlugin.reorderContainer(getUniqueId(), this);
-            mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), hint, null);
-            Log.v(TAG, "#onAppear: " + getUniqueId() + ", reason: " + hint.toString()  + "(" + hint.ordinal() + "), " + mPlugin.getContainers());
+            mPlugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", " + mPlugin.getContainers());
         }
 
         @Override
-        public void onDisappear(ChangeReason reason) {
-            ChangeReason hint = reason;
-            if (ChangeReason.Unspecified == hint) {
-                FlutterViewContainer top = mPlugin.getTopContainer();
-                if (top != null && top.getUniqueId() == getUniqueId() &&
-                        VisibilityEvent.BACKGROUND == mEvent) {
-                    // switch to background
-                    hint = ChangeReason.Background;
-                } else {
-                    if (mIsPopping) {
-                        hint = ChangeReason.ViewPopped;
-                    } else {
-                        // The native view was pushed
-                        hint = ChangeReason.ViewPushed;
-                    }
-                }
+        public void onDisappear(InitiatorLocation location) {
+            if (isCurrentTopContainer() &&
+                    InitiatorLocation.Others == location &&
+                    BackForeGroundEvent.BACKGROUND != mEvent) {
+                // The native view was pushed
+                mPlugin.onNativeViewShow();
             }
-            setVisibilityEvent(VisibilityEvent.NONE);
-            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", reason: " + hint.toString() + "(" + hint.ordinal() + "), " + mPlugin.getContainers());
+
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", " + mPlugin.getContainers());
         }
 
         @Override

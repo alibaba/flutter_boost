@@ -100,7 +100,7 @@ class PageVisibilityBinding {
       final Set<PageVisibilityObserver> observers = _listeners[route];
       observers.forEach((observer) {
         if (observer.uniqueId() == uniqueId) {
-          observer.onPageHide(ChangeReason.foreground);
+          observer.onPageHide(ChangeReason.background);
         }
       });
     }

@@ -57,7 +57,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             findFlutterView(this.getWindow().getDecorView());
         }
         super.onResume();
-        observer.onAppear(ChangeReason.Unspecified);
+        observer.onAppear(InitiatorLocation.Others);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 this.getFlutterEngine(), this);
     }
@@ -66,7 +66,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onStop() {
         super.onStop();
         this.getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onDisappear(ChangeReason.Unspecified);
+        observer.onDisappear(InitiatorLocation.Others);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId());
+                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId(url));
         }
     }
 

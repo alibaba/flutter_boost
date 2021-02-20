@@ -22,7 +22,11 @@ typedef FlutterBoostRouteFactory = Route<dynamic> Function(
 /// 生成UniqueId
 ///
 String createUniqueId(String pageName) {
-  return Uuid().v4();
+  if (kReleaseMode) {
+    return Uuid().v4();
+  } else {
+    return Uuid().v4() + '#$pageName';
+  }
 }
 
 ///
@@ -251,6 +255,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void onBackground() {
     PageVisibilityBinding.instance.dispatchBackgroundEvent(_getCurrentPage());
+  }
+
+  void onNativeViewShow() {
+    PageVisibilityBinding.instance
+        .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.viewPushed);
+  }
+
+  void onNativeViewHide() {
+    PageVisibilityBinding.instance
+        .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.viewPopped);
   }
 
   String _getCurrentPage() {

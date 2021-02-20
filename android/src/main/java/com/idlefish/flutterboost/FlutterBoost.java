@@ -93,8 +93,15 @@ public class FlutterBoost {
         return FlutterEngineCache.getInstance().get(ENGINE_ID);
     }
 
-    public String createUniqueId() {
-        return UUID.randomUUID().toString();
+    public String createUniqueId(String url) {
+        StringBuilder uuidBuilder = new StringBuilder(UUID.randomUUID().toString());
+        if (BuildConfig.DEBUG) {
+            if (url != null) {
+                uuidBuilder.append("#");
+                uuidBuilder.append(url);
+            }
+        }
+        return uuidBuilder.toString();
     }
 
     /**
