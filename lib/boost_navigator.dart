@@ -8,7 +8,6 @@ import 'package:flutter_boost/messages.dart';
 ///
 ///
 class BoostNavigator {
-
   const BoostNavigator(this.appState);
 
   final FlutterBoostAppState appState;

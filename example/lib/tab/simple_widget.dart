@@ -51,12 +51,12 @@ class _SimpleWidgetState extends State<SimpleWidget>
   }
 
   @override
-  void onAppear(ChangeReason reason) {
-    print('$_kTag#onAppear, ${widget.uniqueId}, $reason, $this');
+  void onPageShow(ChangeReason reason) {
+    print('$_kTag#onPageShow, ${widget.uniqueId}, $reason, $this');
   }
 
-  void onDisappear(ChangeReason reason) {
-    print('$_kTag#onDisappear, ${widget.uniqueId}, $reason, $this');
+  void onPageHide(ChangeReason reason) {
+    print('$_kTag#onPageHide, ${widget.uniqueId}, $reason, $this');
   }
 
   @override

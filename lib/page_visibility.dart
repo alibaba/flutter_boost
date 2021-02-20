@@ -12,10 +12,8 @@ enum ChangeReason {
 }
 
 abstract class PageVisibilityObserver {
-  void onForeground();
-  void onBackground();
-  void onAppear(ChangeReason reason);
-  void onDisappear(ChangeReason reason);
+  void onPageShow(ChangeReason reason);
+  void onPageHide(ChangeReason reason);
 
   // Todo(rulong.crl): This function looks odd.
   String uniqueId() {
@@ -42,7 +40,7 @@ class PageVisibilityBinding {
     final Set<PageVisibilityObserver> observers =
         _listeners.putIfAbsent(route, () => <PageVisibilityObserver>{});
     if (observers.add(observer)) {
-      observer.onAppear(ChangeReason.routePushed);
+      observer.onPageShow(ChangeReason.routePushed);
     }
   }
 
@@ -55,67 +53,65 @@ class PageVisibilityBinding {
     }
   }
 
-  // for internal route
-  void onAppearWithRoute(Route<dynamic> route, ChangeReason reason) {
+  void dispatchPageShowEventForRoute(
+      Route<dynamic> route, ChangeReason reason) {
     final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
     if (observers != null) {
       observers.forEach((observer) {
-        observer.onAppear(reason);
+        observer.onPageShow(reason);
       });
     }
   }
 
-  // for internal route
-  void onDisappearWithRoute(Route<dynamic> route, ChangeReason reason) {
+  void dispatchPageHideEventForRoute(
+      Route<dynamic> route, ChangeReason reason) {
     final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
     if (observers != null) {
       observers.forEach((observer) {
-        observer.onDisappear(reason);
+        observer.onPageHide(reason);
       });
     }
   }
 
-  void onAppear(String uniqueId, ChangeReason reason) {
+  void dispatchPageShowEvent(String uniqueId, ChangeReason reason) {
     for (final Route<dynamic> route in _listeners.keys) {
       final Set<PageVisibilityObserver> observers = _listeners[route];
       observers.forEach((observer) {
         if (observer.uniqueId() == uniqueId) {
-          observer.onAppear(reason);
+          observer.onPageShow(reason);
         }
       });
     }
   }
 
-  void onDisappear(String uniqueId, ChangeReason reason) {
+  void dispatchPageHideEvent(String uniqueId, ChangeReason reason) {
     for (final Route<dynamic> route in _listeners.keys) {
       final Set<PageVisibilityObserver> observers = _listeners[route];
       observers.forEach((observer) {
         if (observer.uniqueId() == uniqueId) {
-          observer.onDisappear(reason);
+          observer.onPageHide(reason);
         }
       });
     }
   }
 
-  void onBackground(String uniqueId) {
+  void dispatchBackgroundEvent(String uniqueId) {
     for (final Route<dynamic> route in _listeners.keys) {
       final Set<PageVisibilityObserver> observers = _listeners[route];
       observers.forEach((observer) {
         if (observer.uniqueId() == uniqueId) {
-          observer.onBackground();
-          observer.onDisappear(ChangeReason.foreground);
+          observer.onPageHide(ChangeReason.foreground);
         }
       });
     }
   }
 
-  void onForeground(String uniqueId) {
+  void dispatchForegroundEvent(String uniqueId) {
     for (final Route<dynamic> route in _listeners.keys) {
       final Set<PageVisibilityObserver> observers = _listeners[route];
       observers.forEach((observer) {
         if (observer.uniqueId() == uniqueId) {
-          observer.onForeground();
-          observer.onAppear(ChangeReason.foreground);
+          observer.onPageShow(ChangeReason.foreground);
         }
       });
     }

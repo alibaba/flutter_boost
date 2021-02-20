@@ -57,7 +57,6 @@ public class FlutterBoost {
 
         //3. register ActivityLifecycleCallbacks
         setupActivityLifecycleCallback(application);
-
     }
 
     /**

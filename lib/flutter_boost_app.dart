@@ -134,8 +134,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           containers.remove(existed);
           containers.add(existed);
         });
-        PageVisibilityBinding.instance
-            .onAppear(_getCurrentPage(), ChangeReason.routeReorder);
+        PageVisibilityBinding.instance.dispatchPageShowEvent(
+            _getCurrentPage(), ChangeReason.routeReorder);
         if (containers.length > 1) {
           String prevPage = containers[containers.length - 2]
               ?.pages
@@ -143,7 +143,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               ?.pageInfo
               ?.uniqueId;
           PageVisibilityBinding.instance
-              .onDisappear(prevPage, ChangeReason.routeReorder);
+              .dispatchPageHideEvent(prevPage, ChangeReason.routeReorder);
         }
       }
     } else {
@@ -157,7 +157,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           containers.add(_createContainer(pageInfo));
         });
         PageVisibilityBinding.instance
-            .onAppear(_getCurrentPage(), ChangeReason.routePushed);
+            .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.routePushed);
         if (containers.length > 1) {
           String prevPage = containers[containers.length - 2]
               ?.pages
@@ -165,7 +165,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               ?.pageInfo
               ?.uniqueId;
           PageVisibilityBinding.instance
-              .onDisappear(prevPage, ChangeReason.routePushed);
+              .dispatchPageHideEvent(prevPage, ChangeReason.routePushed);
         }
       } else {
         setState(() {
@@ -209,7 +209,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (handled != null && !handled) {
       if (_getCurrentPage() == container?.pageInfo?.uniqueId) {
         PageVisibilityBinding.instance
-            .onDisappear(_getCurrentPage(), ChangeReason.routePopped);
+            .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.routePopped);
         if (containers.length > 1) {
           String prevPage = containers[containers.length - 2]
               ?.pages
@@ -217,7 +217,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               ?.pageInfo
               ?.uniqueId;
           PageVisibilityBinding.instance
-              .onAppear(prevPage, ChangeReason.routePushed);
+              .dispatchPageShowEvent(prevPage, ChangeReason.routePushed);
         }
       }
       assert(container.pageInfo.withContainer);
@@ -246,11 +246,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    PageVisibilityBinding.instance.onForeground(_getCurrentPage());
+    PageVisibilityBinding.instance.dispatchForegroundEvent(_getCurrentPage());
   }
 
   void onBackground() {
-    PageVisibilityBinding.instance.onBackground(_getCurrentPage());
+    PageVisibilityBinding.instance.dispatchBackgroundEvent(_getCurrentPage());
   }
 
   String _getCurrentPage() {
@@ -337,9 +337,9 @@ class _BoostNavigatorObserver extends NavigatorObserver {
     //handle internal route
     if (previousRoute != null) {
       PageVisibilityBinding.instance
-          .onAppearWithRoute(route, ChangeReason.routePushed);
-      PageVisibilityBinding.instance
-          .onDisappearWithRoute(previousRoute, ChangeReason.routePushed);
+          .dispatchPageShowEventForRoute(route, ChangeReason.routePushed);
+      PageVisibilityBinding.instance.dispatchPageHideEventForRoute(
+          previousRoute, ChangeReason.routePushed);
     }
     super.didPush(route, previousRoute);
   }
@@ -352,9 +352,9 @@ class _BoostNavigatorObserver extends NavigatorObserver {
 
     if (previousRoute != null) {
       PageVisibilityBinding.instance
-          .onDisappearWithRoute(route, ChangeReason.routePopped);
-      PageVisibilityBinding.instance
-          .onAppearWithRoute(previousRoute, ChangeReason.routePopped);
+          .dispatchPageHideEventForRoute(route, ChangeReason.routePopped);
+      PageVisibilityBinding.instance.dispatchPageShowEventForRoute(
+          previousRoute, ChangeReason.routePopped);
     }
     super.didPop(route, previousRoute);
   }
