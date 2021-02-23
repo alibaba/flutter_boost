@@ -43,7 +43,7 @@
 
 @interface FBFlutterViewContainer  ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
-@property (nonatomic,assign) long long identifier;
+@property (nonatomic,copy) NSString *uniqueID;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @end
@@ -120,11 +120,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (NSString *)uniqueIDString
 {
-    return [[NSUUID UUID] UUIDString];
+    return self.uniqueID;
 }
+
 
 - (void)_setup
 {
+    self.uniqueID= [[NSUUID UUID] UUIDString];
     [self.class instanceCounterIncrease];
 }
 
@@ -134,7 +136,7 @@ static NSUInteger kInstanceCounter = 0;
         FBCommonParams* params =[[FBCommonParams alloc] init ];
         params.pageName=_name;
         params.arguments=_params;
-        params.uniqueId=[self uniqueIDString];
+        params.uniqueId= self.uniqueID;
        
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
                 }];
@@ -175,7 +177,7 @@ static NSUInteger kInstanceCounter = 0;
     FBCommonParams* params =[[FBCommonParams alloc] init ];
     params.pageName=_name;
     params.arguments=_params;
-    params.uniqueId=[self uniqueIDString];
+    params.uniqueId=self.uniqueID;
     [FB_PLUGIN.flutterApi removeRoute: params  completion:^(NSError * e) {
 
             }];
@@ -232,7 +234,7 @@ static NSUInteger kInstanceCounter = 0;
     FBCommonParams* params =[[FBCommonParams alloc] init ];
     params.pageName=_name;
     params.arguments=_params;
-    params.uniqueId=[self uniqueIDString];
+    params.uniqueId=self.uniqueID;
     [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
            
             }];
