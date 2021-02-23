@@ -12,7 +12,7 @@
 #import <objc/runtime.h>
 
 #define ENGINE [[FlutterBoost instance] engine]
-#define FB_PLUGIN [[FlutterBoost instance] plugin]
+#define FB_PLUGIN  [FlutterBoostPlugin getPlugin: [[FlutterBoost instance] engine]]
 
 //#define FLUTTER_VIEW ENGINE.flutterViewController.view
 //#define FLUTTER_VC ENGINE.flutterViewController
@@ -135,6 +135,7 @@ static NSUInteger kInstanceCounter = 0;
         params.pageName=_name;
         params.arguments=_params;
         params.uniqueId=[self uniqueIDString];
+       
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
                 }];
     }

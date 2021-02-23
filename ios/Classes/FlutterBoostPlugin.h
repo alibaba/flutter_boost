@@ -17,4 +17,5 @@
 
 - (void)addContainer:(id<FBFlutterContainer>)vc;
 - (void)removeContainer:(id<FBFlutterContainer>)vc;
++ (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine ;
 @end

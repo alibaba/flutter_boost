@@ -35,6 +35,15 @@
     
 }
 
++ (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine{
+    NSObject *published = [engine valuePublishedByPlugin:@"FlutterBoostPlugin"];
+    if ([published isKindOfClass:[FlutterBoostPlugin class]]) {
+        FlutterBoostPlugin *plugin = (FlutterBoostPlugin *)published;
+        return plugin;
+    }
+    return nil;
+}
+
 
 -(instancetype)initWithMessenger:(id<FlutterBinaryMessenger>)messenger {
   self = [super init];
