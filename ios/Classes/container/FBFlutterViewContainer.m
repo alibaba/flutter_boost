@@ -1,13 +1,31 @@
-//
-//  FBFlutterViewContainer.m
-//  flutter_boost
-//
-//  Created by wubian on 2021/1/27.
-//
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Alibaba Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #import <Foundation/Foundation.h>
 #import "FBFlutterViewContainer.h"
 #import "FlutterBoost.h"
+#import "FBLifecycle.h"
 #import <objc/message.h>
 #import <objc/runtime.h>
 
@@ -34,7 +52,7 @@
 }
 - (void)bridge_viewWillAppear:(BOOL)animated{
 //    [FLUTTER_APP inactive];
-    
+    [FBLifecycle inactive ];
     [super viewWillAppear:animated];
 }
 @end
@@ -107,6 +125,8 @@ static NSUInteger kInstanceCounter = 0;
     kInstanceCounter++;
     if(kInstanceCounter == 1){
 //        [FLUTTER_APP resume];
+        [FBLifecycle resume ];
+
     }
 }
 
@@ -115,6 +135,7 @@ static NSUInteger kInstanceCounter = 0;
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
 //        [FLUTTER_APP pause];
+        [FBLifecycle pause ];
     }
 }
 
@@ -137,7 +158,7 @@ static NSUInteger kInstanceCounter = 0;
         params.pageName=_name;
         params.arguments=_params;
         params.uniqueId= self.uniqueID;
-       
+//
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
                 }];
     }
@@ -229,7 +250,6 @@ static NSUInteger kInstanceCounter = 0;
     //For new page we should attach flutter view in view will appear
     //for better performance.
    
-    [self attatchFlutterEngine];
     
     FBCommonParams* params =[[FBCommonParams alloc] init ];
     params.pageName=_name;
@@ -240,11 +260,12 @@ static NSUInteger kInstanceCounter = 0;
             }];
     [FB_PLUGIN addContainer:self];
 
+    [self attatchFlutterEngine];
 
     [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
+   
     [self surfaceUpdated:YES];
-
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -258,6 +279,7 @@ static NSUInteger kInstanceCounter = 0;
     //https://github.com/flutter/engine/pull/18742
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
+      
     }
     [super viewDidAppear:animated];
 
@@ -288,7 +310,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (BOOL)loadDefaultSplashScreenView
 {
-    return NO;
+    return YES;
 }
 
 @end

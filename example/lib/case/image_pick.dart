@@ -8,6 +8,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_boost/logger.dart';
+import 'package:flutter_boost/boost_navigator.dart';
 
 class ImagePickerPage extends StatefulWidget {
   ImagePickerPage({Key key, this.title, this.uniqueId}) : super(key: key);
@@ -187,7 +188,19 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(builder: (BuildContext context) {
+          return IconButton(
+            icon: const Icon(Icons.arrow_back),
+            // 如果有抽屉的话的就打开
+            onPressed: () {
+              BoostNavigator.of().pop();
+            },
+            // 显示描述信息
+            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          );
+        }),
         title: Text(widget.title),
+
       ),
       body: Center(
         child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android

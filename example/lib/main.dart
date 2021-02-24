@@ -78,22 +78,22 @@ class _MyAppState extends State<MyApp> {
           params: settings.arguments,
           uniqueId: uniqueId,
         ),
-        transitionsBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1.0, 0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: Offset.zero,
-                end: const Offset(-1.0, 0),
-              ).animate(secondaryAnimation),
-              child: child,
-            ),
-          );
-        },
+        // transitionsBuilder: (BuildContext context, Animation<double> animation,
+        //     Animation<double> secondaryAnimation, Widget child) {
+        //   return SlideTransition(
+        //     position: Tween<Offset>(
+        //       begin: const Offset(1.0, 0),
+        //       end: Offset.zero,
+        //     ).animate(animation),
+        //     child: SlideTransition(
+        //       position: Tween<Offset>(
+        //         begin: Offset.zero,
+        //         end: const Offset(-1.0, 0),
+        //       ).animate(secondaryAnimation),
+        //       child: child,
+        //     ),
+        //   );
+        // },
       );
     },
     'tab_friend': (settings, uniqueId) {

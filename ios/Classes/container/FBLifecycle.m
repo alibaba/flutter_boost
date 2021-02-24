@@ -22,10 +22,28 @@
  * THE SOFTWARE.
  */
 #import <Foundation/Foundation.h>
+#import "FBLifecycle.h"
+#import "FlutterBoost.h"
+#import "FBFlutterContainer.h"
 
-@protocol FBFlutterContainer <NSObject>
-- (NSString *)name;
-- (NSDictionary *)params;
-- (NSString *)uniqueIDString;
-- (void)setName:(NSString *)name params:(NSDictionary *)params;
+#define ENGINE [[FlutterBoost instance] engine]
+
+@implementation FBLifecycle
+
++ (void)pause{
+    [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
+    if(ENGINE.viewController != nil){
+//        [(FBFlutterContainer *) ENGINE.viewController  surfaceUpdated:NO];
+        ENGINE.viewController = nil;
+    }
+}
++ (void)resume{
+    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
+        [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+    }
+}
++ (void)inactive{
+    [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
+}
+
 @end

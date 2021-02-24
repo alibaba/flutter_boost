@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#import <Foundation/Foundation.h>
 
-@protocol FBFlutterContainer <NSObject>
-- (NSString *)name;
-- (NSDictionary *)params;
-- (NSString *)uniqueIDString;
-- (void)setName:(NSString *)name params:(NSDictionary *)params;
+
+@interface FBLifecycle : NSObject
++ (void)pause ;
++ (void)resume;
++ (void)inactive;
 @end
