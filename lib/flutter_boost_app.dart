@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -6,6 +8,8 @@ import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/page_visibility.dart';
+import 'package:flutter_boost/overlay_entry.dart';
+
 import 'package:uuid/uuid.dart';
 
 import 'page_visibility.dart';
@@ -81,25 +85,30 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   @override
   Widget build(BuildContext context) {
-    return widget.appBuilder(WillPopScope(
-        onWillPop: () async {
-          bool canPop = topContainer.navigator.canPop();
-          if (canPop) {
-            topContainer.navigator.pop();
-            return true;
-          }
-          return false;
-        },
-        child: Navigator(
-            key: navigatorKey,
-            pages: List.of(_containers),
-            onPopPage: _onPopPage)));
+
+      return widget.appBuilder(WillPopScope(
+          onWillPop: () async {
+            bool canPop = topContainer.navigator.canPop();
+            if (canPop) {
+              topContainer.navigator.pop();
+              return true;
+            }
+            return false;
+          },
+          child: Overlay(
+            key: overlayKey,
+            initialEntries: const <OverlayEntry>[],
+          )));
+
   }
 
   bool _onPopPage(Route<dynamic> route, dynamic result) {
     return false;
   }
 
+  void refresh(){
+    refreshOverlayEntries(containers);
+  }
   ///
   /// 创建页面
   BoostContainer _createContainer(PageInfo pageInfo) {
@@ -134,10 +143,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
-        setState(() {
-          containers.remove(existed);
-          containers.add(existed);
-        });
+        containers.remove(existed);
+        containers.add(existed);
+        refresh();
         PageVisibilityBinding.instance.dispatchPageShowEvent(
             _getCurrentPage(), ChangeReason.routeReorder);
         if (containers.length > 1) {
@@ -157,9 +165,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           arguments: arguments,
           withContainer: withContainer);
       if (withContainer) {
-        setState(() {
+        // setState(() {
           containers.add(_createContainer(pageInfo));
-        });
+        // });
+          refresh();
         PageVisibilityBinding.instance
             .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.routePushed);
         if (containers.length > 1) {
@@ -237,7 +246,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
 
-  void _removeContainer(BoostPage page) {
+  void _removeContainer(BoostContainer page) {
     containers.remove(page);
     if (page.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
@@ -277,7 +286,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-        (BoostContainer element) => element.pageInfo.uniqueId == uniqueId,
+        (BoostContainer element) => element.pageInfo?.uniqueId == uniqueId,
         orElse: () => null);
   }
 
@@ -285,16 +294,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (uniqueId == null) return;
     final BoostContainer container = _findContainerByUniqueId(uniqueId);
     if (container != null) {
-      // setState(() {
       containers.removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
-      // });
+      refresh();
     } else {
-      // setState(() {
       containers.forEach((container) {
         container.pages
             .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
       });
-      // });
+      refresh();
     }
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
@@ -406,15 +413,14 @@ class _BoostNavigatorObserver extends NavigatorObserver {
   }
 }
 
-class BoostContainer<T> extends BoostPage<T> {
+class BoostContainer<T> extends StatelessWidget {
   BoostContainer(
       {LocalKey key,
-      FlutterBoostRouteFactory routeFactory,
-      PageInfo pageInfo,
-      this.observers})
-      : super(key: key, routeFactory: routeFactory, pageInfo: pageInfo) {
+      this.observers, this.routeFactory, this.pageInfo}) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
   }
+  final FlutterBoostRouteFactory routeFactory;
+  final PageInfo pageInfo;
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
   final List<NavigatorObserver> observers;
@@ -430,30 +436,23 @@ class BoostContainer<T> extends BoostPage<T> {
     pages.removeLast();
   }
 
-  @override
-  String toString() {
-    return '${objectRuntimeType(this, 'BoostContainer')}(size:${_pages.length}, pages:$_pages';
+  Widget build(BuildContext context) {
+    return Navigator(
+      key: _navKey,
+      pages: List.of(_pages),
+     onPopPage: (route, dynamic result) {
+        if (route.didPop(result)) {
+          _updatePagesList();
+          return true;
+        }
+        return false;
+      },
+      observers: [
+        _BoostNavigatorObserver(observers),
+      ],
+    );
   }
 
-  @override
-  Route<T> createRoute(BuildContext context) {
-    return PageRouteBuilder<T>(
-        settings: this,
-        pageBuilder: (_, __, ___) {
-          return Navigator(
-            key: _navKey,
-            pages: List.of(_pages),
-            onPopPage: (route, dynamic result) {
-              if (route.didPop(result)) {
-                _updatePagesList();
-                return true;
-              }
-              return false;
-            },
-            observers: [
-              _BoostNavigatorObserver(observers),
-            ],
-          );
-        });
-  }
 }
+
+

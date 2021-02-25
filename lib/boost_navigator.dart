@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
+import 'package:flutter_boost/overlay_entry.dart';
 
 ///
 ///
@@ -17,11 +20,10 @@ class BoostNavigator {
   ///
   static BoostNavigator of() {
     FlutterBoostAppState _appState;
-    _appState = navigatorKey.currentContext
+    _appState = overlayKey.currentContext
         .findAncestorStateOfType<FlutterBoostAppState>();
     return BoostNavigator(_appState);
   }
-
   ///
   /// 判断是否是一个flutter页面
   ///
