@@ -172,10 +172,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               .dispatchPageHideEvent(prevPage, ChangeReason.routePushed);
         }
       } else {
-        setState(() {
           topContainer.pages
               .add(BoostPage.create(pageInfo, topContainer.routeFactory));
-        });
+        refresh();
       }
     }
     Logger.log(
