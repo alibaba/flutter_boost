@@ -511,6 +511,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REEXPORTED_LIBRARY_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
+				"WARNING_CFLAGS[arch=*]" = "-Wno-incomplete-umbrella";
 			};
 			name = Debug;
 		};
