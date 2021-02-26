@@ -53,7 +53,7 @@ class FlutterBoostApp extends StatefulWidget {
 
 class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, Completer<Object>> _pendingResult =
-  <String, Completer<Object>>{};
+      <String, Completer<Object>>{};
 
   List<BoostContainer<dynamic>> get containers => _containers;
   final List<BoostContainer<dynamic>> _containers = <BoostContainer<dynamic>>[];
@@ -84,7 +84,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Widget build(BuildContext context) {
     return widget.appBuilder(WillPopScope(
         onWillPop: () async {
-          bool canPop = topContainer.navigator.canPop();
+          final bool canPop = topContainer.navigator.canPop();
           if (canPop) {
             topContainer.navigator.pop();
             return true;
@@ -97,7 +97,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         )));
   }
 
-
   void refresh() {
     refreshOverlayEntries(containers);
   }
@@ -107,7 +106,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostContainer<dynamic> _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= createUniqueId(pageInfo.pageName);
     return BoostContainer<dynamic>(
-        key: ValueKey<String>(pageInfo.uniqueId),
         pageInfo: pageInfo,
         routeFactory: widget.routeFactory,
         observers: widget.observers);
@@ -172,8 +170,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               .dispatchPageHideEvent(prevPage, ChangeReason.routePushed);
         }
       } else {
-          topContainer.pages
-              .add(BoostPage.create(pageInfo, topContainer.routeFactory));
+        topContainer.pages
+            .add(BoostPage.create(pageInfo, topContainer.routeFactory));
         refresh();
       }
     }
@@ -236,7 +234,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
 
-  void _removeContainer(BoostContainer page) {
+  void _removeContainer(BoostContainer<dynamic> page) {
     containers.remove(page);
     if (page.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
@@ -272,8 +270,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer<dynamic> _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-            (BoostContainer<dynamic> element) =>
-        element.pageInfo.uniqueId == uniqueId,
+        (BoostContainer<dynamic> element) =>
+            element.pageInfo.uniqueId == uniqueId,
         orElse: () => null);
   }
 
@@ -283,16 +281,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
 
     final BoostContainer<dynamic> container =
-    _findContainerByUniqueId(uniqueId);
+        _findContainerByUniqueId(uniqueId);
     if (container != null) {
       containers.removeWhere((BoostContainer<dynamic> entry) =>
-      entry.pageInfo?.uniqueId == uniqueId);
+          entry.pageInfo?.uniqueId == uniqueId);
       refresh();
     } else {
       for (BoostContainer<dynamic> container in containers) {
         container.pages.removeWhere(
-                (BoostPage<dynamic> entry) =>
-            entry.pageInfo?.uniqueId == uniqueId);
+            (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
       refresh();
     }
@@ -322,16 +319,15 @@ class BoostPage<T> extends Page<T> {
   final FlutterBoostRouteFactory routeFactory;
   final PageInfo pageInfo;
 
-  static BoostPage<dynamic> create(PageInfo pageInfo,
-      FlutterBoostRouteFactory routeFactory) {
+  static BoostPage<dynamic> create(
+      PageInfo pageInfo, FlutterBoostRouteFactory routeFactory) {
     return BoostPage<dynamic>(
         key: UniqueKey(), pageInfo: pageInfo, routeFactory: routeFactory);
   }
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'BoostPage')}(name:$name, uniqueId:${pageInfo
-          .uniqueId}, arguments:$arguments)';
+      '${objectRuntimeType(this, 'BoostPage')}(name:$name, uniqueId:${pageInfo.uniqueId}, arguments:$arguments)';
 
   @override
   Route<T> createRoute(BuildContext context) {
@@ -409,8 +405,7 @@ class _BoostNavigatorObserver extends NavigatorObserver {
 }
 
 class BoostContainer<T> extends StatelessWidget {
-  BoostContainer({LocalKey key,
-    this.observers, this.routeFactory, this.pageInfo}) {
+  BoostContainer({this.observers, this.routeFactory, this.pageInfo}) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
   }
 
@@ -437,20 +432,17 @@ class BoostContainer<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return Navigator(
       key: _navKey,
-      pages: List.of(_pages),
-      onPopPage: (route, dynamic result) {
+      pages: List<Page<dynamic>>.of(_pages),
+      onPopPage: (Route<dynamic> route, dynamic result) {
         if (route.didPop(result)) {
           _updatePagesList();
           return true;
         }
         return false;
       },
-      observers: [
+      observers: <NavigatorObserver>[
         _BoostNavigatorObserver(observers),
       ],
     );
   }
-
 }
-
-
