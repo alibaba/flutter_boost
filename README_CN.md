@@ -5,7 +5,7 @@
 
 # Release Note
 
- 请查看最新版本1.12.13+1的release note 确认变更，[1.12.13+1 release note](https://github.com/alibaba/flutter_boost/releases)。
+ 请查看最新版本 的release note 确认变更， [ release note](https://github.com/alibaba/flutter_boost/releases)。
 
 # FlutterBoost
 
@@ -14,29 +14,13 @@
 
 # 前置条件
 
-在继续之前，您需要将Flutter集成到你现有的项目中。flutter sdk 的版本需要和boost版本适配，否则会编译失败.
+1.在继续之前，您需要将Flutter集成到你现有的项目中。
+2.boost3.0版本支持的flutter sdk 版本为 >= 1.22
 
 # FAQ
+
 请阅读这篇文章:
 <a href="Frequently Asked Question.md">FAQ</a>
-
-# boost 版本说明
-
-| Flutter Boost 版本 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
-| ----------------------- | ----------------------- | ------------------------------------------------------------ | ------------------- |
-| 1.9.1+2              | 1.9.1-hotfixes              | 版本号重新命名，开始默认支持androidx  | Yes                 |
-| 1.12.13+1               | 1.12.13 -hotfixes              | 支持androidx  | Yes                 |
-| 1.12.13+2              | 1.17.1-hotfixes              | 支持androidx  | Yes                 |
-
-
-
-
-
-| Flutter Boost 分支 | 支持的 Flutter SDK 版本 | Description                                                  | 是否支持 AndroidX？ |
-| --------------------- | --------------------------- | ------------------------------------------------------------ | ------------------ |
-| v1.9.1-hotfixes         | 1.9.1-hotfixes          | for androidx  | Yes                 |
-| v1.12.13-hotfixes       | 1.12.13-hotfixes         | for androidx                                                        | Yes                 |
-| v1.17.1-hotfixes       | 1.17.1        | for androidx                                                        | Yes                 |
 
 
 # 安装
@@ -46,13 +30,13 @@
 打开pubspec.yaml并将以下行添加到依赖项：
 
 androidx branch
+
 ```json
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '1.12.13+2'
+        ref: 'v3.0-hotfixes'
 ```
-
 
 
 ## boost集成
@@ -61,7 +45,6 @@ flutter_boost:
 1. boost的Examples
 
 2. 集成文档  <a href="INTEGRATION.md">Integration </a>
-
 
 
 # 问题反馈群（钉钉群)
