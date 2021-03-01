@@ -134,12 +134,11 @@ public class ContainerRecord implements IContainerRecord {
 
         mState = STATE_DISAPPEAR;
 
+        mContainer.getBoostFlutterView().onDetach();
         mProxy.disappear();
         if(getContainer().getContextActivity().isFinishing()) {
             mProxy.destroy();
         }
-
-        mContainer.getBoostFlutterView().onDetach();
 
         mManager.popRecord(this);
     }
