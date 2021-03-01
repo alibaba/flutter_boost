@@ -265,7 +265,6 @@ static NSUInteger kInstanceCounter = 0;
     [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
    
-    [self surfaceUpdated:YES];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -279,7 +278,8 @@ static NSUInteger kInstanceCounter = 0;
     //https://github.com/flutter/engine/pull/18742
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
-      
+        [self surfaceUpdated:YES];
+
     }
     [super viewDidAppear:animated];
 

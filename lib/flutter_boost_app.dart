@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter_boost/boost_container.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -339,8 +340,8 @@ class BoostPage<T> extends Page<T> {
   }
 }
 
-class _BoostNavigatorObserver extends NavigatorObserver {
-  _BoostNavigatorObserver(this.observers);
+class BoostNavigatorObserver extends NavigatorObserver {
+  BoostNavigatorObserver(this.observers);
 
   final List<NavigatorObserver> observers;
 
@@ -408,49 +409,7 @@ class _BoostNavigatorObserver extends NavigatorObserver {
   }
 }
 
-class BoostContainer<T> extends StatelessWidget {
-  BoostContainer({LocalKey key,
-    this.observers, this.routeFactory, this.pageInfo}) {
-    pages.add(BoostPage.create(pageInfo, routeFactory));
-  }
 
-  final FlutterBoostRouteFactory routeFactory;
-  final PageInfo pageInfo;
 
-  final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
-  final List<NavigatorObserver> observers;
-
-  List<BoostPage<dynamic>> get pages => _pages;
-
-  BoostPage<dynamic> get topPage => pages.last;
-
-  int get size => pages.length;
-
-  NavigatorState get navigator => _navKey.currentState;
-  final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
-
-  void _updatePagesList() {
-    pages.removeLast();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Navigator(
-      key: _navKey,
-      pages: List.of(_pages),
-      onPopPage: (route, dynamic result) {
-        if (route.didPop(result)) {
-          _updatePagesList();
-          return true;
-        }
-        return false;
-      },
-      observers: [
-        _BoostNavigatorObserver(observers),
-      ],
-    );
-  }
-
-}
 
 

@@ -1,8 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_boost/boost_container.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 
 final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
-List<_ContainerOverlayEntry> _leastEntries;
+  List<_ContainerOverlayEntry> _leastEntries;
 
 void refreshOverlayEntries( List<BoostContainer<dynamic>>  containers ) {
   final OverlayState overlayState = overlayKey.currentState;

@@ -37,6 +37,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
     final String message = widget.message;
     return Scaffold(
       appBar: AppBar(
+        brightness:Brightness.dark,
+        backgroundColor: Colors.black,
+        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),

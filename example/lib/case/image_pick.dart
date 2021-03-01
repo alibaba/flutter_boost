@@ -188,6 +188,9 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
 
     return Scaffold(
       appBar: AppBar(
+        brightness:Brightness.light,
+        backgroundColor: Colors.white,
+        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),
