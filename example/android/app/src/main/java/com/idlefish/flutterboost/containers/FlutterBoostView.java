@@ -13,6 +13,7 @@ import com.idlefish.flutterboost.FlutterBoostPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.flutter.embedding.android.LifecycleView;
 import io.flutter.embedding.android.RenderMode;
@@ -79,7 +80,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, urlParam);
-            args.putString(EXTRA_UNIQUE_ID, FlutterBoost.instance().createUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, UUID.randomUUID().toString());
             return args;
         }
 

@@ -16,18 +16,17 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
 public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi {
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
-
     private Messages.FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
-
-
 
     public void setDelegate(FlutterBoostDelegate delegate) {
         this.delegate = delegate;
     }
+
     public FlutterBoostDelegate getDelegate() {
         return delegate ;
     }
+
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);

@@ -1,6 +1,5 @@
 package com.idlefish.flutterboost.containers;
 
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import com.idlefish.flutterboost.FlutterBoostPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterView;
@@ -240,7 +240,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             args.putBoolean(ARG_SHOULD_ATTACH_ENGINE_TO_ACTIVITY, shouldAttachEngineToActivity);
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, params);
-            args.putString(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId(url));
+            args.putString(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : UUID.randomUUID().toString());
             return args;
         }
 

@@ -2,11 +2,12 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
+import android.os.Bundle;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -15,10 +16,12 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
-    public final static String ENGINE_ID = "flutter_boost_default_engine";
+    public static final String ENGINE_ID = "flutter_boost_default_engine";
+    private static final String defaultInitialRoute = "/";
+    private static final String defaultDartEntrypointFunctionName = "main";
     private static FlutterBoost sInstance = null;
-    private Activity mTopActivity = null;
-    private FlutterBoostPlugin mPlugin;
+    private Activity topActivity = null;
+    private FlutterBoostPlugin plugin;
 
     public static FlutterBoost instance() {
         if (sInstance == null) {
@@ -28,28 +31,28 @@ public class FlutterBoost {
     }
 
     public interface Callback {
-        void onStart( FlutterEngine engine);
+        void onStart(FlutterEngine engine);
     }
 
     /**
-     * 初始化接口
-     * @param application
-     * @param delegate
-     *  用户自定义设置
-     * @param callback
-     *  engine启动后回调
+     * Initializes engine and plugin.
+     * 
+     * @param application the application
+     * @param delegate the FlutterBoostDelegate
+\    * @param callback Invoke the callback when the engine was started.
      */
-    public void setup(Application application, FlutterBoostDelegate delegate,Callback callback) {
+    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
         // 1. initialize default engine
         FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
         if (engine == null) {
             engine = new FlutterEngine(application);
-            engine.getNavigationChannel().setInitialRoute(delegate.initialRoute());
+            engine.getNavigationChannel().setInitialRoute(defaultInitialRoute);
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), delegate.dartEntrypointFunctionName()));
-            if(callback!=null) callback.onStart(engine);
+                    FlutterMain.findAppBundlePath(), defaultDartEntrypointFunctionName));
+            if(callback != null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
+
         // 2. set delegate
         getPlugin().setDelegate(delegate);
 
@@ -58,77 +61,81 @@ public class FlutterBoost {
     }
 
     /**
-     * 获取插件
+     * Gets the FlutterBoostPlugin.
      *
-     * @return
+     * @return the FlutterBoostPlugin.
      */
     public FlutterBoostPlugin getPlugin() {
-        if (mPlugin == null) {
+        if (plugin == null) {
             FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
             if (engine == null) {
                 throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
             }
-            mPlugin = getFlutterBoostPlugin(engine);
+            plugin = getFlutterBoostPlugin(engine);
         }
-        return mPlugin;
+        return plugin;
     }
     
     /**
-     * 获取engine
+     * Gets the FlutterEngine in use.
      *
-     * @return
+     * @return the FlutterEngine
      */
     public FlutterEngine getEngine() {
         return FlutterEngineCache.getInstance().get(ENGINE_ID);
     }
 
-    public String createUniqueId(String url) {
-        StringBuilder uuidBuilder = new StringBuilder(UUID.randomUUID().toString());
-        if (BuildConfig.DEBUG) {
-            if (url != null) {
-                uuidBuilder.append("#");
-                uuidBuilder.append(url);
-            }
-        }
-        return uuidBuilder.toString();
-    }
     /**
-     * 提供给业务 最上层的activity。
+     * Gets the current activity.
      *
-     * @return
+     * @return the current activity
      */
     public Activity currentActivity() {
-        return mTopActivity;
-    }
-
-    public void setCurrentActivity(Activity activity) {
-        this.mTopActivity = activity;
+        return topActivity;
     }
 
     /**
-     * 根据unqueid，返回容器
-     * 兼容老版本
+     * Gets the FlutterView container with uniqueId.
      *
-     * @param uniqueId
-     * @return
+     * the legacy API for backwards compatibility
+     * 
+     * @param uniqueId The uniqueId of the container
+     * @return a FlutterView container
      */
     public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
         return getPlugin().findContainerById(uniqueId);
     }
 
     /**
-     * 最上层容器
-     * 兼容老版本
-     *
-     * @return
+     * Gets the topmost container
+     * 
+     * the legacy API for backwards compatibility
+     * 
+     * @return the topmost container
      */
     public FlutterViewContainer getTopContainer() {
         return getPlugin().getTopContainer();
     }
 
+    /**
+     * Open a Flutter page with name and arguments.
+     * 
+     * @param name The Flutter route name.
+     * @param arguments The bussiness arguments.
+     */
+    public void open(String name, HashMap<String, String> arguments) {
+        this.getPlugin().getDelegate().pushFlutterRoute(name, null, arguments);
+    }
 
-    private void setupActivityLifecycleCallback(Application application) {
-        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
+    /**
+     * Close the Flutter page with uniqueId.
+     * 
+     * @param uniqueId The uniqueId of the Flutter page
+     */
+    public void close(String uniqueId) {
+        Messages.CommonParams params= new Messages.CommonParams();
+        params.setUniqueId(uniqueId);
+        this.getPlugin().popRoute(params);
     }
 
     private FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
@@ -144,22 +151,91 @@ public class FlutterBoost {
         return null;
     }
 
-    /**
-     * 打开一个flutter页面
-     * @param pageName
-     * @param arguments
-     */
-    public void open(String pageName, HashMap<String, String> arguments) {
-        this.getPlugin().getDelegate().pushFlutterRoute(pageName, null, arguments);
+    private void setupActivityLifecycleCallback(Application application) {
+        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
-    /**
-     * 关闭flutter 页面
-     * @param uniqueId
-     */
-    public void close(String uniqueId) {
-        Messages.CommonParams params= new Messages.CommonParams();
-        params.setUniqueId(uniqueId);
-        this.getPlugin().popRoute(params);
+    private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
+        private Activity currentActiveActivity;
+        private boolean alreadyCreated = false;
+    
+        private void dispatchForegroundEvent() {
+            FlutterBoost.instance().getPlugin().onForeground();
+        }
+    
+        private void dispatchBackgroundEvent() {
+            FlutterBoost.instance().getPlugin().onBackground();
+        }
+    
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+            topActivity = activity;
+
+            // fix bug : The LauncherActivity will be launch by clicking app icon when app
+            // enter background in HuaWei Rom, cause missing foreground event
+            if (alreadyCreated && currentActiveActivity == null) {
+                Intent intent = activity.getIntent();
+                if (!activity.isTaskRoot()
+                        && intent != null
+                        && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
+                        && intent.getAction() != null
+                        && intent.getAction().equals(Intent.ACTION_MAIN)) {
+                    return;
+                }
+            }
+            alreadyCreated = true;
+            currentActiveActivity = activity;
+        }
+    
+        @Override
+        public void onActivityStarted(Activity activity) {
+            if (!alreadyCreated) {
+                return;
+            }
+            if (currentActiveActivity == null) {
+                dispatchForegroundEvent();
+            }
+            currentActiveActivity = activity;
+        }
+    
+        @Override
+        public void onActivityResumed(Activity activity) {
+            topActivity = activity;
+
+            if (!alreadyCreated) {
+                return;
+            }
+            currentActiveActivity = activity;
+        }
+    
+        @Override
+        public void onActivityPaused(Activity activity) {
+        }
+    
+        @Override
+        public void onActivityStopped(Activity activity) {
+            if (!alreadyCreated) {
+                return;
+            }
+            if (currentActiveActivity == activity) {
+                dispatchBackgroundEvent();
+                currentActiveActivity = null;
+            }
+        }
+    
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+        }
+    
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+            if (!alreadyCreated) {
+                return;
+            }
+            if (currentActiveActivity == activity) {
+                dispatchBackgroundEvent();
+                currentActiveActivity = null;
+            }
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.idlefish.flutterboost.FlutterBoostPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
@@ -168,7 +169,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoost.instance().createUniqueId(url));
+                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : UUID.randomUUID().toString());
         }
     }
 
