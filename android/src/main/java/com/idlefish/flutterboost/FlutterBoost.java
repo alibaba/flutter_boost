@@ -18,7 +18,6 @@ public class FlutterBoost {
     public final static String ENGINE_ID = "flutter_boost_default_engine";
     private static FlutterBoost sInstance = null;
     private Activity mTopActivity = null;
-    private boolean isRunning = false;
     private FlutterBoostPlugin mPlugin;
 
     public static FlutterBoost instance() {
@@ -50,7 +49,6 @@ public class FlutterBoost {
                     FlutterMain.findAppBundlePath(), delegate.dartEntrypointFunctionName()));
             if(callback!=null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
-            isRunning = true;
         }
         // 2. set delegate
         getPlugin().setDelegate(delegate);
@@ -74,16 +72,7 @@ public class FlutterBoost {
         }
         return mPlugin;
     }
-
-    /**
-     * 判断engine 是否运行中
-     *
-     * @return
-     */
-    public boolean isRunning() {
-        return isRunning;
-    }
-
+    
     /**
      * 获取engine
      *

@@ -41,10 +41,7 @@
 
 - (FlutterBoostPlugin*)plugin;
 
-- (BOOL)isRunning;
-
 - (FlutterViewController *)currentViewController;
-
 
 #pragma mark
 

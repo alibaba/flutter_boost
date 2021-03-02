@@ -28,7 +28,6 @@
 #import "FlutterBoostPlugin.h"
 @interface FlutterBoost ()
 
-@property (nonatomic, assign) BOOL running;
 @property (nonatomic, strong) FlutterEngine*  engine;
 @property (nonatomic, strong) FlutterBoostPlugin*  plugin;
 @end
@@ -55,7 +54,6 @@
     }
     
     [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
-    self.running=YES;
         
     if(callback){
         callback(self.engine);
@@ -94,9 +92,6 @@
     return _instance;
 }
 
-- (BOOL)isRunning{
-    return  self.running;
-}
 
 #pragma mark - Some properties.
 
