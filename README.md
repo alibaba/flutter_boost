@@ -388,13 +388,6 @@ please read this document:
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
 
-# Problem feedback group（ dingding group)
-
-<img width="200" src="https://img.alicdn.com/tfs/TB1JSzVeYY1gK0jSZTEXXXDQVXa-892-1213.jpg">
-
-
-
-
 ## 关于我们
 
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。

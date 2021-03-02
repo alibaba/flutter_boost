@@ -83,9 +83,11 @@
 
 - (instancetype)initWithProject:(FlutterDartProject*)projectOrNil
                         nibName:(NSString*)nibNameOrNil
-                         bundle:(NSBundle*)nibBundleOrNil {
-    NSAssert(NO, @"unsupported init method!");
-    return nil;
+                         bundle:(NSBundle*)nibBundleOrNil  {
+    if (self = [super initWithProject:projectOrNil nibName:nibNameOrNil bundle:nibBundleOrNil]) {
+        [self   ];
+    }
+    return self;
 }
 
 #pragma clang diagnostic push

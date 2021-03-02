@@ -30,7 +30,7 @@
 
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic, strong) NSNumber *disablePopGesture;
-- (instancetype)init NS_DESIGNATED_INITIALIZER;
+- (instancetype)init ;
 - (void)surfaceUpdated:(BOOL)appeared;
 
 @end

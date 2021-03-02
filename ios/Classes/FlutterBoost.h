@@ -35,20 +35,18 @@
 
 @interface FlutterBoost : NSObject
 
-#pragma mark - 以上API待讨论中，是否必要
+#pragma mark
 
 - (FlutterEngine*)engine;
 
 - (FlutterBoostPlugin*)plugin;
-
-- (id<FlutterBoostDelegate>)delegate;
 
 - (BOOL)isRunning;
 
 - (FlutterViewController *)currentViewController;
 
 
-#pragma mark - 已确认的必要API
+#pragma mark
 
 /// Boost全局单例
 + (instancetype)instance;

@@ -93,17 +93,6 @@ public class FlutterBoost {
         return FlutterEngineCache.getInstance().get(ENGINE_ID);
     }
 
-    public String createUniqueId(String url) {
-        StringBuilder uuidBuilder = new StringBuilder(UUID.randomUUID().toString());
-        if (BuildConfig.DEBUG) {
-            if (url != null) {
-                uuidBuilder.append("#");
-                uuidBuilder.append(url);
-            }
-        }
-        return uuidBuilder.toString();
-    }
-
     /**
      * 提供给业务 最上层的activity。
      *

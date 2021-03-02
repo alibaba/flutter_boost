@@ -31,8 +31,6 @@
 @property (nonatomic, assign) BOOL running;
 @property (nonatomic, strong) FlutterEngine*  engine;
 @property (nonatomic, strong) FlutterBoostPlugin*  plugin;
-@property (nonatomic, strong) id<FlutterBoostDelegate> delegate;
-
 @end
 
 @implementation FlutterBoost
@@ -71,9 +69,9 @@
         }
     }
         
-    self.delegate=delegate;
     self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
-    
+    self.plugin.delegate=delegate;
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification
@@ -109,7 +107,7 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments  {
    
-    [[[FlutterBoost instance] delegate] pushFlutterRoute:pageName arguments:arguments];
+    [self.plugin.delegate pushFlutterRoute:pageName arguments:arguments];
 
 }
 
@@ -117,21 +115,21 @@
         FBCommonParams* params = [[FBCommonParams alloc] init];
         params.uniqueId=uniqueId;
         
-        [[FlutterBoost instance].plugin.flutterApi popRoute:params completion:^(NSError* error) {
+        [self.plugin.flutterApi popRoute:params completion:^(NSError* error) {
           } ];
     
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     FBCommonParams* params = [[FBCommonParams alloc] init];
-    [ [FlutterBoost instance].plugin.flutterApi onBackground: params completion:^(NSError * error) {
+    [ self.plugin.flutterApi onBackground: params completion:^(NSError * error) {
     
     }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     FBCommonParams* params = [[FBCommonParams alloc] init];
-    [ [FlutterBoost instance].plugin.flutterApi onForeground:params completion:^(NSError * error) {
+    [ self.plugin.flutterApi onForeground:params completion:^(NSError * error) {
        
     }];
 }
