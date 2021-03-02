@@ -85,7 +85,7 @@
                         nibName:(NSString*)nibNameOrNil
                          bundle:(NSBundle*)nibBundleOrNil  {
     if (self = [super initWithProject:projectOrNil nibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        [self   ];
+        [self   _setup];
     }
     return self;
 }
