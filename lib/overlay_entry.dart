@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_container.dart';
-import 'package:flutter_boost/flutter_boost_app.dart';
 
 final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
-  List<_ContainerOverlayEntry> _leastEntries;
+List<_ContainerOverlayEntry> _leastEntries;
 
-void refreshOverlayEntries( List<BoostContainer<dynamic>>  containers ) {
+void refreshOverlayEntries(List<BoostContainer<dynamic>> containers) {
   final OverlayState overlayState = overlayKey.currentState;
 
   if (overlayState == null) {
@@ -17,21 +16,20 @@ void refreshOverlayEntries( List<BoostContainer<dynamic>>  containers ) {
     }
   }
   _leastEntries = containers
-      .map<_ContainerOverlayEntry>(
-          (BoostContainer container) => _ContainerOverlayEntry(container))
+      .map<_ContainerOverlayEntry>((BoostContainer<dynamic> container) =>
+          _ContainerOverlayEntry(container))
       .toList(growable: false);
 
   overlayState.insertAll(_leastEntries);
-
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
-  bool _removed = false;
-  _ContainerOverlayEntry(BoostContainer container)
+  _ContainerOverlayEntry(BoostContainer<dynamic> container)
       : super(
-      builder: (BuildContext ctx) =>container,
-      opaque: true,
-      maintainState: true);
+            builder: (BuildContext ctx) => container,
+            opaque: true,
+            maintainState: true);
+  bool _removed = false;
 
   @override
   void remove() {

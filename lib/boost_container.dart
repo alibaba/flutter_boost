@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:flutter_boost/boost_navigator.dart';
@@ -33,7 +32,7 @@ class BoostContainer<T> extends StatefulWidget {
   State<StatefulWidget> createState() => BoostContainerState<T>();
 }
 
-class BoostContainerState<T> extends State<BoostContainer>
+class BoostContainerState<T> extends State<BoostContainer<T>>
     with PageVisibilityObserver {
   final Set<int> _activePointers = <int>{};
 
@@ -55,15 +54,15 @@ class BoostContainerState<T> extends State<BoostContainer>
       onPointerCancel: _handlePointerUpOrCancel,
       child: Navigator(
         key: widget._navKey,
-        pages: List.of(widget._pages),
-        onPopPage: (route, dynamic result) {
+        pages: List<Page<dynamic>>.of(widget._pages),
+        onPopPage: (Route<dynamic> route, dynamic result) {
           if (route.didPop(result)) {
             _updatePagesList();
             return true;
           }
           return false;
         },
-        observers: [
+        observers: <NavigatorObserver>[
           BoostNavigatorObserver(widget.observers),
         ],
       ),

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
@@ -24,6 +22,7 @@ class BoostNavigator {
         .findAncestorStateOfType<FlutterBoostAppState>();
     return BoostNavigator(_appState);
   }
+
   ///
   /// 判断是否是一个flutter页面
   ///

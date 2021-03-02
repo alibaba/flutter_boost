@@ -6,14 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
-    private Activity mCurrentActiveActivity;
-    private boolean mEnterActivityCreate = false;
+    private Activity currentActiveActivity;
+    private boolean alreadyCreated = false;
 
-    private void callForeground() {
+    private void dispatchForegroundEvent() {
         FlutterBoost.instance().getPlugin().onForeground();
     }
 
-    private void callBackground() {
+    private void dispatchBackgroundEvent() {
         FlutterBoost.instance().getPlugin().onBackground();
     }
 
@@ -22,7 +22,7 @@ public class BoostActivityLifecycle implements Application.ActivityLifecycleCall
         FlutterBoost.instance().setCurrentActivity(activity) ;
         // fix bug : The LauncherActivity will be launch by clicking app icon when app
         // enter background in HuaWei Rom, cause missing foreground event
-        if (mEnterActivityCreate && mCurrentActiveActivity == null) {
+        if (alreadyCreated && currentActiveActivity == null) {
             Intent intent = activity.getIntent();
             if (!activity.isTaskRoot()
                     && intent != null
@@ -32,28 +32,28 @@ public class BoostActivityLifecycle implements Application.ActivityLifecycleCall
                 return;
             }
         }
-        mEnterActivityCreate = true;
-        mCurrentActiveActivity = activity;
+        alreadyCreated = true;
+        currentActiveActivity = activity;
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        if (!mEnterActivityCreate) {
+        if (!alreadyCreated) {
             return;
         }
-        if (mCurrentActiveActivity == null) {
-            callForeground();
+        if (currentActiveActivity == null) {
+            dispatchForegroundEvent();
         }
-        mCurrentActiveActivity = activity;
+        currentActiveActivity = activity;
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         FlutterBoost.instance().setCurrentActivity(activity) ;
-        if (!mEnterActivityCreate) {
+        if (!alreadyCreated) {
             return;
         }
-        mCurrentActiveActivity = activity;
+        currentActiveActivity = activity;
     }
 
     @Override
@@ -62,12 +62,12 @@ public class BoostActivityLifecycle implements Application.ActivityLifecycleCall
 
     @Override
     public void onActivityStopped(Activity activity) {
-        if (!mEnterActivityCreate) {
+        if (!alreadyCreated) {
             return;
         }
-        if (mCurrentActiveActivity == activity) {
-            callBackground();
-            mCurrentActiveActivity = null;
+        if (currentActiveActivity == activity) {
+            dispatchBackgroundEvent();
+            currentActiveActivity = null;
         }
     }
 
@@ -77,12 +77,12 @@ public class BoostActivityLifecycle implements Application.ActivityLifecycleCall
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        if (!mEnterActivityCreate) {
+        if (!alreadyCreated) {
             return;
         }
-        if (mCurrentActiveActivity == activity) {
-            callBackground();
-            mCurrentActiveActivity = null;
+        if (currentActiveActivity == activity) {
+            dispatchBackgroundEvent();
+            currentActiveActivity = null;
         }
     }
 }

@@ -10,14 +10,9 @@ import java.util.Map;
  */
 
 public interface FlutterViewContainer {
-
     Activity getContextActivity();
-
-    void finishContainer(Map<String, Object> result);
-
     String getUrl();
     HashMap<String, String> getUrlParams();
-
     String getUniqueId();
-
+    void finishContainer(Map<String, Object> result);
 }
