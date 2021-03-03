@@ -1,271 +1,310 @@
 package com.idlefish.flutterboost;
 
-import android.os.Handler;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+import com.idlefish.flutterboost.containers.InitiatorLocation;
+import com.idlefish.flutterboost.containers.FlutterViewContainer;
+import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
 
-import com.idlefish.flutterboost.interfaces.IContainerRecord;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
-import java.io.Serializable;
-import java.util.*;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
 
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
+public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi {
+    private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
+    private Messages.FlutterRouterApi channel;
+    private FlutterBoostDelegate delegate;
 
-public class FlutterBoostPlugin {
-
-    private static FlutterBoostPlugin sInstance;
-
-    private final MethodChannel mMethodChannel;
-    private final Set<MethodChannel.MethodCallHandler> mMethodCallHandlers = new HashSet<>();
-    private final Map<String, Set<EventListener>> mEventListeners = new HashMap<>();
-
-    private static final Set<ActionAfterRegistered> sActions = new HashSet<>();
-
-    public static FlutterBoostPlugin singleton() {
-        if (sInstance == null) {
-            throw new RuntimeException("FlutterBoostPlugin not register yet");
-        }
-
-        return sInstance;
+    public void setDelegate(FlutterBoostDelegate delegate) {
+        this.delegate = delegate;
     }
 
-    public static void addActionAfterRegistered(ActionAfterRegistered action) {
-        if (action == null) return;
+    public FlutterBoostDelegate getDelegate() {
+        return delegate ;
+    }
 
-        if (sInstance == null) {
-            sActions.add(action);
+    @Override
+    public void onAttachedToEngine(FlutterPluginBinding binding) {
+        Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
+        channel = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
+    }
+
+    @Override
+    public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        channel = null;
+    }
+
+    @Override
+    public void pushNativeRoute(Messages.CommonParams params) {
+        if (delegate != null) {
+            delegate.pushNativeRoute(params.getPageName(), params.getArguments());
         } else {
-            action.onChannelRegistered(sInstance);
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
     }
 
-    public static void registerWith(PluginRegistry.Registrar registrar) {
-        sInstance = new FlutterBoostPlugin(registrar);
-
-        for (ActionAfterRegistered a : sActions) {
-            a.onChannelRegistered(sInstance);
+    @Override
+    public void pushFlutterRoute(Messages.CommonParams params) {
+        if (delegate != null) {
+            delegate.pushFlutterRoute(params.getPageName(), params.getUniqueId(), params.getArguments());
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
-
-        sActions.clear();
     }
 
-    private FlutterBoostPlugin(PluginRegistry.Registrar registrar) {
-        mMethodChannel = new MethodChannel(registrar.messenger(), "flutter_boost");
-
-        mMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
-            @Override
-            public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-
-                if (methodCall.method.equals("__event__")) {
-                    String name = methodCall.argument("name");
-                    Map args = methodCall.argument("arguments");
-
-                    Object[] listeners = null;
-                    synchronized (mEventListeners) {
-                        Set<EventListener> set = mEventListeners.get(name);
-                        if (set != null) {
-                            listeners = set.toArray();
-                        }
-                    }
-
-                    if (listeners != null) {
-                        for (Object o : listeners) {
-                            ((EventListener) o).onEvent(name, args);
-                        }
-                    }
-                } else {
-                    Object[] handlers;
-                    synchronized (mMethodCallHandlers) {
-                        handlers = mMethodCallHandlers.toArray();
-                    }
-
-                    for (Object o : handlers) {
-                        ((MethodChannel.MethodCallHandler) o).onMethodCall(methodCall, result);
-                    }
+    @Override
+    public void popRoute(Messages.CommonParams params) {
+        String uniqueId = params.getUniqueId();
+        if (uniqueId != null) {
+            ContainerShadowNode node = allContainers.get(uniqueId);
+            if (node != null) {
+                if (node.container() != null) {
+                    node.container().finishContainer(params.getArguments());
                 }
             }
-        });
-
-        addMethodCallHandler(new BoostMethodHandler());
-
-    }
-
-    public void invokeMethodUnsafe(final String name, Serializable args) {
-        invokeMethod(name, args, new MethodChannel.Result() {
-            @Override
-            public void success(@Nullable Object o) {
-                //every thing ok...
-            }
-
-            @Override
-            public void error(String s, @Nullable String s1, @Nullable Object o) {
-                Debuger.log("invoke method " + name + " error:" + s + " | " + s1);
-            }
-
-            @Override
-            public void notImplemented() {
-                Debuger.log("invoke method " + name + " notImplemented");
-            }
-        });
-    }
-
-    public void invokeMethod(final String name, Serializable args) {
-        invokeMethod(name, args, new MethodChannel.Result() {
-            @Override
-            public void success(@Nullable Object o) {
-                //every thing ok...
-            }
-
-            @Override
-            public void error(String s, @Nullable String s1, @Nullable Object o) {
-                Debuger.exception("invoke method " + name + " error:" + s + " | " + s1);
-            }
-
-            @Override
-            public void notImplemented() {
-                Debuger.exception("invoke method " + name + " notImplemented");
-            }
-        });
-    }
-
-    public void invokeMethod(final String name, Serializable args, MethodChannel.Result result) {
-        if ("__event__".equals(name)) {
-            Debuger.exception("method name should not be __event__");
-        }
-
-        mMethodChannel.invokeMethod(name, args, result);
-    }
-
-    public void addMethodCallHandler(MethodChannel.MethodCallHandler handler) {
-        synchronized (mMethodCallHandlers) {
-            mMethodCallHandlers.add(handler);
+        } else {
+            throw new RuntimeException("Oops!! The unique id is null!");
         }
     }
 
-    public void removeMethodCallHandler(MethodChannel.MethodCallHandler handler) {
-        synchronized (mMethodCallHandlers) {
-            mMethodCallHandlers.remove(handler);
+    public interface Reply<T> {
+        void reply(T reply);
+    }
+
+    public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments,
+                          final Reply<Void> callback) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            params.setPageName(pageName);
+            params.setArguments(arguments);
+            channel.pushRoute(params, reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
     }
 
-    public void addEventListener(String name, EventListener listener) {
-        synchronized (mEventListeners) {
-            Set<EventListener> set = mEventListeners.get(name);
-            if (set == null) {
-                set = new HashSet<>();
+    public void popRoute(String uniqueId,final Reply<Void> callback) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            channel.popRoute(params,reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
+
+    public void removeRoute(String uniqueId,final Reply<Void> callback) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            channel.removeRoute(params,reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
+
+    public enum BackForeGroundEvent {
+        NONE,
+        FOREGROUND,
+        BACKGROUND,
+    }
+
+    public void onForeground() {
+        ContainerShadowNode node = getCurrentShadowNode();
+        if (node != null) {
+            node.setBackForeGroundEvent(BackForeGroundEvent.FOREGROUND);
+        }
+
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            channel.onForeground(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onForeground: " + channel);
+    }
+
+    public void onBackground() {
+        ContainerShadowNode node = getCurrentShadowNode();
+        if (node != null) {
+            node.setBackForeGroundEvent(BackForeGroundEvent.BACKGROUND);
+        }
+
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            channel.onBackground(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onBackground: " + channel);
+    }
+
+    public void onNativeViewShow() {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            channel.onNativeViewShow(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onNativeViewShow: " + channel);
+    }
+
+    public void onNativeViewHide() {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            channel.onNativeViewHide(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onNativeViewHide: " + channel);
+    }
+
+    private final Map<String, ContainerShadowNode> allContainers = new LinkedHashMap<>();
+    private ContainerShadowNode getCurrentShadowNode() {
+        if (allContainers.size() > 0) {
+            LinkedList<String> listKeys = new LinkedList<String>(allContainers.keySet());
+            return allContainers.get(listKeys.getLast());
+        }
+        return null;
+    }
+
+    public FlutterViewContainer findContainerById(String uniqueId) {
+        if (allContainers.containsKey(uniqueId)) {
+            return allContainers.get(uniqueId).container();
+        }
+        return null;
+    }
+
+    public FlutterViewContainer getTopContainer() {
+        ContainerShadowNode top = getCurrentShadowNode();
+        return top != null ? top.container() : null;
+    }
+
+    public void reorderContainer(String uniqueId, ContainerShadowNode container) {
+        if (uniqueId == null || container == null) return;
+        if (allContainers.containsKey(uniqueId)) {
+            allContainers.remove(uniqueId);
+        }
+        allContainers.put(uniqueId, container);
+    }
+
+    public void removeContainer(String uniqueId) {
+        if (uniqueId == null) return;
+        allContainers.remove(uniqueId);
+    }
+
+    public LinkedList<String> getContainers() {
+        return new LinkedList<String>(allContainers.keySet());
+    }
+
+    public static class ContainerShadowNode implements FlutterViewContainerObserver {
+        private WeakReference<FlutterViewContainer> container;
+        private FlutterBoostPlugin plugin;
+        private BackForeGroundEvent event;
+
+        public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
+            return new ContainerShadowNode(container, plugin);
+        }
+
+        private ContainerShadowNode(FlutterViewContainer container, FlutterBoostPlugin plugin) {
+            assert container != null;
+            this.container = new WeakReference<>(container);
+            this.plugin = plugin;
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+        }
+
+        private boolean isCurrentTopContainer() {
+            assert getUniqueId() != null;
+            FlutterViewContainer top = plugin.getTopContainer();
+            if (top != null && top.getUniqueId() == getUniqueId()) {
+                return true;
             }
-            set.add(listener);
-            mEventListeners.put(name, set);
+            return false;
         }
-    }
 
-    public void removeEventListener(EventListener listener) {
-        synchronized (mEventListeners) {
-            for (Set<EventListener> set : mEventListeners.values()) {
-                set.remove(listener);
+        public FlutterViewContainer container() {
+            return container.get();
+        }
+        public void setBackForeGroundEvent(BackForeGroundEvent event) {
+            this.event = event;
+        }
+
+        public String getUniqueId() {
+            if (container() != null) {
+                return container().getUniqueId();
             }
+            return null;
         }
-    }
 
-    public void sendEvent(String name, Map args) {
-        Map event = new HashMap();
-        event.put("name", name);
-        event.put("arguments", args);
-        mMethodChannel.invokeMethod("__event__", event);
-    }
+        public String getUrl() {
+            if (container() != null) {
+                return container().getUrl();
+            }
+            return null;
+        }
 
-    public interface EventListener {
-        void onEvent(String name, Map args);
-    }
-
-    public interface ActionAfterRegistered {
-        void onChannelRegistered(FlutterBoostPlugin channel);
-    }
-
-
-    class BoostMethodHandler implements MethodChannel.MethodCallHandler {
+        public HashMap<String, String> getUrlParams() {
+            if (container() != null) {
+                return container().getUrlParams();
+            }
+            return null;
+        }
 
         @Override
-        public void onMethodCall(MethodCall methodCall, final MethodChannel.Result result) {
+        public void onCreateView() {
+            Log.v(TAG, "#onCreateView: " + getUniqueId() + ", " + plugin.getContainers());
+        }
 
-            FlutterViewContainerManager mManager = (FlutterViewContainerManager) FlutterBoost.instance().containerManager();
-            switch (methodCall.method) {
-                case "pageOnStart": {
-                    Map<String, Object> pageInfo = new HashMap<>();
-
-                    try {
-                        IContainerRecord record = mManager.getCurrentTopRecord();
-
-                        if (record == null) {
-                            record = mManager.getLastGenerateRecord();
-                        }
-
-                        if (record != null) {
-                            pageInfo.put("name", record.getContainer().getContainerUrl());
-                            pageInfo.put("params", record.getContainer().getContainerUrlParams());
-                            pageInfo.put("uniqueId", record.uniqueId());
-                        }
-
-                        result.success(pageInfo);
-                        FlutterBoost.instance().setFlutterPostFrameCallTime(new Date().getTime());
-
-
-                    } catch (Throwable t) {
-                        result.error("no flutter page found!", t.getMessage(), Log.getStackTraceString(t));
-                    }
-                }
-                break;
-                case "openPage": {
-                    try {
-                        Map<String, Object> params = methodCall.argument("urlParams");
-                        Map<String, Object> exts = methodCall.argument("exts");
-                        String url = methodCall.argument("url");
-
-                        mManager.openContainer(url, params, exts, new FlutterViewContainerManager.OnResult() {
-                            @Override
-                            public void onResult(Map<String, Object> rlt) {
-                                if (result != null) {
-                                    result.success(rlt);
-                                }
-                            }
-                        });
-                    } catch (Throwable t) {
-                        result.error("open page error", t.getMessage(), Log.getStackTraceString(t));
-                    }
-                }
-                break;
-                case "closePage": {
-                    try {
-                        String uniqueId = methodCall.argument("uniqueId");
-                        Map<String, Object> resultData = methodCall.argument("result");
-                        Map<String, Object> exts = methodCall.argument("exts");
-
-                        mManager.closeContainer(uniqueId, resultData, exts);
-                        result.success(true);
-                    } catch (Throwable t) {
-                        result.error("close page error", t.getMessage(), Log.getStackTraceString(t));
-                    }
-                }
-                break;
-                case "onShownContainerChanged": {
-                    try {
-                        String newId = methodCall.argument("newName");
-                        String oldId = methodCall.argument("oldName");
-
-                        mManager.onShownContainerChanged(newId, oldId);
-                        result.success(true);
-                    } catch (Throwable t) {
-                        result.error("onShownContainerChanged", t.getMessage(), Log.getStackTraceString(t));
-                    }
-                }
-                break;
-                default: {
-                    result.notImplemented();
-                }
+        @Override
+        public void onAppear(InitiatorLocation location) {
+            if (isCurrentTopContainer() &&
+                    InitiatorLocation.Others == location &&
+                    BackForeGroundEvent.FOREGROUND != event) {
+                // The native view was popped
+                plugin.onNativeViewHide();
             }
+
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+            plugin.reorderContainer(getUniqueId(), this);
+            plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", " + plugin.getContainers());
+        }
+
+        @Override
+        public void onDisappear(InitiatorLocation location) {
+            if (isCurrentTopContainer() &&
+                    InitiatorLocation.Others == location &&
+                    BackForeGroundEvent.BACKGROUND != event) {
+                // The native view was pushed
+                plugin.onNativeViewShow();
+            }
+
+            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", " + plugin.getContainers());
+        }
+
+        @Override
+        public void onDestroyView() {
+            plugin.removeRoute(getUniqueId(), null);
+            plugin.removeContainer(getUniqueId());
+            Log.v(TAG, "#onDestroyView: " + getUniqueId() + ", " + plugin.getContainers());
         }
     }
 }

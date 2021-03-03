@@ -46,6 +46,18 @@
 
     <TextView
         android:background="@android:color/holo_orange_dark"
+        android:layout_margin="8.0dp"
+        android:padding="8.0dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/open_custom_view_tab"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_custom_view_tab" />
+
+    <TextView
+        android:background="@android:color/holo_orange_dark"
         android:layout_marginLeft="8.0dp"
         android:layout_marginTop="8.0dp"
         android:layout_marginRight="8.0dp"

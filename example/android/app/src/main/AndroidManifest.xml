@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.taobao.idlefish.flutterboostexample">
+          package="com.idlefish.flutterboost.example">
 
     <!-- The INTERNET permission is required for development. Specifically,
          flutter needs it to communicate with the running application
@@ -18,11 +18,11 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:name=".MyApplication"
+        android:name="com.idlefish.flutterboost.example.MyApplication"
         android:label="flutter_boost_example"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="com.idlefish.flutterboost.example.MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
@@ -34,32 +34,67 @@
             </intent-filter>
         </activity>
 
-
         <activity
-                android:name="com.idlefish.flutterboost.containers.BoostFlutterActivity"
-                android:theme="@style/Theme.AppCompat"
-                android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
-                android:hardwareAccelerated="true"
-                android:windowSoftInputMode="adjustResize" >
-                <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/page_loading"/>
+            android:name="io.flutter.embedding.android.FlutterActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
 
         </activity>
-        
         <activity
-            android:name=".FlutterFragmentPageActivity"
+            android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+
+        </activity>
+
+        <activity
+            android:name="com.idlefish.flutterboost.example.tab.TabMainActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+
+        </activity>
+
+        <activity
+            android:name="com.idlefish.flutterboost.example.tab.TabCustomViewActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+        </activity>
+
+        <activity
+            android:name="com.idlefish.flutterboost.example.FlutterFragmentPageActivity"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
-            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/page_loading"/>
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
 
         </activity>
 
         <activity
-            android:name=".NativePageActivity"
+            android:name="com.idlefish.flutterboost.example.NativePageActivity"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
+
+        <activity
+            android:name="com.idlefish.flutterboost.example.TransparencyPageActivity"
+            android:theme="@style/TranTheme.Translucente"
+            android:configChanges="screenSize|smallestScreenSize|orientation|keyboardHidden"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
         <meta-data android:name="flutterEmbedding"
                    android:value="2">
         </meta-data>

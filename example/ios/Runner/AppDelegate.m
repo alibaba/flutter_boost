@@ -8,8 +8,9 @@
 
 #import "AppDelegate.h"
 #import "UIViewControllerDemo.h"
-#import "PlatformRouterImp.h"
 #import "NativeViewController.h"
+#import "MyFlutterBoostDelegate.h"
+
 #import <flutter_boost/FlutterBoost.h>
 
 @interface AppDelegate ()
@@ -20,49 +21,37 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    PlatformRouterImp *router = [PlatformRouterImp new];
-    [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:router
-                                                        onStart:^(FlutterEngine *engine) {
-        
-        // 注册MethodChannel，监听flutter侧的getPlatformVersion调用
-        FlutterMethodChannel *flutterMethodChannel = [FlutterMethodChannel methodChannelWithName:@"flutter_native_channel" binaryMessenger:engine.binaryMessenger];
-        
-        [flutterMethodChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call, FlutterResult  _Nonnull result) {
-            
-            NSString *method = call.method;
-            if ([method isEqualToString:@"getPlatformVersion"]) {
-                NSString *sysVersion = [[UIDevice currentDevice] systemVersion];
-                result(sysVersion);
-            } else {
-                result(FlutterMethodNotImplemented);
-            }
-            
-        }];
-    }];
     
     self.window = [[UIWindow alloc] initWithFrame: [UIScreen mainScreen].bounds];
     
     
     [self.window makeKeyAndVisible];
     
-   
+    MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
+        
+    [[FlutterBoost instance] setup:application delegate:delegate callback:^(FlutterEngine *engine) {
+        
+    } ];
+    
+    
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
    
-    
-    FLBFlutterViewContainer *fvc = FLBFlutterViewContainer.new;
-    [fvc setName:@"tab" params:@{}];
+    FBFlutterViewContainer *fvc = FBFlutterViewContainer.new ;
+
+    [fvc setName:@"tab_friend" params:@{}];
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
-    
-    
+
+
     UITabBarController *tabVC = [[UITabBarController alloc] init];
+    tabVC.viewControllers = @[vc,fvc];
+
+    
     UINavigationController *rvc = [[UINavigationController alloc] initWithRootViewController:tabVC];
     
-   
-    router.navigationController = rvc;
-    
-    tabVC.viewControllers = @[vc,fvc];
-    
+    delegate.navigationController=rvc;
+
+
     self.window.rootViewController = rvc;
     
     UIButton *nativeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -75,10 +64,12 @@
     UIButton *pushEmbeded = [UIButton buttonWithType:UIButtonTypeCustom];
     pushEmbeded.frame = CGRectMake(self.window.frame.size.width * 0.5 - 70, 150, 140, 40);
     pushEmbeded.backgroundColor = [UIColor redColor];
-    [pushEmbeded setTitle:@"push embeded" forState:UIControlStateNormal];
+    [pushEmbeded setTitle:@"push embedded" forState:UIControlStateNormal];
     [pushEmbeded addTarget:self action:@selector(pushEmbeded) forControlEvents:UIControlEventTouchUpInside];
     [self.window addSubview:pushEmbeded];
     
+
+
     return YES;
 }
 
@@ -88,7 +79,7 @@
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     [nvc pushViewController:vc animated:YES];
 }
-
+//
 - (void)pushEmbeded
 {
     UINavigationController *nvc = (id)self.window.rootViewController;

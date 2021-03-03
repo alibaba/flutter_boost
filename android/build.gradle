@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.android.tools.build:gradle:3.3.0'
     }
 }
 
@@ -23,23 +23,24 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     lintOptions {
         disable 'InvalidPackage'
     }
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly 'com.google.android.material:material:1.0.0'
-    compileOnly 'androidx.appcompat:appcompat:1.0.0'
-    compileOnly 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.1.0'
     compileOnly 'com.alibaba:fastjson:1.2.41'
 
 }

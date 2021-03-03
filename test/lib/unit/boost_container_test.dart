@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:flutter_boost/container/boost_container.dart';
+import 'package:flutter_boost/container/boost_container.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FirstWidget extends StatelessWidget {
@@ -149,11 +149,11 @@ void main() {
     );
     await tester.pumpWidget(widget);
 
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(Duration(seconds: 1));
 
     await tester.tap(find.byKey(targetKey));
 
-    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(Duration(seconds: 1));
 
     expect(exception, isInstanceOf<FlutterError>());
     expect('$exception',

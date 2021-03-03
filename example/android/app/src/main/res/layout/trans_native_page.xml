@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="left"
+    android:background="@android:color/transparent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:id="@+id/info"
+        android:text="This is a trans native activity"
+        android:textColor="@android:color/holo_blue_dark"
+        android:textSize="28sp"
+        android:layout_gravity="center_horizontal"/>
+
+    <View android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:background="@android:color/holo_orange_dark"
+        android:layout_margin="8.0dp"
+        android:padding="8.0dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/open_native"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_native" />
+
+    <TextView
+        android:background="@android:color/holo_orange_dark"
+        android:layout_margin="8.0dp"
+        android:padding="8.0dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/open_flutter"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_flutter" />
+
+    <TextView
+        android:background="@android:color/holo_orange_dark"
+        android:layout_margin="8.0dp"
+        android:padding="8.0dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/open_custom_view_tab"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_custom_view_tab" />
+
+    <TextView
+        android:background="@android:color/holo_orange_dark"
+        android:layout_marginLeft="8.0dp"
+        android:layout_marginTop="8.0dp"
+        android:layout_marginRight="8.0dp"
+        android:layout_marginBottom="80.0dp"
+        android:padding="8.0dp"
+        android:textColor="@android:color/black"
+        android:id="@+id/open_flutter_fragment"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/open_flutter_fragment" />
+
+</LinearLayout>

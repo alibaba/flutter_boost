@@ -11,15 +11,15 @@
 #import <flutter_boost/FlutterBoost.h>
 
 @interface NativeViewController ()
-@property(nonatomic, strong)FLBFlutterViewContainer *flutterContainer;
+@property(nonatomic, strong)FBFlutterViewContainer *flutterContainer;
 @end
 
 @implementation NativeViewController
 
 - (instancetype)init{
     if (self = [super init]) {
-        _flutterContainer = [[FLBFlutterViewContainer alloc]init];
-        [_flutterContainer setName:@"embeded" params:@{}];
+        _flutterContainer = [[FBFlutterViewContainer alloc]init];
+        [_flutterContainer setName:@"embedded" params:@{}];
     }
     return self;
 }

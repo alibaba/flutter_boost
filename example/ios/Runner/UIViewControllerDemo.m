@@ -8,7 +8,7 @@
 
 #import "UIViewControllerDemo.h"
 #import <Flutter/Flutter.h>
-#import <flutter_boost/FlutterBoostPlugin.h>
+#import <flutter_boost/FlutterBoost.h>
 
 
 @interface UIViewControllerDemo ()
@@ -17,25 +17,36 @@
 
 @implementation UIViewControllerDemo
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
 }
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
-        NSLog(@"page is opened");
-    }];
+    
+    
+    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"animated":@(YES)}  ];
+    
+
+//    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+//        NSLog(@"call me when page finished, and your result is:%@", result);
+//    } completion:^(BOOL f) {
+//        NSLog(@"page is opened");
+//    }];
+    
+    
 }
 
 - (IBAction)present:(id)sender {
-    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-        NSLog(@"call me when page finished, and your result is:%@", result);
-    } completion:^(BOOL f) {
-        NSLog(@"page is presented");
-    }];
+    
+    [[FlutterBoost instance] open:@"secondStateful" arguments:@{@"present":@(YES)}];
+
+//    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
+//        NSLog(@"call me when page finished, and your result is:%@", result);
+//    } completion:^(BOOL f) {
+//        NSLog(@"page is presented");
+//    }];
 }
 
 /*

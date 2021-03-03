@@ -3,5 +3,9 @@
     <string name="open_native">open native page</string>
     <string name="open_flutter">open flutter page</string>
     <string name="open_flutter_fragment">open flutter fragment page</string>
+    <string name="open_custom_view_tab">open custom view page</string>
     <string name="native_info">This is a native activity</string>
+    <string name="flutter1">Flutter1</string>
+    <string name="flutter2">Flutter2</string>
+    <string name="native_view">Native</string>
 </resources>
