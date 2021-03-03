@@ -5,7 +5,14 @@
 
 # Release Note
 
- 请查看最新版本 的release note 确认变更， [ release note](https://github.com/alibaba/flutter_boost/releases)。
+v3.0-beta.1
+
+1.flutter sdk升级不需要升级boost
+2.android不需要区分androidx 和support
+3.简化架构
+4.简化接口设计
+5.双端设计统一
+6.解决了top issue
 
 # FlutterBoost
 

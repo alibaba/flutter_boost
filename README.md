@@ -6,8 +6,13 @@
 </p>
 
 # Release Note
-
-Please check the release note of the latest version to confirm the change.  [ release note](https://github.com/alibaba/flutter_boost/releases)
+v3.0-beta.1
+1. Flutter SDK upgrades do not require Boost upgrades
+2. Android does not distinguish between AndroidX and Support branches
+3. Simplified architecture
+4. Simplified interface design
+5. Android and iOS have the same design
+6. Resolve the top issue
 
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
