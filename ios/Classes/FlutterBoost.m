@@ -45,13 +45,6 @@
     NSString*  initialRoute=@"/";
     NSString*  dartEntrypointFunctionName=@"main";
     
-    if([delegate respondsToSelector:@selector(dartEntrypointFunctionName)]){
-        dartEntrypointFunctionName= delegate.dartEntrypointFunctionName ;
-    }
-    
-    if([delegate respondsToSelector:@selector(initialRoute)] ){
-        initialRoute =delegate.initialRoute ;
-    }
     
     [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
         

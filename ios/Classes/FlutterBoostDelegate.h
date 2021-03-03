@@ -30,10 +30,8 @@
 @protocol  FlutterBoostDelegate <NSObject>
 
 @optional
-- (NSString*) initialRoute;
-- (NSString*) dartEntrypointFunctionName;
 - (FlutterEngine*)  engine;
-@required  ;
+@required  
 - (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
 
 - (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
