@@ -7,12 +7,12 @@
 
 v3.0-beta.1
 
-1.flutter sdk升级不需要升级boost
-2.android不需要区分androidx 和support
-3.简化架构
-4.简化接口设计
-5.双端设计统一
-6.解决了top issue
+- 1.flutter sdk升级不需要升级boost
+- 2.简化架构
+- 3.简化接口
+- 4.双端接口设计统一
+- 5.解决了top issue
+- 6.android不需要区分androidx 和support
 
 # FlutterBoost
 
