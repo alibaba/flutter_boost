@@ -3,19 +3,14 @@ import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
-///
-///
-/// boost 页面栈的操作和管理
-///
+/// A object that manages a set of pages with a hybrid stack.
 ///
 class BoostNavigator {
   const BoostNavigator(this.appState);
 
   final FlutterBoostAppState appState;
 
-  ///
-  /// 获取BoostNavigator实例
-  ///
+  /// Retrieves the instance of [BoostNavigator]
   static BoostNavigator of() {
     FlutterBoostAppState _appState;
     _appState = overlayKey.currentContext
@@ -23,74 +18,52 @@ class BoostNavigator {
     return BoostNavigator(_appState);
   }
 
+  /// Whether this page with the given [name] is a flutter page
   ///
-  /// 判断是否是一个flutter页面
-  ///
-  /// 如果路由表中有注册[pageName]，那么返回true；否则，返回false。
-  ///
-  bool isFlutterPage(String pageName) {
-    return appState.routeFactory(RouteSettings(name: pageName), null) != null;
+  /// If the name of route can be found in route table then return true,
+  /// otherwise return false.
+  bool isFlutterPage(String name) {
+    return appState.routeFactory(RouteSettings(name: name), null) != null;
   }
 
-  ///
-  /// push 一个page，并展示在栈顶
-  ///
-  /// [withContainer]参数用来控制是否创建新的native容器（例如，android的Activity），
-  /// 1. 如果[withContainer]参数的值为true，那么会创建一个Native容器，同时Dart侧会
-  /// 为该页面创建一个嵌套的Navigator（[pageName]作为该嵌套Navigator的栈底），用于
-  /// 维护复用该容器的所有页面。
-  /// 2. 如果[withContainer]参数的值为false（当前正在显示的是一个Flutter页面），那么
-  /// 会复用当前容器，[pageName]被压人嵌套Navigator中。
-  ///
-
-  Future<T> push<T extends Object>(String pageName,
+  /// Push the page with the given [name] onto the hybrid stack.
+  Future<T> push<T extends Object>(String name,
       {Map<dynamic, dynamic> arguments, bool withContainer = false}) {
-    if (isFlutterPage(pageName)) {
-      return appState.pushWithResult(pageName,
+    if (isFlutterPage(name)) {
+      return appState.pushWithResult(name,
           arguments: arguments, withContainer: withContainer);
     } else {
       final CommonParams params = CommonParams()
-        ..pageName = pageName
+        ..pageName = name
         ..arguments = arguments;
       appState.nativeRouterApi.pushNativeRoute(params);
       return Future<T>(null);
     }
   }
 
-  ///
-  /// 关闭栈顶页面
-  ///
-  /// 注意：
-  /// 1.每个带容器的页面，都包含了一个自己的navigator，用于维护复用该容器的所有页面。
-  /// 执行关闭时，先执行页面里面的navigator.pop ，让子路由pop。
-  ///
-  /// 2.执行关闭时候，页面内的子路由 maybePop=false ，才会关闭整个页面，
-  /// 如果page有对应的native容器， 则会一并关闭容器。page是否有容器，由push的
-  /// withContainer参数决定。
-  ///
+  /// Pop the top-most page off the hybrid stack.
   void pop<T extends Object>([T result]) {
     appState.popWithResult(result);
   }
 
+  /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
-  /// 从栈中删除指定的页面
-  ///
+  /// This API is for backwards compatibility.
   void remove(String uniqueId) {
     appState.remove(uniqueId);
   }
 
+  /// Retrieves the infomation of the top-most flutter page
+  /// on the hybrid stack, such as uniqueId, pagename, etc;
   ///
-  ///获取当前栈顶页面的页面信息，包括uniqueId，pagename
-  ///
+  /// This is a legacy API for backwards compatibility.
   PageInfo getTopPageInfo() {
     return appState.getTopPageInfo();
   }
 
+  /// Return the number of flutter pages
   ///
-  /// 获取页面总个数
-  ///
-  /// 注意：通过原生Navigator.push打开的页面未被计入
-  ///
+  /// This is a legacy API for backwards compatibility.
   int pageSize() {
     return appState.pageSize();
   }

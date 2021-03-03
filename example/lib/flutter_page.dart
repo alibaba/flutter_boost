@@ -20,6 +20,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
 
   @override
   void dispose() {
+    Logger.log('uniqueId=${widget.uniqueId}, dispose~');
     super.dispose();
   }
 

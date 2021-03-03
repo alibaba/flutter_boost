@@ -11,28 +11,10 @@ import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
-
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
 
-///
-/// 生成UniqueId
-///
-String createUniqueId(String pageName) {
-  if (kReleaseMode) {
-    return Uuid().v4();
-  } else {
-    return Uuid().v4() + '#$pageName';
-  }
-}
-
-///
-///
-///
-///
 class FlutterBoostApp extends StatefulWidget {
   const FlutterBoostApp(this.routeFactory,
       {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
@@ -73,14 +55,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void initState() {
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
     _nativeRouterApi = NativeRouterApi();
-    _boostFlutterRouterApi = BoostFlutterRouterApi.instance(this);
+    _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
   }
 
-  ///     1. onWillPop 先从父层收到事件，再到子层.
-  ///     当子层返回 false 时候。父的maybePop 才会true.
-  ///     当子层返回 true 时候。父的maybePop 才会false.
-  ///
   @override
   Widget build(BuildContext context) {
     return widget.appBuilder(WillPopScope(
@@ -102,10 +80,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     refreshOverlayEntries(containers);
   }
 
-  ///
-  /// 创建页面
+  String _createUniqueId(String pageName) {
+    if (kReleaseMode) {
+      return Uuid().v4();
+    } else {
+      return Uuid().v4() + '#$pageName';
+    }
+  }
+
   BoostContainer<dynamic> _createContainer(PageInfo pageInfo) {
-    pageInfo.uniqueId ??= createUniqueId(pageInfo.pageName);
+    pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
     return BoostContainer<dynamic>(
         key: ValueKey<String>(pageInfo.uniqueId),
         pageInfo: pageInfo,
@@ -116,7 +100,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Future<T> pushWithResult<T extends Object>(String pageName,
       {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
     final Completer<T> completer = Completer<T>();
-    uniqueId ??= createUniqueId(pageName);
+    assert(uniqueId == null);
+    uniqueId = _createUniqueId(pageName);
     if (withContainer) {
       final CommonParams params = CommonParams()
         ..pageName = pageName
@@ -154,7 +139,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     } else {
       final PageInfo pageInfo = PageInfo(
           pageName: pageName,
-          uniqueId: uniqueId ?? createUniqueId(pageName),
+          uniqueId: uniqueId ?? _createUniqueId(pageName),
           arguments: arguments,
           withContainer: withContainer);
       if (withContainer) {
@@ -181,9 +166,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'push page, uniqueId=$uniqueId, existed=$existed, withContainer=$withContainer, arguments:$arguments, $containers');
   }
 
-  ///
-  /// 关闭操作
-  ///
   void popWithResult<T extends Object>([T result]) {
     final String uniqueId = topContainer?.topPage?.pageInfo?.uniqueId;
     if (_pendingResult.containsKey(uniqueId)) {
@@ -311,9 +293,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 }
 
-///
-/// boost定义的page
-///
 class BoostPage<T> extends Page<T> {
   BoostPage({LocalKey key, this.routeFactory, this.pageInfo})
       : super(key: key, name: pageInfo.pageName, arguments: pageInfo.arguments);

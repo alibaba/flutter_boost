@@ -97,7 +97,7 @@ public class FlutterBoost {
     /**
      * Gets the FlutterView container with uniqueId.
      *
-     * the legacy API for backwards compatibility
+     * This is a legacy API for backwards compatibility.
      * 
      * @param uniqueId The uniqueId of the container
      * @return a FlutterView container
@@ -109,7 +109,7 @@ public class FlutterBoost {
     /**
      * Gets the topmost container
      * 
-     * the legacy API for backwards compatibility
+     * This is a legacy API for backwards compatibility.
      * 
      * @return the topmost container
      */

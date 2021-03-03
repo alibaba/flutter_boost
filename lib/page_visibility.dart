@@ -15,7 +15,6 @@ abstract class PageVisibilityObserver {
   void onPageShow(ChangeReason reason);
   void onPageHide(ChangeReason reason);
 
-  // Todo(rulong.crl): This function looks odd.
   String uniqueId() {
     return null;
   }
@@ -23,14 +22,10 @@ abstract class PageVisibilityObserver {
 
 class PageVisibilityBinding {
   PageVisibilityBinding._();
-  static PageVisibilityBinding _instance;
+  static final PageVisibilityBinding instance = PageVisibilityBinding._();
+
   final Map<Route<dynamic>, Set<PageVisibilityObserver>> _listeners =
       <Route<dynamic>, Set<PageVisibilityObserver>>{};
-
-  static PageVisibilityBinding get instance {
-    _instance ??= PageVisibilityBinding._();
-    return _instance;
-  }
 
   /// Registers the given object and route as a binding observer.
   void addObserver(PageVisibilityObserver observer, Route<dynamic> route) {
