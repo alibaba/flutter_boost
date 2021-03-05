@@ -42,6 +42,16 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
     }
 
+    // @Override
+    public void detachFromFlutterEngine() {
+        /**
+         * Override and do nothing.
+         * 
+         * The idea here is to avoid releasing delegate when
+         * a new FlutterFragment is attached in Flutter2.0.
+         */
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

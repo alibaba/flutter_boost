@@ -113,6 +113,13 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
    * FlutterActivityAndFragmentDelegate.Host
    * /////////////////////////////////////////////
    */
+  public void detachFromFlutterEngine() {
+    // Do nothing
+  }
+
+  public boolean shouldHandleDeeplinking() { return false; }
+  public boolean popSystemNavigator() { return false; }
+
   @Nullable
   public Activity getActivity() {
     return mActivty;
