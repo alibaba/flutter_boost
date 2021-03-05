@@ -1,14 +1,18 @@
 package com.idlefish.flutterboost;
 
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -53,7 +57,18 @@ public class FlutterBoostPlugin {
     }
 
     private FlutterBoostPlugin(PluginRegistry.Registrar registrar) {
-        mMethodChannel = new MethodChannel(registrar.messenger(), "flutter_boost");
+        mMethodChannel = new MethodChannel(registrar.messenger(), "flutter_boost", new StandardMethodCodec(new StandardMessageCodec() {
+            @Override
+            protected void writeValue(ByteArrayOutputStream stream, Object value) {
+
+                if (Boolean.TRUE.equals(value)) {
+                    value = Boolean.TRUE;
+                } else if (Boolean.FALSE.equals(value)) {
+                    value = Boolean.FALSE;
+                }
+                super.writeValue(stream, value);
+            }
+        }));
 
         mMethodChannel.setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
