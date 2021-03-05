@@ -230,7 +230,7 @@ class BoostContainerState extends NavigatorState {
           .prePushRoute(name, uniqueId, params, route);
     }
 
-    if (multipleRouteMode) {
+    if (multipleRouteMode && routerHistory.isNotEmpty) {
       ContainerNavigatorObserver.bindContainerManager().willPush(route, routerHistory.last);
     }
 
