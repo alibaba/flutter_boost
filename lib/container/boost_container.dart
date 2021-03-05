@@ -196,7 +196,7 @@ class BoostContainerState extends NavigatorState {
     if (canPop()) {
       super.pop<T>(result);
     } else {
-      if (T is Map<String, dynamic>) {
+      if (result is Map<String, dynamic>) {
         FlutterBoost.singleton
             .close(uniqueId, result: result as Map<String, dynamic>);
       } else {
