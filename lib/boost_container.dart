@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost/page_visibility.dart';
 
 class BoostContainer<T> extends StatefulWidget {
   BoostContainer(
@@ -32,8 +31,7 @@ class BoostContainer<T> extends StatefulWidget {
   State<StatefulWidget> createState() => BoostContainerState<T>();
 }
 
-class BoostContainerState<T> extends State<BoostContainer<T>>
-    with PageVisibilityObserver {
+class BoostContainerState<T> extends State<BoostContainer<T>> {
   final Set<int> _activePointers = <int>{};
 
   void _updatePagesList() {
@@ -42,7 +40,6 @@ class BoostContainerState<T> extends State<BoostContainer<T>>
 
   @override
   void initState() {
-    // PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
     super.initState();
   }
 
@@ -82,15 +79,7 @@ class BoostContainerState<T> extends State<BoostContainer<T>>
   }
 
   @override
-  void onPageHide(ChangeReason reason) {
-    _cancelActivePointers();
-  }
-
-  @override
-  void onPageShow(ChangeReason reason) {}
-  @override
   void dispose() {
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle());
     super.dispose();
   }
 }

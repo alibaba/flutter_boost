@@ -124,16 +124,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         containers.remove(existed);
         containers.add(existed);
         refresh();
-        PageVisibilityBinding.instance.dispatchPageShowEvent(
-            _getCurrentPage(), ChangeReason.routeReorder);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
+        PageVisibilityBinding.instance.dispatchPageShowEvent(_getCurrentPage());
+        if (_getPreviousPage() != null) {
           PageVisibilityBinding.instance
-              .dispatchPageHideEvent(prevPage, ChangeReason.routeReorder);
+              .dispatchPageHideEvent(_getPreviousPage());
         }
       }
     } else {
@@ -145,16 +139,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       if (withContainer) {
         containers.add(_createContainer(pageInfo));
         refresh();
-        PageVisibilityBinding.instance
-            .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.routePushed);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
+        // The observer can't receive the 'pageshow' message indeed，
+        // because the observer is not yet registed at the moment.
+        //
+        // See PageVisibilityBinding#addObserver for the solution.
+        PageVisibilityBinding.instance.dispatchPageShowEvent(_getCurrentPage());
+        if (_getPreviousPage() != null) {
           PageVisibilityBinding.instance
-              .dispatchPageHideEvent(prevPage, ChangeReason.routePushed);
+              .dispatchPageHideEvent(_getPreviousPage());
         }
       } else {
         topContainer.pages
@@ -192,19 +184,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     final bool handled = await container?.navigator?.maybePop();
     if (handled != null && !handled) {
-      if (_getCurrentPage() == container?.pageInfo?.uniqueId) {
-        PageVisibilityBinding.instance
-            .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.routePopped);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
-          PageVisibilityBinding.instance
-              .dispatchPageShowEvent(prevPage, ChangeReason.routePushed);
-        }
-      }
       assert(container.pageInfo.withContainer);
       final CommonParams params = CommonParams()
         ..pageName = container.pageInfo.pageName
@@ -239,17 +218,31 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onNativeViewShow() {
-    PageVisibilityBinding.instance
-        .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.viewPushed);
+    PageVisibilityBinding.instance.dispatchPageHideEvent(_getCurrentPage());
   }
 
   void onNativeViewHide() {
-    PageVisibilityBinding.instance
-        .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.viewPopped);
+    PageVisibilityBinding.instance.dispatchPageShowEvent(_getCurrentPage());
   }
 
   String _getCurrentPage() {
     return topContainer?.topPage?.pageInfo?.uniqueId;
+  }
+
+  String _getPreviousPage() {
+    if (topContainer != null) {
+      assert(topContainer.pages != null);
+      final int pageCount = topContainer.pages.length;
+      if (pageCount > 1) {
+        return topContainer.pages[pageCount - 2].pageInfo.uniqueId;
+      } else {
+        final int containerCount = containers.length;
+        if (containerCount > 1) {
+          return containers[containerCount - 2].pages.last.pageInfo.uniqueId;
+        }
+      }
+    }
+    return null;
   }
 
   BoostContainer<dynamic> _findContainerByUniqueId(String uniqueId) {
@@ -277,6 +270,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
       refresh();
     }
+    PageVisibilityBinding.instance.dispatchPageDestoryEvent(uniqueId);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
@@ -329,10 +323,9 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
     //handle internal route
     if (previousRoute != null) {
+      PageVisibilityBinding.instance.dispatchPageShowEventForRoute(route);
       PageVisibilityBinding.instance
-          .dispatchPageShowEventForRoute(route, ChangeReason.routePushed);
-      PageVisibilityBinding.instance.dispatchPageHideEventForRoute(
-          previousRoute, ChangeReason.routePushed);
+          .dispatchPageHideEventForRoute(previousRoute);
     }
     super.didPush(route, previousRoute);
   }
@@ -344,10 +337,9 @@ class BoostNavigatorObserver extends NavigatorObserver {
     }
 
     if (previousRoute != null) {
+      PageVisibilityBinding.instance.dispatchPageHideEventForRoute(route);
       PageVisibilityBinding.instance
-          .dispatchPageHideEventForRoute(route, ChangeReason.routePopped);
-      PageVisibilityBinding.instance.dispatchPageShowEventForRoute(
-          previousRoute, ChangeReason.routePopped);
+          .dispatchPageShowEventForRoute(previousRoute);
     }
     super.didPop(route, previousRoute);
   }

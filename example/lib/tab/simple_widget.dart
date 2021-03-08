@@ -41,22 +41,22 @@ class _SimpleWidgetState extends State<SimpleWidget>
   }
 
   @override
-  void onForeground() {
-    print('$_kTag#onForeground, ${widget.uniqueId}, $this');
+  void onPageCreate() {
+    print('$_kTag#onPageCreate, ${widget.uniqueId}, $this');
   }
 
   @override
-  void onBackground() {
-    print('$_kTag#onBackground, ${widget.uniqueId}, $this');
+  void onPageDestory() {
+    print('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
   }
 
   @override
-  void onPageShow(ChangeReason reason) {
-    print('$_kTag#onPageShow, ${widget.uniqueId}, $reason, $this');
+  void onPageShow({bool isForegroundEvent}) {
+    print('$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
   }
 
-  void onPageHide(ChangeReason reason) {
-    print('$_kTag#onPageHide, ${widget.uniqueId}, $reason, $this');
+  void onPageHide({bool isBackgroundEvent}) {
+    print('$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
   }
 
   @override

@@ -39,7 +39,7 @@ public class FlutterBoost {
      * 
      * @param application the application
      * @param delegate the FlutterBoostDelegate
-\    * @param callback Invoke the callback when the engine was started.
+     * @param callback Invoke the callback when the engine was started.
      */
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
         // 1. initialize default engine
