@@ -6,8 +6,6 @@ abstract class PageVisibilityObserver {
   void onPageShow({bool isForegroundEvent});
   void onPageHide({bool isBackgroundEvent});
   void onPageDestory();
-
-  String uniqueId();
 }
 
 class PageVisibilityBinding {
@@ -27,7 +25,8 @@ class PageVisibilityBinding {
       observer.onPageCreate();
       observer.onPageShow();
     }
-    Logger.log('page_visibility, #addObserver, $observer, $route');
+    Logger.log(
+        'page_visibility, #addObserver, $observers, ${route.settings.name}');
   }
 
   /// Unregisters the given observer.
@@ -40,83 +39,98 @@ class PageVisibilityBinding {
     Logger.log('page_visibility, #removeObserver, $observer');
   }
 
-  void dispatchPageShowEventForRoute(Route<dynamic> route) {
+  void dispatchPageShowEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
     final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
     if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
-        observer.onPageShow();
-      }
-    }
-    Logger.log('page_visibility, #dispatchPageShowEventForRoute, $route');
-  }
-
-  void dispatchPageHideEventForRoute(Route<dynamic> route) {
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
-        observer.onPageHide();
-      }
-    }
-    Logger.log('page_visibility, #dispatchPageHideEventForRoute, $route');
-  }
-
-  void dispatchPageShowEvent(String uniqueId) {
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
-      for (PageVisibilityObserver observer in observers) {
-        if (observer.uniqueId() == uniqueId) {
+        try {
           observer.onPageShow();
+        } catch (e) {
+          Logger.log(e);
         }
       }
     }
-    Logger.log('page_visibility, #dispatchPageShowEvent, $uniqueId');
+    Logger.log(
+        'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
   }
 
-  void dispatchPageHideEvent(String uniqueId) {
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
+  void dispatchPageHideEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
-        if (observer.uniqueId() == uniqueId) {
+        try {
           observer.onPageHide();
+        } catch (e) {
+          Logger.log(e);
         }
       }
     }
-    Logger.log('page_visibility, #dispatchPageHideEvent, $uniqueId');
+    Logger.log(
+        'page_visibility, #dispatchPageHideEvent, ${route.settings.name}');
   }
 
-  void dispatchPageDestoryEvent(String uniqueId) {
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
+  void dispatchPageDestoryEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
-        if (observer.uniqueId() == uniqueId) {
+        try {
           observer.onPageDestory();
+        } catch (e) {
+          Logger.log(e);
         }
       }
     }
-    Logger.log('page_visibility, #dispatchPageDestoryEvent, $uniqueId');
+    Logger.log(
+        'page_visibility, #dispatchPageDestoryEvent, ${route.settings.name}');
   }
 
-  void dispatchBackgroundEvent(String uniqueId) {
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
+  void dispatchBackgroundEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
-        if (observer.uniqueId() == uniqueId) {
+        try {
           observer.onPageHide(isBackgroundEvent: true);
+        } catch (e) {
+          Logger.log(e);
         }
       }
     }
-    Logger.log('page_visibility, #dispatchBackgroundEvent, $uniqueId');
+    Logger.log(
+        'page_visibility, #dispatchBackgroundEvent, ${route.settings.name}');
   }
 
-  void dispatchForegroundEvent(String uniqueId) {
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
+  void dispatchForegroundEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
-        if (observer.uniqueId() == uniqueId) {
+        try {
           observer.onPageShow(isForegroundEvent: true);
+        } catch (e) {
+          Logger.log(e);
         }
       }
     }
-    Logger.log('page_visibility, #dispatchForegroundEvent, $uniqueId');
+    Logger.log(
+        'page_visibility, #dispatchForegroundEvent, ${route.settings.name}');
   }
 }

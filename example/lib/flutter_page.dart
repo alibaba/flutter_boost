@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost_example/case/platform_view.dart';
 import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/logger.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
@@ -15,13 +16,47 @@ class FlutterRouteWidget extends StatefulWidget {
   _FlutterRouteWidgetState createState() => _FlutterRouteWidgetState();
 }
 
-class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
+class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibilityObserver {
   final TextEditingController _usernameController = TextEditingController();
+  static const String _kTag = 'page_visibility';
+
+  @override
+  void initState() {
+    super.initState();
+    Logger.log('$_kTag#initState, ${widget.uniqueId}, $this');
+  }
+
+  @override
+  void didChangeDependencies() {
+    Logger.log('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
-    Logger.log('uniqueId=${widget.uniqueId}, dispose~');
+    PageVisibilityBinding.instance.removeObserver(this);
+    Logger.log('$_kTag#dispose~, ${widget.uniqueId}, $this');
     super.dispose();
+  }
+
+  @override
+  void onPageCreate() {
+    Logger.log('$_kTag#onPageCreate, ${widget.uniqueId}, $this');
+  }
+
+  @override
+  void onPageDestory() {
+    Logger.log('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
+  }
+
+  @override
+  void onPageShow({bool isForegroundEvent}) {
+    Logger.log('$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
+  }
+
+  void onPageHide({bool isBackgroundEvent}) {
+    Logger.log('$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
   }
 
   @override
