@@ -270,11 +270,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (container != null) {
       // Gets the first internal route of the current container
       _route = container.pages.first.route;
-      containers.removeWhere((BoostContainer<dynamic> entry) =>
+      containers.removeWhere((BoostContainer entry) =>
           entry.pageInfo?.uniqueId == uniqueId);
       refresh();
     } else {
-      for (BoostContainer<dynamic> container in containers) {
+      for (BoostContainer container in containers) {
         final BoostPage<dynamic> _target = container.pages.firstWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId,
             orElse: () => null);

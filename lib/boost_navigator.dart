@@ -52,7 +52,7 @@ class BoostNavigator {
   ///
   /// This API is for backwards compatibility.
   void remove(String uniqueId) {
-    appState.pop(uniqueId);
+    appState.pop(uniqueId:uniqueId);
   }
 
   /// Retrieves the infomation of the top-most flutter page
