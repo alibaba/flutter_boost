@@ -39,7 +39,7 @@ class BoostNavigator {
         ..pageName = name
         ..arguments = arguments;
       appState.nativeRouterApi.pushNativeRoute(params);
-      return Future<T>(null);
+      return Future<T>(()=>null);
     }
   }
 
