@@ -290,7 +290,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         @Override
         public void onDisappear(InitiatorLocation location) {
             if (isCurrentTopContainer() &&
-                    InitiatorLocation.Others == location &&
+                    // InitiatorLocation.SwitchTabs == location &&
                     BackForeGroundEvent.BACKGROUND != event) {
                 // The native view was pushed
                 plugin.onNativeViewShow();

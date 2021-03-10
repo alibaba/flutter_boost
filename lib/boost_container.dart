@@ -6,8 +6,7 @@ import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 
 class BoostContainer<T> extends StatefulWidget {
-  BoostContainer(
-      {LocalKey key, this.observers, this.routeFactory, this.pageInfo})
+  BoostContainer({LocalKey key, this.routeFactory, this.pageInfo})
       : super(key: key) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
   }
@@ -16,7 +15,6 @@ class BoostContainer<T> extends StatefulWidget {
   final PageInfo pageInfo;
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
-  final List<NavigatorObserver> observers;
 
   List<BoostPage<dynamic>> get pages => _pages;
 
@@ -60,7 +58,7 @@ class BoostContainerState<T> extends State<BoostContainer<T>> {
           return false;
         },
         observers: <NavigatorObserver>[
-          BoostNavigatorObserver(widget.observers),
+          BoostNavigatorObserver(),
         ],
       ),
     );

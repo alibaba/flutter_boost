@@ -17,13 +17,12 @@ typedef FlutterBoostRouteFactory = Route<dynamic> Function(
 
 class FlutterBoostApp extends StatefulWidget {
   const FlutterBoostApp(this.routeFactory,
-      {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
+      {FlutterBoostAppBuilder appBuilder, String initialRoute})
       : appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
   final FlutterBoostRouteFactory routeFactory;
   final FlutterBoostAppBuilder appBuilder;
-  final List<NavigatorObserver> observers;
   final String initialRoute;
 
   static Widget _materialAppBuilder(Widget home) {
@@ -93,8 +92,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return BoostContainer<dynamic>(
         key: ValueKey<String>(pageInfo.uniqueId),
         pageInfo: pageInfo,
-        routeFactory: widget.routeFactory,
-        observers: widget.observers);
+        routeFactory: widget.routeFactory);
   }
 
   Future<T> pushWithResult<T extends Object>(String pageName,
@@ -316,8 +314,8 @@ class BoostPage<T> extends Page<T> {
         key: UniqueKey(), pageInfo: pageInfo, routeFactory: routeFactory);
   }
 
-  Route<T> _route;
-  Route<T> get route => _route;
+  final List<Route<T>> _route = <Route<T>>[];
+  Route<T> get route => _route.isEmpty ? null : _route.first;
 
   @override
   String toString() =>
@@ -325,23 +323,17 @@ class BoostPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
-    _route = routeFactory(this, pageInfo.uniqueId);
-    Logger.log('page_visibility, #createRoute, ${pageInfo.uniqueId}, $route');
-    return _route;
+    _route.clear();
+    _route.add(routeFactory(this, pageInfo.uniqueId));
+    return _route.first;
   }
 }
 
 class BoostNavigatorObserver extends NavigatorObserver {
-  BoostNavigatorObserver(this.observers);
-
-  final List<NavigatorObserver> observers;
+  BoostNavigatorObserver();
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didPush(route, previousRoute);
-    }
-
     //handle internal route
     if (previousRoute != null) {
       PageVisibilityBinding.instance.dispatchPageShowEvent(route);
@@ -352,46 +344,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didPop(route, previousRoute);
-    }
-
     if (previousRoute != null) {
       PageVisibilityBinding.instance.dispatchPageHideEvent(route);
       PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
     }
     super.didPop(route, previousRoute);
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didRemove(route, previousRoute);
-    }
-    super.didRemove(route, previousRoute);
-  }
-
-  @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    for (NavigatorObserver observer in observers) {
-      observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    }
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-  }
-
-  @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didStartUserGesture(route, previousRoute);
-    }
-    super.didStartUserGesture(route, previousRoute);
-  }
-
-  @override
-  void didStopUserGesture() {
-    for (NavigatorObserver observer in observers) {
-      observer.didStopUserGesture();
-    }
-    super.didStopUserGesture();
   }
 }
