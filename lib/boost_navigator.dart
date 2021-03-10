@@ -3,6 +3,8 @@ import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
+import 'boost_container.dart';
+
 /// A object that manages a set of pages with a hybrid stack.
 ///
 class BoostNavigator {
@@ -50,7 +52,7 @@ class BoostNavigator {
   ///
   /// This API is for backwards compatibility.
   void remove(String uniqueId) {
-    appState.remove(uniqueId);
+    appState.pop(uniqueId);
   }
 
   /// Retrieves the infomation of the top-most flutter page
@@ -59,6 +61,11 @@ class BoostNavigator {
   /// This is a legacy API for backwards compatibility.
   PageInfo getTopPageInfo() {
     return appState.getTopPageInfo();
+  }
+
+
+  PageInfo getTopByContext(BuildContext context) {
+    return BoostContainer.of(context).pageInfo;
   }
 
   /// Return the number of flutter pages

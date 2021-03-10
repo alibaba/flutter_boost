@@ -37,10 +37,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, Completer<Object>> _pendingResult =
       <String, Completer<Object>>{};
 
-  List<BoostContainer<dynamic>> get containers => _containers;
-  final List<BoostContainer<dynamic>> _containers = <BoostContainer<dynamic>>[];
+  List<BoostContainer> get containers => _containers;
+  final List<BoostContainer> _containers = <BoostContainer>[];
 
-  BoostContainer<dynamic> get topContainer => containers.last;
+  BoostContainer  get topContainer => containers.last;
 
   NativeRouterApi get nativeRouterApi => _nativeRouterApi;
   NativeRouterApi _nativeRouterApi;
@@ -87,9 +87,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  BoostContainer<dynamic> _createContainer(PageInfo pageInfo) {
+  BoostContainer _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
-    return BoostContainer<dynamic>(
+    return BoostContainer(
         key: ValueKey<String>(pageInfo.uniqueId),
         pageInfo: pageInfo,
         routeFactory: widget.routeFactory);
@@ -116,7 +116,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void push(String pageName,
       {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
-    final BoostContainer<dynamic> existed = _findContainerByUniqueId(uniqueId);
+    final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
         containers.remove(existed);
@@ -170,7 +170,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<void> pop({String uniqueId, Map<dynamic, dynamic> arguments}) async {
-    BoostContainer<dynamic> container;
+    BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
       if (container == null) {
@@ -200,7 +200,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
 
-  void _removeContainer(BoostContainer<dynamic> page) {
+  void _removeContainer(BoostContainer page) {
     containers.remove(page);
     if (page.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
@@ -252,9 +252,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return null;
   }
 
-  BoostContainer<dynamic> _findContainerByUniqueId(String uniqueId) {
+  BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-        (BoostContainer<dynamic> element) =>
+        (BoostContainer element) =>
             element.pageInfo.uniqueId == uniqueId,
         orElse: () => null);
   }
@@ -264,7 +264,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       return;
     }
 
-    final BoostContainer<dynamic> container =
+    final BoostContainer container =
         _findContainerByUniqueId(uniqueId);
     Route<dynamic> _route;
     if (container != null) {
@@ -294,7 +294,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   int pageSize() {
     int count = 0;
-    for (BoostContainer<dynamic> container in containers) {
+    for (BoostContainer container in containers) {
       count += container.size;
     }
     return count;

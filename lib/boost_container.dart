@@ -5,10 +5,16 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 
-class BoostContainer<T> extends StatefulWidget {
+class BoostContainer extends StatefulWidget {
   BoostContainer({LocalKey key, this.routeFactory, this.pageInfo})
       : super(key: key) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
+  }
+
+  static BoostContainer of(BuildContext context) {
+    final BoostContainer container =
+    context.findAncestorWidgetOfExactType<BoostContainer>() ;
+    return container;
   }
 
   final FlutterBoostRouteFactory routeFactory;
@@ -26,11 +32,12 @@ class BoostContainer<T> extends StatefulWidget {
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   @override
-  State<StatefulWidget> createState() => BoostContainerState<T>();
+  State<StatefulWidget> createState() => BoostContainerState();
 }
 
-class BoostContainerState<T> extends State<BoostContainer<T>> {
+class BoostContainerState extends State<BoostContainer> {
   final Set<int> _activePointers = <int>{};
+
 
   void _updatePagesList() {
     widget.pages.removeLast();
