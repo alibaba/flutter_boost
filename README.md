@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-beta.1
+v3.0-beta.3
 - 1. Flutter SDK upgrades do not require Boost upgrades
 - 2. Simplify the architecture
 - 3. Simplify the interface
