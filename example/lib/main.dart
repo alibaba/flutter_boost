@@ -13,8 +13,6 @@ void main() {
   runApp(MyApp());
 }
 
-RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
-
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -154,10 +152,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterBoostApp(
-      routeFactory,
-      observers: [routeObserver],
-    );
+    return FlutterBoostApp(routeFactory);
   }
 
   static Widget appBuilder(Widget home) {

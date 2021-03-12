@@ -17,6 +17,7 @@ import java.util.UUID;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
+import io.flutter.embedding.engine.FlutterEngine;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
@@ -52,35 +53,48 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
     }
 
+    // @Override
+    public void detachFromFlutterEngine() {
+        /**
+         * Override and do nothing.
+         * 
+         * The idea here is to avoid releasing delegate when
+         * a new FlutterActivity is attached in Flutter2.0.
+         */
+    }
+
     @Override
     public void onResume() {
         if (flutterView == null) {
-            findFlutterView(this.getWindow().getDecorView());
+            findFlutterView(getWindow().getDecorView());
         }
+
         super.onResume();
         observer.onAppear(InitiatorLocation.Others);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
-                this.getFlutterEngine(), this);
+                getFlutterEngine(), this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
         observer.onDisappear(InitiatorLocation.Others);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
     @Override
     protected void onDestroy() {
+        // Get engine before |super.onDestroy| callback.
+        FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
-        this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        engine.getLifecycleChannel().appIsResumed();
         observer.onDestroyView();
     }
 
@@ -101,7 +115,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        this.finish();
+        finish();
     }
 
     @Override
@@ -130,9 +144,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         private String uniqueId;
 
         public CachedEngineIntentBuilder(
-                Class<? extends FlutterBoostActivity> activityClass, String engineId) {
+                Class<? extends FlutterBoostActivity> activityClass, String cachedEngineId) {
             this.activityClass = activityClass;
-            this.cachedEngineId = engineId;
+            this.cachedEngineId = cachedEngineId;
         }
 
 

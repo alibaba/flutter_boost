@@ -275,7 +275,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         @Override
         public void onAppear(InitiatorLocation location) {
             if (isCurrentTopContainer() &&
-                    InitiatorLocation.Others == location &&
+                    InitiatorLocation.SwitchTabs == location &&
                     BackForeGroundEvent.FOREGROUND != event) {
                 // The native view was popped
                 plugin.onNativeViewHide();
@@ -284,13 +284,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             setBackForeGroundEvent(BackForeGroundEvent.NONE);
             plugin.reorderContainer(getUniqueId(), this);
             plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
-            Log.v(TAG, "#onAppear: " + getUniqueId() + ", " + plugin.getContainers());
+            Log.v(TAG, "#onAppear: " + location + ", " + getUniqueId() + ", " + plugin.getContainers());
         }
 
         @Override
         public void onDisappear(InitiatorLocation location) {
             if (isCurrentTopContainer() &&
-                    InitiatorLocation.Others == location &&
+                    // InitiatorLocation.SwitchTabs == location &&
                     BackForeGroundEvent.BACKGROUND != event) {
                 // The native view was pushed
                 plugin.onNativeViewShow();

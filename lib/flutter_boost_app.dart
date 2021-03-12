@@ -17,13 +17,12 @@ typedef FlutterBoostRouteFactory = Route<dynamic> Function(
 
 class FlutterBoostApp extends StatefulWidget {
   const FlutterBoostApp(this.routeFactory,
-      {FlutterBoostAppBuilder appBuilder, String initialRoute, this.observers})
+      {FlutterBoostAppBuilder appBuilder, String initialRoute})
       : appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
   final FlutterBoostRouteFactory routeFactory;
   final FlutterBoostAppBuilder appBuilder;
-  final List<NavigatorObserver> observers;
   final String initialRoute;
 
   static Widget _materialAppBuilder(Widget home) {
@@ -38,10 +37,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, Completer<Object>> _pendingResult =
       <String, Completer<Object>>{};
 
-  List<BoostContainer<dynamic>> get containers => _containers;
-  final List<BoostContainer<dynamic>> _containers = <BoostContainer<dynamic>>[];
+  List<BoostContainer> get containers => _containers;
+  final List<BoostContainer> _containers = <BoostContainer>[];
 
-  BoostContainer<dynamic> get topContainer => containers.last;
+  BoostContainer  get topContainer => containers.last;
 
   NativeRouterApi get nativeRouterApi => _nativeRouterApi;
   NativeRouterApi _nativeRouterApi;
@@ -50,6 +49,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi _boostFlutterRouterApi;
 
   FlutterBoostRouteFactory get routeFactory => widget.routeFactory;
+  final Set<int> _activePointers = <int>{};
 
   @override
   void initState() {
@@ -70,10 +70,25 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           }
           return false;
         },
-        child: Overlay(
+        child:  Listener(
+            onPointerDown: _handlePointerDown,
+            onPointerUp: _handlePointerUpOrCancel,
+            onPointerCancel: _handlePointerUpOrCancel,
+            child:Overlay(
           key: overlayKey,
           initialEntries: const <OverlayEntry>[],
-        )));
+        ))));
+  }
+  void _handlePointerDown(PointerDownEvent event) {
+    _activePointers.add(event.pointer);
+  }
+
+  void _handlePointerUpOrCancel(PointerEvent event) {
+    _activePointers.remove(event.pointer);
+  }
+
+  void _cancelActivePointers() {
+    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
   }
 
   void refresh() {
@@ -88,13 +103,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  BoostContainer<dynamic> _createContainer(PageInfo pageInfo) {
+  BoostContainer _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
-    return BoostContainer<dynamic>(
+    return BoostContainer(
         key: ValueKey<String>(pageInfo.uniqueId),
         pageInfo: pageInfo,
-        routeFactory: widget.routeFactory,
-        observers: widget.observers);
+        routeFactory: widget.routeFactory);
   }
 
   Future<T> pushWithResult<T extends Object>(String pageName,
@@ -118,23 +132,22 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void push(String pageName,
       {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
-    final BoostContainer<dynamic> existed = _findContainerByUniqueId(uniqueId);
+    _cancelActivePointers();
+    final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
         containers.remove(existed);
         containers.add(existed);
         refresh();
-        PageVisibilityBinding.instance.dispatchPageShowEvent(
-            _getCurrentPage(), ChangeReason.routeReorder);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
+        PageVisibilityBinding.instance
+            .dispatchPageShowEvent(_getCurrentPageRoute());
+        if (_getPreviousPageRoute() != null) {
           PageVisibilityBinding.instance
-              .dispatchPageHideEvent(prevPage, ChangeReason.routeReorder);
+              .dispatchPageHideEvent(_getPreviousPageRoute());
         }
+      } else {
+        PageVisibilityBinding.instance
+            .dispatchPageShowEvent(_getCurrentPageRoute());
       }
     } else {
       final PageInfo pageInfo = PageInfo(
@@ -145,16 +158,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       if (withContainer) {
         containers.add(_createContainer(pageInfo));
         refresh();
+        // The observer can't receive the 'pageshow' message indeed，
+        // because the observer is not yet registed at the moment.
+        //
+        // See PageVisibilityBinding#addObserver for the solution.
         PageVisibilityBinding.instance
-            .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.routePushed);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
+            .dispatchPageShowEvent(_getCurrentPageRoute());
+        if (_getPreviousPageRoute() != null) {
           PageVisibilityBinding.instance
-              .dispatchPageHideEvent(prevPage, ChangeReason.routePushed);
+              .dispatchPageHideEvent(_getPreviousPageRoute());
         }
       } else {
         topContainer.pages
@@ -175,7 +187,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<void> pop({String uniqueId, Map<dynamic, dynamic> arguments}) async {
-    BoostContainer<dynamic> container;
+    BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
       if (container == null) {
@@ -192,19 +204,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     final bool handled = await container?.navigator?.maybePop();
     if (handled != null && !handled) {
-      if (_getCurrentPage() == container?.pageInfo?.uniqueId) {
-        PageVisibilityBinding.instance
-            .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.routePopped);
-        if (containers.length > 1) {
-          final String prevPage = containers[containers.length - 2]
-              ?.pages
-              ?.last
-              ?.pageInfo
-              ?.uniqueId;
-          PageVisibilityBinding.instance
-              .dispatchPageShowEvent(prevPage, ChangeReason.routePushed);
-        }
-      }
       assert(container.pageInfo.withContainer);
       final CommonParams params = CommonParams()
         ..pageName = container.pageInfo.pageName
@@ -218,7 +217,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
   }
 
-  void _removeContainer(BoostContainer<dynamic> page) {
+  void _removeContainer(BoostContainer page) {
     containers.remove(page);
     if (page.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
@@ -231,30 +230,65 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    PageVisibilityBinding.instance.dispatchForegroundEvent(_getCurrentPage());
+    PageVisibilityBinding.instance
+        .dispatchForegroundEvent(_getCurrentPageRoute());
   }
 
   void onBackground() {
-    PageVisibilityBinding.instance.dispatchBackgroundEvent(_getCurrentPage());
+    PageVisibilityBinding.instance
+        .dispatchBackgroundEvent(_getCurrentPageRoute());
   }
 
   void onNativeViewShow() {
     PageVisibilityBinding.instance
-        .dispatchPageHideEvent(_getCurrentPage(), ChangeReason.viewPushed);
+        .dispatchPageHideEvent(_getCurrentPageRoute());
   }
 
   void onNativeViewHide() {
     PageVisibilityBinding.instance
-        .dispatchPageShowEvent(_getCurrentPage(), ChangeReason.viewPopped);
+        .dispatchPageShowEvent(_getCurrentPageRoute());
   }
 
-  String _getCurrentPage() {
-    return topContainer?.topPage?.pageInfo?.uniqueId;
+  Route<dynamic> _getCurrentPageRoute() {
+    return topContainer?.topPage?.route;
+  }
+  String _getCurrentPageUniqueId() {
+    return topContainer?.topPage?.pageInfo.uniqueId;
+  }
+  String  _getPreviousPageUniqueId() {
+    if (topContainer != null) {
+      assert(topContainer.pages != null);
+      final int pageCount = topContainer.pages.length;
+      if (pageCount > 1) {
+        return topContainer.pages[pageCount - 2].pageInfo.uniqueId;
+      } else {
+        final int containerCount = containers.length;
+        if (containerCount > 1) {
+          return containers[containerCount - 2].pages.last.pageInfo.uniqueId;
+        }
+      }
+    }
+    return null;
+  }
+  Route<dynamic> _getPreviousPageRoute() {
+    if (topContainer != null) {
+      assert(topContainer.pages != null);
+      final int pageCount = topContainer.pages.length;
+      if (pageCount > 1) {
+        return topContainer.pages[pageCount - 2].route;
+      } else {
+        final int containerCount = containers.length;
+        if (containerCount > 1) {
+          return containers[containerCount - 2].pages.last.route;
+        }
+      }
+    }
+    return null;
   }
 
-  BoostContainer<dynamic> _findContainerByUniqueId(String uniqueId) {
+  BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-        (BoostContainer<dynamic> element) =>
+        (BoostContainer element) =>
             element.pageInfo.uniqueId == uniqueId,
         orElse: () => null);
   }
@@ -264,19 +298,27 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       return;
     }
 
-    final BoostContainer<dynamic> container =
+    final BoostContainer container =
         _findContainerByUniqueId(uniqueId);
+    Route<dynamic> _route;
     if (container != null) {
-      containers.removeWhere((BoostContainer<dynamic> entry) =>
+      // Gets the first internal route of the current container
+      _route = container.pages.first.route;
+      containers.removeWhere((BoostContainer entry) =>
           entry.pageInfo?.uniqueId == uniqueId);
       refresh();
     } else {
-      for (BoostContainer<dynamic> container in containers) {
+      for (BoostContainer container in containers) {
+        final BoostPage<dynamic> _target = container.pages.firstWhere(
+            (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId,
+            orElse: () => null);
+        _route = _target?.route;
         container.pages.removeWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
       refresh();
     }
+    PageVisibilityBinding.instance.dispatchPageDestoryEvent(_route);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
@@ -286,7 +328,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   int pageSize() {
     int count = 0;
-    for (BoostContainer<dynamic> container in containers) {
+    for (BoostContainer container in containers) {
       count += container.size;
     }
     return count;
@@ -306,81 +348,40 @@ class BoostPage<T> extends Page<T> {
         key: UniqueKey(), pageInfo: pageInfo, routeFactory: routeFactory);
   }
 
+  final List<Route<T>> _route = <Route<T>>[];
+  Route<T> get route => _route.isEmpty ? null : _route.first;
+
   @override
   String toString() =>
       '${objectRuntimeType(this, 'BoostPage')}(name:$name, uniqueId:${pageInfo.uniqueId}, arguments:$arguments)';
 
   @override
   Route<T> createRoute(BuildContext context) {
-    return routeFactory(this, pageInfo.uniqueId);
+    _route.clear();
+    _route.add(routeFactory(this, pageInfo.uniqueId));
+    return _route.first;
   }
 }
 
 class BoostNavigatorObserver extends NavigatorObserver {
-  BoostNavigatorObserver(this.observers);
-
-  final List<NavigatorObserver> observers;
+  BoostNavigatorObserver();
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didPush(route, previousRoute);
-    }
-
     //handle internal route
     if (previousRoute != null) {
-      PageVisibilityBinding.instance
-          .dispatchPageShowEventForRoute(route, ChangeReason.routePushed);
-      PageVisibilityBinding.instance.dispatchPageHideEventForRoute(
-          previousRoute, ChangeReason.routePushed);
+      PageVisibilityBinding.instance.dispatchPageShowEvent(route);
+      PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
     }
     super.didPush(route, previousRoute);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didPop(route, previousRoute);
-    }
-
     if (previousRoute != null) {
-      PageVisibilityBinding.instance
-          .dispatchPageHideEventForRoute(route, ChangeReason.routePopped);
-      PageVisibilityBinding.instance.dispatchPageShowEventForRoute(
-          previousRoute, ChangeReason.routePopped);
+      PageVisibilityBinding.instance.dispatchPageHideEvent(route);
+      PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
     }
     super.didPop(route, previousRoute);
-  }
-
-  @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didRemove(route, previousRoute);
-    }
-    super.didRemove(route, previousRoute);
-  }
-
-  @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    for (NavigatorObserver observer in observers) {
-      observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    }
-    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-  }
-
-  @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    for (NavigatorObserver observer in observers) {
-      observer.didStartUserGesture(route, previousRoute);
-    }
-    super.didStartUserGesture(route, previousRoute);
-  }
-
-  @override
-  void didStopUserGesture() {
-    for (NavigatorObserver observer in observers) {
-      observer.didStopUserGesture();
-    }
-    super.didStopUserGesture();
   }
 }

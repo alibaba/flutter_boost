@@ -16,76 +16,45 @@ class SimpleWidget extends StatefulWidget {
 }
 
 class _SimpleWidgetState extends State<SimpleWidget>
-    with PageVisibilityObserver, RouteAware {
-  static const String _kTag = 'xlog';
+    with PageVisibilityObserver {
+  static const String _kTag = 'page_visibility';
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context));
     PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
     print('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
+    super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    super.initState();
     print('$_kTag#initState, ${widget.uniqueId}, $this');
+    super.initState();
   }
 
   @override
   void dispose() {
     PageVisibilityBinding.instance.removeObserver(this);
-    routeObserver.unsubscribe(this);
     print('$_kTag#dispose, ${widget.uniqueId}, $this');
     super.dispose();
   }
 
   @override
-  void onForeground() {
-    print('$_kTag#onForeground, ${widget.uniqueId}, $this');
+  void onPageCreate() {
+    print('$_kTag#onPageCreate, ${widget.uniqueId}, $this');
   }
 
   @override
-  void onBackground() {
-    print('$_kTag#onBackground, ${widget.uniqueId}, $this');
+  void onPageDestory() {
+    print('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
   }
 
   @override
-  void onPageShow(ChangeReason reason) {
-    print('$_kTag#onPageShow, ${widget.uniqueId}, $reason, $this');
+  void onPageShow({bool isForegroundEvent}) {
+    print('$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
   }
 
-  void onPageHide(ChangeReason reason) {
-    print('$_kTag#onPageHide, ${widget.uniqueId}, $reason, $this');
-  }
-
-  @override
-  void didPush() {
-    final route = ModalRoute.of(context).settings.name;
-    print('$_kTag#didPush ${widget.uniqueId}, route: $route');
-  }
-
-  @override
-  void didPopNext() {
-    final route = ModalRoute.of(context).settings.name;
-    print('$_kTag#didPopNext ${widget.uniqueId}, route: $route');
-  }
-
-  @override
-  void didPushNext() {
-    final route = ModalRoute.of(context).settings.name;
-    print('$_kTag#didPushNext ${widget.uniqueId}, route: $route');
-  }
-
-  @override
-  void didPop() {
-    final route = ModalRoute.of(context).settings.name;
-    print('$_kTag#didPop ${widget.uniqueId}, route: $route');
-  }
-
-  @override
-  String uniqueId() {
-    return widget.uniqueId;
+  void onPageHide({bool isBackgroundEvent}) {
+    print('$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
   }
 
   @override

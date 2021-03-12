@@ -4,20 +4,23 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost/page_visibility.dart';
 
-class BoostContainer<T> extends StatefulWidget {
-  BoostContainer(
-      {LocalKey key, this.observers, this.routeFactory, this.pageInfo})
+class BoostContainer extends StatefulWidget {
+  BoostContainer({LocalKey key, this.routeFactory, this.pageInfo})
       : super(key: key) {
     pages.add(BoostPage.create(pageInfo, routeFactory));
+  }
+
+  static BoostContainer of(BuildContext context) {
+    final BoostContainer container =
+    context.findAncestorWidgetOfExactType<BoostContainer>() ;
+    return container;
   }
 
   final FlutterBoostRouteFactory routeFactory;
   final PageInfo pageInfo;
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
-  final List<NavigatorObserver> observers;
 
   List<BoostPage<dynamic>> get pages => _pages;
 
@@ -29,12 +32,10 @@ class BoostContainer<T> extends StatefulWidget {
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   @override
-  State<StatefulWidget> createState() => BoostContainerState<T>();
+  State<StatefulWidget> createState() => BoostContainerState();
 }
 
-class BoostContainerState<T> extends State<BoostContainer<T>>
-    with PageVisibilityObserver {
-  final Set<int> _activePointers = <int>{};
+class BoostContainerState extends State<BoostContainer> {
 
   void _updatePagesList() {
     widget.pages.removeLast();
@@ -42,17 +43,12 @@ class BoostContainerState<T> extends State<BoostContainer<T>>
 
   @override
   void initState() {
-    // PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerDown: _handlePointerDown,
-      onPointerUp: _handlePointerUpOrCancel,
-      onPointerCancel: _handlePointerUpOrCancel,
-      child: Navigator(
+    return  Navigator(
         key: widget._navKey,
         pages: List<Page<dynamic>>.of(widget._pages),
         onPopPage: (Route<dynamic> route, dynamic result) {
@@ -63,34 +59,14 @@ class BoostContainerState<T> extends State<BoostContainer<T>>
           return false;
         },
         observers: <NavigatorObserver>[
-          BoostNavigatorObserver(widget.observers),
+          BoostNavigatorObserver(),
         ],
-      ),
-    );
+      );
   }
 
-  void _handlePointerDown(PointerDownEvent event) {
-    _activePointers.add(event.pointer);
-  }
 
-  void _handlePointerUpOrCancel(PointerEvent event) {
-    _activePointers.remove(event.pointer);
-  }
-
-  void _cancelActivePointers() {
-    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
-  }
-
-  @override
-  void onPageHide(ChangeReason reason) {
-    _cancelActivePointers();
-  }
-
-  @override
-  void onPageShow(ChangeReason reason) {}
   @override
   void dispose() {
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle());
     super.dispose();
   }
 }
