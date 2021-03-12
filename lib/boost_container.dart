@@ -36,8 +36,6 @@ class BoostContainer extends StatefulWidget {
 }
 
 class BoostContainerState extends State<BoostContainer> {
-  final Set<int> _activePointers = <int>{};
-
 
   void _updatePagesList() {
     widget.pages.removeLast();
@@ -50,11 +48,7 @@ class BoostContainerState extends State<BoostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      onPointerDown: _handlePointerDown,
-      onPointerUp: _handlePointerUpOrCancel,
-      onPointerCancel: _handlePointerUpOrCancel,
-      child: Navigator(
+    return  Navigator(
         key: widget._navKey,
         pages: List<Page<dynamic>>.of(widget._pages),
         onPopPage: (Route<dynamic> route, dynamic result) {
@@ -67,21 +61,9 @@ class BoostContainerState extends State<BoostContainer> {
         observers: <NavigatorObserver>[
           BoostNavigatorObserver(),
         ],
-      ),
-    );
+      );
   }
 
-  void _handlePointerDown(PointerDownEvent event) {
-    _activePointers.add(event.pointer);
-  }
-
-  void _handlePointerUpOrCancel(PointerEvent event) {
-    _activePointers.remove(event.pointer);
-  }
-
-  void _cancelActivePointers() {
-    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
-  }
 
   @override
   void dispose() {

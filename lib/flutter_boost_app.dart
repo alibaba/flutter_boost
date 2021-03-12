@@ -49,6 +49,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi _boostFlutterRouterApi;
 
   FlutterBoostRouteFactory get routeFactory => widget.routeFactory;
+  final Set<int> _activePointers = <int>{};
 
   @override
   void initState() {
@@ -69,10 +70,25 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           }
           return false;
         },
-        child: Overlay(
+        child:  Listener(
+            onPointerDown: _handlePointerDown,
+            onPointerUp: _handlePointerUpOrCancel,
+            onPointerCancel: _handlePointerUpOrCancel,
+            child:Overlay(
           key: overlayKey,
           initialEntries: const <OverlayEntry>[],
-        )));
+        ))));
+  }
+  void _handlePointerDown(PointerDownEvent event) {
+    _activePointers.add(event.pointer);
+  }
+
+  void _handlePointerUpOrCancel(PointerEvent event) {
+    _activePointers.remove(event.pointer);
+  }
+
+  void _cancelActivePointers() {
+    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
   }
 
   void refresh() {
@@ -116,6 +132,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void push(String pageName,
       {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
+    _cancelActivePointers();
     final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
@@ -235,7 +252,24 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Route<dynamic> _getCurrentPageRoute() {
     return topContainer?.topPage?.route;
   }
-
+  String _getCurrentPageUniqueId() {
+    return topContainer?.topPage?.pageInfo.uniqueId;
+  }
+  String  _getPreviousPageUniqueId() {
+    if (topContainer != null) {
+      assert(topContainer.pages != null);
+      final int pageCount = topContainer.pages.length;
+      if (pageCount > 1) {
+        return topContainer.pages[pageCount - 2].pageInfo.uniqueId;
+      } else {
+        final int containerCount = containers.length;
+        if (containerCount > 1) {
+          return containers[containerCount - 2].pages.last.pageInfo.uniqueId;
+        }
+      }
+    }
+    return null;
+  }
   Route<dynamic> _getPreviousPageRoute() {
     if (topContainer != null) {
       assert(topContainer.pages != null);
