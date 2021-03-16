@@ -2,9 +2,9 @@ package com.idlefish.flutterboost;
 
 import android.util.Log;
 
-import com.idlefish.flutterboost.containers.InitiatorLocation;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
+import com.idlefish.flutterboost.containers.InitiatorLocation;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
     private Messages.FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
+    private Messages.StackInfo dartStack;
 
     public void setDelegate(FlutterBoostDelegate delegate) {
         this.delegate = delegate;
@@ -69,6 +70,21 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
         }
+    }
+
+    @Override
+    public Messages.StackInfo getStackFromHost() {
+        if (dartStack == null) {
+            return Messages.StackInfo.fromMap(new HashMap());
+        }
+        Log.v(TAG, "#getStackFromHost: " + dartStack);
+        return dartStack;
+    }
+
+    @Override
+    public void saveStackToHost(Messages.StackInfo arg) {
+        dartStack = arg;
+        Log.v(TAG, "#saveStackToHost: " + dartStack);
     }
 
     public interface Reply<T> {

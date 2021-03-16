@@ -29,6 +29,25 @@ class CommonParams {
   }
 }
 
+class StackInfo {
+  List<Object> containers;
+  Map<Object, Object> routes;
+
+  Object encode() {
+    final Map<Object, Object> pigeonMap = <Object, Object>{};
+    pigeonMap['containers'] = containers;
+    pigeonMap['routes'] = routes;
+    return pigeonMap;
+  }
+
+  static StackInfo decode(Object message) {
+    final Map<Object, Object> pigeonMap = message as Map<Object, Object>;
+    return StackInfo()
+      ..containers = pigeonMap['containers'] as List<Object>
+      ..routes = pigeonMap['routes'] as Map<Object, Object>;
+  }
+}
+
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams arg);
   void popRoute(CommonParams arg);
@@ -190,6 +209,51 @@ class NativeRouterApi {
     final Object encoded = arg.encode();
     const BasicMessageChannel<Object> channel =
         BasicMessageChannel<Object>('dev.flutter.pigeon.NativeRouterApi.popRoute', StandardMessageCodec());
+    final Map<Object, Object> replyMap = await channel.send(encoded) as Map<Object, Object>;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object, Object> error = replyMap['error'] as Map<Object, Object>;
+      throw PlatformException(
+        code: error['code'] as String,
+        message: error['message'] as String,
+        details: error['details'],
+      );
+    } else {
+      // noop
+    }
+  }
+
+  Future<StackInfo> getStackFromHost() async {
+    const BasicMessageChannel<Object> channel =
+        BasicMessageChannel<Object>('dev.flutter.pigeon.NativeRouterApi.getStackFromHost', StandardMessageCodec());
+    final Map<Object, Object> replyMap = await channel.send(null) as Map<Object, Object>;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object, Object> error = replyMap['error'] as Map<Object, Object>;
+      throw PlatformException(
+        code: error['code'] as String,
+        message: error['message'] as String,
+        details: error['details'],
+      );
+    } else {
+      return StackInfo.decode(replyMap['result']);
+    }
+  }
+
+  Future<void> saveStackToHost(StackInfo arg) async {
+    final Object encoded = arg.encode();
+    const BasicMessageChannel<Object> channel =
+        BasicMessageChannel<Object>('dev.flutter.pigeon.NativeRouterApi.saveStackToHost', StandardMessageCodec());
     final Map<Object, Object> replyMap = await channel.send(encoded) as Map<Object, Object>;
     if (replyMap == null) {
       throw PlatformException(

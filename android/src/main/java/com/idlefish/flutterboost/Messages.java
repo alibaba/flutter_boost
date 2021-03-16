@@ -46,6 +46,32 @@ public class Messages {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class StackInfo {
+    private ArrayList containers;
+    public ArrayList getContainers() { return containers; }
+    public void setContainers(ArrayList setterArg) { this.containers = setterArg; }
+
+    private HashMap routes;
+    public HashMap getRoutes() { return routes; }
+    public void setRoutes(HashMap setterArg) { this.routes = setterArg; }
+
+    HashMap toMap() {
+      HashMap<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("containers", containers);
+      toMapResult.put("routes", routes);
+      return toMapResult;
+    }
+    static StackInfo fromMap(HashMap map) {
+      StackInfo fromMapResult = new StackInfo();
+      Object containers = map.get("containers");
+      fromMapResult.containers = (ArrayList)containers;
+      Object routes = map.get("routes");
+      fromMapResult.routes = (HashMap)routes;
+      return fromMapResult;
+    }
+  }
+
   /** Generated class from Pigeon that represents Flutter messages that can be called from Java.*/
   public static class FlutterRouterApi {
     private final BinaryMessenger binaryMessenger;
@@ -118,6 +144,8 @@ public class Messages {
     void pushNativeRoute(CommonParams arg);
     void pushFlutterRoute(CommonParams arg);
     void popRoute(CommonParams arg);
+    StackInfo getStackFromHost();
+    void saveStackToHost(StackInfo arg);
 
     /** Sets up an instance of `NativeRouterApi` to handle messages through the `binaryMessenger` */
     static void setup(BinaryMessenger binaryMessenger, NativeRouterApi api) {
@@ -173,6 +201,46 @@ public class Messages {
               @SuppressWarnings("ConstantConditions")
               CommonParams input = CommonParams.fromMap((HashMap)message);
               api.popRoute(input);
+              wrapped.put("result", null);
+            }
+            catch (Exception exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.NativeRouterApi.getStackFromHost", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            HashMap<String, HashMap> wrapped = new HashMap<>();
+            try {
+              StackInfo output = api.getStackFromHost();
+              wrapped.put("result", output.toMap());
+            }
+            catch (Exception exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.NativeRouterApi.saveStackToHost", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            HashMap<String, HashMap> wrapped = new HashMap<>();
+            try {
+              @SuppressWarnings("ConstantConditions")
+              StackInfo input = StackInfo.fromMap((HashMap)message);
+              api.saveStackToHost(input);
               wrapped.put("result", null);
             }
             catch (Exception exception) {

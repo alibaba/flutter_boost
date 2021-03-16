@@ -13,7 +13,7 @@ class BoostContainer extends StatefulWidget {
 
   static BoostContainer of(BuildContext context) {
     final BoostContainer container =
-    context.findAncestorWidgetOfExactType<BoostContainer>() ;
+        context.findAncestorWidgetOfExactType<BoostContainer>();
     return container;
   }
 
@@ -36,7 +36,6 @@ class BoostContainer extends StatefulWidget {
 }
 
 class BoostContainerState extends State<BoostContainer> {
-
   void _updatePagesList() {
     widget.pages.removeLast();
   }
@@ -48,22 +47,21 @@ class BoostContainerState extends State<BoostContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return  Navigator(
-        key: widget._navKey,
-        pages: List<Page<dynamic>>.of(widget._pages),
-        onPopPage: (Route<dynamic> route, dynamic result) {
-          if (route.didPop(result)) {
-            _updatePagesList();
-            return true;
-          }
-          return false;
-        },
-        observers: <NavigatorObserver>[
-          BoostNavigatorObserver(),
-        ],
-      );
+    return Navigator(
+      key: widget._navKey,
+      pages: List<Page<dynamic>>.of(widget._pages),
+      onPopPage: (Route<dynamic> route, dynamic result) {
+        if (route.didPop(result)) {
+          _updatePagesList();
+          return true;
+        }
+        return false;
+      },
+      observers: <NavigatorObserver>[
+        BoostNavigatorObserver(),
+      ],
+    );
   }
-
 
   @override
   void dispose() {

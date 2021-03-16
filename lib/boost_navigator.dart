@@ -39,7 +39,7 @@ class BoostNavigator {
         ..pageName = name
         ..arguments = arguments;
       appState.nativeRouterApi.pushNativeRoute(params);
-      return Future<T>(()=>null);
+      return Future<T>(() => null);
     }
   }
 
@@ -52,7 +52,7 @@ class BoostNavigator {
   ///
   /// This API is for backwards compatibility.
   void remove(String uniqueId) {
-    appState.pop(uniqueId:uniqueId);
+    appState.pop(uniqueId: uniqueId);
   }
 
   /// Retrieves the infomation of the top-most flutter page
@@ -62,7 +62,6 @@ class BoostNavigator {
   PageInfo getTopPageInfo() {
     return appState.getTopPageInfo();
   }
-
 
   PageInfo getTopByContext(BuildContext context) {
     return BoostContainer.of(context).pageInfo;

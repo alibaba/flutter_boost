@@ -6,11 +6,18 @@ class CommonParams {
   Map<String, String> arguments;
 }
 
+class StackInfo {
+  List<String> containers;
+  Map<String, List<Map<String, Object>>> routes;
+}
+
 @HostApi()
 abstract class NativeRouterApi {
   void pushNativeRoute(CommonParams param);
   void pushFlutterRoute(CommonParams param);
   void popRoute(CommonParams param);
+  StackInfo getStackFromHost();
+  void saveStackToHost(StackInfo stack);
 }
 
 @FlutterApi()
