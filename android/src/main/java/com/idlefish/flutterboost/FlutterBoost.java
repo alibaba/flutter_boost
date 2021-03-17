@@ -4,6 +4,7 @@ package com.idlefish.flutterboost;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.support.annotation.NonNull;
@@ -233,12 +234,12 @@ public class FlutterBoost {
             return this;
         }
 
-        public ConfigBuilder dartEntrypoint(@NonNull String dartEntrypoint) {
+        public ConfigBuilder dartEntrypoint( String dartEntrypoint) {
             this.dartEntrypoint = dartEntrypoint;
             return this;
         }
 
-        public ConfigBuilder initialRoute(@NonNull String initialRoute) {
+        public ConfigBuilder initialRoute( String initialRoute) {
             this.initialRoute = initialRoute;
             return this;
         }
@@ -343,7 +344,7 @@ public class FlutterBoost {
                 mEngine = new FlutterEngine(mPlatform.getApplication().getApplicationContext(),FlutterLoader.getInstance(),new FlutterJNI(),null,false);
             }
 
-//            registerPlugins(mEngine);
+            registerPlugins(mEngine);
             mRegistry = new BoostPluginRegistry(createEngine());
             mPlatform.registerPlugins(mRegistry);
         }

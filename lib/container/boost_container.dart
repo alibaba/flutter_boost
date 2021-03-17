@@ -194,6 +194,11 @@ class BoostContainerState extends NavigatorState {
 
   @override
   Future<bool> maybePop<T extends Object>([T result]) async {
+    if(routerHistory.isEmpty){
+      pop(result);
+      return true;
+    }
+
     final Route<T> route = routerHistory.last;
     final RoutePopDisposition disposition = await route.willPop();
     if (mounted) {
@@ -217,7 +222,7 @@ class BoostContainerState extends NavigatorState {
   @override
   bool pop<T extends Object>([T result]) {
     Route removedRoute;
-    if (routerHistory.length > 1) {
+    if (routerHistory.length >= 1) {
       removedRoute = routerHistory.removeLast();
     }
 

@@ -18,8 +18,6 @@ import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
-import com.idlefish.flutterboost.XFlutterView;
-import com.idlefish.flutterboost.XPlatformPlugin;
 import io.flutter.embedding.android.*;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -237,7 +235,7 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     private FlutterActivityAndFragmentDelegate delegate;
 
 
-    protected XFlutterView getFlutterView() {
+    protected FlutterView getFlutterView() {
         return delegate.getFlutterView();
     }
 
@@ -470,11 +468,15 @@ public class FlutterFragment extends Fragment implements FlutterActivityAndFragm
     }
 
     @Nullable
-    @Override
-    public XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine) {
-        return new XPlatformPlugin(flutterEngine.getPlatformChannel());
-
+    public PlatformPlugin providePlatformPlugin(
+            @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+        if (activity != null) {
+            return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
+        } else {
+            return null;
+        }
     }
+
 
     /**
      * Configures a {@link FlutterEngine} after its creation.

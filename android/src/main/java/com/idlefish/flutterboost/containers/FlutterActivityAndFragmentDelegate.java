@@ -21,8 +21,6 @@ import java.util.Map;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.Utils;
-import com.idlefish.flutterboost.XFlutterView;
-import com.idlefish.flutterboost.XPlatformPlugin;
 import com.idlefish.flutterboost.interfaces.IContainerRecord;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 import com.idlefish.flutterboost.interfaces.IOperateSyncer;
@@ -48,9 +46,9 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     @Nullable
     private FlutterSplashView flutterSplashView;
     @Nullable
-    private XFlutterView flutterView;
+    private FlutterView flutterView;
     @Nullable
-    private XPlatformPlugin platformPlugin;
+    private PlatformPlugin platformPlugin;
 
     private boolean isFlutterEngineFromHost;
 
@@ -75,7 +73,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         return flutterEngine;
     }
 
-    public XFlutterView getFlutterView() {
+    public FlutterView getFlutterView() {
         return flutterView;
     }
 
@@ -96,7 +94,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         // TODO(mattcarroll): the PlatformPlugin needs to be reimagined because it implicitly takes
         //                    control of the entire window. This is unacceptable for non-fullscreen
         //                    use-cases.
-        platformPlugin = host.providePlatformPlugin(flutterEngine);
+        platformPlugin = host.providePlatformPlugin(host.getActivity(), flutterEngine);
 
 
         host.configureFlutterEngine(flutterEngine);
@@ -133,7 +131,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         mSyncer = FlutterBoost.instance().containerManager().generateSyncer(this);
 
         ensureAlive();
-        flutterView = new XFlutterView(host.getActivity(), FlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
+        flutterView = new FlutterView(host.getActivity(), FlutterBoost.instance().platform().renderMode(), host.getTransparencyMode());
 
 
         flutterSplashView = new FlutterSplashView(host.getContext());
@@ -188,9 +186,6 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         }
 
 
-        if(platformPlugin!=null)
-            platformPlugin.attachToActivity( host.getActivity());
-
 
     }
 
@@ -198,6 +193,13 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
     public void onPostResume() {
         Log.v(TAG, "onPostResume()");
         ensureAlive();
+        if (flutterEngine != null) {
+            if (platformPlugin != null) {
+                platformPlugin.updateSystemUiOverlays();
+            }
+        } else {
+            Log.w(TAG, "onPostResume() invoked before FlutterFragment was attached to an Activity.");
+        }
 
     }
 
@@ -224,7 +226,6 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
 
         ensureAlive();
 
-        flutterView.release();
     }
 
 
@@ -236,7 +237,7 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
         // Null out the platformPlugin to avoid a possible retain cycle between the plugin, this Fragment,
         // and this Fragment's Activity.
         if (platformPlugin != null) {
-            platformPlugin.detachActivity();
+            platformPlugin.destroy();
             platformPlugin = null;
         }
 
@@ -472,7 +473,8 @@ public class FlutterActivityAndFragmentDelegate implements IFlutterViewContainer
          * Flutter experience should control system chrome.
          */
         @Nullable
-        XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine);
+        PlatformPlugin providePlatformPlugin(
+                @Nullable Activity activity, @NonNull FlutterEngine flutterEngine);
 
         /**
          * Hook for the host to configure the {@link FlutterEngine} as desired.

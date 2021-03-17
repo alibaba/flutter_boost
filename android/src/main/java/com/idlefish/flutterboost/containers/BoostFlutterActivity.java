@@ -20,8 +20,6 @@ import android.support.annotation.Nullable;
 import android.view.*;
 import android.widget.*;
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.XFlutterView;
-import com.idlefish.flutterboost.XPlatformPlugin;
 import com.idlefish.flutterboost.interfaces.IFlutterViewContainer;
 
 import io.flutter.Log;
@@ -246,7 +244,7 @@ public class BoostFlutterActivity extends Activity
 
     }
 
-    protected XFlutterView getFlutterView() {
+    protected FlutterView getFlutterView() {
         return delegate.getFlutterView();
     }
 
@@ -444,9 +442,13 @@ public class BoostFlutterActivity extends Activity
     }
 
     @Nullable
-    @Override
-    public XPlatformPlugin providePlatformPlugin( @NonNull FlutterEngine flutterEngine) {
-        return new XPlatformPlugin( flutterEngine.getPlatformChannel());
+    public PlatformPlugin providePlatformPlugin(
+            @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+        if (activity != null) {
+            return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
+        } else {
+            return null;
+        }
     }
 
     /**
