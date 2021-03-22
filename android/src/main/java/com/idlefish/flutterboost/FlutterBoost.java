@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -123,7 +123,7 @@ public class FlutterBoost {
      * @param name The Flutter route name.
      * @param arguments The bussiness arguments.
      */
-    public void open(String name, HashMap<String, String> arguments) {
+    public void open(String name, Map<String, Object> arguments) {
         this.getPlugin().getDelegate().pushFlutterRoute(name, null, arguments);
     }
 

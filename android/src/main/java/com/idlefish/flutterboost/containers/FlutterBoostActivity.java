@@ -124,8 +124,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     @Override
-    public HashMap<String, String> getUrlParams() {
-        return (HashMap<String, String>)getIntent().getSerializableExtra(EXTRA_URL_PARAM);
+    public Map<String, Object> getUrlParams() {
+        return (HashMap<String, Object>)getIntent().getSerializableExtra(EXTRA_URL_PARAM);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         private boolean destroyEngineWithActivity = false;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
         private String url;
-        private HashMap<String, String> params;
+        private HashMap<String, Object> params;
         private String uniqueId;
 
         public CachedEngineIntentBuilder(
@@ -166,8 +166,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder urlParams(HashMap<String, String> params) {
-            this.params = params;
+        public FlutterBoostActivity.CachedEngineIntentBuilder urlParams(Map<String, Object> params) {
+            this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
 

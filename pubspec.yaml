@@ -17,7 +17,7 @@ dev_dependencies:
     sdk: flutter
   mockito: 4.1.1
   pedantic: ^1.8.0
-  pigeon: 0.1.20
+  pigeon: ^0.1.22
 
 flutter:
   plugin:

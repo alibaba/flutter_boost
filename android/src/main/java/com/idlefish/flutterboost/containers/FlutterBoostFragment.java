@@ -161,8 +161,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
-    public HashMap<String, String> getUrlParams() {
-        return (HashMap<String, String>)getArguments().getSerializable(EXTRA_URL_PARAM);
+    public Map<String, Object> getUrlParams() {
+        return (HashMap<String, Object>)getArguments().getSerializable(EXTRA_URL_PARAM);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         private TransparencyMode transparencyMode = TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
         private String url = "/";
-        private HashMap<String, String> params;
+        private HashMap<String, Object> params;
         private String uniqueId;
 
         public CachedEngineFragmentBuilder( String engineId) {
@@ -196,8 +196,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             return this;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder urlParams(HashMap<String, String> param) {
-            this.params = params;
+        public FlutterBoostFragment.CachedEngineFragmentBuilder urlParams(Map<String, Object> params) {
+            this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
 

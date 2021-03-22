@@ -30,14 +30,14 @@ class BoostNavigator {
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
-      {Map<dynamic, dynamic> arguments, bool withContainer = false}) {
+      {Map<String, dynamic> arguments, bool withContainer = false}) {
     if (isFlutterPage(name)) {
       return appState.pushWithResult(name,
           arguments: arguments, withContainer: withContainer);
     } else {
       final CommonParams params = CommonParams()
         ..pageName = name
-        ..arguments = arguments;
+        ..arguments = arguments ?? <String, dynamic>{};
       appState.nativeRouterApi.pushNativeRoute(params);
       return Future<T>(() => null);
     }
@@ -81,5 +81,5 @@ class PageInfo {
   bool withContainer;
   String pageName;
   String uniqueId;
-  Map<dynamic, dynamic> arguments;
+  Map<String, dynamic> arguments;
 }

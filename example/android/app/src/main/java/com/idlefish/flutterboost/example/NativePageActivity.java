@@ -12,6 +12,7 @@ import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
@@ -34,18 +35,17 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
 
         mOpenNative = findViewById(R.id.open_native);
         mOpenFlutter = findViewById(R.id.open_flutter);
-//        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
-//        mOpenFlutterFragment.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        HashMap<String, String> params = new HashMap<>();
-        params.put("test1","v_test1");
-        params.put("test2","v_test2");
+        Map<String, Object> params = new HashMap<>();
+        params.put("string","a string");
+        params.put("bool", true);
+        params.put("int", 666);
 
         if (v == mOpenNative) {
             NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL,params);

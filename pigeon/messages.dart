@@ -3,7 +3,7 @@ import 'package:pigeon/pigeon.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
-  Map<String, String> arguments;
+  Map<String, Object> arguments;
 }
 
 class StackInfo {

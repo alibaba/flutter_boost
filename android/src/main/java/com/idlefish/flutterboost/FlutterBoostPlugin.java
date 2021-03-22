@@ -42,7 +42,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     @Override
     public void pushNativeRoute(Messages.CommonParams params) {
         if (delegate != null) {
-            delegate.pushNativeRoute(params.getPageName(), params.getArguments());
+            delegate.pushNativeRoute(params.getPageName(), (Map<String, Object>) (Object)params.getArguments());
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
@@ -51,7 +51,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     @Override
     public void pushFlutterRoute(Messages.CommonParams params) {
         if (delegate != null) {
-            delegate.pushFlutterRoute(params.getPageName(), params.getUniqueId(), params.getArguments());
+            delegate.pushFlutterRoute(params.getPageName(), params.getUniqueId(), (Map<String, Object>) (Object)params.getArguments());
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
@@ -64,7 +64,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             ContainerShadowNode node = allContainers.get(uniqueId);
             if (node != null) {
                 if (node.container() != null) {
-                    node.container().finishContainer(params.getArguments());
+                    node.container().finishContainer((Map<String, Object>) (Object)params.getArguments());
                 }
             }
         } else {
@@ -91,13 +91,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         void reply(T reply);
     }
 
-    public void pushRoute(String uniqueId, String pageName, HashMap<String, String> arguments,
+    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
                           final Reply<Void> callback) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
-            params.setArguments(arguments);
+            params.setArguments((Map<Object, Object>)(Object) arguments);
             channel.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -122,7 +122,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public void removeRoute(String uniqueId,final Reply<Void> callback) {
+    public void removeRoute(String uniqueId, final Reply<Void> callback) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
@@ -276,7 +276,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             return null;
         }
 
-        public HashMap<String, String> getUrlParams() {
+        public Map<String, Object> getUrlParams() {
             if (container() != null) {
                 return container().getUrlParams();
             }

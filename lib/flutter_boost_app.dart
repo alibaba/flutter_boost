@@ -155,7 +155,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           for (Map<Object, Object> route in routeList) {
             push(route['pageName'] as String,
                 uniqueId: route['uniqueId'] as String,
-                arguments: route['arguments'] as Map<Object, Object>,
+                arguments: Map<String, dynamic>.from(
+                    route['arguments'] ?? <String, dynamic>{}),
                 withContainer: withContainer);
             withContainer = false;
           }
@@ -167,7 +168,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<T> pushWithResult<T extends Object>(String pageName,
-      {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
+      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
     final Completer<T> completer = Completer<T>();
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
@@ -175,7 +176,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final CommonParams params = CommonParams()
         ..pageName = pageName
         ..uniqueId = uniqueId
-        ..arguments = arguments;
+        ..arguments = arguments ?? <String, dynamic>{};
       nativeRouterApi.pushFlutterRoute(params);
     } else {
       push(pageName,
@@ -186,7 +187,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void push(String pageName,
-      {String uniqueId, Map<dynamic, dynamic> arguments, bool withContainer}) {
+      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
     _cancelActivePointers();
     final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -240,7 +241,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     pop();
   }
 
-  Future<void> pop({String uniqueId, Map<dynamic, dynamic> arguments}) async {
+  Future<void> pop({String uniqueId, Map<String, dynamic> arguments}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -262,7 +263,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final CommonParams params = CommonParams()
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
-        ..arguments = arguments;
+        ..arguments = arguments ?? <String, dynamic>{};
       _nativeRouterApi.popRoute(params);
     }
     _pendingResult.remove(uniqueId);
