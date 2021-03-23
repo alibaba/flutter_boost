@@ -46,8 +46,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibi
   }
 
   @override
-  void onPageDestory() {
-    Logger.log('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
+  void onPageDestroy() {
+    Logger.log('$_kTag#onPageDestroy, ${widget.uniqueId}, $this');
   }
 
   @override
