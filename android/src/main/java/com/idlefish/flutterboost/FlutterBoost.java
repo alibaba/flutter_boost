@@ -19,15 +19,17 @@ public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
     private static final String defaultInitialRoute = "/";
     private static final String defaultDartEntrypointFunctionName = "main";
-    private static FlutterBoost sInstance = null;
+
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
 
+    private FlutterBoost() {}
+    private static class LazyHolder {
+        static final FlutterBoost INSTANCE = new FlutterBoost();
+    }
+
     public static FlutterBoost instance() {
-        if (sInstance == null) {
-            sInstance = new FlutterBoost();
-        }
-        return sInstance;
+        return LazyHolder.INSTANCE;
     }
 
     public interface Callback {

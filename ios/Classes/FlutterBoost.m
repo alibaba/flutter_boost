@@ -95,7 +95,7 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments  {
    
-    [self.plugin.delegate pushFlutterRoute:pageName arguments:arguments];
+    [self.plugin.delegate pushFlutterRoute:pageName uniqueId:nil arguments:arguments];
 
 }
 

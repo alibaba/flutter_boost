@@ -35,12 +35,12 @@
 
 @implementation FlutterBoostPlugin
 
-- (void)addContainer:(id<FBFlutterContainer>)vc{
+- (void)addContainer:(id<FBFlutterContainer>)vc {
     [self.containerManager addUnique:vc];
     
 }
 
-- (void)removeContainer:(id<FBFlutterContainer>)vc{
+- (void)removeContainer:(id<FBFlutterContainer>)vc {
     [self.containerManager remove:vc];
 }
 
@@ -68,15 +68,15 @@
   return self;
 }
 
--(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
+-(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
     [self.delegate pushNativeRoute:input.pageName arguments:input.arguments];
 }
 
--(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
-    [self.delegate pushFlutterRoute:input.pageName arguments:input.arguments] ;
+-(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
+    [self.delegate pushFlutterRoute:input.pageName uniqueId:input.uniqueId arguments:input.arguments];
 }
 
--(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
+-(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
     if([self.containerManager containUniqueId:input.uniqueId]){
         [self.delegate  popRoute:input.uniqueId];
     };
