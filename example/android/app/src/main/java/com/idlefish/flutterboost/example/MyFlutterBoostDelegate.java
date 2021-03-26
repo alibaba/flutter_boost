@@ -1,5 +1,6 @@
 package com.idlefish.flutterboost.example;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.idlefish.flutterboost.FlutterBoost;
@@ -14,19 +15,21 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
     @Override
     public void pushNativeRoute(String pageName, Map<String, Object> arguments) {
-        Intent intent = new Intent(FlutterBoost.instance().currentActivity(), NativePageActivity.class);
-        FlutterBoost.instance().currentActivity().startActivity(intent);
+        Activity currentActivity = FlutterBoost.getInstance().currentActivity();
+        Intent intent = new Intent(currentActivity, NativePageActivity.class);
+        currentActivity.startActivity(intent);
     }
 
     @Override
     public void pushFlutterRoute(String pageName, String uniqueId, Map<String, Object> arguments) {
-        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.ENGINE_ID)
+        Activity currentActivity = FlutterBoost.getInstance().currentActivity();
+        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.getDefaultEngineId())
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                 .destroyEngineWithActivity(false)
                 .uniqueId(uniqueId)
                 .url(pageName)
                 .urlParams(arguments)
-                .build(FlutterBoost.instance().currentActivity());
-        FlutterBoost.instance().currentActivity().startActivity(intent);
+                .build(currentActivity);
+        currentActivity.startActivity(intent);
     }
 }

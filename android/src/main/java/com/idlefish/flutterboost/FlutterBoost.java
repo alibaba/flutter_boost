@@ -5,9 +5,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.idlefish.flutterboost.containers.FlutterViewContainer;
-
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -16,75 +15,19 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
-    public static final String ENGINE_ID = "flutter_boost_default_engine";
-    private static final String defaultInitialRoute = "/";
-    private static final String defaultDartEntrypointFunctionName = "main";
+    private interface Constants {
+        String ENGINE_ID = "flutter_boost_default_engine";
+    }
 
     private Activity topActivity = null;
-    private FlutterBoostPlugin plugin;
 
     private FlutterBoost() {}
     private static class LazyHolder {
         static final FlutterBoost INSTANCE = new FlutterBoost();
     }
 
-    public static FlutterBoost instance() {
+    public static FlutterBoost getInstance() {
         return LazyHolder.INSTANCE;
-    }
-
-    public interface Callback {
-        void onStart(FlutterEngine engine);
-    }
-
-    /**
-     * Initializes engine and plugin.
-     * 
-     * @param application the application
-     * @param delegate the FlutterBoostDelegate
-     * @param callback Invoke the callback when the engine was started.
-     */
-    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
-        // 1. initialize default engine
-        FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
-        if (engine == null) {
-            engine = new FlutterEngine(application);
-            engine.getNavigationChannel().setInitialRoute(defaultInitialRoute);
-            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), defaultDartEntrypointFunctionName));
-            if(callback != null) callback.onStart(engine);
-            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
-        }
-
-        // 2. set delegate
-        getPlugin().setDelegate(delegate);
-
-        //3. register ActivityLifecycleCallbacks
-        setupActivityLifecycleCallback(application);
-    }
-
-    /**
-     * Gets the FlutterBoostPlugin.
-     *
-     * @return the FlutterBoostPlugin.
-     */
-    public FlutterBoostPlugin getPlugin() {
-        if (plugin == null) {
-            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
-            if (engine == null) {
-                throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
-            }
-            plugin = getFlutterBoostPlugin(engine);
-        }
-        return plugin;
-    }
-    
-    /**
-     * Gets the FlutterEngine in use.
-     *
-     * @return the FlutterEngine
-     */
-    public FlutterEngine getEngine() {
-        return FlutterEngineCache.getInstance().get(ENGINE_ID);
     }
 
     /**
@@ -96,85 +39,139 @@ public class FlutterBoost {
         return topActivity;
     }
 
-    /**
-     * Gets the FlutterView container with uniqueId.
-     *
-     * This is a legacy API for backwards compatibility.
-     * 
-     * @param uniqueId The uniqueId of the container
-     * @return a FlutterView container
-     */
-    public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
-        return getPlugin().findContainerById(uniqueId);
+    public static String getDefaultEngineId() {
+        return Constants.ENGINE_ID;
     }
 
-    /**
-     * Gets the topmost container
-     * 
-     * This is a legacy API for backwards compatibility.
-     * 
-     * @return the topmost container
-     */
-    public FlutterViewContainer getTopContainer() {
-        return getPlugin().getTopContainer();
+    public interface Callback {
+        void onStart(FlutterEngine engine);
     }
 
-    /**
-     * Open a Flutter page with name and arguments.
-     * 
-     * @param name The Flutter route name.
-     * @param arguments The bussiness arguments.
-     */
-    public void open(String name, Map<String, Object> arguments) {
-        this.getPlugin().getDelegate().pushFlutterRoute(name, null, arguments);
+    public static DefaultEngineConfigs withDefaultEngine() {
+        return new DefaultEngineConfigs();
     }
 
-    /**
-     * Close the Flutter page with uniqueId.
-     * 
-     * @param uniqueId The uniqueId of the Flutter page
-     */
-    public void close(String uniqueId) {
-        Messages.CommonParams params= new Messages.CommonParams();
-        params.setUniqueId(uniqueId);
-        this.getPlugin().popRoute(params);
-    }
+    public static class DefaultEngineConfigs {
+        private String initialRoute = "/";
+        private String dartEntrypointFunctionName = "main";
 
-    private FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
-        if (engine != null) {
-            try {
-                Class<? extends FlutterPlugin> pluginClass =
-                        (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
-                return (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        public DefaultEngineConfigs() {
         }
-        return null;
+
+        public DefaultEngineConfigs initialRoute(String initialRoute) {
+            this.initialRoute = initialRoute;
+            return this;
+        }
+
+        public DefaultEngineConfigs entrypoint(String dartEntrypointFunctionName) {
+            this.dartEntrypointFunctionName = dartEntrypointFunctionName;
+            return this;
+        }
+
+        /**
+         * Initializes engine and plugin.
+         *
+         * @param application the application
+         * @param delegate the FlutterBoostDelegate
+         * @param callback Invoke the callback when the engine was started.
+         */
+        public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
+            // 1. initialize default engine, and places it in cache with default engineId.
+            String defaultEngineId = FlutterBoost.getInstance().getDefaultEngineId();
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(defaultEngineId);
+            if (engine == null) {
+                engine = new FlutterEngine(application);
+                engine.getNavigationChannel().setInitialRoute(this.initialRoute);
+                engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
+                        FlutterMain.findAppBundlePath(), this.dartEntrypointFunctionName));
+                if(callback != null) callback.onStart(engine);
+                FlutterEngineCache.getInstance().put(defaultEngineId, engine);
+            }
+
+            // 2. set delegate
+            FlutterBoostPlugin plugin = FlutterBoostUtils.getFlutterBoostPlugin(engine);
+            if (plugin != null) {
+                plugin.setDelegate(delegate);
+            } else {
+                throw new RuntimeException("The FlutterBoostPlugin cann't be found: " + defaultEngineId);
+            }
+
+            // 3. register ActivityLifecycleCallbacks
+            FlutterBoost.getInstance().setupActivityLifecycleCallback(application);
+        }
     }
 
+    public static CachedEngineConfigs withCachedEngine(String engineId) {
+        return new CachedEngineConfigs(engineId);
+    }
+
+    public static class CachedEngineConfigs {
+        private final String engineId;
+
+        public CachedEngineConfigs(String engineId) {
+            this.engineId = engineId;
+        }
+
+        public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
+            // 1. get engine with the given engineId
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(engineId);
+            if (engine == null) {
+                throw new RuntimeException("No such engine exists in FlutterEngineCache: " + engineId);
+            }
+
+            // 2. set delegate
+            FlutterBoostPlugin plugin = FlutterBoostUtils.getFlutterBoostPlugin(engine);
+            if (plugin != null) {
+                plugin.setDelegate(delegate);
+            } else {
+                throw new RuntimeException("The FlutterBoostPlugin cann't be found: " + engineId);
+            }
+
+            // 3. register ActivityLifecycleCallbacks
+            FlutterBoost.getInstance().setupActivityLifecycleCallback(application);
+        }
+    }
+
+    private List<FlutterBoostPlugin> visibilityChangedObservers = new ArrayList<>();
+    private ActivityLifecycleCallbacksImp lifecycleCallbacks = new ActivityLifecycleCallbacksImp();
     private void setupActivityLifecycleCallback(Application application) {
-        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
+        application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks);
+        application.registerActivityLifecycleCallbacks(lifecycleCallbacks);
     }
 
-    private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
+    public void unregisterVisibilityChangedObserver(FlutterBoostPlugin observer) {
+        if (observer != null) {
+            visibilityChangedObservers.remove(observer);
+        }
+    }
+
+    public void registerVisibilityChangedObserver(FlutterBoostPlugin observer) {
+        if (observer != null) {
+            visibilityChangedObservers.add(observer);
+        }
+    }
+
+    private void dispatchForegroundEvent() {
+        for (FlutterBoostPlugin observer : visibilityChangedObservers) {
+            observer.onForeground();
+        }
+    }
+
+    private void dispatchBackgroundEvent() {
+        for (FlutterBoostPlugin observer : visibilityChangedObservers) {
+            observer.onBackground();
+        }
+    }
+
+    class ActivityLifecycleCallbacksImp implements Application.ActivityLifecycleCallbacks {
         private Activity currentActiveActivity;
         private boolean alreadyCreated = false;
-    
-        private void dispatchForegroundEvent() {
-            FlutterBoost.instance().getPlugin().onForeground();
-        }
-    
-        private void dispatchBackgroundEvent() {
-            FlutterBoost.instance().getPlugin().onBackground();
-        }
-    
+
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             topActivity = activity;
-
-            // fix bug : The LauncherActivity will be launch by clicking app icon when app
-            // enter background in HuaWei Rom, cause missing foreground event
+            // fix bug : The LauncherActivity will be launch by clicking app icon 
+            // when app enter background in HuaWei Rom, cause missing forgoround event
             if (alreadyCreated && currentActiveActivity == null) {
                 Intent intent = activity.getIntent();
                 if (!activity.isTaskRoot()
@@ -188,7 +185,7 @@ public class FlutterBoost {
             alreadyCreated = true;
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityStarted(Activity activity) {
             if (!alreadyCreated) {
@@ -199,21 +196,20 @@ public class FlutterBoost {
             }
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityResumed(Activity activity) {
             topActivity = activity;
-
             if (!alreadyCreated) {
                 return;
             }
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityPaused(Activity activity) {
         }
-    
+
         @Override
         public void onActivityStopped(Activity activity) {
             if (!alreadyCreated) {
@@ -224,11 +220,11 @@ public class FlutterBoost {
                 currentActiveActivity = null;
             }
         }
-    
+
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         }
-    
+
         @Override
         public void onActivityDestroyed(Activity activity) {
             if (!alreadyCreated) {

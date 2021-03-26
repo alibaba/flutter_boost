@@ -32,11 +32,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         channel = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
+        FlutterBoost.getInstance().registerVisibilityChangedObserver(this);
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
         channel = null;
+        FlutterBoost.getInstance().unregisterVisibilityChangedObserver(this);
     }
 
     @Override

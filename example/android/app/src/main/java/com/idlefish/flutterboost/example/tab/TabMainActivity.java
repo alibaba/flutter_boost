@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
 import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 import com.idlefish.flutterboost.example.R;
 
@@ -68,12 +67,12 @@ public class TabMainActivity extends FragmentActivity implements View.OnClickLis
 
         fragmentList = new ArrayList<>();
         mesFragment = new MsgFlutterFragment
-                .CachedEngineFragmentBuilder(MsgFlutterFragment.class, FlutterBoost.ENGINE_ID)
+                .CachedEngineFragmentBuilder(MsgFlutterFragment.class, FlutterBoost.getDefaultEngineId())
                 .url("tab_message")
                 .build();
 
         friendFragment = new FriendFlutterFragment
-                .CachedEngineFragmentBuilder(FriendFlutterFragment.class, FlutterBoost.ENGINE_ID)
+                .CachedEngineFragmentBuilder(FriendFlutterFragment.class, FlutterBoost.getDefaultEngineId())
                 .url("tab_friend")
                 .build();
 

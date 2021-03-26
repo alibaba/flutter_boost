@@ -1,8 +1,8 @@
 package com.idlefish.flutterboost.containers;
 
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.FlutterBoostPlugin;
 
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -26,13 +26,6 @@ public class ActivityAndFragmentPatch {
      */
     public static RenderMode getRenderMode() {
         return RenderMode.texture;
-    }
-
-    /**
-     * 重写onBackPressed
-     */
-    public static void onBackPressed() {
-        FlutterBoost.instance().getPlugin().popRoute(null, null);
     }
 
     /**

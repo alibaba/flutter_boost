@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostPlugin;
+import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.instance().getPlugin());
+        observer = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoostUtils.getFlutterBoostPlugin(getFlutterEngine()));
         observer.onCreateView();
     }
 
@@ -100,7 +100,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed();
+        FlutterBoostPlugin plugin = FlutterBoostUtils.getFlutterBoostPlugin(getFlutterEngine());
+        assert plugin != null;
+        plugin.popRoute(null, null);
     }
 
     @Override
@@ -183,7 +185,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_BACKGROUND_MODE, backgroundMode)
                     .putExtra(EXTRA_URL, url)
                     .putExtra(EXTRA_URL_PARAM, params)
-                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : UUID.randomUUID().toString());
+                    .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoostUtils.createUniqueId());
         }
     }
 
