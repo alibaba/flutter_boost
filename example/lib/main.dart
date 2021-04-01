@@ -5,6 +5,7 @@ import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
+import 'package:flutter_boost_example/case/transparent_widget.dart';
 import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
@@ -56,6 +57,10 @@ class _MyAppState extends State<MyApp> {
     'returnData': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ReturnDataWidget());
+    },
+    'transparentWidget': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => TransparentWidget());
     },
     'selectionScreen': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
