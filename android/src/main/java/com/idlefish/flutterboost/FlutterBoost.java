@@ -11,7 +11,6 @@ import java.util.List;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
@@ -101,33 +100,35 @@ public class FlutterBoost {
         }
     }
 
-    public static CachedEngineConfigs withCachedEngine(String engineId) {
-        return new CachedEngineConfigs(engineId);
+    public static CachedEngineConfigs withCachedEngines() {
+        return new CachedEngineConfigs();
     }
 
     public static class CachedEngineConfigs {
-        private final String engineId;
+        private List<String> engineIds = new ArrayList<>();
 
-        public CachedEngineConfigs(String engineId) {
-            this.engineId = engineId;
+        public CachedEngineConfigs() {
+        }
+
+        public CachedEngineConfigs add(String engineId) {
+            this.engineIds.add(engineId);
+            return this;
         }
 
         public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
-            // 1. get engine with the given engineId
-            FlutterEngine engine = FlutterEngineCache.getInstance().get(engineId);
-            if (engine == null) {
-                throw new RuntimeException("No such engine exists in FlutterEngineCache: " + engineId);
-            }
+            for(String engineId : engineIds) {
+                FlutterEngine engine = FlutterEngineCache.getInstance().get(engineId);
+                if (engine == null) {
+                    throw new RuntimeException("No such engine exists in FlutterEngineCache: " + engineId);
+                }
 
-            // 2. set delegate
-            FlutterBoostPlugin plugin = FlutterBoostUtils.getFlutterBoostPlugin(engine);
-            if (plugin != null) {
-                plugin.setDelegate(delegate);
-            } else {
-                throw new RuntimeException("The FlutterBoostPlugin cann't be found: " + engineId);
+                FlutterBoostPlugin plugin = FlutterBoostUtils.getFlutterBoostPlugin(engine);
+                if (plugin != null) {
+                    plugin.setDelegate(delegate);
+                } else {
+                    throw new RuntimeException("The FlutterBoostPlugin cann't be found: " + engineId);
+                }
             }
-
-            // 3. register ActivityLifecycleCallbacks
             FlutterBoost.getInstance().setupActivityLifecycleCallback(application);
         }
     }

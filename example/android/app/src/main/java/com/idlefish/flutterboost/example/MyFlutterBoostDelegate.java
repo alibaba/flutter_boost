@@ -23,7 +23,8 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
     @Override
     public void pushFlutterRoute(String pageName, String uniqueId, Map<String, Object> arguments) {
         Activity currentActivity = FlutterBoost.getInstance().currentActivity();
-        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, FlutterBoost.getDefaultEngineId())
+        String engineId = FlutterBoost.getDefaultEngineId();
+        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class, engineId)
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                 .destroyEngineWithActivity(false)
                 .uniqueId(uniqueId)

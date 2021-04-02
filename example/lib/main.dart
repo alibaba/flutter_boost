@@ -10,9 +10,13 @@ import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.purple,
+  ));
 }
 
 class MyApp extends StatefulWidget {
