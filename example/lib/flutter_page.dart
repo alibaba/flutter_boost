@@ -235,6 +235,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       .push("transparentWidget", withContainer: true);
                 },
               ),
+              InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'Radial Transition Demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.of()
+                      .push("radialExpansion", withContainer: false)),
             ],
           ),
         ),
