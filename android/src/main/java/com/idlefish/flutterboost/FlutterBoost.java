@@ -11,15 +11,13 @@ import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
-    private static final String defaultInitialRoute = "/";
-    private static final String defaultDartEntrypointFunctionName = "main";
-
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
 
@@ -36,32 +34,60 @@ public class FlutterBoost {
         void onStart(FlutterEngine engine);
     }
 
-    /**
-     * Initializes engine and plugin.
-     * 
-     * @param application the application
-     * @param delegate the FlutterBoostDelegate
-     * @param callback Invoke the callback when the engine was started.
-     */
-    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
-        // 1. initialize default engine
-        FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
-        if (engine == null) {
-            engine = new FlutterEngine(application);
-            engine.getNavigationChannel().setInitialRoute(defaultInitialRoute);
-            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), defaultDartEntrypointFunctionName));
-            if(callback != null) callback.onStart(engine);
-            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
-        }
-
-        // 2. set delegate
-        getPlugin().setDelegate(delegate);
-
-        //3. register ActivityLifecycleCallbacks
-        setupActivityLifecycleCallback(application);
+    public static DefaultEngineConfigs withDefaultEngine() {
+        return new DefaultEngineConfigs();
     }
 
+    public static class DefaultEngineConfigs {
+        private String initialRoute = "/";
+        private String dartEntrypointFunctionName = "main";
+        private FlutterShellArgs shellArgs = null;
+
+        public DefaultEngineConfigs() {
+        }
+
+        public DefaultEngineConfigs initialRoute(String initialRoute) {
+            this.initialRoute = initialRoute;
+            return this;
+        }
+
+        public DefaultEngineConfigs entrypoint(String dartEntrypointFunctionName) {
+            this.dartEntrypointFunctionName = dartEntrypointFunctionName;
+            return this;
+        }
+
+        public DefaultEngineConfigs flutterShellArgs(FlutterShellArgs shellArgs) {
+            this.shellArgs = shellArgs;
+            return this;
+        }
+
+        /**
+         * Initializes engine and plugin.
+         * 
+         * @param application the application
+         * @param delegate the FlutterBoostDelegate
+         * @param callback Invoke the callback when the engine was started.
+         */
+        public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
+            // 1. initialize default engine
+            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+            if (engine == null) {
+                engine = new FlutterEngine(application, shellArgs != null ? shellArgs.toArray() : null);
+                engine.getNavigationChannel().setInitialRoute(initialRoute);
+                engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
+                        FlutterMain.findAppBundlePath(), dartEntrypointFunctionName));
+                if(callback != null) callback.onStart(engine);
+                FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
+            }
+
+            // 2. set delegate
+            FlutterBoost.instance().getPlugin().setDelegate(delegate);
+
+            //3. register ActivityLifecycleCallbacks
+            FlutterBoost.instance().setupActivityLifecycleCallback(application);
+        }
+    }
+    
     /**
      * Gets the FlutterBoostPlugin.
      *

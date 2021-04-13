@@ -18,7 +18,7 @@ public class MyApplication extends FlutterApplication {
     public void onCreate() {
         super.onCreate();
 
-        FlutterBoost.instance().setup(this, new MyFlutterBoostDelegate(),engine->{
+        FlutterBoost.withDefaultEngine().setup(this, new MyFlutterBoostDelegate(),engine->{
             engine.getPlugins();
         } );
 
