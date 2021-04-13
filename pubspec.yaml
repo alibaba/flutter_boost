@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  uuid: ^2.2.2
 
 dev_dependencies:
   flutter_test:

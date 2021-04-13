@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_boost/boost_container.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -109,11 +108,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   String _createUniqueId(String pageName) {
-    if (kReleaseMode) {
-      return Uuid().v4();
-    } else {
-      return Uuid().v4() + '#$pageName';
-    }
+    return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
   }
 
   BoostContainer _createContainer(PageInfo pageInfo) {
