@@ -54,7 +54,14 @@
             <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
 
         </activity>
-
+        <activity
+            android:name="com.taobao.idlefish.flutterboostexample.TorchFlutterDialogActivity"
+            android:theme="@android:style/Theme.Translucent"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+        </activity>
         <activity
             android:name=".NativePageActivity"
             android:theme="@style/Theme.AppCompat"

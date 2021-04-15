@@ -460,6 +460,23 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
               ),
               InkWell(
                 child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'open Flutter dialog',
+                    style: TextStyle(fontSize: 22.0, color: Colors.black),
+                  ),
+                ),
+                onTap: () => FlutterBoost.singleton.open(
+                  'flutterPageDialog',
+                  urlParams: <String, dynamic>{
+                    'query': <String, dynamic>{'aaa': 'bbb'}
+                  },
+                ),
+              ),
+              InkWell(
+                child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
@@ -655,5 +672,36 @@ class _PushWidgetState extends State<PushWidget> {
   @override
   Widget build(BuildContext context) {
     return FlutterRouteWidget(message: "Pushed Widget");
+  }
+}
+
+class FlutterRouteDialogWidget extends StatelessWidget {
+  const FlutterRouteDialogWidget({this.params, this.message});
+  final Map<String, dynamic> params;
+  final String message;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black12.withOpacity(0.5),
+      body: WillPopScope(
+        onWillPop: () => Future.value(false),
+        child: Container(
+          alignment: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: () {
+              FlutterBoost.singleton.closeByContext(context);
+            },
+            child: Container(
+              height: 300,
+              color: const Color(0xffffffff),
+              child: const Text(
+                '我是一个Dialog',
+                style: TextStyle(fontSize: 28.0, color: Colors.blue),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

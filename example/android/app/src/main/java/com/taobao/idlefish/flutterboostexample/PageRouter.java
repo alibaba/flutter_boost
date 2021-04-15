@@ -12,13 +12,13 @@ import java.util.Map;
 public class PageRouter {
 
     public final static Map<String, String> pageName = new HashMap<String, String>() {{
-
         put("first", "first");
         put("second", "second");
         put("tab", "tab");
         put("f2f_first", "f2f_first");
         put("f2f_second", "f2f_second");
         put("sample://flutterPage", "flutterPage");
+        put("flutterPageDialog", "flutterPageDialog");
     }};
 
     public static final String NATIVE_PAGE_URL = "sample://nativePage";
@@ -36,7 +36,17 @@ public class PageRouter {
         Log.i("openPageByUrl",path);
 
         try {
-            if (pageName.containsKey(path)) {
+            if(path.contains("flutterPageDialog")){
+                Intent intent = TorchFlutterDialogActivity.withNewEngine().url(pageName.get(path)).params(params)
+                                                    .backgroundMode(BoostFlutterActivity.BackgroundMode.transparent).build(context);
+                if(context instanceof Activity){
+                    Activity activity=(Activity)context;
+                    activity.startActivityForResult(intent,requestCode);
+                }else{
+                    context.startActivity(intent);
+                }
+            }
+            else if (pageName.containsKey(path)) {
                 Intent intent = BoostFlutterActivity.withNewEngine().url(pageName.get(path)).params(params)
                         .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque).build(context);
                 if(context instanceof Activity){

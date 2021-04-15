@@ -37,6 +37,7 @@ class _MyAppState extends State<MyApp> {
 
       'f2f_first': (pageName, params, _) => F2FFirstPage(),
       'f2f_second': (pageName, params, _) => F2FSecondPage(),
+      'flutterPageDialog': (pageName, params, _) => FlutterRouteDialogWidget(),
     });
     FlutterBoost.singleton
         .addBoostNavigatorObserver(TestBoostNavigatorObserver());
