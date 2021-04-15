@@ -23,10 +23,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   static Map<String, FlutterBoostRouteFactory> routerMap = {
-    '/': (settings, uniqueId) {
-      return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => Container());
-    },
+    // '/': (settings, uniqueId) {
+    //   return PageRouteBuilder<dynamic>(
+    //       settings: settings, pageBuilder: (_, __, ___) => Container());
+    // },
     'embedded': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,

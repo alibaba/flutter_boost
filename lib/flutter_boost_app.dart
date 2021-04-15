@@ -15,9 +15,10 @@ typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
 
 class FlutterBoostApp extends StatefulWidget {
-  const FlutterBoostApp(this.routeFactory,
+  FlutterBoostApp(FlutterBoostRouteFactory routeFactory,
       {FlutterBoostAppBuilder appBuilder, String initialRoute})
-      : appBuilder = appBuilder ?? _materialAppBuilder,
+      : routeFactory = routeFactoryWrapper(routeFactory),
+        appBuilder = appBuilder ?? _materialAppBuilder,
         initialRoute = initialRoute ?? '/';
 
   final FlutterBoostRouteFactory routeFactory;
@@ -26,6 +27,18 @@ class FlutterBoostApp extends StatefulWidget {
 
   static Widget _materialAppBuilder(Widget home) {
     return MaterialApp(home: home);
+  }
+
+  static FlutterBoostRouteFactory routeFactoryWrapper(
+      FlutterBoostRouteFactory routeFactory) {
+    return (RouteSettings settings, String uniqueId) {
+      Route<dynamic> route = routeFactory(settings, uniqueId);
+      if (route == null && settings.name == '/') {
+        route = PageRouteBuilder<dynamic>(
+            settings: settings, pageBuilder: (_, __, ___) => Container());
+      }
+      return route;
+    };
   }
 
   @override
@@ -378,8 +391,9 @@ class BoostPage<T> extends Page<T> {
         key: UniqueKey(), pageInfo: pageInfo, routeFactory: routeFactory);
   }
 
-  final List<Route<T>> _route = <Route<T>>[];
-  Route<T> get route => _route.isEmpty ? null : _route.first;
+  Route<T> _route;
+
+  Route<T> get route => _route;
 
   @override
   String toString() =>
@@ -387,9 +401,8 @@ class BoostPage<T> extends Page<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
-    _route.clear();
-    _route.add(routeFactory(this, pageInfo.uniqueId));
-    return _route.first;
+    _route = routeFactory(this, pageInfo.uniqueId);
+    return _route;
   }
 }
 
