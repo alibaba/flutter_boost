@@ -41,7 +41,7 @@ class StackInfo {
   }
 
   static StackInfo decode(Object message) {
-    final Map<Object, Object> pigeonMap = message as Map<Object, Object>;
+    final Map<Object, Object> pigeonMap = message ?? <Object, Object>{};
     return StackInfo()
       ..containers = pigeonMap['containers'] as List<Object>
       ..routes = pigeonMap['routes'] as Map<Object, Object>;
