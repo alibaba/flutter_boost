@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-beta.3
+v3.0-beta.4
 - 1. Flutter SDK upgrades do not require Boost upgrades
 - 2. Simplify the architecture
 - 3. Simplify the interface
@@ -35,7 +35,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-hotfixes'
+        ref: 'v3.0-beta.4'
 ```
 
 
