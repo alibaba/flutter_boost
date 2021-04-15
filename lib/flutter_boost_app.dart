@@ -246,7 +246,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (_pendingResult.containsKey(uniqueId)) {
       _pendingResult[uniqueId].complete(result);
     }
-    pop();
+
+
+    /// Need to pass uniqueId (uniqueId is nullable)
+    /// reason: https://github.com/alibaba/flutter_boost/issues/1020
+    /// Because we should make [_pendingResult] remove the completer using this id after calling pop()
+    /// so the uniqueId of topPage in topContainer should be passed in pop() function
+    pop(uniqueId: uniqueId);
   }
 
   Future<void> pop({String uniqueId, Map<String, dynamic> arguments}) async {
