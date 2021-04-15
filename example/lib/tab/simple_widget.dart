@@ -44,8 +44,8 @@ class _SimpleWidgetState extends State<SimpleWidget>
   }
 
   @override
-  void onPageDestory() {
-    print('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
+  void onPageDestroy() {
+    print('$_kTag#onPageDestroy, ${widget.uniqueId}, $this');
   }
 
   @override

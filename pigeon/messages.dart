@@ -3,7 +3,12 @@ import 'package:pigeon/pigeon.dart';
 class CommonParams {
   String pageName;
   String uniqueId;
-  Map<String, String> arguments;
+  Map<String, Object> arguments;
+}
+
+class StackInfo {
+  List<String> containers;
+  Map<String, List<Map<String, Object>>> routes;
 }
 
 @HostApi()
@@ -11,6 +16,8 @@ abstract class NativeRouterApi {
   void pushNativeRoute(CommonParams param);
   void pushFlutterRoute(CommonParams param);
   void popRoute(CommonParams param);
+  StackInfo getStackFromHost();
+  void saveStackToHost(StackInfo stack);
 }
 
 @FlutterApi()

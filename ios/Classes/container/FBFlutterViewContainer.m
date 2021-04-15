@@ -47,10 +47,9 @@
 @implementation FlutterViewController (bridgeToviewDidDisappear)
 - (void)bridge_viewDidDisappear:(BOOL)animated{
     [self flushOngoingTouches];
-
     [super viewDidDisappear:animated];
 }
-- (void)bridge_viewWillAppear:(BOOL)animated{
+- (void)bridge_viewWillAppear:(BOOL)animated {
 //    [FLUTTER_APP inactive];
     [FBLifecycle inactive ];
     [super viewWillAppear:animated];
@@ -58,10 +57,9 @@
 @end
 #pragma pop
 
-
-@interface FBFlutterViewContainer  ()
+@interface FBFlutterViewContainer ()
 @property (nonatomic,strong,readwrite) NSDictionary *params;
-@property (nonatomic,copy) NSString *uniqueID;
+@property (nonatomic,copy) NSString *uniqueId;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @end
@@ -85,7 +83,7 @@
                         nibName:(NSString*)nibNameOrNil
                          bundle:(NSBundle*)nibBundleOrNil  {
     if (self = [super initWithProject:projectOrNil nibName:nibNameOrNil bundle:nibBundleOrNil]) {
-        [self   _setup];
+        [self _setup];
     }
     return self;
 }
@@ -107,11 +105,14 @@
     return [self init];
 }
 
-- (void)setName:(NSString *)name params:(NSDictionary *)params
+- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params
 {
     if(!_name && name){
         _name = name;
         _params = params;
+        if (uniqueId != nil) {
+            _uniqueId = uniqueId;
+        }
     }
 }
 
@@ -128,7 +129,6 @@ static NSUInteger kInstanceCounter = 0;
     if(kInstanceCounter == 1){
 //        [FLUTTER_APP resume];
         [FBLifecycle resume ];
-
     }
 }
 
@@ -143,24 +143,23 @@ static NSUInteger kInstanceCounter = 0;
 
 - (NSString *)uniqueIDString
 {
-    return self.uniqueID;
+    return self.uniqueId;
 }
-
 
 - (void)_setup
 {
-    self.uniqueID= [[NSUUID UUID] UUIDString];
+    self.uniqueId = [[NSUUID UUID] UUIDString];
     [self.class instanceCounterIncrease];
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     if (parent && _name) {
         //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
-        FBCommonParams* params =[[FBCommonParams alloc] init ];
-        params.pageName=_name;
-        params.arguments=_params;
-        params.uniqueId= self.uniqueID;
-//
+        FBCommonParams* params = [[FBCommonParams alloc] init];
+        params.pageName = _name;
+        params.arguments = _params;
+        params.uniqueId = self.uniqueId;
+
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
                 }];
     }
@@ -198,9 +197,9 @@ static NSUInteger kInstanceCounter = 0;
 - (void)notifyWillDealloc
 {
     FBCommonParams* params =[[FBCommonParams alloc] init ];
-    params.pageName=_name;
-    params.arguments=_params;
-    params.uniqueId=self.uniqueID;
+    params.pageName = _name;
+    params.arguments = _params;
+    params.uniqueId = self.uniqueId;
     [FB_PLUGIN.flutterApi removeRoute: params  completion:^(NSError * e) {
 
             }];
@@ -229,7 +228,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)detatchFlutterEngine
 {
-    if(ENGINE.viewController != nil){
+    if(ENGINE.viewController != nil) {
         ENGINE.viewController = nil;
     }
 }
@@ -251,12 +250,10 @@ static NSUInteger kInstanceCounter = 0;
 {
     //For new page we should attach flutter view in view will appear
     //for better performance.
-   
-    
-    FBCommonParams* params =[[FBCommonParams alloc] init ];
-    params.pageName=_name;
-    params.arguments=_params;
-    params.uniqueId=self.uniqueID;
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName = _name;
+    params.arguments = _params;
+    params.uniqueId = self.uniqueId;
     [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
            
             }];
@@ -271,7 +268,6 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
 
@@ -294,15 +290,12 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
 }
 
-
 - (void)viewDidDisappear:(BOOL)animated
 {
-  
     [super bridge_viewDidDisappear:animated];
 }
 

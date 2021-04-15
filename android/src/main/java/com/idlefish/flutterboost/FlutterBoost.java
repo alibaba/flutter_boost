@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
@@ -19,15 +19,17 @@ public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
     private static final String defaultInitialRoute = "/";
     private static final String defaultDartEntrypointFunctionName = "main";
-    private static FlutterBoost sInstance = null;
+
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
 
+    private FlutterBoost() {}
+    private static class LazyHolder {
+        static final FlutterBoost INSTANCE = new FlutterBoost();
+    }
+
     public static FlutterBoost instance() {
-        if (sInstance == null) {
-            sInstance = new FlutterBoost();
-        }
-        return sInstance;
+        return LazyHolder.INSTANCE;
     }
 
     public interface Callback {
@@ -123,7 +125,7 @@ public class FlutterBoost {
      * @param name The Flutter route name.
      * @param arguments The bussiness arguments.
      */
-    public void open(String name, HashMap<String, String> arguments) {
+    public void open(String name, Map<String, Object> arguments) {
         this.getPlugin().getDelegate().pushFlutterRoute(name, null, arguments);
     }
 

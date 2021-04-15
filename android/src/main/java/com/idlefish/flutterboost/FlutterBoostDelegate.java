@@ -1,8 +1,8 @@
 package com.idlefish.flutterboost;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public interface FlutterBoostDelegate {
-    void pushNativeRoute(String pageName, HashMap<String, String> arguments);
-    void pushFlutterRoute(String pageName, String uniqueId, HashMap<String, String> arguments);
+    void pushNativeRoute(String pageName, Map<String, Object> arguments);
+    void pushFlutterRoute(String pageName, String uniqueId, Map<String, Object> arguments);
 }

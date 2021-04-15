@@ -45,7 +45,7 @@
         </activity>
         <activity
             android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
-            android:theme="@style/Theme.AppCompat"
+            android:theme="@style/TranTheme.Translucente"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize" >

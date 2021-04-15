@@ -26,14 +26,14 @@
     }
 }
 
-- (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments {
+- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments {
     
     FlutterEngine* engine =  [[FlutterBoost instance ] engine];
     engine.viewController = nil;
     
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
     
-    [vc setName:pageName params:arguments];
+    [vc setName:pageName uniqueId:uniqueId params:arguments];
     
     BOOL animated = [arguments[@"animated"] boolValue];
     BOOL present= [arguments[@"present"] boolValue];

@@ -10,14 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  uuid: ^2.2.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: 4.1.1
   pedantic: ^1.8.0
-  pigeon: ^0.1.17
+  pigeon: ^0.1.22
 
 flutter:
   plugin:

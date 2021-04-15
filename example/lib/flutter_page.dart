@@ -4,6 +4,7 @@ import 'package:flutter_boost_example/case/platform_view.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/logger.dart';
+import 'package:flutter_boost_example/case/transparent_widget.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params, this.message, this.uniqueId});
@@ -16,7 +17,8 @@ class FlutterRouteWidget extends StatefulWidget {
   _FlutterRouteWidgetState createState() => _FlutterRouteWidgetState();
 }
 
-class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibilityObserver {
+class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
+    with PageVisibilityObserver {
   final TextEditingController _usernameController = TextEditingController();
   static const String _kTag = 'page_visibility';
 
@@ -46,17 +48,19 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibi
   }
 
   @override
-  void onPageDestory() {
-    Logger.log('$_kTag#onPageDestory, ${widget.uniqueId}, $this');
+  void onPageDestroy() {
+    Logger.log('$_kTag#onPageDestroy, ${widget.uniqueId}, $this');
   }
 
   @override
   void onPageShow({bool isForegroundEvent}) {
-    Logger.log('$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
+    Logger.log(
+        '$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
   }
 
   void onPageHide({bool isBackgroundEvent}) {
-    Logger.log('$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
+    Logger.log(
+        '$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
   }
 
   @override
@@ -73,9 +77,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibi
     final String message = widget.message;
     return Scaffold(
       appBar: AppBar(
-        brightness:Brightness.dark,
+        brightness: Brightness.dark,
         backgroundColor: Colors.black,
-        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
+        textTheme: new TextTheme(title: TextStyle(color: Colors.black)),
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -205,14 +209,43 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> with PageVisibi
                         'returning data demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-                  // onTap: () async {
-                  //   final result = await BoostNavigator.of()
-                  //       .push("returnData", withContainer: true);
-                  //   print('Get result: $result');
-                  // }),
                   onTap: () => BoostNavigator.of()
-                      .push("returnData", withContainer: true)
-                      .then((onValue) => print('Get result: $onValue'))),
+                      .push("returnData", withContainer: true)),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'open transparent widget',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () {
+                  // final overlay = Overlay.of(context);
+                  // OverlayEntry entry = OverlayEntry(builder: (_) {
+                  //   return TransparentWidget();
+                  // });
+                  // overlay.insert(entry);
+                  //
+                  // Future.delayed(const Duration(milliseconds: 2000), () {
+                  //   entry.remove();
+                  // });
+
+                  BoostNavigator.of()
+                      .push("transparentWidget", withContainer: true);
+                },
+              ),
+              InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'Radial Transition Demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.of()
+                      .push("radialExpansion", withContainer: false)),
             ],
           ),
         ),

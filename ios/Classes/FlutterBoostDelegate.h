@@ -32,11 +32,8 @@
 @optional
 - (FlutterEngine*)  engine;
 @required  
-- (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
-
-- (void) pushFlutterRoute:(NSString *) pageName arguments:(NSDictionary *) arguments ;
-
-- (void) popRoute:(NSString *)uniqueId ;
-
+- (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments;
+- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments;
+- (void) popRoute:(NSString *)uniqueId;
 @end
 

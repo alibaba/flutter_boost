@@ -5,7 +5,7 @@ abstract class PageVisibilityObserver {
   void onPageCreate();
   void onPageShow({bool isForegroundEvent});
   void onPageHide({bool isBackgroundEvent});
-  void onPageDestory();
+  void onPageDestroy();
 }
 
 class PageVisibilityBinding {
@@ -86,7 +86,7 @@ class PageVisibilityBinding {
     if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
         try {
-          observer.onPageDestory();
+          observer.onPageDestroy();
         } catch (e) {
           Logger.log(e);
         }

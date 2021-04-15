@@ -224,8 +224,8 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     @Nullable
-    public HashMap<String, String> getUrlParams() {
-        return (HashMap<String, String>)getArguments().getSerializable(EXTRA_URL_PARAM);
+    public HashMap<String, Object> getUrlParams() {
+        return (HashMap<String, Object>)getArguments().getSerializable(EXTRA_URL_PARAM);
     }
 
     public String getUniqueId() {

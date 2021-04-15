@@ -29,19 +29,18 @@
 
 
 @interface FlutterBoostPlugin ()<FBNativeRouterApi>
-
 @property(nonatomic, strong) FBFlutterContainerManager* containerManager;
-
+@property(nonatomic, strong) FBStackInfo* stackInfo;
 @end
 
 @implementation FlutterBoostPlugin
 
-- (void)addContainer:(id<FBFlutterContainer>)vc{
+- (void)addContainer:(id<FBFlutterContainer>)vc {
     [self.containerManager addUnique:vc];
     
 }
 
-- (void)removeContainer:(id<FBFlutterContainer>)vc{
+- (void)removeContainer:(id<FBFlutterContainer>)vc {
     [self.containerManager remove:vc];
 }
 
@@ -49,7 +48,6 @@
     FlutterBoostPlugin* plugin = [[FlutterBoostPlugin alloc] initWithMessenger:(registrar.messenger)];
     [registrar publish:plugin];
     FBNativeRouterApiSetup(registrar.messenger, plugin);
-    
 }
 
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine{
@@ -61,7 +59,6 @@
     return nil;
 }
 
-
 -(instancetype)initWithMessenger:(id<FlutterBinaryMessenger>)messenger {
   self = [super init];
   if (self) {
@@ -71,23 +68,27 @@
   return self;
 }
 
--(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
-    
+-(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
     [self.delegate pushNativeRoute:input.pageName arguments:input.arguments];
-    
-}
--(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
-    
-    [self.delegate  pushFlutterRoute:input.pageName arguments:input.arguments] ;
-
 }
 
--(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error{
+-(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
+    [self.delegate pushFlutterRoute:input.pageName uniqueId:input.uniqueId arguments:input.arguments];
+}
+
+-(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
     if([self.containerManager containUniqueId:input.uniqueId]){
         [self.delegate  popRoute:input.uniqueId];
     };
 }
 
+-(nullable FBStackInfo *)getStackFromHost:(FlutterError *_Nullable *_Nonnull)error {
+    return self.stackInfo;
+}
+
+-(void)saveStackToHost:(FBStackInfo*)input error:(FlutterError *_Nullable *_Nonnull)error {
+    self.stackInfo = input;
+}
 @end
 
 
