@@ -138,6 +138,13 @@ public class Messages {
         callback.reply(null);
       });
     }
+    public void onNativeResult(CommonParams argInput) {
+      BasicMessageChannel<Object> channel =
+              new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onNativeResult", new StandardMessageCodec());
+      Map<String, Object> inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+      });
+    }
   }
 
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
