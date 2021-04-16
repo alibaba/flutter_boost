@@ -175,6 +175,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         '_restoreStackForHotRestart, ${stack?.containers}, ${stack?.routes}');
   }
 
+  Future<T> pendResult<T extends Object>(String pageName){
+    final Completer<T> completer = Completer<T>();
+    _pendingResult[pageName] = completer;
+    return completer.future;
+  }
+
   Future<T> pushWithResult<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
     final Completer<T> completer = Completer<T>();
@@ -367,6 +373,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     refresh();
     PageVisibilityBinding.instance.dispatchPageDestoryEvent(_route);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
+  }
+
+  void onNativeResult(CommonParams params){
+    if (_pendingResult.containsKey(params.pageName)) {
+      _pendingResult[params.pageName].complete(params.arguments);
+      _pendingResult.remove(params.pageName);
+    }
   }
 
   PageInfo getTopPageInfo() {
