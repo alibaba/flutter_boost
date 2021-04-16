@@ -56,6 +56,7 @@ abstract class FlutterRouterApi {
   void onBackground(CommonParams arg);
   void onNativeViewShow(CommonParams arg);
   void onNativeViewHide(CommonParams arg);
+  void onNativeResult(CommonParams arg);
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<Object> channel =
@@ -151,6 +152,20 @@ abstract class FlutterRouterApi {
           assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.onNativeViewHide was null. Expected CommonParams.');
           final CommonParams input = CommonParams.decode(message);
           api.onNativeViewHide(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+      BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onNativeResult', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.onNativeResult was null. Expected CommonParams.');
+          final CommonParams input = CommonParams.decode(message);
+          api.onNativeResult(input);
           return;
         });
       }
