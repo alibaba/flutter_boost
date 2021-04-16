@@ -54,4 +54,10 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void removeRoute(CommonParams arg) {
     appState.remove(arg.uniqueId);
   }
+
+  @override
+  void onNativeResult(CommonParams arg) {
+    appState.onNativeResult(arg);
+  }
+
 }
