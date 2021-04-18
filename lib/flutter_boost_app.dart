@@ -70,6 +70,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
 
+
+    //Refresh the containers data to overlayKey to show the page matching initialRoute
+    //Use addPostFrameCallback is because to wait overlayKey.currentState to load complete....
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      refresh();
+    });
+
+
     // try to restore routes from host when hot restart.
     assert(() {
       _restoreStackForHotRestart();
