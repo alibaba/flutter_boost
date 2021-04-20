@@ -5,7 +5,7 @@
 
 # Release Note
 
-v3.0-beta.4
+v3.0-beta.5
 
 - 1.flutter sdk升级不需要升级boost
 - 2.简化架构
@@ -37,7 +37,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-beta.4'
+        ref: 'v3.0-beta.5'
 ```
 
 
