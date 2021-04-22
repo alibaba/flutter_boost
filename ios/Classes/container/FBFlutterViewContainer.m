@@ -228,6 +228,11 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)detatchFlutterEngine
 {
+    //need to call [surfaceUpdated:NO] to detach the view controller's ref from
+    //interal engine platformViewController,or dealloc will not be called after controller close.
+    //detail:https://github.com/flutter/engine/blob/07e2520d5d8f837da439317adab4ecd7bff2f72d/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L529
+    [self surfaceUpdated:NO];
+    
     if(ENGINE.viewController != nil) {
         ENGINE.viewController = nil;
     }
