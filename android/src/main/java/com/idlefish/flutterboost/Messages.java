@@ -138,11 +138,12 @@ public class Messages {
         callback.reply(null);
       });
     }
-    public void onNativeResult(CommonParams argInput) {
+    public void onNativeResult(CommonParams argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
-              new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onNativeResult", new StandardMessageCodec());
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onNativeResult", new StandardMessageCodec());
       Map<String, Object> inputMap = argInput.toMap();
       channel.send(inputMap, channelReply -> {
+        callback.reply(null);
       });
     }
   }

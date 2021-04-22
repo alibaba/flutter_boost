@@ -41,7 +41,7 @@ class StackInfo {
   }
 
   static StackInfo decode(Object message) {
-    final Map<Object, Object> pigeonMap = message ?? <Object, Object>{};
+    final Map<Object, Object> pigeonMap = message as Map<Object, Object>;
     return StackInfo()
       ..containers = pigeonMap['containers'] as List<Object>
       ..routes = pigeonMap['routes'] as Map<Object, Object>;
@@ -158,7 +158,7 @@ abstract class FlutterRouterApi {
     }
     {
       const BasicMessageChannel<Object> channel =
-      BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onNativeResult', StandardMessageCodec());
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onNativeResult', StandardMessageCodec());
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
