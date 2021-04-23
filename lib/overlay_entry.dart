@@ -1,3 +1,4 @@
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_container.dart';
 
@@ -21,7 +22,16 @@ void refreshOverlayEntries(List<BoostContainer> containers) {
           (BoostContainer container) => _ContainerOverlayEntry(container))
       .toList(growable: false);
 
+  final bool hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
+  final bool framesEnabled = SchedulerBinding.instance.framesEnabled;
+
   overlayState.insertAll(_lastEntries);
+
+  // https://github.com/alibaba/flutter_boost/issues/1056
+  // Ensure this frame is refreshed after schedule frame，otherwise the PageState.dispose may not be called
+  if (hasScheduledFrame || !framesEnabled) {
+    SchedulerBinding.instance.scheduleWarmUpFrame();
+  }
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
