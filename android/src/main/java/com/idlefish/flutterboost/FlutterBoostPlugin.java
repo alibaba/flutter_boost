@@ -290,23 +290,33 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
         @Override
         public void onAppear(InitiatorLocation location) {
-            if (isCurrentTopContainer() &&
-                    InitiatorLocation.SwitchTabs == location &&
-                    BackForeGroundEvent.FOREGROUND != event) {
-                // The native view was popped
-                plugin.onNativeViewHide();
+            boolean isNativeViewPopping = false;
+            boolean isForegroundEvent = false;
+            if (isCurrentTopContainer()) {
+                if (BackForeGroundEvent.FOREGROUND == event) {
+                    isForegroundEvent = true;
+                } else {
+                    // The native view was popped
+                    isNativeViewPopping = true;
+                }
+                Log.v(TAG, "#onAppear: " + location + ", event=" + event);
             }
 
+            if (isNativeViewPopping) {
+                plugin.onNativeViewHide();
+            } else {
+                if (!isForegroundEvent) {
+                    plugin.reorderContainer(getUniqueId(), this);
+                    plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
+                }
+            }
             setBackForeGroundEvent(BackForeGroundEvent.NONE);
-            plugin.reorderContainer(getUniqueId(), this);
-            plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
-            Log.v(TAG, "#onAppear: " + location + ", " + getUniqueId() + ", " + plugin.getContainers());
+            Log.v(TAG, "#onAppear: " + location + ", isNativeViewPopping=" + isNativeViewPopping + ", isForegroundEvent=" + isForegroundEvent +  ", " + getUniqueId() + ", " + plugin.getContainers());
         }
 
         @Override
         public void onDisappear(InitiatorLocation location) {
             if (isCurrentTopContainer() &&
-                    // InitiatorLocation.SwitchTabs == location &&
                     BackForeGroundEvent.BACKGROUND != event) {
                 // The native view was pushed
                 plugin.onNativeViewShow();

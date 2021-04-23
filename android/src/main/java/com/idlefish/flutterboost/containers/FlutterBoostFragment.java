@@ -3,6 +3,8 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,8 +69,15 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
-            observer.onDisappear(InitiatorLocation.SwitchTabs);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+            // when switching tab from a FlutterFragment to another FlutterFragment, let onAppear() first.
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+              @Override
+              public void run() {
+                observer.onDisappear(InitiatorLocation.SwitchTabs);
+              }
+            }, 50);
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         } else {
             observer.onAppear(InitiatorLocation.SwitchTabs);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
