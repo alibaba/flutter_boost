@@ -3,6 +3,7 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
@@ -28,6 +30,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
+    private static final String TAG = "FlutterBoostActivity";
     private FlutterView flutterView;
     private FlutterViewContainerObserver observer;
 
@@ -70,6 +73,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         super.onResume();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            if (FlutterBoost.instance().isAppInBackground() &&
+                    !FlutterBoost.instance().getPlugin().isTopContainer(getUniqueId())) {
+                Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
         observer.onAppear(InitiatorLocation.Others);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
@@ -85,6 +96,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onPause() {
         super.onPause();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            if (FlutterBoost.instance().isAppInBackground() &&
+                    !FlutterBoost.instance().getPlugin().isTopContainer(getUniqueId())) {
+                Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }

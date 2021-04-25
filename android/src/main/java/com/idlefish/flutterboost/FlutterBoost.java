@@ -22,6 +22,7 @@ public class FlutterBoost {
 
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
+    private boolean isAppInBackground = false;
 
     private FlutterBoost() {}
     private static class LazyHolder {
@@ -157,15 +158,25 @@ public class FlutterBoost {
         application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
+    public boolean isAppInBackground() {
+        return isAppInBackground;
+    }
+
+    /*package*/ void setAppIsInBackground(boolean inBackground) {
+        isAppInBackground = inBackground;
+    }
+
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
         private Activity currentActiveActivity;
         private boolean alreadyCreated = false;
     
         private void dispatchForegroundEvent() {
+            FlutterBoost.instance().setAppIsInBackground(false);
             FlutterBoost.instance().getPlugin().onForeground();
         }
     
         private void dispatchBackgroundEvent() {
+            FlutterBoost.instance().setAppIsInBackground(true);
             FlutterBoost.instance().getPlugin().onBackground();
         }
     

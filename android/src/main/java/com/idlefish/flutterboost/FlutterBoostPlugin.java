@@ -213,6 +213,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return top != null ? top.container() : null;
     }
 
+    public boolean isTopContainer(String uniqueId) {
+        FlutterViewContainer top = getTopContainer();
+        if (top != null && top.getUniqueId() == uniqueId) {
+            return true;
+        }
+        return false;
+    }
+
     public void reorderContainer(String uniqueId, ContainerShadowNode container) {
         if (uniqueId == null || container == null) return;
         if (allContainers.containsKey(uniqueId)) {
@@ -258,6 +266,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         public FlutterViewContainer container() {
             return container.get();
         }
+
         public void setBackForeGroundEvent(BackForeGroundEvent event) {
             this.event = event;
         }
