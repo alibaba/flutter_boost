@@ -9,6 +9,7 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.Map;
 
+import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
@@ -23,7 +24,9 @@ public class FlutterBoost {
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
 
-    private FlutterBoost() {}
+    private FlutterBoost() {
+    }
+
     private static class LazyHolder {
         static final FlutterBoost INSTANCE = new FlutterBoost();
     }
@@ -38,10 +41,10 @@ public class FlutterBoost {
 
     /**
      * Initializes engine and plugin.
-     * 
+     *
      * @param application the application
-     * @param delegate the FlutterBoostDelegate
-     * @param callback Invoke the callback when the engine was started.
+     * @param delegate    the FlutterBoostDelegate
+     * @param callback    Invoke the callback when the engine was started.
      */
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
         // 1. initialize default engine
@@ -51,9 +54,40 @@ public class FlutterBoost {
             engine.getNavigationChannel().setInitialRoute(defaultInitialRoute);
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
                     FlutterMain.findAppBundlePath(), defaultDartEntrypointFunctionName));
-            if(callback != null) callback.onStart(engine);
+            if (callback != null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
+
+        // 2. set delegate
+        getPlugin().setDelegate(delegate);
+
+        //3. register ActivityLifecycleCallbacks
+        setupActivityLifecycleCallback(application);
+    }
+
+    /**
+     * Initializes engine and plugin.
+     * @param application the Application
+     * @param delegate the FlutterBoostDelegate
+     * @param config the config of FlutterBoost
+     * @param callback Invoke the callback when the engine was started.
+     */
+    public void setup(Application application, FlutterBoostDelegate delegate, FlutterBoostConfig config, Callback callback) {
+
+        //1.get engine from config
+        FlutterEngine engine = config.getEngine();
+
+        //If it is null, create a engine,and get arguments from config
+        if (engine == null) {
+            engine = new FlutterEngine(application,
+                    config.getShellArgs() != null ? config.getShellArgs().toArray() : null);
+            engine.getNavigationChannel().setInitialRoute(config.getInitialRoute());
+            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
+                    FlutterInjector.instance().flutterLoader().findAppBundlePath(), config.getDartEntryPointFunctionName()));
+            if (callback != null) callback.onStart(engine);
+            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
+        }
+        //If engine is not null ,indicates that it has an existing engine
 
         // 2. set delegate
         getPlugin().setDelegate(delegate);
@@ -77,7 +111,7 @@ public class FlutterBoost {
         }
         return plugin;
     }
-    
+
     /**
      * Gets the FlutterEngine in use.
      *
@@ -98,9 +132,9 @@ public class FlutterBoost {
 
     /**
      * Gets the FlutterView container with uniqueId.
-     *
+     * <p>
      * This is a legacy API for backwards compatibility.
-     * 
+     *
      * @param uniqueId The uniqueId of the container
      * @return a FlutterView container
      */
@@ -110,9 +144,9 @@ public class FlutterBoost {
 
     /**
      * Gets the topmost container
-     * 
+     * <p>
      * This is a legacy API for backwards compatibility.
-     * 
+     *
      * @return the topmost container
      */
     public FlutterViewContainer getTopContainer() {
@@ -121,8 +155,8 @@ public class FlutterBoost {
 
     /**
      * Open a Flutter page with name and arguments.
-     * 
-     * @param name The Flutter route name.
+     *
+     * @param name      The Flutter route name.
      * @param arguments The bussiness arguments.
      */
     public void open(String name, Map<String, Object> arguments) {
@@ -131,11 +165,11 @@ public class FlutterBoost {
 
     /**
      * Close the Flutter page with uniqueId.
-     * 
+     *
      * @param uniqueId The uniqueId of the Flutter page
      */
     public void close(String uniqueId) {
-        Messages.CommonParams params= new Messages.CommonParams();
+        Messages.CommonParams params = new Messages.CommonParams();
         params.setUniqueId(uniqueId);
         this.getPlugin().popRoute(params);
     }
@@ -160,15 +194,15 @@ public class FlutterBoost {
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
         private Activity currentActiveActivity;
         private boolean alreadyCreated = false;
-    
+
         private void dispatchForegroundEvent() {
             FlutterBoost.instance().getPlugin().onForeground();
         }
-    
+
         private void dispatchBackgroundEvent() {
             FlutterBoost.instance().getPlugin().onBackground();
         }
-    
+
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             topActivity = activity;
@@ -188,7 +222,7 @@ public class FlutterBoost {
             alreadyCreated = true;
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityStarted(Activity activity) {
             if (!alreadyCreated) {
@@ -199,7 +233,7 @@ public class FlutterBoost {
             }
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityResumed(Activity activity) {
             topActivity = activity;
@@ -209,11 +243,11 @@ public class FlutterBoost {
             }
             currentActiveActivity = activity;
         }
-    
+
         @Override
         public void onActivityPaused(Activity activity) {
         }
-    
+
         @Override
         public void onActivityStopped(Activity activity) {
             if (!alreadyCreated) {
@@ -224,11 +258,11 @@ public class FlutterBoost {
                 currentActiveActivity = null;
             }
         }
-    
+
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         }
-    
+
         @Override
         public void onActivityDestroyed(Activity activity) {
             if (!alreadyCreated) {
