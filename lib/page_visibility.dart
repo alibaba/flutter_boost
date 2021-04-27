@@ -44,9 +44,9 @@ class PageVisibilityBinding {
         _listeners.putIfAbsent(route, () => <PageVisibilityObserver>{});
     if (observers.add(observer)) {
       observer.onPageCreate();
-      dispatchGlobalCreateEvent(route);
+      // dispatchGlobalCreateEvent(route);
       observer.onPageShow();
-      dispatchGlobalPageShowEvent(route);
+      // dispatchGlobalPageShowEvent(route);
     }
     Logger.log(
         'page_visibility, #addObserver, $observers, ${route.settings.name}');
@@ -79,7 +79,7 @@ class PageVisibilityBinding {
     Logger.log('page_visibility, #removeGlobalObserver, $observer');
   }
 
-  void dispatchPageShowEvent(Route<dynamic> route) {
+  void dispatchPageShowEvent(Route<dynamic> route, {bool isForegroundEvent = false}) {
     if (route == null) {
       return;
     }
@@ -88,7 +88,7 @@ class PageVisibilityBinding {
     if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
         try {
-          observer.onPageShow();
+          observer.onPageShow(isForegroundEvent:isForegroundEvent);
         } catch (e) {
           Logger.log(e);
         }
@@ -97,10 +97,10 @@ class PageVisibilityBinding {
     Logger.log(
         'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
 
-    dispatchGlobalPageShowEvent(route);
+    dispatchGlobalPageShowEvent(route, isForegroundEvent: isForegroundEvent);
   }
 
-  void dispatchPageHideEvent(Route<dynamic> route) {
+  void dispatchPageHideEvent(Route<dynamic> route, {bool isBackgroundEvent = false}) {
     if (route == null) {
       return;
     }
@@ -109,7 +109,7 @@ class PageVisibilityBinding {
     if (observers != null) {
       for (PageVisibilityObserver observer in observers) {
         try {
-          observer.onPageHide();
+          observer.onPageHide(isBackgroundEvent:isBackgroundEvent);
         } catch (e) {
           Logger.log(e);
         }
@@ -118,7 +118,7 @@ class PageVisibilityBinding {
     Logger.log(
         'page_visibility, #dispatchPageHideEvent, ${route.settings.name}');
 
-    dispatchGlobalPageHideEvent(route);
+    dispatchGlobalPageHideEvent(route, isBackgroundEvent: isBackgroundEvent);
   }
 
   void dispatchPageDestoryEvent(Route<dynamic> route) {
@@ -143,46 +143,46 @@ class PageVisibilityBinding {
     dispatchGlobalPageDestroyEvent(route);
   }
 
-  void dispatchBackgroundEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
+  // void dispatchBackgroundEvent(Route<dynamic> route) {
+  //   if (route == null) {
+  //     return;
+  //   }
+  //
+  //   final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+  //   if (observers != null) {
+  //     for (PageVisibilityObserver observer in observers) {
+  //       try {
+  //         observer.onPageHide(isBackgroundEvent: true);
+  //       } catch (e) {
+  //         Logger.log(e);
+  //       }
+  //     }
+  //   }
+  //   Logger.log(
+  //       'page_visibility, #dispatchBackgroundEvent, ${route.settings.name}');
+  //
+  //   dispatchGlobalPageHideEvent(route, isBackgroundEvent: true);
+  // }
 
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
-        try {
-          observer.onPageHide(isBackgroundEvent: true);
-        } catch (e) {
-          Logger.log(e);
-        }
-      }
-    }
-    Logger.log(
-        'page_visibility, #dispatchBackgroundEvent, ${route.settings.name}');
-
-    dispatchGlobalPageHideEvent(route, isBackgroundEvent: true);
-  }
-
-  void dispatchForegroundEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
-
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
-        try {
-          observer.onPageShow(isForegroundEvent: true);
-        } catch (e) {
-          Logger.log(e);
-        }
-      }
-    }
-    Logger.log(
-        'page_visibility, #dispatchForegroundEvent, ${route.settings.name}');
-    dispatchGlobalPageShowEvent(route, isForegroundEvent: true);
-  }
+  // void dispatchForegroundEvent(Route<dynamic> route) {
+  //   if (route == null) {
+  //     return;
+  //   }
+  //
+  //   final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+  //   if (observers != null) {
+  //     for (PageVisibilityObserver observer in observers) {
+  //       try {
+  //         observer.onPageShow(isForegroundEvent: true);
+  //       } catch (e) {
+  //         Logger.log(e);
+  //       }
+  //     }
+  //   }
+  //   Logger.log(
+  //       'page_visibility, #dispatchForegroundEvent, ${route.settings.name}');
+  //   dispatchGlobalPageShowEvent(route, isForegroundEvent: true);
+  // }
 
   void dispatchGlobalCreateEvent(Route<dynamic> route) {
     if (route == null) {

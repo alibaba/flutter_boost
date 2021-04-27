@@ -11,9 +11,33 @@ import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
+import 'package:flutter_boost/page_visibility.dart';
+import 'package:flutter_boost/logger.dart';
+
+
+
 
 void main() {
+  PageVisibilityBinding.instance.addGlobalObserver(AppGlobalPageVisiblityObserver());
   runApp(MyApp());
+}
+
+class AppGlobalPageVisiblityObserver extends GlobalPageVisiblityObserver {
+  void onPageCreate(Route<dynamic> route) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageCreate route:${route.settings.name}');
+  }
+
+  void onPageShow(Route<dynamic> route, {bool isForegroundEvent = false}) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageShow route:${route.settings.name} isForegroundEvent:$isForegroundEvent');
+  }
+
+  void onPageHide(Route<dynamic> route, {bool isBackgroundEvent = false}) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageHide route:${route.settings.name} isBackgroundEvent:$isBackgroundEvent');
+  }
+
+  void onPageDestroy(Route<dynamic> route) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageDestroy route:${route.settings.name}');
+  }
 }
 
 class MyApp extends StatefulWidget {
