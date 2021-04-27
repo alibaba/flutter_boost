@@ -17,8 +17,6 @@ import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
-    private static final String defaultInitialRoute = "/";
-    private static final String defaultDartEntrypointFunctionName = "main";
 
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
@@ -45,13 +43,18 @@ public class FlutterBoost {
      * @param callback Invoke the callback when the engine was started.
      */
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
+        setup(application, delegate, callback, FlutterBoostOptions.createDefault());
+    }
+
+    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback, FlutterBoostOptions options) {
         // 1. initialize default engine
         FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
         if (engine == null) {
-            engine = new FlutterEngine(application);
-            engine.getNavigationChannel().setInitialRoute(defaultInitialRoute);
+            if (options == null) options = FlutterBoostOptions.createDefault();
+            engine = new FlutterEngine(application, options.shellArgs());
+            engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), defaultDartEntrypointFunctionName));
+                    FlutterMain.findAppBundlePath(), options.dartEntrypoint()));
             if(callback != null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
