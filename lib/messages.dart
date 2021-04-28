@@ -57,6 +57,8 @@ abstract class FlutterRouterApi {
   void onNativeViewShow(CommonParams arg);
   void onNativeViewHide(CommonParams arg);
   void onNativeResult(CommonParams arg);
+  void onContainerShow(CommonParams arg);
+  void onContainerHide(CommonParams arg);
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<Object> channel =
@@ -166,6 +168,34 @@ abstract class FlutterRouterApi {
           assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.onNativeResult was null. Expected CommonParams.');
           final CommonParams input = CommonParams.decode(message);
           api.onNativeResult(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onContainerShow', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.onContainerShow was null. Expected CommonParams.');
+          final CommonParams input = CommonParams.decode(message);
+          api.onContainerShow(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel =
+          BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.onContainerHide', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.onContainerHide was null. Expected CommonParams.');
+          final CommonParams input = CommonParams.decode(message);
+          api.onContainerHide(input);
           return;
         });
       }

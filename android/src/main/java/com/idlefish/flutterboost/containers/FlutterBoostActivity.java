@@ -86,6 +86,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         observer.onAppear(InitiatorLocation.Others);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
+
+        FlutterBoost.instance().getPlugin().onContainerShow(getUniqueId());
     }
 
     @Override
@@ -108,6 +110,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+
+        FlutterBoost.instance().getPlugin().onContainerHide(getUniqueId());
     }
 
     @Override

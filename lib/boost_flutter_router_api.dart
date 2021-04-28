@@ -60,4 +60,14 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
     appState.onNativeResult(arg);
   }
 
+  @override
+  void onContainerHide(CommonParams arg) {
+    appState.onContainerHide(arg);
+  }
+
+  @override
+  void onContainerShow(CommonParams arg) {
+    appState.onContainerShow(arg);
+  }
+
 }

@@ -207,6 +207,28 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         Log.v(TAG, "## onNativeViewHide: " + channel);
     }
 
+    public void onContainerShow(String uniqueId) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            channel.onContainerShow(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onContainerShow: " + channel);
+    }
+
+    public void onContainerHide(String uniqueId) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setUniqueId(uniqueId);
+            channel.onContainerHide(params, reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+        Log.v(TAG, "## onContainerHide: " + channel);
+    }
+
     private final Map<String, ContainerShadowNode> allContainers = new LinkedHashMap<>();
     private ContainerShadowNode getCurrentShadowNode() {
         if (allContainers.size() > 0) {
