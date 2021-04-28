@@ -11,42 +11,55 @@ class BoostLifecycleBinding {
 
   void containerDidMoveToTop(
       BoostContainer container, BoostContainer previousContainer) {
-    Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidMoveToTop');
-    PageVisibilityBinding.instance
-        .dispatchPageShowEvent(container.topPage.route);
-    if (previousContainer.topPage.route != null) {
-      PageVisibilityBinding.instance
-          .dispatchPageHideEvent(previousContainer.topPage.route);
-    }
+    // Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidMoveToTop');
+    // PageVisibilityBinding.instance
+    //     .dispatchPageShowEvent(container.topPage.route);
+    // if (previousContainer.topPage.route != null) {
+    //   PageVisibilityBinding.instance
+    //       .dispatchPageHideEvent(previousContainer.topPage.route);
+    // }
   }
 
   void containerDidPush(
       BoostContainer container, BoostContainer previousContainer) {
-    Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
-    PageVisibilityBinding.instance
-        .dispatchPageShowEvent(container.topPage.route);
-    if (previousContainer.topPage.route != null) {
-      PageVisibilityBinding.instance
-          .dispatchPageHideEvent(previousContainer.topPage.route);
-    }
+    // Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
+    // PageVisibilityBinding.instance
+    //     .dispatchPageShowEvent(container.topPage.route);
+    // if (previousContainer.topPage.route != null) {
+    //   PageVisibilityBinding.instance
+    //       .dispatchPageHideEvent(previousContainer.topPage.route);
+    // }
   }
 
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
-    Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
+    // Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
 
   }
 
   void nativeViewDidShow(BoostContainer container) {
-    Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidShow');
-    PageVisibilityBinding.instance
-        .dispatchPageShowEvent(container.topPage.route);
+    // Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidShow');
+    // PageVisibilityBinding.instance
+    //     .dispatchPageShowEvent(container.topPage.route);
   }
 
   void nativeViewDidHide(BoostContainer container) {
-    Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidHide');
+    // Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidHide');
+    // PageVisibilityBinding.instance
+    //     .dispatchPageHideEvent(container.topPage.route);
+  }
+
+  void containerDidHide(BoostContainer container) {
+    Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
         .dispatchPageHideEvent(container.topPage.route);
+
+  }
+
+  void containerDidShow(BoostContainer container) {
+    Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
+    PageVisibilityBinding.instance
+        .dispatchPageShowEvent(container.topPage.route);
   }
 
   void appDidEnterForeground(BoostContainer container) {
