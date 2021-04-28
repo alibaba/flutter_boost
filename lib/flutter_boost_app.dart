@@ -384,6 +384,24 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
+  void onContainerShow(CommonParams params){
+    final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
+    BoostLifecycleBinding.instance.containerDidShow(container);
+    // if (_pendingResult.containsKey(params.pageName)) {
+    //   _pendingResult[params.pageName].complete(params.arguments);
+    //   _pendingResult.remove(params.pageName);
+    // }
+  }
+
+  void onContainerHide(CommonParams params){
+    final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
+    BoostLifecycleBinding.instance.containerDidHide(container);
+    // if (_pendingResult.containsKey(params.pageName)) {
+    //   _pendingResult[params.pageName].complete(params.arguments);
+    //   _pendingResult.remove(params.pageName);
+    // }
+  }
+
   PageInfo getTopPageInfo() {
     return topContainer?.topPage?.pageInfo;
   }
