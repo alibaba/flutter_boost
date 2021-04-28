@@ -27,11 +27,19 @@
     
     [self.window makeKeyAndVisible];
     
+    //默认方法
     MyFlutterBoostDelegate* delegate=[[MyFlutterBoostDelegate alloc ] init];
-        
     [[FlutterBoost instance] setup:application delegate:delegate callback:^(FlutterEngine *engine) {
-        
+
     } ];
+
+    //下面是自定义参数的方法
+//    FlutterBoostOptionsBuilder* builder = [[FlutterBoostOptionsBuilder alloc] init];
+//    FlutterBoostOptions* options = [[[builder initalRoute:@"/"] dartEntryPoint:@"main"] build];
+//
+//    [[FlutterBoost instance] setup:application delegate:delegate callback:^(FlutterEngine *engine) {
+//
+//    } options:options];
     
     
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];

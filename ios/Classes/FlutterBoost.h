@@ -27,9 +27,9 @@
 #import "FlutterBoostPlugin.h"
 #import "FBFlutterViewContainer.h"
 #import "FlutterBoostDelegate.h"
-#import "FlutterBoost.h"
 #import "FlutterBoostPlugin.h"
 #import "FBFlutterViewContainer.h"
+#import "FlutterBoostOptions.h"
 #import "messages.h"
 
 
@@ -54,6 +54,14 @@
 /// @param callback 初始化完成以后的回调，
 /// TODO 设计需要再review下 callback并不是异步的感觉没有必要。
 - (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback;
+
+
+/// 利用自定义配置进行初始化
+/// @param application 全局Application实例，如未设置engine参数，则默认从Application做engine的绑定
+/// @param delegate FlutterBoostDelegate的实例，用于实现Push和Pop的具体策略
+/// @param callback 初始化完成以后的回调
+/// @param options 启动的配置，如果需要自定义请使用此参数
+- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback options:(FlutterBoostOptions*)options;
 
 /// 关闭页面，混合栈推荐使用的用于操作页面的接口
 /// @param uniqueId 关闭的页面唯一ID符
