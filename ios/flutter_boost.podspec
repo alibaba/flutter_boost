@@ -20,6 +20,7 @@ A new Flutter plugin make flutter better to use!
     'Classes/FlutterBoostPlugin.h',
     'Classes/container/FBFlutterViewContainer.h',
     'Classes/container/FBFlutterContainer.h',
+    'Classes/FlutterBoostOptions.h',
     'Classes/messages.h'
 
     
