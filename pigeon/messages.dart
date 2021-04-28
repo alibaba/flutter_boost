@@ -30,6 +30,8 @@ abstract class FlutterRouterApi {
   void onNativeViewShow(CommonParams param);
   void onNativeViewHide(CommonParams param);
   void onNativeResult(CommonParams param);
+  void onContainerShow(CommonParams param);
+  void onContainerHide(CommonParams param);
 }
 
 void configurePigeon(PigeonOptions opts) {

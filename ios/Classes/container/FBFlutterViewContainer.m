@@ -291,6 +291,12 @@ static NSUInteger kInstanceCounter = 0;
     if (self.disablePopGesture) {
         self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
     }
+    
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.uniqueId = self.uniqueId;
+    [FB_PLUGIN.flutterApi onContainerShow:params completion:^(NSError * e) {
+    
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -302,6 +308,11 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super bridge_viewDidDisappear:animated];
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.uniqueId = self.uniqueId;
+    [FB_PLUGIN.flutterApi onContainerHide:params completion:^(NSError * e) {
+    
+    }];
 }
 
 - (void)installSplashScreenViewIfNecessary {
