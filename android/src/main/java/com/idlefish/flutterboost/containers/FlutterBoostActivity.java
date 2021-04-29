@@ -22,6 +22,7 @@ import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.NATIVE_PAGE_URL_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
@@ -158,6 +159,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data != null) {
+            String pageName = data.getStringExtra(NATIVE_PAGE_URL_KEY);
+            Map<String, Object> result = (HashMap<String, Object>)data.getSerializableExtra(ACTIVITY_RESULT_KEY);
+            FlutterBoost.instance().getPlugin().onNativeResult(pageName, result, null);
+        }
+    }
 
     public static class CachedEngineIntentBuilder {
         private final Class<? extends FlutterBoostActivity> activityClass;
