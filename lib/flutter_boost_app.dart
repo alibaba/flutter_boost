@@ -264,7 +264,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       /// reason: https://github.com/alibaba/flutter_boost/issues/1020
       _pendingResult.remove(uniqueId);
     }
-    pop();
+
+    result is Map<String, dynamic> ? pop(arguments: result) : pop();
   }
 
   Future<void> pop({String uniqueId, Map<String, dynamic> arguments}) async {

@@ -2,6 +2,7 @@ package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +22,7 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
@@ -156,12 +158,17 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public Activity getContextActivity() {
-        return this.getActivity();
+        return getActivity();
     }
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        this.getActivity().finish();
+        if (result != null) {
+            Intent intent = new Intent();
+            intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
+            getActivity().setResult(Activity.RESULT_OK, intent);
+        }
+        getActivity().finish();
     }
 
     @Override
