@@ -172,26 +172,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         Log.v(TAG, "## onBackground: " + channel);
     }
 
-    public void onNativeViewShow() {
-        if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
-            channel.onNativeViewShow(params, reply -> {});
-        } else {
-            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
-        }
-        Log.v(TAG, "## onNativeViewShow: " + channel);
-    }
-
-    public void onNativeViewHide() {
-        if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
-            channel.onNativeViewHide(params, reply -> {});
-        } else {
-            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
-        }
-        Log.v(TAG, "## onNativeViewHide: " + channel);
-    }
-
     public void onContainerShow(String uniqueId) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
@@ -334,7 +314,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             }
 
             if (isNativeViewPopping) {
-                plugin.onNativeViewHide();
+                // plugin.onNativeViewHide();
             } else {
                 if (!isForegroundEvent) {
                     plugin.reorderContainer(getUniqueId(), this);
@@ -342,6 +322,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 }
             }
             setBackForeGroundEvent(BackForeGroundEvent.NONE);
+            plugin.onContainerShow(getUniqueId());
             Log.v(TAG, "#onAppear: " + location + ", isNativeViewPopping=" + isNativeViewPopping + ", isForegroundEvent=" + isForegroundEvent +  ", " + getUniqueId() + ", " + plugin.getContainers());
         }
 
@@ -350,10 +331,11 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             if (isCurrentTopContainer() &&
                     BackForeGroundEvent.BACKGROUND != event) {
                 // The native view was pushed
-                plugin.onNativeViewShow();
+                // plugin.onNativeViewShow();
             }
 
             setBackForeGroundEvent(BackForeGroundEvent.NONE);
+            plugin.onContainerHide(getUniqueId());
             Log.v(TAG, "#onDisappear: " + getUniqueId() + ", " + plugin.getContainers());
         }
 
