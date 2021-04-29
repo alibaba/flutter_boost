@@ -121,7 +121,7 @@ class PageVisibilityBinding {
     dispatchGlobalPageHideEvent(route, isBackgroundEvent: isBackgroundEvent);
   }
 
-  void dispatchPageDestoryEvent(Route<dynamic> route) {
+  void dispatchPageDestroyEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
@@ -138,7 +138,7 @@ class PageVisibilityBinding {
     }
 
     Logger.log(
-        'page_visibility, #dispatchPageDestoryEvent, ${route.settings.name}');
+        'page_visibility, #dispatchPageDestroyEvent, ${route.settings.name}');
 
     dispatchGlobalPageDestroyEvent(route);
   }

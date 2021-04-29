@@ -34,19 +34,6 @@ class BoostLifecycleBinding {
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
     // Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
-
-  }
-
-  void nativeViewDidShow(BoostContainer container) {
-    // Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidShow');
-    // PageVisibilityBinding.instance
-    //     .dispatchPageShowEvent(container.topPage.route);
-  }
-
-  void nativeViewDidHide(BoostContainer container) {
-    // Logger.log('boost_lifecycle: BoostLifecycleBinding.nativeViewDidHide');
-    // PageVisibilityBinding.instance
-    //     .dispatchPageHideEvent(container.topPage.route);
   }
 
   void containerDidHide(BoostContainer container) {

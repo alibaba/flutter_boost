@@ -317,14 +317,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         .appDidEnterBackground(topContainer);
   }
 
-  void onNativeViewShow() {
-    BoostLifecycleBinding.instance.nativeViewDidHide(topContainer);
-  }
-
-  void onNativeViewHide() {
-    BoostLifecycleBinding.instance.nativeViewDidShow(topContainer);
-  }
-
   Route<dynamic> _getCurrentPageRoute() {
     return topContainer?.topPage?.route;
   }
@@ -374,7 +366,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     }
     refresh();
-    PageVisibilityBinding.instance.dispatchPageDestoryEvent(_route);
+    PageVisibilityBinding.instance.dispatchPageDestroyEvent(_route);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
