@@ -136,6 +136,21 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
+    public void onNativeResult(String name, Map<String, Object> result, final Reply<Void> callback) {
+        if (channel != null) {
+            Messages.CommonParams params = new Messages.CommonParams();
+            params.setPageName(name);
+            params.setArguments((Map<Object, Object>)(Object) result);
+            channel.onNativeResult(params,reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
+
     public enum BackForeGroundEvent {
         NONE,
         FOREGROUND,
