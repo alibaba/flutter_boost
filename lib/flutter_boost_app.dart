@@ -389,6 +389,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult[params.pageName].complete(params.arguments);
       _pendingResult.remove(params.pageName);
     }
+    Logger.log('onNativeResult, name:${params.pageName}, result: ${params.arguments}');
   }
 
   PageInfo getTopPageInfo() {

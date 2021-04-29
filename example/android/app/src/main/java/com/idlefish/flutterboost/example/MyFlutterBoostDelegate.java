@@ -11,11 +11,12 @@ import java.util.Map;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
 public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
+    private final int REQUEST_CODE = 999;
 
     @Override
     public void pushNativeRoute(String pageName, Map<String, Object> arguments) {
         Intent intent = new Intent(FlutterBoost.instance().currentActivity(), NativePageActivity.class);
-        FlutterBoost.instance().currentActivity().startActivity(intent);
+        FlutterBoost.instance().currentActivity().startActivityForResult(intent, REQUEST_CODE);
     }
 
     @Override
