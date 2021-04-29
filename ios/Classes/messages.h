@@ -28,8 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onForeground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onBackground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
-- (void)onNativeViewShow:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
-- (void)onNativeViewHide:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onNativeResult:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onContainerShow:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onContainerHide:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
