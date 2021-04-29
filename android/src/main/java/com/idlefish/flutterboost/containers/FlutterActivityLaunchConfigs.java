@@ -13,6 +13,8 @@ public class FlutterActivityLaunchConfigs {
 
     static final String DEFAULT_BACKGROUND_MODE = io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode.opaque.name();
 
+    // for onActivityResult
+    public static final String ACTIVITY_RESULT_KEY = "ActivityResult";
 
     private FlutterActivityLaunchConfigs() {}
 }
