@@ -27,8 +27,6 @@ abstract class FlutterRouterApi {
   void removeRoute(CommonParams param);
   void onForeground(CommonParams param);
   void onBackground(CommonParams param);
-  void onNativeViewShow(CommonParams param);
-  void onNativeViewHide(CommonParams param);
   void onNativeResult(CommonParams param);
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
