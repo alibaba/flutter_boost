@@ -14,13 +14,16 @@ import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
+import android.util.Log;
 
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
+
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     public static WeakReference<MainActivity> sRef;
-
+    private final int REQUEST_CODE = 999;
     private TextView mOpenNative;
     private TextView mOpenFlutter;
     private TextView mOpenFlutterFragment;
@@ -68,11 +71,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .url("flutterPage")
                     .urlParams(params)
                     .build(this);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE);
         } else if (v == mOpenFlutterFragment) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         } else if (v == mOpenCustomViewTab) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_CUSTOM_VIEW_URL, params);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v("xlog", "#onActivityResult, requestCode=" + requestCode + ", resultCode=" + resultCode + ", data=" + data.getSerializableExtra(ACTIVITY_RESULT_KEY));
     }
 }

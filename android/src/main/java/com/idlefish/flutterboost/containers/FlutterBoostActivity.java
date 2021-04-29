@@ -21,6 +21,7 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
 
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
@@ -134,6 +135,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
+        if (result != null) {
+            Intent intent = new Intent();
+            intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
+            setResult(Activity.RESULT_OK, intent);
+        }
         finish();
     }
 
