@@ -81,7 +81,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                 return;
             }
         }
-        observer.onAppear(InitiatorLocation.Others);
+        observer.onAppear();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
     }
@@ -90,7 +90,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onStop() {
         super.onStop();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        observer.onDisappear(InitiatorLocation.Others);
+        observer.onDisappear();
     }
 
     @Override
