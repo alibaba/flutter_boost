@@ -49,12 +49,13 @@ class _SimpleWidgetState extends State<SimpleWidget>
   }
 
   @override
-  void onPageShow({bool isForegroundEvent}) {
-    print('$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
+  void onPageShow() {
+    print('$_kTag#onPageShow, ${widget.uniqueId}, $this');
   }
 
-  void onPageHide({bool isBackgroundEvent}) {
-    print('$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
+  @override
+  void onPageHide() {
+    print('$_kTag#onPageHide, ${widget.uniqueId}, $this');
   }
 
   @override

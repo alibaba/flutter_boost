@@ -220,7 +220,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         containers.remove(existed);
         containers.add(existed);
         refresh();
-        BoostLifecycleBinding.instance.containerDidMoveToTop(container, previousContainer);
       }
       // else {
       //   PageVisibilityBinding.instance
@@ -353,8 +352,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (container != null) {
       // Gets the first internal route of the current container
       _route = container.pages.first.route;
-      containers.removeWhere(
-          (BoostContainer entry) => entry.pageInfo?.uniqueId == uniqueId);
+      containers.remove(container);
+      BoostLifecycleBinding.instance.containerDidPop(container, topContainer);
     } else {
       for (BoostContainer container in containers) {
         final BoostPage<dynamic> _target = container.pages.firstWhere(
@@ -366,7 +365,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     }
     refresh();
-    PageVisibilityBinding.instance.dispatchPageDestroyEvent(_route);
+    // PageVisibilityBinding.instance.dispatchPageDestroyEvent(_route);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
