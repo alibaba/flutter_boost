@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,18 +69,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
-            // when switching tab from a FlutterFragment to another FlutterFragment, let onAppear() first.
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(new Runnable() {
-              @Override
-              public void run() {
-                observer.onDisappear(InitiatorLocation.SwitchTabs);
-              }
-            }, 50);
+            observer.onDisappear();
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         } else {
-            observer.onAppear(InitiatorLocation.SwitchTabs);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+            observer.onAppear();
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
         }
         super.onHiddenChanged(hidden);
     }
@@ -90,11 +81,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (isVisibleToUser) {
-            observer.onAppear(InitiatorLocation.SwitchTabs);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
+            observer.onAppear();
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
         } else {
-            observer.onDisappear(InitiatorLocation.SwitchTabs);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
+            observer.onDisappear();
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -102,13 +93,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         if (flutterView == null) {
-            findFlutterView(this.getView().getRootView());
+            findFlutterView(getView().getRootView());
         }
         super.onResume();
         if (!isHidden()) {
-            observer.onAppear(InitiatorLocation.Others);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, this.getFlutterEngine(), this);
-            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+            observer.onAppear();
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
+            getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
     }
 
@@ -121,9 +112,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onPause() {
         super.onPause();
         if (!isHidden()) {
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, this.getFlutterEngine());
-            if (this.getFlutterEngine() != null) {
-                this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+            if (getFlutterEngine() != null) {
+                getFlutterEngine().getLifecycleChannel().appIsResumed();
             }
         }
     }
@@ -131,12 +122,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onStop() {
         super.onStop();
-        if( this.getFlutterEngine()!=null){
-            this.getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if(getFlutterEngine() != null){
+            getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
 
         if (!isHidden()) {
-            observer.onDisappear(InitiatorLocation.Others);
+            observer.onDisappear();
         }
     }
 
@@ -203,7 +194,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         public CachedEngineFragmentBuilder(
                  Class<? extends FlutterBoostFragment> subclass,  String engineId) {
-            this.fragmentClass = subclass;
+            fragmentClass = subclass;
             this.engineId = engineId;
         }
 
