@@ -132,7 +132,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
             onCreate();
         }
         super.onResume();
-        mObserver.onAppear(InitiatorLocation.Others);
+        mObserver.onAppear();
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
@@ -149,7 +149,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     public void onStop() {
         if(isDestroyed()) return;
         super.onStop();
-        mObserver.onDisappear(InitiatorLocation.Others);
+        mObserver.onDisappear();
     }
 
     @Override
@@ -170,10 +170,10 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         if (getVisibility() == View.VISIBLE) {
-            mObserver.onAppear(InitiatorLocation.SwitchTabs);
+            mObserver.onAppear();
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         } else if (getVisibility() == View.GONE) {
-            mObserver.onDisappear(InitiatorLocation.SwitchTabs);
+            mObserver.onDisappear();
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         }
     }

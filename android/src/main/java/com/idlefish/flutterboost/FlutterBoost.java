@@ -170,8 +170,8 @@ public class FlutterBoost {
     }
 
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
-        private Activity currentActiveActivity;
-        private boolean alreadyCreated = false;
+        private int activityReferences = 0;
+        private boolean isActivityChangingConfigurations = false;
     
         private void dispatchForegroundEvent() {
             FlutterBoost.instance().setAppIsInBackground(false);
@@ -186,42 +186,19 @@ public class FlutterBoost {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             topActivity = activity;
-
-            // fix bug : The LauncherActivity will be launch by clicking app icon when app
-            // enter background in HuaWei Rom, cause missing foreground event
-            if (alreadyCreated && currentActiveActivity == null) {
-                Intent intent = activity.getIntent();
-                if (!activity.isTaskRoot()
-                        && intent != null
-                        && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
-                        && intent.getAction() != null
-                        && intent.getAction().equals(Intent.ACTION_MAIN)) {
-                    return;
-                }
-            }
-            alreadyCreated = true;
-            currentActiveActivity = activity;
         }
     
         @Override
         public void onActivityStarted(Activity activity) {
-            if (!alreadyCreated) {
-                return;
+            if (++activityReferences == 1 && !isActivityChangingConfigurations) {
+                // App enters foreground
+                dispatchForegroundEvent();                
             }
-            if (currentActiveActivity == null) {
-                dispatchForegroundEvent();
-            }
-            currentActiveActivity = activity;
         }
     
         @Override
         public void onActivityResumed(Activity activity) {
             topActivity = activity;
-
-            if (!alreadyCreated) {
-                return;
-            }
-            currentActiveActivity = activity;
         }
     
         @Override
@@ -230,13 +207,12 @@ public class FlutterBoost {
     
         @Override
         public void onActivityStopped(Activity activity) {
-            if (!alreadyCreated) {
-                return;
-            }
-            if (currentActiveActivity == activity) {
+            isActivityChangingConfigurations = activity.isChangingConfigurations();
+            if (--activityReferences == 0 && !isActivityChangingConfigurations) {
+                // App enters background
                 dispatchBackgroundEvent();
-                currentActiveActivity = null;
             }
+
         }
     
         @Override
@@ -245,13 +221,6 @@ public class FlutterBoost {
     
         @Override
         public void onActivityDestroyed(Activity activity) {
-            if (!alreadyCreated) {
-                return;
-            }
-            if (currentActiveActivity == activity) {
-                dispatchBackgroundEvent();
-                currentActiveActivity = null;
-            }
         }
     }
 }
