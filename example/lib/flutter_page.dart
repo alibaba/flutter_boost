@@ -53,14 +53,14 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
   }
 
   @override
-  void onPageShow({bool isForegroundEvent}) {
+  void onPageShow() {
     Logger.log(
-        '$_kTag#onPageShow, ${widget.uniqueId}, isForegroundEvent=$isForegroundEvent, $this');
+        '$_kTag#onPageShow, ${widget.uniqueId}, $this');
   }
 
-  void onPageHide({bool isBackgroundEvent}) {
+  void onPageHide() {
     Logger.log(
-        '$_kTag#onPageHide, ${widget.uniqueId}, isBackgroundEvent=$isBackgroundEvent, $this');
+        '$_kTag#onPageHide, ${widget.uniqueId}, $this');
   }
 
   @override

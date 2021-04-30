@@ -18,25 +18,25 @@ import 'package:flutter_boost/logger.dart';
 
 
 void main() {
-  PageVisibilityBinding.instance.addGlobalObserver(AppGlobalPageVisiblityObserver());
+  PageVisibilityBinding.instance.addGlobalObserver(AppGlobalPageVisibilityObserver());
   runApp(MyApp());
 }
 
-class AppGlobalPageVisiblityObserver extends GlobalPageVisiblityObserver {
+class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   void onPageCreate(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageCreate route:${route.settings.name}');
+    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageCreate route:${route.settings.name}');
   }
 
-  void onPageShow(Route<dynamic> route, {bool isForegroundEvent = false}) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageShow route:${route.settings.name} isForegroundEvent:$isForegroundEvent');
+  void onPageShow(Route<dynamic> route) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageShow route:${route.settings.name}');
   }
 
-  void onPageHide(Route<dynamic> route, {bool isBackgroundEvent = false}) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageHide route:${route.settings.name} isBackgroundEvent:$isBackgroundEvent');
+  void onPageHide(Route<dynamic> route) {
+    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageHide route:${route.settings.name}');
   }
 
   void onPageDestroy(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisiblityObserver.onPageDestroy route:${route.settings.name}');
+    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageDestroy route:${route.settings.name}');
   }
 }
 
