@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
-import com.idlefish.flutterboost.containers.InitiatorLocation;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -151,18 +150,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public enum BackForeGroundEvent {
-        NONE,
-        FOREGROUND,
-        BACKGROUND,
-    }
-
     public void onForeground() {
-        ContainerShadowNode node = getCurrentShadowNode();
-        if (node != null) {
-            node.setBackForeGroundEvent(BackForeGroundEvent.FOREGROUND);
-        }
-
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             channel.onForeground(params, reply -> {});
@@ -173,11 +161,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void onBackground() {
-        ContainerShadowNode node = getCurrentShadowNode();
-        if (node != null) {
-            node.setBackForeGroundEvent(BackForeGroundEvent.BACKGROUND);
-        }
-
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             channel.onBackground(params, reply -> {});
@@ -258,7 +241,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public static class ContainerShadowNode implements FlutterViewContainerObserver {
         private WeakReference<FlutterViewContainer> container;
         private FlutterBoostPlugin plugin;
-        private BackForeGroundEvent event;
 
         public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
             return new ContainerShadowNode(container, plugin);
@@ -268,24 +250,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             assert container != null;
             this.container = new WeakReference<>(container);
             this.plugin = plugin;
-            setBackForeGroundEvent(BackForeGroundEvent.NONE);
-        }
-
-        private boolean isCurrentTopContainer() {
-            assert getUniqueId() != null;
-            FlutterViewContainer top = plugin.getTopContainer();
-            if (top != null && top.getUniqueId() == getUniqueId()) {
-                return true;
-            }
-            return false;
         }
 
         public FlutterViewContainer container() {
             return container.get();
-        }
-
-        public void setBackForeGroundEvent(BackForeGroundEvent event) {
-            this.event = event;
         }
 
         public String getUniqueId() {
@@ -315,41 +283,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
 
         @Override
-        public void onAppear(InitiatorLocation location) {
-            boolean isNativeViewPopping = false;
-            boolean isForegroundEvent = false;
-            if (isCurrentTopContainer()) {
-                if (BackForeGroundEvent.FOREGROUND == event) {
-                    isForegroundEvent = true;
-                } else {
-                    // The native view was popped
-                    isNativeViewPopping = true;
-                }
-                Log.v(TAG, "#onAppear: " + location + ", event=" + event);
-            }
+        public void onAppear() {
+            plugin.reorderContainer(getUniqueId(), this);
+            plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
 
-            if (isNativeViewPopping) {
-                // plugin.onNativeViewHide();
-            } else {
-                if (!isForegroundEvent) {
-                    plugin.reorderContainer(getUniqueId(), this);
-                    plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
-                }
-            }
-            setBackForeGroundEvent(BackForeGroundEvent.NONE);
             plugin.onContainerShow(getUniqueId());
-            Log.v(TAG, "#onAppear: " + location + ", isNativeViewPopping=" + isNativeViewPopping + ", isForegroundEvent=" + isForegroundEvent +  ", " + getUniqueId() + ", " + plugin.getContainers());
+            Log.v(TAG, "#onAppear: " + getUniqueId() + ", " + plugin.getContainers());
         }
 
         @Override
-        public void onDisappear(InitiatorLocation location) {
-            if (isCurrentTopContainer() &&
-                    BackForeGroundEvent.BACKGROUND != event) {
-                // The native view was pushed
-                // plugin.onNativeViewShow();
-            }
-
-            setBackForeGroundEvent(BackForeGroundEvent.NONE);
+        public void onDisappear() {
             plugin.onContainerHide(getUniqueId());
             Log.v(TAG, "#onDisappear: " + getUniqueId() + ", " + plugin.getContainers());
         }
