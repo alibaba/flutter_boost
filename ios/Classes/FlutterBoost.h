@@ -75,5 +75,11 @@
    arguments:(NSDictionary *)arguments;
 
 
+/// 将结果回传到flutter侧的页面的的方法
+/// @param arguments 参数
+/// @param pageName 这个页面在路由表中的名字，和flutter侧BoostNavigator.push(name)中的name一样
+- (void)setResult:(NSDictionary *)arguments pageName:(NSString*) pageName;
+
+
 @end
 

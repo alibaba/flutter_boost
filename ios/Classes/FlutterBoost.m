@@ -113,11 +113,20 @@
 - (void)close:(NSString *)uniqueId {
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId=uniqueId;
-    
     [self.plugin.flutterApi popRoute:params completion:^(NSError* error) {
     } ];
-    
 }
+
+- (void)setResult:(NSDictionary *)arguments pageName:(NSString*) pageName {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName = pageName;
+    params.arguments = arguments;
+
+    [self.plugin.flutterApi onNativeResult:params completion:^(NSError * error) {
+        
+    }];
+}
+
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     FBCommonParams* params = [[FBCommonParams alloc] init];
