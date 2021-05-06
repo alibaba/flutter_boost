@@ -2,22 +2,51 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/overlay_entry.dart';
-
 import 'boost_container.dart';
+
+typedef FlutterBoostRouteFactory = Route<dynamic> Function(
+    RouteSettings settings, String uniqueId);
+
+FlutterBoostRouteFactory routeFactoryWrapper(
+    FlutterBoostRouteFactory routeFactory) {
+  return (RouteSettings settings, String uniqueId) {
+    Route<dynamic> route = routeFactory(settings, uniqueId);
+    if (route == null && settings.name == '/') {
+      route = PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => Container());
+    }
+    return route;
+  };
+}
 
 /// A object that manages a set of pages with a hybrid stack.
 ///
 class BoostNavigator {
-  const BoostNavigator(this.appState);
 
-  final FlutterBoostAppState appState;
+  BoostNavigator._();
 
-  /// Retrieves the instance of [BoostNavigator]
+  static final BoostNavigator _instance = BoostNavigator._();
+
+  FlutterBoostAppState appState;
+
+  FlutterBoostRouteFactory _routeFactory;
+
+  set routeFactory(FlutterBoostRouteFactory routeFactory) => _routeFactory = routeFactoryWrapper(routeFactory);
+
+  FlutterBoostRouteFactory get routeFactory => _routeFactory;
+
+  @Deprecated('Use `instance` instead.')
+  /// Use BoostNavigator.instance instead
   static BoostNavigator of() {
-    FlutterBoostAppState _appState;
-    _appState = overlayKey.currentContext
-        .findAncestorStateOfType<FlutterBoostAppState>();
-    return BoostNavigator(_appState);
+    return instance;
+  }
+
+  static BoostNavigator get instance {
+    if (_instance.appState == null) {
+      final FlutterBoostAppState _appState = overlayKey.currentContext?.findAncestorStateOfType<FlutterBoostAppState>();
+      _instance.appState = _appState;
+    }
+    return _instance;
   }
 
   /// Whether this page with the given [name] is a flutter page
@@ -25,7 +54,7 @@ class BoostNavigator {
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
   bool isFlutterPage(String name) {
-    return appState.routeFactory(RouteSettings(name: name), null) != null;
+    return routeFactory(RouteSettings(name: name), null) != null;
   }
 
   /// Push the page with the given [name] onto the hybrid stack.
