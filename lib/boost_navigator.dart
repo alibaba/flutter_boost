@@ -4,6 +4,7 @@ import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
 import 'boost_container.dart';
+import 'boost_interceptor.dart';
 
 /// A object that manages a set of pages with a hybrid stack.
 ///
@@ -30,7 +31,30 @@ class BoostNavigator {
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments, bool withContainer = false}) {
+      {Map<String, dynamic> arguments, bool withContainer = false}) async {
+    /// =======================
+    //make arguments nonnull;
+    arguments ??= <String, dynamic>{};
+
+    //get interceptors to call interceptors's function before pushing to new page
+    final List<BoostInterceptor> interceptors = appState.interceptors;
+
+    //traverse every interceptor,let everyone of them precess the args
+    for (final BoostInterceptor interceptor in interceptors) {
+      final bool block = await interceptor.onPush(arguments, name);
+
+      //If a interceptor returns true , indicates that the push operation will be blocked
+      //and navigator won't push new page
+      if (block) {
+        print("Debug::${name}被拦截了");
+        return Future<T>.value();
+      }
+    }
+
+    print('Debug:::${arguments.toString()}');
+
+    /// =======================
+
     if (isFlutterPage(name)) {
       return appState.pushWithResult(name,
           arguments: arguments, withContainer: withContainer);
