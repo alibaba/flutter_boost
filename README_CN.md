@@ -6,6 +6,7 @@
 # Release Note
 
 v3.0-beta.7 
+
 PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING CHANGE
 
 - 1.flutter sdk升级不需要升级boost
