@@ -78,7 +78,7 @@
 /// 将原生页面的数据回传到flutter侧的页面的的方法
 /// @param pageName 这个页面在路由表中的名字，和flutter侧BoostNavigator.push(name)中的name一样
 /// @param arguments 你想传的参数
-- (void)sendResultToFlutterWithPageName:(NSString*)pageName arugments:(NSDictionary*) arguments;
+- (void)sendResultToFlutterWithPageName:(NSString*)pageName arguments:(NSDictionary*) arguments;
 
 @end
 
