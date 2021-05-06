@@ -12,34 +12,21 @@ import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
-typedef FlutterBoostRouteFactory = Route<dynamic> Function(
-    RouteSettings settings, String uniqueId);
+
 
 class FlutterBoostApp extends StatefulWidget {
   FlutterBoostApp(FlutterBoostRouteFactory routeFactory,
       {FlutterBoostAppBuilder appBuilder, String initialRoute})
-      : routeFactory = routeFactoryWrapper(routeFactory),
-        appBuilder = appBuilder ?? _materialAppBuilder,
-        initialRoute = initialRoute ?? '/';
+      : appBuilder = appBuilder ?? _materialAppBuilder,
+        initialRoute = initialRoute ?? '/' {
+    BoostNavigator.instance.routeFactory = routeFactory;
+  }
 
-  final FlutterBoostRouteFactory routeFactory;
   final FlutterBoostAppBuilder appBuilder;
   final String initialRoute;
 
   static Widget _materialAppBuilder(Widget home) {
     return MaterialApp(home: home);
-  }
-
-  static FlutterBoostRouteFactory routeFactoryWrapper(
-      FlutterBoostRouteFactory routeFactory) {
-    return (RouteSettings settings, String uniqueId) {
-      Route<dynamic> route = routeFactory(settings, uniqueId);
-      if (route == null && settings.name == '/') {
-        route = PageRouteBuilder<dynamic>(
-            settings: settings, pageBuilder: (_, __, ___) => Container());
-      }
-      return route;
-    };
   }
 
   @override
@@ -61,7 +48,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi get boostFlutterRouterApi => _boostFlutterRouterApi;
   BoostFlutterRouterApi _boostFlutterRouterApi;
 
-  FlutterBoostRouteFactory get routeFactory => widget.routeFactory;
   final Set<int> _activePointers = <int>{};
 
   @override
@@ -137,8 +123,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
     return BoostContainer(
         key: ValueKey<String>(pageInfo.uniqueId),
-        pageInfo: pageInfo,
-        routeFactory: widget.routeFactory);
+        pageInfo: pageInfo);
   }
 
   Future<void> _saveStackForHotRestart() async {
@@ -242,7 +227,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         BoostLifecycleBinding.instance.containerDidPush(container, previousContainer);
       } else {
         topContainer.pages
-            .add(BoostPage.create(pageInfo, topContainer.routeFactory));
+            .add(BoostPage.create(pageInfo));
       }
       refresh();
     }
@@ -409,17 +394,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 }
 
 class BoostPage<T> extends Page<T> {
-  BoostPage({LocalKey key, this.routeFactory, this.pageInfo})
+  BoostPage({LocalKey key, this.pageInfo})
       : super(key: key, name: pageInfo.pageName, arguments: pageInfo.arguments);
-
-  final FlutterBoostRouteFactory routeFactory;
   final PageInfo pageInfo;
 
   static BoostPage<dynamic> create(
-      PageInfo pageInfo, FlutterBoostRouteFactory routeFactory) {
+      PageInfo pageInfo) {
     final BoostPage<dynamic> page = BoostPage<dynamic>(
-        key: UniqueKey(), pageInfo: pageInfo, routeFactory: routeFactory);
-    page._route = routeFactory(page, pageInfo.uniqueId);
+        key: UniqueKey(), pageInfo: pageInfo);
+    page._route = BoostNavigator.instance.routeFactory(page, pageInfo.uniqueId);
     return page;
   }
 

@@ -6,9 +6,9 @@ import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 
 class BoostContainer extends StatefulWidget {
-  BoostContainer({LocalKey key, this.routeFactory, this.pageInfo})
+  BoostContainer({LocalKey key, this.pageInfo})
       : super(key: key) {
-    pages.add(BoostPage.create(pageInfo, routeFactory));
+    pages.add(BoostPage.create(pageInfo));
   }
 
   static BoostContainer of(BuildContext context) {
@@ -17,7 +17,6 @@ class BoostContainer extends StatefulWidget {
     return container;
   }
 
-  final FlutterBoostRouteFactory routeFactory;
   final PageInfo pageInfo;
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
