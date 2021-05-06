@@ -5,7 +5,8 @@
 
 # Release Note
 
-v3.0-beta.6
+v3.0-beta.7 
+PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING CHANGE
 
 - 1.flutter sdk升级不需要升级boost
 - 2.简化架构
@@ -24,7 +25,6 @@ v3.0-beta.6
 1.在继续之前，您需要将Flutter集成到你现有的项目中。
 2.boost3.0版本支持的flutter sdk 版本为 >= 1.22
 
-
 # 安装
 
 ## 在Flutter项目中添加依赖项。
@@ -37,7 +37,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-beta.6'
+        ref: 'v3.0-beta.7'
 ```
 
 

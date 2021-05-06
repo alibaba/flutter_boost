@@ -1,8 +1,19 @@
+
+## v3.0-beta.7
+1. 生命周期实现调整
+2. 解决Android端特定场景下生命周期事件重复的问题
+3. 添加自定义启动参数设置入口
+4. 新增页面回退传参能力
+
+Breaking Change:
+page create and destroy event adjustment : https://github.com/alibaba/flutter_boost/commit/62c88805bf08606805e13254170691d2bc00bd4a
+由于生命周期实现的改变，PageVisiblityObserver的onPageShow和onPageHide方法中，不再包含参数isForegroundEvent以及isBackgroundEvent
+
 ## 1.12.13+2
-    Fixed bugs
+  Fixed bugs
 
 ## 1.12.13
-    Supported Flutter sdk 1.12.13
+  Supported Flutter sdk 1.12.13
 
 ## 1.9.1+2
 
