@@ -8,7 +8,6 @@ import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/boost_flutter_router_api.dart';
 import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
@@ -200,16 +199,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final BoostContainer existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
-        final BoostContainer container = existed;
-        final BoostContainer previousContainer = topContainer;
         containers.remove(existed);
         containers.add(existed);
         refresh();
       }
-      // else {
-      //   PageVisibilityBinding.instance
-      //       .dispatchPageShowEvent(_getCurrentPageRoute());
-      // }
     } else {
       final PageInfo pageInfo = PageInfo(
           pageName: pageName,
@@ -220,10 +213,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         final BoostContainer container = _createContainer(pageInfo);
         final BoostContainer previousContainer = topContainer;
         containers.add(container);
-        // The observer can't receive the 'pageshow' message indeed，
-        // because the observer is not yet registed at the moment.
-        //
-        // See PageVisibilityBinding#addObserver for the solution.
         BoostLifecycleBinding.instance.containerDidPush(container, previousContainer);
       } else {
         topContainer.pages
@@ -301,26 +290,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         .appDidEnterBackground(topContainer);
   }
 
-  Route<dynamic> _getCurrentPageRoute() {
-    return topContainer?.topPage?.route;
-  }
-
-  Route<dynamic> _getPreviousPageRoute() {
-    if (topContainer != null) {
-      assert(topContainer.pages != null);
-      final int pageCount = topContainer.pages.length;
-      if (pageCount > 1) {
-        return topContainer.pages[pageCount - 2].route;
-      } else {
-        final int containerCount = containers.length;
-        if (containerCount > 1) {
-          return containers[containerCount - 2].pages.last.route;
-        }
-      }
-    }
-    return null;
-  }
-
   BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
         (BoostContainer element) => element.pageInfo.uniqueId == uniqueId,
@@ -333,10 +302,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
 
     final BoostContainer container = _findContainerByUniqueId(uniqueId);
-    Route<dynamic> _route;
     if (container != null) {
       // Gets the first internal route of the current container
-      _route = container.pages.first.route;
       containers.remove(container);
       BoostLifecycleBinding.instance.containerDidPop(container, topContainer);
     } else {
@@ -344,13 +311,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         final BoostPage<dynamic> _target = container.pages.firstWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId,
             orElse: () => null);
-        _route = _target?.route;
         container.pages.removeWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
     }
     refresh();
-    // PageVisibilityBinding.instance.dispatchPageDestroyEvent(_route);
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
@@ -365,19 +330,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void onContainerShow(CommonParams params){
     final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidShow(container);
-    // if (_pendingResult.containsKey(params.pageName)) {
-    //   _pendingResult[params.pageName].complete(params.arguments);
-    //   _pendingResult.remove(params.pageName);
-    // }
   }
 
   void onContainerHide(CommonParams params){
     final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidHide(container);
-    // if (_pendingResult.containsKey(params.pageName)) {
-    //   _pendingResult[params.pageName].complete(params.arguments);
-    //   _pendingResult.remove(params.pageName);
-    // }
   }
 
   PageInfo getTopPageInfo() {
