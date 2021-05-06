@@ -190,7 +190,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open flutter page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("flutterPage",
+                onTap: () => BoostNavigator.instance.push("flutterPage",
                     arguments: <String, String>{'from': widget.uniqueId}),
               )
               Container(
@@ -210,12 +210,12 @@ class _SimpleWidgetState extends State<SimpleWidget>
 ### 页面跳转
 打开页面
 ```java
- String result = await BoostNavigator.of()
+ String result = await BoostNavigator.instance
                         .push("flutterPage", withContainer: true);
 ```
 关闭页面
 ```java
-BoostNavigator.of().pop('I am result for popping.'),
+BoostNavigator.instance.pop('I am result for popping.'),
 ```
 ## Android 测接入
 ### 1.Application 初始化

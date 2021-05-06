@@ -85,7 +85,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
             icon: const Icon(Icons.arrow_back),
             // 如果有抽屉的话的就打开
             onPressed: () {
-              BoostNavigator.of().pop();
+              BoostNavigator.instance.pop();
             },
             // 显示描述信息
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
@@ -150,7 +150,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("native"),
+                onTap: () => BoostNavigator.instance.push("native"),
               ),
               InkWell(
                 child: Container(
@@ -162,7 +162,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () =>
-                    BoostNavigator.of().push("imagepick", withContainer: true),
+                    BoostNavigator.instance.push("imagepick", withContainer: true),
               ),
               InkWell(
                   child: Container(
@@ -174,7 +174,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () =>
-                      BoostNavigator.of().push("willPop", withContainer: true)),
+                      BoostNavigator.instance.push("willPop", withContainer: true)),
               InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),
@@ -184,7 +184,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         'mediaquery demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-                  onTap: () => BoostNavigator.of()
+                  onTap: () => BoostNavigator.instance
                       .push("mediaquery", withContainer: true)),
               InkWell(
                 child: Container(
@@ -209,7 +209,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         'returning data demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-                  onTap: () => BoostNavigator.of()
+                  onTap: () => BoostNavigator.instance
                       .push("returnData", withContainer: true)),
               InkWell(
                 child: Container(
@@ -231,7 +231,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                   //   entry.remove();
                   // });
 
-                  BoostNavigator.of()
+                  BoostNavigator.instance
                       .push("transparentWidget", withContainer: true);
                 },
               ),
@@ -244,7 +244,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         'Radial Transition Demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-                  onTap: () => BoostNavigator.of()
+                  onTap: () => BoostNavigator.instance
                       .push("radialExpansion", withContainer: false)),
             ],
           ),
@@ -289,7 +289,7 @@ class _PushWidgetState extends State<PushWidget> {
               icon: const Icon(Icons.arrow_back),
               // 如果有抽屉的话的就打开
               onPressed: () {
-                BoostNavigator.of().pop();
+                BoostNavigator.instance.pop();
               },
               // 显示描述信息
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
