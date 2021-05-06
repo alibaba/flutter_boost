@@ -7,6 +7,7 @@
 
 # Release Note
 v3.0-beta.7
+
 PS: Before updating the beta version, please read the CHANGELOG to see if there are any BREAKING CHANGE
 
 - 1. Flutter SDK upgrades do not require Boost upgrades
