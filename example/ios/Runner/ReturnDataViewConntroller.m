@@ -27,9 +27,9 @@
 }
 
 -(void) onTap{
-    
     NSDictionary *dic = [NSDictionary dictionaryWithObject:@"zhangsan" forKey:@"zs"];
-    [FlutterBoost.instance setResult:dic pageName:@"NativeReturnDataPage"];
+    
+    [[FlutterBoost instance]sendResultToFlutterWithPageName:@"NativeReturnDataPage" arugments:dic];
 }
 
 

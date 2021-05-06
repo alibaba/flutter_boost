@@ -117,7 +117,7 @@
     } ];
 }
 
-- (void)setResult:(NSDictionary *)arguments pageName:(NSString*) pageName {
+- (void)sendResultToFlutterWithPageName:(NSString*)pageName arguments:(NSDictionary*) arguments{
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.pageName = pageName;
     params.arguments = arguments;
