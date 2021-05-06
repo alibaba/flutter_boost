@@ -193,7 +193,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open flutter page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("flutterPage",
+                onTap: () => BoostNavigator.instance.push("flutterPage",
                     arguments: <String, String>{'from': widget.uniqueId}),
               )
               Container(
@@ -214,13 +214,13 @@ class _SimpleWidgetState extends State<SimpleWidget>
 Open the page
 
 ```java
- String result = await BoostNavigator.of()
+ String result = await BoostNavigator.instance
                         .push("flutterPage", withContainer: true);
 ```
 Close the page
 
 ```java
-BoostNavigator.of().pop('I am result for popping.'),
+BoostNavigator.instance.pop('I am result for popping.'),
 ```
 ## Android 测接入
 ### 1. Initialize

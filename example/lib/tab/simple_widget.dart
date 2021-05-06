@@ -95,7 +95,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("native"),
+                onTap: () => BoostNavigator.instance.push("native"),
               ),
               InkWell(
                 child: Container(
@@ -106,7 +106,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open flutter page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("flutterPage",
+                onTap: () => BoostNavigator.instance.push("flutterPage",
                     arguments: <String, String>{'from': widget.uniqueId}),
               ),
               InkWell(
@@ -118,7 +118,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open flutter page with FlutterView',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.of().push("flutterPage",
+                onTap: () => BoostNavigator.instance.push("flutterPage",
                     withContainer: true,
                     arguments: <String, String>{'from': widget.uniqueId}),
               ),

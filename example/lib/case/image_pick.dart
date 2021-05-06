@@ -196,7 +196,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
             icon: const Icon(Icons.arrow_back),
             // 如果有抽屉的话的就打开
             onPressed: () {
-              BoostNavigator.of().pop();
+              BoostNavigator.instance.pop();
             },
             // 显示描述信息
             tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,

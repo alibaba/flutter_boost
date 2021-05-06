@@ -11,7 +11,7 @@ class TransparentWidget extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         child: GestureDetector(
           onTap: () {
-            BoostNavigator.of().pop();
+            BoostNavigator.instance.pop();
           },
           child: Container(
             height: 300,

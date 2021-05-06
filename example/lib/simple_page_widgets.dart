@@ -58,7 +58,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
               child: Text('Open native page'),
               onPressed: () {
                 print("open native page!");
-                BoostNavigator.of().push("native");
+                BoostNavigator.instance.push("native");
 
                 // FlutterBoost.singleton.open("native").then((Map<dynamic,dynamic> value) {
                 //   print(
@@ -75,7 +75,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 //                    print(
 //                        "call me when page is finished. did receive FF route result $value");
 //                  });
-                BoostNavigator.of().push("firstFirst");
+                BoostNavigator.instance.push("firstFirst");
               },
             ),
             RaisedButton(
@@ -87,7 +87,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 //                        "call me when page is finished. did receive second route result $value");
 //                  });
 
-                BoostNavigator.of().push("willPop", withContainer: true);
+                BoostNavigator.instance.push("willPop", withContainer: true);
               },
             ),
             RaisedButton(
@@ -247,8 +247,8 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             // FlutterBoost.singleton.close(settings.uniqueId,
             //     result: <String,dynamic>{"result": "data from second"});
 
-            PageInfo pageInfo = BoostNavigator.of().getTopPageInfo();
-            BoostNavigator.of().pop();
+            PageInfo pageInfo = BoostNavigator.instance.getTopPageInfo();
+            BoostNavigator.instance.pop();
           },
           child: Text('Go back with result!'),
         ),

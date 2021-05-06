@@ -17,7 +17,7 @@ class SelectionScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Close the screen and return "A" as the result.
-                  BoostNavigator.of().pop('A');
+                  BoostNavigator.instance.pop('A');
                 },
                 child: Text('A'),
               ),
@@ -27,7 +27,7 @@ class SelectionScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   // Close the screen and return "B" as the result.
-                  BoostNavigator.of().pop('B');
+                  BoostNavigator.instance.pop('B');
                 },
                 child: Text('B'),
               ),
