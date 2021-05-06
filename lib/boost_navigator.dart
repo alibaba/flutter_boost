@@ -32,38 +32,26 @@ class BoostNavigator {
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    /// =======================
-    //make arguments nonnull;
-    arguments ??= <String, dynamic>{};
+    final BoostInterceptorResponse response =
+        await _getInterceptorResponse(name, arguments);
 
-    //get interceptors to call interceptors's function before pushing to new page
-    final List<BoostInterceptor> interceptors = appState.interceptors;
-
-    //traverse every interceptor,let everyone of them precess the args
-    for (final BoostInterceptor interceptor in interceptors) {
-      final bool block = await interceptor.onPush(arguments, name);
-
-      //If a interceptor returns true , indicates that the push operation will be blocked
-      //and navigator won't push new page
-      if (block) {
-        print("Debug::${name}被拦截了");
-        return Future<T>.value();
-      }
+    if (response.isBlocked) {
+      print("Debug::${response.name}被拦截");
+      return Future<T>.value();
     }
 
-    print('Debug:::${arguments.toString()}');
+    print("Debug::原来的参数::${arguments.toString()}");
+    print("Debug::新的的参数::${response.arguments.toString()}");
 
-    /// =======================
-
-    if (isFlutterPage(name)) {
-      return appState.pushWithResult(name,
-          arguments: arguments, withContainer: withContainer);
+    if (isFlutterPage(response.name)) {
+      return appState.pushWithResult(response.name,
+          arguments: response.arguments, withContainer: withContainer);
     } else {
       final CommonParams params = CommonParams()
-        ..pageName = name
-        ..arguments = arguments ?? <String, dynamic>{};
+        ..pageName = response.name
+        ..arguments = response.arguments ?? <String, dynamic>{};
       appState.nativeRouterApi.pushNativeRoute(params);
-      return appState.pendResult(name);
+      return appState.pendResult(response.name);
     }
   }
 
@@ -96,6 +84,38 @@ class BoostNavigator {
   /// This is a legacy API for backwards compatibility.
   int pageSize() {
     return appState.pageSize();
+  }
+
+  ///Private API:
+  /// Get [BoostInterceptorResponse] using all of [BoostInterceptor]¬
+  /// [name] the page's name that user wants to page
+  /// [arguments] the args will pass in target page
+  Future<BoostInterceptorResponse> _getInterceptorResponse(
+      String name, Map<String, dynamic> arguments) async {
+    // Get all interceptors from FlutterBoostAppState
+    final List<BoostInterceptor> interceptors = appState.interceptors;
+
+    // Deep copy argments map,because we don't want to change original data...
+    final Map<String, dynamic> resultArguments = arguments != null
+        ? Map<String, dynamic>.from(arguments)
+        : <String, dynamic>{};
+
+    // Initialize the result response object
+    final BoostInterceptorResponse resultResponse = BoostInterceptorResponse(
+        isBlocked: false, name: name, arguments: resultArguments);
+
+    // Traverse every interceptor,let everyone of them precess the data in response object
+    for (final BoostInterceptor interceptor in interceptors) {
+      // Get the response object after calling interceptor.onPush
+      await interceptor.onPush(resultResponse);
+
+      // Whenever the resultResponse's "isBlocked" == true,we will not continue the loop.
+      if (resultResponse.isBlocked) {
+        return resultResponse;
+      }
+    }
+
+    return resultResponse;
   }
 }
 
