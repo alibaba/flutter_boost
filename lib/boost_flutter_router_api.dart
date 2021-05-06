@@ -18,46 +18,33 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   @override
   void pushRoute(CommonParams arg) {
-    appState.push(arg.pageName,
-        uniqueId: arg.uniqueId,
-        arguments:
-            Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}),
-        withContainer: true);
+    appState.push(
+      arg.pageName,
+      uniqueId: arg.uniqueId,
+      arguments:
+          Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}),
+      withContainer: true,
+    );
   }
 
   @override
-  void popRoute(CommonParams arg) {
-    appState.pop(uniqueId: arg.uniqueId);
-  }
+  void popRoute(CommonParams arg) => appState.pop(uniqueId: arg.uniqueId);
 
   @override
-  void onForeground(CommonParams arg) {
-    appState.onForeground();
-  }
+  void onForeground(CommonParams arg) => appState.onForeground();
 
   @override
-  void onBackground(CommonParams arg) {
-    appState.onBackground();
-  }
+  void onBackground(CommonParams arg) => appState.onBackground();
 
   @override
-  void removeRoute(CommonParams arg) {
-    appState.remove(arg.uniqueId);
-  }
+  void removeRoute(CommonParams arg) => appState.remove(arg.uniqueId);
 
   @override
-  void onNativeResult(CommonParams arg) {
-    appState.onNativeResult(arg);
-  }
+  void onNativeResult(CommonParams arg) => appState.onNativeResult(arg);
 
   @override
-  void onContainerHide(CommonParams arg) {
-    appState.onContainerHide(arg);
-  }
+  void onContainerHide(CommonParams arg) => appState.onContainerHide(arg);
 
   @override
-  void onContainerShow(CommonParams arg) {
-    appState.onContainerShow(arg);
-  }
-
+  void onContainerShow(CommonParams arg) => appState.onContainerShow(arg);
 }

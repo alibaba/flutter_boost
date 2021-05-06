@@ -37,15 +37,10 @@ class BoostNavigator {
 
   @Deprecated('Use `instance` instead.')
   /// Use BoostNavigator.instance instead
-  static BoostNavigator of() {
-    return instance;
-  }
+  static BoostNavigator of() => instance;
 
   static BoostNavigator get instance {
-    if (_instance.appState == null) {
-      final FlutterBoostAppState _appState = overlayKey.currentContext?.findAncestorStateOfType<FlutterBoostAppState>();
-      _instance.appState = _appState;
-    }
+    _instance.appState ??= overlayKey.currentContext?.findAncestorStateOfType<FlutterBoostAppState>();
     return _instance;
   }
 
@@ -53,9 +48,7 @@ class BoostNavigator {
   ///
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
-  bool isFlutterPage(String name) {
-    return routeFactory(RouteSettings(name: name), null) != null;
-  }
+  bool isFlutterPage(String name) => routeFactory(RouteSettings(name: name), null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
@@ -73,35 +66,28 @@ class BoostNavigator {
   }
 
   /// Pop the top-most page off the hybrid stack.
-  void pop<T extends Object>([T result]) {
-    appState.popWithResult(result);
-  }
+  void pop<T extends Object>([T result]) => appState.popWithResult(result);
 
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
-  void remove(String uniqueId) {
-    appState.pop(uniqueId: uniqueId);
-  }
+  void remove(String uniqueId) => appState.pop(uniqueId: uniqueId);
+
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;
   ///
   /// This is a legacy API for backwards compatibility.
-  PageInfo getTopPageInfo() {
-    return appState.getTopPageInfo();
-  }
+  PageInfo getTopPageInfo() => appState.getTopPageInfo();
 
-  PageInfo getTopByContext(BuildContext context) {
-    return BoostContainer.of(context).pageInfo;
-  }
+
+  PageInfo getTopByContext(BuildContext context) => BoostContainer.of(context).pageInfo;
+
 
   /// Return the number of flutter pages
   ///
   /// This is a legacy API for backwards compatibility.
-  int pageSize() {
-    return appState.pageSize();
-  }
+  int pageSize() => appState.pageSize();
 }
 
 class PageInfo {
