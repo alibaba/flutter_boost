@@ -12,7 +12,6 @@ import 'package:flutter_boost/overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
-
 class FlutterBoostApp extends StatefulWidget {
   FlutterBoostApp(FlutterBoostRouteFactory routeFactory,
       {FlutterBoostAppBuilder appBuilder, String initialRoute})
@@ -56,13 +55,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
 
-
     //Refresh the containers data to overlayKey to show the page matching initialRoute
     //Use addPostFrameCallback is because to wait overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refresh();
     });
-
 
     // try to restore routes from host when hot restart.
     assert(() {
@@ -121,8 +118,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostContainer _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
     return BoostContainer(
-        key: ValueKey<String>(pageInfo.uniqueId),
-        pageInfo: pageInfo);
+        key: ValueKey<String>(pageInfo.uniqueId), pageInfo: pageInfo);
   }
 
   Future<void> _saveStackForHotRestart() async {
@@ -168,12 +164,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         '_restoreStackForHotRestart, ${stack?.containers}, ${stack?.routes}');
   }
 
-  Future<T> pendResult<T extends Object>(String pageName){
-    final Completer<T> completer = Completer<T>();
-    _pendingResult[pageName] = completer;
-    return completer.future;
-  }
-
   Future<T> pushWithResult<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
     final Completer<T> completer = Completer<T>();
@@ -213,10 +203,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         final BoostContainer container = _createContainer(pageInfo);
         final BoostContainer previousContainer = topContainer;
         containers.add(container);
-        BoostLifecycleBinding.instance.containerDidPush(container, previousContainer);
+        BoostLifecycleBinding.instance
+            .containerDidPush(container, previousContainer);
       } else {
-        topContainer.pages
-            .add(BoostPage.create(pageInfo));
+        topContainer.pages.add(BoostPage.create(pageInfo));
       }
       refresh();
     }
@@ -253,6 +243,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       container = topContainer;
     }
 
+    final String currentPage = topContainer?.topPage?.pageInfo?.uniqueId;
+    assert(currentPage != null);
+    _completePendingResultIfNeeded(currentPage);
+
     final bool handled = await container?.navigator?.maybePop();
     if (handled != null && !handled) {
       assert(container.pageInfo.withContainer);
@@ -262,7 +256,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..arguments = arguments ?? <String, dynamic>{};
       _nativeRouterApi.popRoute(params);
     }
-
 
     Logger.log(
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
@@ -281,13 +274,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    BoostLifecycleBinding.instance
-        .appDidEnterForeground(topContainer);
+    BoostLifecycleBinding.instance.appDidEnterForeground(topContainer);
   }
 
   void onBackground() {
-    BoostLifecycleBinding.instance
-        .appDidEnterBackground(topContainer);
+    BoostLifecycleBinding.instance.appDidEnterBackground(topContainer);
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
@@ -303,14 +294,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     final BoostContainer container = _findContainerByUniqueId(uniqueId);
     if (container != null) {
-      // Gets the first internal route of the current container
       containers.remove(container);
       BoostLifecycleBinding.instance.containerDidPop(container, topContainer);
     } else {
       for (BoostContainer container in containers) {
-        final BoostPage<dynamic> _target = container.pages.firstWhere(
-            (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId,
-            orElse: () => null);
         container.pages.removeWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
@@ -319,20 +306,58 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
-  void onNativeResult(CommonParams params){
-    if (_pendingResult.containsKey(params.pageName)) {
-      _pendingResult[params.pageName].complete(params.arguments);
-      _pendingResult.remove(params.pageName);
-    }
-    Logger.log('onNativeResult, name:${params.pageName}, result: ${params.arguments}');
+  Future<T> pendNativeResult<T extends Object>(String pageName) {
+    final Completer<T> completer = Completer<T>();
+    final String initiatorPage = topContainer?.topPage?.pageInfo?.uniqueId;
+    final String key = '$initiatorPage#$pageName';
+    _pendingResult[key] = completer;
+    Logger.log('pendNativeResult, key:$key, size:${_pendingResult.length}');
+    return completer.future;
   }
 
-  void onContainerShow(CommonParams params){
+  void onNativeResult(CommonParams params) {
+    final String initiatorPage = topContainer?.topPage?.pageInfo?.uniqueId;
+    final String key = '$initiatorPage#${params.pageName}';
+    if (_pendingResult.containsKey(key)) {
+      _pendingResult[key].complete(params.arguments);
+      _pendingResult.remove(key);
+    }
+    Logger.log('onNativeResult, key:$key, result:${params.arguments}');
+  }
+
+  void _completePendingNativeResultIfNeeded(String initiatorPage) {
+    _pendingResult.keys
+        .where((String element) => element.startsWith('$initiatorPage#'))
+        .toList()
+        .forEach((String key) {
+      _pendingResult[key].complete();
+      _pendingResult.remove(key);
+      Logger.log(
+          '_completePendingNativeResultIfNeeded, key:$key, size:${_pendingResult.length}');
+    });
+  }
+
+  void _completePendingResultIfNeeded(String uniqueId) {
+    if (uniqueId != null && _pendingResult.containsKey(uniqueId)) {
+      _pendingResult[uniqueId].complete();
+      _pendingResult.remove(uniqueId);
+    }
+  }
+
+  void onContainerShow(CommonParams params) {
     final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidShow(container);
+
+    // Try to complete pending native result when container closed.
+    final String topPage = topContainer?.topPage?.pageInfo?.uniqueId;
+    assert(topPage != null);
+    Future<void>.delayed(
+      const Duration(seconds: 1),
+      () => _completePendingNativeResultIfNeeded(topPage),
+    );
   }
 
-  void onContainerHide(CommonParams params){
+  void onContainerHide(CommonParams params) {
     final BoostContainer container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidHide(container);
   }
@@ -355,10 +380,9 @@ class BoostPage<T> extends Page<T> {
       : super(key: key, name: pageInfo.pageName, arguments: pageInfo.arguments);
   final PageInfo pageInfo;
 
-  static BoostPage<dynamic> create(
-      PageInfo pageInfo) {
-    final BoostPage<dynamic> page = BoostPage<dynamic>(
-        key: UniqueKey(), pageInfo: pageInfo);
+  static BoostPage<dynamic> create(PageInfo pageInfo) {
+    final BoostPage<dynamic> page =
+        BoostPage<dynamic>(key: UniqueKey(), pageInfo: pageInfo);
     page._route = BoostNavigator.instance.routeFactory(page, pageInfo.uniqueId);
     return page;
   }

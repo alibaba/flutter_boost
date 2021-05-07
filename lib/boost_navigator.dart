@@ -61,7 +61,7 @@ class BoostNavigator {
         ..pageName = name
         ..arguments = arguments ?? <String, dynamic>{};
       appState.nativeRouterApi.pushNativeRoute(params);
-      return appState.pendResult(name);
+      return appState.pendNativeResult(name);
     }
   }
 
