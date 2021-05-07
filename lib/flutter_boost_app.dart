@@ -10,18 +10,29 @@ import 'package:flutter_boost/logger.dart';
 import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 
+import 'boost_interceptor.dart';
+
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
 class FlutterBoostApp extends StatefulWidget {
-  FlutterBoostApp(FlutterBoostRouteFactory routeFactory,
-      {FlutterBoostAppBuilder appBuilder, String initialRoute})
-      : appBuilder = appBuilder ?? _materialAppBuilder,
+  FlutterBoostApp(
+    FlutterBoostRouteFactory routeFactory, {
+    FlutterBoostAppBuilder appBuilder,
+    String initialRoute,
+
+    ///interceptors is to intercept push operation now
+    List<BoostInterceptor> interceptors,
+  })  : appBuilder = appBuilder ?? _materialAppBuilder,
+        interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
   }
 
   final FlutterBoostAppBuilder appBuilder;
   final String initialRoute;
+
+  ///A list of [BoostInterceptor],to intercept operations when push
+  final List<BoostInterceptor> interceptors;
 
   static Widget _materialAppBuilder(Widget home) {
     return MaterialApp(home: home);
@@ -37,6 +48,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   List<BoostContainer> get containers => _containers;
   final List<BoostContainer> _containers = <BoostContainer>[];
+
+  /// All interceptors from widget
+  List<BoostInterceptor> get interceptors => widget.interceptors;
 
   BoostContainer get topContainer => containers.last;
 
