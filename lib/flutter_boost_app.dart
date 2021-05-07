@@ -22,6 +22,8 @@ class FlutterBoostApp extends StatefulWidget {
     FlutterBoostRouteFactory routeFactory, {
     FlutterBoostAppBuilder appBuilder,
     String initialRoute,
+
+    ///interceptors is to intercept push opeation now
     List<BoostInterceptor> interceptors,
   })  : routeFactory = routeFactoryWrapper(routeFactory),
         appBuilder = appBuilder ?? _materialAppBuilder,

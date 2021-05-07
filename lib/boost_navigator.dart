@@ -32,26 +32,22 @@ class BoostNavigator {
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    final BoostInterceptorResponse response =
+    final BoostInterceptorOption option =
         await _getInterceptorResponse(name, arguments);
 
-    if (response.isBlocked) {
-      print("Debug::${response.name}被拦截");
+    if (option.isBlocked) {
       return Future<T>.value();
     }
 
-    print("Debug::原来的参数::${arguments.toString()}");
-    print("Debug::新的的参数::${response.arguments.toString()}");
-
-    if (isFlutterPage(response.name)) {
-      return appState.pushWithResult(response.name,
-          arguments: response.arguments, withContainer: withContainer);
+    if (isFlutterPage(option.name)) {
+      return appState.pushWithResult(option.name,
+          arguments: option.arguments, withContainer: withContainer);
     } else {
       final CommonParams params = CommonParams()
-        ..pageName = response.name
-        ..arguments = response.arguments ?? <String, dynamic>{};
+        ..pageName = option.name
+        ..arguments = option.arguments ?? <String, dynamic>{};
       appState.nativeRouterApi.pushNativeRoute(params);
-      return appState.pendResult(response.name);
+      return appState.pendResult(option.name);
     }
   }
 
@@ -86,11 +82,11 @@ class BoostNavigator {
     return appState.pageSize();
   }
 
-  ///Private API:
-  /// Get [BoostInterceptorResponse] using all of [BoostInterceptor]¬
-  /// [name] the page's name that user wants to page
+  /// Private API:
+  /// Get [BoostInterceptorOption] using all of [BoostInterceptor]
+  /// [name] the page's name that user wants to push
   /// [arguments] the args will pass in target page
-  Future<BoostInterceptorResponse> _getInterceptorResponse(
+  Future<BoostInterceptorOption> _getInterceptorResponse(
       String name, Map<String, dynamic> arguments) async {
     // Get all interceptors from FlutterBoostAppState
     final List<BoostInterceptor> interceptors = appState.interceptors;
@@ -100,22 +96,22 @@ class BoostNavigator {
         ? Map<String, dynamic>.from(arguments)
         : <String, dynamic>{};
 
-    // Initialize the result response object
-    final BoostInterceptorResponse resultResponse = BoostInterceptorResponse(
+    // Initialize the result option object
+    final BoostInterceptorOption resultOption = BoostInterceptorOption(
         isBlocked: false, name: name, arguments: resultArguments);
 
-    // Traverse every interceptor,let everyone of them precess the data in response object
+    // Traverse every interceptor,let everyone of them precess the data in option object
     for (final BoostInterceptor interceptor in interceptors) {
       // Get the response object after calling interceptor.onPush
-      await interceptor.onPush(resultResponse);
+      await interceptor.onPush(resultOption);
 
       // Whenever the resultResponse's "isBlocked" == true,we will not continue the loop.
-      if (resultResponse.isBlocked) {
-        return resultResponse;
+      if (resultOption.isBlocked) {
+        return resultOption;
       }
     }
 
-    return resultResponse;
+    return resultOption;
   }
 }
 
