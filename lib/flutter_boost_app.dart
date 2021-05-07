@@ -349,9 +349,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     BoostLifecycleBinding.instance.containerDidShow(container);
 
     // Try to complete pending native result when container closed.
+    final String topPage = topContainer?.topPage?.pageInfo?.uniqueId;
+    assert(topPage != null);
     Future<void>.delayed(
       const Duration(seconds: 1),
-      () => _completePendingNativeResultIfNeeded(params.uniqueId),
+      () => _completePendingNativeResultIfNeeded(topPage),
     );
   }
 
