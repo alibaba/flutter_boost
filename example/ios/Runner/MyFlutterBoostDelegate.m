@@ -26,7 +26,7 @@
     }
 }
 
-- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments {
+- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments completion:(void(^)(BOOL)) completion{
     
     FlutterEngine* engine =  [[FlutterBoost instance ] engine];
     engine.viewController = nil;
@@ -39,10 +39,11 @@
     BOOL present= [arguments[@"present"] boolValue];
     if(present){
         [self.navigationController presentViewController:vc animated:animated completion:^{
+            completion(YES);
         }];
     }else{
         [self.navigationController pushViewController:vc animated:animated];
-
+        completion(YES);
     }
 }
 
