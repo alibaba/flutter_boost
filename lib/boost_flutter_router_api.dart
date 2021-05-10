@@ -1,5 +1,5 @@
-import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost/messages.dart';
+import 'flutter_boost_app.dart';
+import 'messages.dart';
 
 /// The MessageChannel counterpart on the Dart side.
 class BoostFlutterRouterApi extends FlutterRouterApi {

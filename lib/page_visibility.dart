@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/logger.dart';
+
+import 'logger.dart';
 
 ///observer for all pages visibility
 abstract class GlobalPageVisibilityObserver {
@@ -40,7 +41,7 @@ class PageVisibilityBinding {
   void addObserver(PageVisibilityObserver observer, Route<dynamic> route) {
     assert(observer != null);
     assert(route != null);
-    final Set<PageVisibilityObserver> observers =
+    final observers =
         _listeners.putIfAbsent(route, () => <PageVisibilityObserver>{});
     observers.add(observer);
     Logger.log(
@@ -50,8 +51,8 @@ class PageVisibilityBinding {
   /// Unregisters the given observer.
   void removeObserver(PageVisibilityObserver observer) {
     assert(observer != null);
-    for (final Route<dynamic> route in _listeners.keys) {
-      final Set<PageVisibilityObserver> observers = _listeners[route];
+    for (final route in _listeners.keys) {
+      final observers = _listeners[route];
       observers?.remove(observer);
     }
     Logger.log('page_visibility, #removeObserver, $observer');
@@ -76,13 +77,13 @@ class PageVisibilityBinding {
       return;
     }
 
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    final observers = _listeners[route]?.toList();
     if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
+      for (var observer in observers) {
         try {
           observer.onPageCreate();
-        } catch (e) {
-          Logger.log(e);
+        } on Exception catch (e) {
+          Logger.log(e.toString());
         }
       }
     }
@@ -97,13 +98,13 @@ class PageVisibilityBinding {
       return;
     }
 
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    final observers = _listeners[route]?.toList();
     if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
+      for (var observer in observers) {
         try {
           observer.onPageShow();
-        } catch (e) {
-          Logger.log(e);
+        } on Exception catch (e) {
+          Logger.log(e.toString());
         }
       }
     }
@@ -118,13 +119,13 @@ class PageVisibilityBinding {
       return;
     }
 
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    final observers = _listeners[route]?.toList();
     if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
+      for (var observer in observers) {
         try {
           observer.onPageHide();
-        } catch (e) {
-          Logger.log(e);
+        } on Exception catch (e) {
+          Logger.log(e.toString());
         }
       }
     }
@@ -139,13 +140,13 @@ class PageVisibilityBinding {
       return;
     }
 
-    final List<PageVisibilityObserver> observers = _listeners[route]?.toList();
+    final observers = _listeners[route]?.toList();
     if (observers != null) {
-      for (PageVisibilityObserver observer in observers) {
+      for (var observer in observers) {
         try {
           observer.onPageDestroy();
-        } catch (e) {
-          Logger.log(e);
+        } on Exception catch (e) {
+          Logger.log(e.toString());
         }
       }
     }
@@ -160,59 +161,55 @@ class PageVisibilityBinding {
     if (route == null) {
       return;
     }
-    final List<GlobalPageVisibilityObserver> globalObserversList =
-        _globalListeners.toList();
+    final globalObserversList = _globalListeners.toList();
 
-    for (GlobalPageVisibilityObserver observer in globalObserversList) {
+    for (var observer in globalObserversList) {
       observer.onPageCreate(route);
     }
 
-    Logger.log(
-        'page_visibility, #dispatchGlobalPageCreateEvent, ${route.settings.name}');
+    Logger.log('page_visibility, #dispatchGlobalPageCreateEvent, '
+        '${route.settings.name}');
   }
 
   void dispatchGlobalPageShowEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
-    final List<GlobalPageVisibilityObserver> globalObserversList =
-        _globalListeners.toList();
+    final globalObserversList = _globalListeners.toList();
 
-    for (GlobalPageVisibilityObserver observer in globalObserversList) {
+    for (var observer in globalObserversList) {
       observer.onPageShow(route);
     }
 
-    Logger.log(
-        'page_visibility, #dispatchGlobalPageShowEvent, ${route.settings.name}');
+    Logger.log('page_visibility, #dispatchGlobalPageShowEvent, '
+        '${route.settings.name}');
   }
 
   void dispatchGlobalPageHideEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
-    final List<GlobalPageVisibilityObserver> globalObserversList =
-        _globalListeners.toList();
+    final globalObserversList = _globalListeners.toList();
 
-    for (GlobalPageVisibilityObserver observer in globalObserversList) {
+    for (var observer in globalObserversList) {
       observer.onPageHide(route);
     }
 
-    Logger.log(
-        'page_visibility, #dispatchGlobalPageHideEvent, ${route.settings.name}');
+    Logger.log('page_visibility, #dispatchGlobalPageHideEvent, '
+        '${route.settings.name}');
   }
 
   void dispatchGlobalPageDestroyEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
-    final List<GlobalPageVisibilityObserver> globalObserversList =
-        _globalListeners.toList();
 
-    for (GlobalPageVisibilityObserver observer in globalObserversList) {
+    final globalObserversList = _globalListeners.toList();
+    for (var observer in globalObserversList) {
       observer.onPageDestroy(route);
     }
 
-    Logger.log(
-        'page_visibility, #dispatchGlobalPageDestroyEvent, ${route.settings.name}');
+    Logger.log('page_visibility, #dispatchGlobalPageDestroyEvent, '
+        '${route.settings.name}');
   }
 }
