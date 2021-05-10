@@ -71,8 +71,8 @@
 /// 通过arguments可以设置为以present方式打开页面：arguments:@{@"present":@(YES)}
 /// @param pageName 打开的页面资源定位符
 /// @param arguments 传入页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
-- (void)open:(NSString *)pageName
-   arguments:(NSDictionary *)arguments;
+/// @param completion 页面open操作完成的回调，注意，从原生调用此方法跳转此参数才会生效
+- (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments completion:(void(^)(BOOL)) completion;
 
 
 /// 将原生页面的数据回传到flutter侧的页面的的方法

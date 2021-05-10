@@ -26,7 +26,9 @@
 - (IBAction)pushFlutterPage:(id)sender {
     
     
-    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"animated":@(YES)}  ];
+    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"animated":@(YES)} completion:^(BOOL completion) {
+        
+    } ];
     
 
 //    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
@@ -40,7 +42,10 @@
 
 - (IBAction)present:(id)sender {
     
-    [[FlutterBoost instance] open:@"secondStateful" arguments:@{@"present":@(YES)}];
+    [[FlutterBoost instance] open:@"secondStateful" arguments:@{@"present":@(YES)} completion:^(BOOL completion) {
+        
+        
+    }];
 
 //    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
 //        NSLog(@"call me when page finished, and your result is:%@", result);
