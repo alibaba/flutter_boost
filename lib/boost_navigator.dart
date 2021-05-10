@@ -62,11 +62,12 @@ class BoostNavigator {
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
     BoostInterceptorOption pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
-    Future<dynamic> future =
-        Future<dynamic>(() => InterceptorState(pushOption));
-    for (var interceptor in appState.interceptors) {
-      future = future.then((dynamic _state) {
-        var state = _state as InterceptorState;
+    Future<dynamic> future = Future<dynamic>(
+        () => InterceptorState<BoostInterceptorOption>(pushOption));
+    for (BoostInterceptor interceptor in appState.interceptors) {
+      future = future.then<dynamic>((dynamic _state) {
+        final InterceptorState<dynamic> state =
+            _state as InterceptorState<dynamic>;
         if (state.type == InterceptorResultType.next) {
           final PushInterceptorHandler pushHandler = PushInterceptorHandler();
           interceptor.onPush(state.data, pushHandler);
@@ -78,7 +79,8 @@ class BoostNavigator {
     }
 
     return future.then((dynamic _state) {
-      InterceptorState state = _state as InterceptorState;
+      final InterceptorState<dynamic> state =
+          _state as InterceptorState<dynamic>;
       if (state.data is BoostInterceptorOption) {
         assert(state.type == InterceptorResultType.next);
         pushOption = state.data;
@@ -94,7 +96,7 @@ class BoostNavigator {
         }
       } else {
         assert(state.type == InterceptorResultType.resolve);
-        return Future<T>.value(state.data);
+        return Future<T>.value(state.data as T);
       }
     });
   }
