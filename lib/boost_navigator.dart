@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/flutter_boost_app.dart';
 import 'package:flutter_boost/messages.dart';
 import 'package:flutter_boost/overlay_entry.dart';
 import 'boost_container.dart';
 import 'boost_interceptor.dart';
+import 'messages.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
@@ -57,23 +60,45 @@ class BoostNavigator {
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    final BoostInterceptorOption option =
-        await _getInterceptorResponse(name, arguments);
-
-    if (option.isBlocked) {
-      return Future<T>.value();
+    BoostInterceptorOption pushOption =
+        BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
+    Future<dynamic> future = Future<dynamic>(
+        () => InterceptorState<BoostInterceptorOption>(pushOption));
+    for (BoostInterceptor interceptor in appState.interceptors) {
+      future = future.then<dynamic>((dynamic _state) {
+        final InterceptorState<dynamic> state =
+            _state as InterceptorState<dynamic>;
+        if (state.type == InterceptorResultType.next) {
+          final PushInterceptorHandler pushHandler = PushInterceptorHandler();
+          interceptor.onPush(state.data, pushHandler);
+          return pushHandler.future;
+        } else {
+          return state;
+        }
+      });
     }
 
-    if (isFlutterPage(option.name)) {
-      return appState.pushWithResult(option.name,
-          arguments: option.arguments, withContainer: withContainer);
-    } else {
-      final CommonParams params = CommonParams()
-        ..pageName = option.name
-        ..arguments = option.arguments ?? <String, dynamic>{};
-      appState.nativeRouterApi.pushNativeRoute(params);
-      return appState.pendNativeResult(option.name);
-    }
+    return future.then((dynamic _state) {
+      final InterceptorState<dynamic> state =
+          _state as InterceptorState<dynamic>;
+      if (state.data is BoostInterceptorOption) {
+        assert(state.type == InterceptorResultType.next);
+        pushOption = state.data;
+        if (isFlutterPage(pushOption.name)) {
+          return appState.pushWithResult(pushOption.name,
+              arguments: pushOption.arguments, withContainer: withContainer);
+        } else {
+          final CommonParams params = CommonParams()
+            ..pageName = pushOption.name
+            ..arguments = pushOption.arguments;
+          appState.nativeRouterApi.pushNativeRoute(params);
+          return appState.pendNativeResult(pushOption.name);
+        }
+      } else {
+        assert(state.type == InterceptorResultType.resolve);
+        return Future<T>.value(state.data as T);
+      }
+    });
   }
 
   /// Pop the top-most page off the hybrid stack.
@@ -97,38 +122,6 @@ class BoostNavigator {
   ///
   /// This is a legacy API for backwards compatibility.
   int pageSize() => appState.pageSize();
-
-  /// Private API:
-  /// Get [BoostInterceptorOption] using all of [BoostInterceptor]
-  /// [name] the page's name that user wants to push
-  /// [arguments] the args will pass in target page
-  Future<BoostInterceptorOption> _getInterceptorResponse(
-      String name, Map<String, dynamic> arguments) async {
-    // Get all interceptors from FlutterBoostAppState
-    final List<BoostInterceptor> interceptors = appState.interceptors;
-
-    // Deep copy argments map,because we don't want to change original data...
-    final Map<String, dynamic> resultArguments = arguments != null
-        ? Map<String, dynamic>.from(arguments)
-        : <String, dynamic>{};
-
-    // Initialize the result option object
-    final BoostInterceptorOption resultOption = BoostInterceptorOption(
-        isBlocked: false, name: name, arguments: resultArguments);
-
-    // Traverse every interceptor,let everyone of them precess the data in option object
-    for (final BoostInterceptor interceptor in interceptors) {
-      // Get the response object after calling interceptor.onPush
-      await interceptor.onPush(resultOption);
-
-      // Whenever the resultResponse's "isBlocked" == true,we will not continue the loop.
-      if (resultOption.isBlocked) {
-        return resultOption;
-      }
-    }
-
-    return resultOption;
-  }
 }
 
 class PageInfo {

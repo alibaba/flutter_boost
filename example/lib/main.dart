@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boost/boost_interceptor.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
@@ -12,28 +13,62 @@ import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
 
-
-
 void main() {
-  PageVisibilityBinding.instance.addGlobalObserver(AppGlobalPageVisibilityObserver());
+  PageVisibilityBinding.instance
+      .addGlobalObserver(AppGlobalPageVisibilityObserver());
   runApp(MyApp());
 }
 
 class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   void onPageCreate(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageCreate route:${route.settings.name}');
+    Logger.log(
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageCreate route:${route.settings.name}');
   }
 
   void onPageShow(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageShow route:${route.settings.name}');
+    Logger.log(
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageShow route:${route.settings.name}');
   }
 
   void onPageHide(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageHide route:${route.settings.name}');
+    Logger.log(
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageHide route:${route.settings.name}');
   }
 
   void onPageDestroy(Route<dynamic> route) {
-    Logger.log('boost_lifecycle: AppGlobalPageVisibilityObserver.onPageDestroy route:${route.settings.name}');
+    Logger.log(
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageDestroy route:${route.settings.name}');
+  }
+}
+
+class CustomInterceptor1 extends BoostInterceptor {
+  @override
+  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor1~~~, $option');
+    // Add extra arguments
+    option.arguments['CustomInterceptor1'] = "1";
+    super.onPush(option, handler);
+  }
+}
+
+class CustomInterceptor2 extends BoostInterceptor {
+  @override
+  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor2~~~, $option');
+    // Add extra arguments
+    option.arguments['CustomInterceptor2'] = "2";
+    // handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    handler.next(option);
+  }
+}
+
+class CustomInterceptor3 extends BoostInterceptor {
+  @override
+  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor3~~~, $option');
+    // Replace arguments
+    option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
+    handler.next(option);
   }
 }
 
@@ -189,7 +224,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterBoostApp(routeFactory);
+    return FlutterBoostApp(routeFactory, interceptors: [
+      CustomInterceptor1(),
+      CustomInterceptor2(),
+      CustomInterceptor3()
+    ]);
   }
 
   static Widget appBuilder(Widget home) {
