@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_boost/boost_navigator.dart';
+import 'boost_navigator.dart';
 
 ///The request object in Interceptor,which is to passed
 class BoostInterceptorOption {
