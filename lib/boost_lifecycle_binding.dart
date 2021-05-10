@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_boost/boost_container.dart';
-import 'package:flutter_boost/page_visibility.dart';
+
+import 'boost_container.dart';
 import 'logger.dart';
+import 'page_visibility.dart';
 
 class BoostLifecycleBinding {
   BoostLifecycleBinding._();
@@ -11,13 +12,15 @@ class BoostLifecycleBinding {
   void containerDidPush(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
-    PageVisibilityBinding.instance.dispatchPageCreateEvent(container.topPage.route);
+    PageVisibilityBinding.instance
+        .dispatchPageCreateEvent(container.topPage.route);
   }
 
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
-    PageVisibilityBinding.instance.dispatchPageDestroyEvent(container.topPage.route);
+    PageVisibilityBinding.instance
+        .dispatchPageDestroyEvent(container.topPage.route);
   }
 
   void containerDidShow(BoostContainer container) {
@@ -46,7 +49,6 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance.dispatchPageDestroyEvent(route);
   }
 
-
   void appDidEnterForeground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
   }
@@ -54,5 +56,4 @@ class BoostLifecycleBinding {
   void appDidEnterBackground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
   }
-
 }

@@ -2,18 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/flutter_boost_app.dart';
+import 'boost_navigator.dart';
+import 'flutter_boost_app.dart';
 
 class BoostContainer extends StatefulWidget {
-  BoostContainer({LocalKey key, this.pageInfo})
-      : super(key: key) {
+  BoostContainer({LocalKey key, this.pageInfo}) : super(key: key) {
     pages.add(BoostPage.create(pageInfo));
   }
 
   static BoostContainer of(BuildContext context) {
-    final BoostContainer container =
-        context.findAncestorWidgetOfExactType<BoostContainer>();
+    final container = context.findAncestorWidgetOfExactType<BoostContainer>();
     return container;
   }
 
@@ -49,7 +47,7 @@ class BoostContainerState extends State<BoostContainer> {
     return Navigator(
       key: widget._navKey,
       pages: List<Page<dynamic>>.of(widget._pages),
-      onPopPage: (Route<dynamic> route, dynamic result) {
+      onPopPage: (route, result) {
         if (route.didPop(result)) {
           _updatePagesList();
           return true;

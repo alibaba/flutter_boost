@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_boost/boost_container.dart';
+
+import 'boost_container.dart';
 
 final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
 List<_ContainerOverlayEntry> _lastEntries = <_ContainerOverlayEntry>[];
@@ -21,31 +22,31 @@ enum BoostSpecificEntryRefreshMode {
 
 ///Refresh an specific entry instead of all of entries to enhance the performace
 ///
-///[container] : The container you want to operate,it is related with internal [OverlayEntry]
+///[container] : The container you want to operate, it is related with
+///              internal [OverlayEntry]
 ///[mode] : The [BoostSpecificEntryRefreshMode] you want to choose
 void refreshSpecificOverlayEntries(
     BoostContainer container, BoostSpecificEntryRefreshMode mode) {
   //Get OverlayState from global key
-  final OverlayState overlayState = overlayKey.currentState;
+  final overlayState = overlayKey.currentState;
   if (overlayState == null) {
     return;
   }
 
-  final bool hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final bool framesEnabled = SchedulerBinding.instance.framesEnabled;
+  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
+  final framesEnabled = SchedulerBinding.instance.framesEnabled;
 
   //deal with different situation
   switch (mode) {
     case BoostSpecificEntryRefreshMode.add:
-      final _ContainerOverlayEntry entry = _ContainerOverlayEntry(container);
+      final entry = _ContainerOverlayEntry(container);
       _lastEntries.add(entry);
       overlayState.insert(entry);
       break;
     case BoostSpecificEntryRefreshMode.remove:
       if (_lastEntries.isNotEmpty) {
         //Find the entry matching the container
-        final _ContainerOverlayEntry entryToRemove =
-            _lastEntries.singleWhere((_ContainerOverlayEntry element) {
+        final entryToRemove = _lastEntries.singleWhere((element) {
           return element.containerUniqueId == container.pageInfo.uniqueId;
         });
 
@@ -55,8 +56,7 @@ void refreshSpecificOverlayEntries(
       }
       break;
     case BoostSpecificEntryRefreshMode.moveToTop:
-      final _ContainerOverlayEntry existingEntry =
-          _lastEntries.singleWhere((_ContainerOverlayEntry element) {
+      final existingEntry = _lastEntries.singleWhere((element) {
         return element.containerUniqueId == container.pageInfo.uniqueId;
       });
       //remove the entry from list and overlay
@@ -69,7 +69,8 @@ void refreshSpecificOverlayEntries(
   }
 
   // https://github.com/alibaba/flutter_boost/issues/1056
-  // Ensure this frame is refreshed after schedule frame，otherwise the PageState.dispose may not be called
+  // Ensure this frame is refreshed after schedule frame,
+  // otherwise the PageState.dispose may not be called
   if (hasScheduledFrame || !framesEnabled) {
     SchedulerBinding.instance.scheduleWarmUpFrame();
   }
@@ -77,29 +78,30 @@ void refreshSpecificOverlayEntries(
 
 ///Refresh all of overlayEntries
 void refreshAllOverlayEntries(List<BoostContainer> containers) {
-  final OverlayState overlayState = overlayKey.currentState;
+  final overlayState = overlayKey.currentState;
   if (overlayState == null) {
     return;
   }
 
   if (_lastEntries != null && _lastEntries.isNotEmpty) {
-    for (_ContainerOverlayEntry entry in _lastEntries) {
+    for (var entry in _lastEntries) {
       entry.remove();
     }
   }
 
   _lastEntries = containers
       .map<_ContainerOverlayEntry>(
-          (BoostContainer container) => _ContainerOverlayEntry(container))
+          (container) => _ContainerOverlayEntry(container))
       .toList(growable: true);
 
-  final bool hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final bool framesEnabled = SchedulerBinding.instance.framesEnabled;
+  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
+  final framesEnabled = SchedulerBinding.instance.framesEnabled;
 
   overlayState.insertAll(_lastEntries);
 
   // https://github.com/alibaba/flutter_boost/issues/1056
-  // Ensure this frame is refreshed after schedule frame，otherwise the PageState.dispose may not be called
+  // Ensure this frame is refreshed after schedule frame，
+  // otherwise the PageState.dispose may not be called
   if (hasScheduledFrame || !framesEnabled) {
     SchedulerBinding.instance.scheduleWarmUpFrame();
   }
@@ -109,7 +111,7 @@ class _ContainerOverlayEntry extends OverlayEntry {
   _ContainerOverlayEntry(BoostContainer container)
       : containerUniqueId = container.pageInfo.uniqueId,
         super(
-            builder: (BuildContext ctx) => container,
+            builder: (ctx) => container,
 
             ///Why the "opaque" is false and "maintainState" is true ? ?
             ///reason video link:  https://www.youtube.com/watch?v=Ya3k828Brt4

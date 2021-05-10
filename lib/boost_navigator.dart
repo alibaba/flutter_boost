@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_boost/flutter_boost_app.dart';
-import 'package:flutter_boost/messages.dart';
-import 'package:flutter_boost/overlay_entry.dart';
+
 import 'boost_container.dart';
 import 'boost_interceptor.dart';
+import 'flutter_boost_app.dart';
 import 'messages.dart';
+import 'overlay_entry.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
     FlutterBoostRouteFactory routeFactory) {
-  return (RouteSettings settings, String uniqueId) {
-    Route<dynamic> route = routeFactory(settings, uniqueId);
+  return (settings, uniqueId) {
+    var route = routeFactory(settings, uniqueId);
     if (route == null && settings.name == '/') {
       route = PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
@@ -60,16 +60,15 @@ class BoostNavigator {
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    BoostInterceptorOption pushOption =
+    var pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
-    Future<dynamic> future = Future<dynamic>(
+    var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
-    for (BoostInterceptor interceptor in appState.interceptors) {
+    for (var interceptor in appState.interceptors) {
       future = future.then<dynamic>((dynamic _state) {
-        final InterceptorState<dynamic> state =
-            _state as InterceptorState<dynamic>;
+        final state = _state as InterceptorState<dynamic>;
         if (state.type == InterceptorResultType.next) {
-          final PushInterceptorHandler pushHandler = PushInterceptorHandler();
+          final pushHandler = PushInterceptorHandler();
           interceptor.onPush(state.data, pushHandler);
           return pushHandler.future;
         } else {
@@ -79,8 +78,7 @@ class BoostNavigator {
     }
 
     return future.then((dynamic _state) {
-      final InterceptorState<dynamic> state =
-          _state as InterceptorState<dynamic>;
+      final state = _state as InterceptorState<dynamic>;
       if (state.data is BoostInterceptorOption) {
         assert(state.type == InterceptorResultType.next);
         pushOption = state.data;
@@ -88,7 +86,7 @@ class BoostNavigator {
           return appState.pushWithResult(pushOption.name,
               arguments: pushOption.arguments, withContainer: withContainer);
         } else {
-          final CommonParams params = CommonParams()
+          final params = CommonParams()
             ..pageName = pushOption.name
             ..arguments = pushOption.arguments;
           appState.nativeRouterApi.pushNativeRoute(params);
