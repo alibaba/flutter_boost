@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-beta.7
+v3.0-beta.8
 
 PS: Before updating the beta version, please read the CHANGELOG to see if there are any BREAKING CHANGE
 
@@ -38,7 +38,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-beta.7'
+        ref: 'v3.0-beta.8'
 ```
 
 

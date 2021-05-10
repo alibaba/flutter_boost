@@ -1,3 +1,10 @@
+## v3.0-beta.8
+1. 提供flutter_boost.dart作为对外接口
+2. BoostNavigator相关API和实现的修改
+3. 解决_pendingResult可能没有完成的问题
+4. 新增前置拦截器能力
+5. 解决在push和pop的时候，页面栈所有页面重复build的问题
+6. 使用effective_dart包提供的linter规则文件
 
 ## v3.0-beta.7
 1. 生命周期实现调整
