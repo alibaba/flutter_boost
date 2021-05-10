@@ -116,7 +116,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refresh() {
-    refreshOverlayEntries(containers);
+    refreshAllOverlayEntries(containers);
 
     // try to save routes to host.
     assert(() {
@@ -205,7 +205,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
         containers.remove(existed);
         containers.add(existed);
-        refresh();
+
+        //move the overlayEntry which matches this existing container to the top
+        refreshOnMoveToTop(existed);
       }
     } else {
       final PageInfo pageInfo = PageInfo(
@@ -219,10 +221,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         containers.add(container);
         BoostLifecycleBinding.instance
             .containerDidPush(container, previousContainer);
+
+        //Add a new overlay entry with this container
+        refreshOnPush(container);
       } else {
+        //In this case , we don't need to change the overlayEntries data,so we don't call any refresh method
         topContainer.pages.add(BoostPage.create(pageInfo));
       }
-      refresh();
     }
     Logger.log(
         'push page, uniqueId=$uniqueId, existed=$existed, withContainer=$withContainer, arguments:$arguments, $containers');
@@ -310,13 +315,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (container != null) {
       containers.remove(container);
       BoostLifecycleBinding.instance.containerDidPop(container, topContainer);
+      //remove the overlayEntry matching this container
+      refreshOnRemove(container);
     } else {
       for (BoostContainer container in containers) {
         container.pages.removeWhere(
             (BoostPage<dynamic> entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
     }
-    refresh();
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
@@ -386,6 +392,36 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       count += container.size;
     }
     return count;
+  }
+
+  ///
+  ///======== refresh method below ===============
+  ///
+
+  void refreshOnPush(BoostContainer container) {
+    refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+    assert(() {
+      _saveStackForHotRestart();
+      return true;
+    }());
+  }
+
+  void refreshOnRemove(BoostContainer container) {
+    refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.remove);
+    assert(() {
+      _saveStackForHotRestart();
+      return true;
+    }());
+  }
+
+  void refreshOnMoveToTop(BoostContainer container) {
+    refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.moveToTop);
+    assert(() {
+      _saveStackForHotRestart();
+      return true;
+    }());
   }
 }
 
