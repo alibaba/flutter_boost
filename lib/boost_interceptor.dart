@@ -30,10 +30,8 @@ class InterceptorState<T> {
 }
 
 class _BaseHandler {
-  // ignore: always_specify_types
   final _completer = Completer<InterceptorState>();
 
-  // ignore: always_specify_types
   Future<InterceptorState> get future => _completer.future;
 
   bool get isCompleted => _completer.isCompleted;
