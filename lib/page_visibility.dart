@@ -280,6 +280,6 @@ class PageVisibilityBinding {
       observer.onBackground(route);
     }
 
-    Logger.log('page_visibility, #dispatchGlobalForgroudEvent');
+    Logger.log('page_visibility, #dispatchGlobalBackgroundEvent');
   }
 }
