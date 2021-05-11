@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
@@ -230,6 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         // In this case , we don't need to change the overlayEntries data,
         // so we don't call any refresh method
         topContainer.pages.add(BoostPage.create(pageInfo));
+        SchedulerBinding.instance.scheduleFrame();
       }
     }
     Logger.log('push page, uniqueId=$uniqueId, existed=$existed,'
@@ -325,6 +327,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         container.pages
             .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
       }
+      SchedulerBinding.instance.scheduleFrame();
     }
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
