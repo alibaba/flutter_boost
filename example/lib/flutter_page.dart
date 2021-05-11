@@ -54,13 +54,21 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
 
   @override
   void onPageShow() {
-    Logger.log(
-        '$_kTag#onPageShow, ${widget.uniqueId}, $this');
+    Logger.log('$_kTag#onPageShow, ${widget.uniqueId}, $this');
   }
 
   void onPageHide() {
-    Logger.log(
-        '$_kTag#onPageHide, ${widget.uniqueId}, $this');
+    Logger.log('$_kTag#onPageHide, ${widget.uniqueId}, $this');
+  }
+
+  @override
+  void onForeground() {
+    Logger.log('$_kTag#onForeground, ${widget.uniqueId}, $this');
+  }
+
+  @override
+  void onBackground() {
+    Logger.log('$_kTag#onBackground, ${widget.uniqueId}, $this');
   }
 
   @override
@@ -161,8 +169,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'open imagepick demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () =>
-                    BoostNavigator.instance.push("imagepick", withContainer: true),
+                onTap: () => BoostNavigator.instance
+                    .push("imagepick", withContainer: true),
               ),
               InkWell(
                   child: Container(
@@ -173,8 +181,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         'open willPop demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
-                  onTap: () =>
-                      BoostNavigator.instance.push("willPop", withContainer: true)),
+                  onTap: () => BoostNavigator.instance
+                      .push("willPop", withContainer: true)),
               InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),

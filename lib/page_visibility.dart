@@ -3,25 +3,33 @@ import 'package:flutter/material.dart';
 import 'logger.dart';
 
 ///observer for all pages visibility
-abstract class GlobalPageVisibilityObserver {
-  void onPageCreate(Route<dynamic> route);
+class GlobalPageVisibilityObserver {
+  void onPageCreate(Route<dynamic> route) {}
 
-  void onPageShow(Route<dynamic> route);
+  void onPageShow(Route<dynamic> route) {}
 
-  void onPageHide(Route<dynamic> route);
+  void onPageHide(Route<dynamic> route) {}
 
-  void onPageDestroy(Route<dynamic> route);
+  void onPageDestroy(Route<dynamic> route) {}
+
+  void onForground(Route<dynamic> route) {}
+
+  void onBackground(Route<dynamic> route) {}
 }
 
 ///observer for single page visibility
-abstract class PageVisibilityObserver {
-  void onPageCreate();
+class PageVisibilityObserver {
+  void onPageCreate() {}
 
-  void onPageShow();
+  void onPageShow() {}
 
-  void onPageHide();
+  void onPageHide() {}
 
-  void onPageDestroy();
+  void onPageDestroy() {}
+
+  void onForeground() {}
+
+  void onBackground() {}
 }
 
 class PageVisibilityBinding {
@@ -157,6 +165,50 @@ class PageVisibilityBinding {
     dispatchGlobalPageDestroyEvent(route);
   }
 
+  void dispatchPageForgroundEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final observers = _listeners[route]?.toList();
+    if (observers != null) {
+      for (var observer in observers) {
+        try {
+          observer.onForeground();
+        } on Exception catch (e) {
+          Logger.log(e.toString());
+        }
+      }
+    }
+
+    Logger.log(
+        'page_visibility, #dispatchPageForgroundEvent, ${route.settings.name}');
+
+    dispatchGlobalForgroundEvent(route);
+  }
+
+  void dispatchPageBackgroundEvent(Route<dynamic> route) {
+    if (route == null) {
+      return;
+    }
+
+    final observers = _listeners[route]?.toList();
+    if (observers != null) {
+      for (var observer in observers) {
+        try {
+          observer.onBackground();
+        } on Exception catch (e) {
+          Logger.log(e.toString());
+        }
+      }
+    }
+
+    Logger.log(
+        'page_visibility, #dispatchPageBackgroundEvent, ${route.settings.name}');
+
+    dispatchGlobalBackgroundEvent(route);
+  }
+
   void dispatchGlobalPageCreateEvent(Route<dynamic> route) {
     if (route == null) {
       return;
@@ -211,5 +263,23 @@ class PageVisibilityBinding {
 
     Logger.log('page_visibility, #dispatchGlobalPageDestroyEvent, '
         '${route.settings.name}');
+  }
+
+  void dispatchGlobalForgroundEvent(Route<dynamic> route) {
+    final globalObserversList = _globalListeners.toList();
+    for (var observer in globalObserversList) {
+      observer.onForground(route);
+    }
+
+    Logger.log('page_visibility, #dispatchGlobalForgroudEvent');
+  }
+
+  void dispatchGlobalBackgroundEvent(Route<dynamic> route) {
+    final globalObserversList = _globalListeners.toList();
+    for (var observer in globalObserversList) {
+      observer.onBackground(route);
+    }
+
+    Logger.log('page_visibility, #dispatchGlobalBackgroundEvent');
   }
 }
