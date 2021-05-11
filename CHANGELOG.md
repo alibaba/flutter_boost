@@ -1,3 +1,16 @@
+## v3.0-beta.9
+1. 修复容器内打开和关闭页面时界面不刷新问题
+2. 添加前台后台的回调接口
+3. 增加从原生open flutter页面时，open操作完成后的回调能力
+
+Breaking Change:
+ [iOS] 增加从原生open flutter页面时，open操作完成后的回调能力 : https://github.com/alibaba/flutter_boost/commit/7f55728955b0afcdbaba5a17543e9dbdf1c24e65
+由于一些业务方需要知道页面动画是否完成，需要获取present的completion回调，
+因此将
+- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments
+改为
+- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments completion:(void(^)(BOOL)) completion;
+
 ## v3.0-beta.8
 1. 提供flutter_boost.dart作为对外接口
 2. BoostNavigator相关API和实现的修改
