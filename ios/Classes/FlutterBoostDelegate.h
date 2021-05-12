@@ -34,7 +34,7 @@
 - (FlutterEngine*) engine;
 @required  
 - (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments;
-- (void) pushFlutterRoute:(FlutterBoostPushOptions*)options;
+- (void) pushFlutterRoute:(FlutterBoostRouteOptions*)options;
 - (void) popRoute:(NSString *)uniqueId;
 @end
 

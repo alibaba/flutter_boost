@@ -73,7 +73,7 @@
 }
 
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
-    FlutterBoostPushOptions* options = [[FlutterBoostPushOptions alloc]init];
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
     options.pageName = input.pageName;
     options.uniqueId = input.uniqueId;
     options.arguments = input.arguments;

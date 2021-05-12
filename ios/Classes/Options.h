@@ -45,8 +45,8 @@
 @end
 
 
-///新页面打开参数配置
-@interface FlutterBoostPushOptions : NSObject
+///路由参数配置
+@interface FlutterBoostRouteOptions : NSObject
 
 ///页面在路由表中的名字
 @property(nonatomic, strong) NSString* pageName;
@@ -54,7 +54,7 @@
 ///参数
 @property(nonatomic, strong) NSDictionary* arguments;
 
-///参数回传的回调，仅在原生->flutter页面的时候有用
+///参数回传的回调闭包，仅在原生->flutter页面的时候有用
 @property(nonatomic, strong) void(^onPageFinished)(NSDictionary*);
 
 ///open方法完成后的回调，仅在原生->flutter页面的时候有用
