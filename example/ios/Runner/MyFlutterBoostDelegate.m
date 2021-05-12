@@ -47,11 +47,11 @@
     }
 }
 
-- (void) popRoute:(NSString *)uniqueId {
+- (void) popRoute:(FlutterBoostRouteOptions *)options {
     
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
-    if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: uniqueId]){
+    if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
         [vc dismissViewControllerAnimated:YES completion:^{}];
     }else{
         [self.navigationController popViewControllerAnimated:YES];
