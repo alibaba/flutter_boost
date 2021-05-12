@@ -25,43 +25,25 @@
 
 - (IBAction)pushFlutterPage:(id)sender {
     
-    
-    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"animated":@(YES)} completion:^(BOOL completion) {
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
+    options.pageName = @"flutterPage";
+    options.arguments = @{@"animated":@(YES)};
+    options.completion = ^(BOOL completion) {
         
-    } ];
+    };
     
-
-//    [FlutterBoostPlugin open:@"first" urlParams:@{kPageCallBackId:@"MycallbackId#1"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-//        NSLog(@"call me when page finished, and your result is:%@", result);
-//    } completion:^(BOOL f) {
-//        NSLog(@"page is opened");
-//    }];
-    
-    
+    [[FlutterBoost instance]open:options];
 }
 
 - (IBAction)present:(id)sender {
     
-    [[FlutterBoost instance] open:@"secondStateful" arguments:@{@"present":@(YES)} completion:^(BOOL completion) {
-        
-        
-    }];
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
+    options.pageName = @"secondStateful";
+    options.arguments = @{@"present":@(YES)};
+    options.completion = ^(BOOL completion) {
 
-//    [FlutterBoostPlugin open:@"second" urlParams:@{@"present":@(YES),kPageCallBackId:@"MycallbackId#2"} exts:@{@"animated":@(YES)} onPageFinished:^(NSDictionary *result) {
-//        NSLog(@"call me when page finished, and your result is:%@", result);
-//    } completion:^(BOOL f) {
-//        NSLog(@"page is presented");
-//    }];
+    };
+
+    [[FlutterBoost instance]open:options];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 @end

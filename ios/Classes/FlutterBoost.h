@@ -67,6 +67,7 @@
 /// @param uniqueId 关闭的页面唯一ID符
 - (void)close:(NSString *)uniqueId;
 
+/// （ 已废弃，之后有新参数可能不支持此方法 ！！！ ）
 /// 打开新页面（默认以push方式），混合栈推荐使用的用于操作页面的接口
 /// 通过arguments可以设置为以present方式打开页面：arguments:@{@"present":@(YES)}
 /// @param pageName 打开的页面资源定位符
@@ -75,9 +76,9 @@
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments completion:(void(^)(BOOL)) completion;
 
 
-/// 利用启动参数配置开启新页面
+/// （推荐使用）利用启动参数配置开启新页面
 /// @param options 配置参数
-- (void)open:(FlutterBoostPushOptions* )options;
+- (void)open:(FlutterBoostRouteOptions* )options;
 
 
 /// 将原生页面的数据回传到flutter侧的页面的的方法

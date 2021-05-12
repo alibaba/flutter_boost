@@ -44,7 +44,7 @@
 @end
 
 
-@implementation FlutterBoostPushOptions
+@implementation FlutterBoostRouteOptions
 
 @end
 

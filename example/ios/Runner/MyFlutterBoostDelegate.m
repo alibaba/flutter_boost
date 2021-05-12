@@ -26,7 +26,7 @@
     }
 }
 
-- (void)pushFlutterRoute:(FlutterBoostPushOptions *)options {
+- (void)pushFlutterRoute:(FlutterBoostRouteOptions *)options {
     
     FlutterEngine* engine =  [[FlutterBoost instance] engine];
     engine.viewController = nil;

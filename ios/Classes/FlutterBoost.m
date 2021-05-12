@@ -106,7 +106,7 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments completion:(void(^)(BOOL)) completion {
     
-    FlutterBoostPushOptions* options = [[FlutterBoostPushOptions alloc]init];
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
     options.pageName = pageName;
     options.arguments = arguments;
     options.completion = completion;
@@ -114,7 +114,7 @@
     [self.plugin.delegate pushFlutterRoute:options];
 }
 
-- (void)open:(FlutterBoostPushOptions* )options{
+- (void)open:(FlutterBoostRouteOptions* )options{
     [self.plugin.delegate pushFlutterRoute:options];
 }
 
