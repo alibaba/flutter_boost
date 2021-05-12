@@ -204,7 +204,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void push(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+      {String uniqueId, Map<String, dynamic> arguments,
+      bool withContainer, bool beforehand = false}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -223,13 +224,23 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           withContainer: withContainer);
       if (withContainer) {
         final container = _createContainer(pageInfo);
-        final previousContainer = topContainer;
-        containers.add(container);
-        BoostLifecycleBinding.instance
-            .containerDidPush(container, previousContainer);
+        if (beforehand) {
+          // Insert just below the top container.
+          containers.insert(containers.length - 1, container);
+          BoostLifecycleBinding.instance
+              .containerDidPush(container, null);
 
-        // Add a new overlay entry with this container
-        refreshOnPush(container);
+          // Add a new overlay entry with this container
+          refreshOnPushBeforehand(container);
+        } else {
+          final previousContainer = topContainer;
+          containers.add(container);
+          BoostLifecycleBinding.instance
+              .containerDidPush(container, previousContainer);
+
+          // Add a new overlay entry with this container
+          refreshOnPush(container);
+        }
       } else {
         // In this case , we don't need to change the overlayEntries data,
         // so we don't call any refresh method
@@ -414,6 +425,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
   ///======== refresh method below ===============
   ///
+
+  void refreshOnPushBeforehand(BoostContainer container) {
+    refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.beforehand);
+    assert(() {
+      _saveStackForHotRestart();
+      return true;
+    }());
+  }
 
   void refreshOnPush(BoostContainer container) {
     refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);

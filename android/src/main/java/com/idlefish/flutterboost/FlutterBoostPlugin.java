@@ -107,11 +107,17 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
                           final Reply<Void> callback) {
+        pushRoute(uniqueId, pageName, arguments, false, callback);
+    }
+
+    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments, boolean beforehand,
+                          final Reply<Void> callback) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments((Map<Object, Object>)(Object) arguments);
+            params.setBeforehand(beforehand);
             channel.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -193,6 +199,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
+        pushRoute(container.getUniqueId(), getUrl(), getUrlParams(), true/*preRender*/, null);
         Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
     }
 

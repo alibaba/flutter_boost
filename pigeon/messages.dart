@@ -5,6 +5,7 @@ class CommonParams {
   String uniqueId;
   Map<String, Object> arguments;
   bool opaque;
+  bool beforehand;
 }
 
 class StackInfo {

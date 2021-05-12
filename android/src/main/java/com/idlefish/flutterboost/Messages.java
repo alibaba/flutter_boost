@@ -32,12 +32,17 @@ public class Messages {
     public Boolean getOpaque() { return opaque; }
     public void setOpaque(Boolean setterArg) { this.opaque = setterArg; }
 
+    private Boolean beforehand;
+    public Boolean getBeforehand() { return beforehand; }
+    public void setBeforehand(Boolean setterArg) { this.beforehand = setterArg; }
+
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
       toMapResult.put("arguments", arguments);
       toMapResult.put("opaque", opaque);
+      toMapResult.put("beforehand", beforehand);
       return toMapResult;
     }
     static CommonParams fromMap(Map<String, Object> map) {
@@ -50,6 +55,8 @@ public class Messages {
       fromMapResult.arguments = (Map<Object, Object>)arguments;
       Object opaque = map.get("opaque");
       fromMapResult.opaque = (Boolean)opaque;
+      Object beforehand = map.get("beforehand");
+      fromMapResult.beforehand = (Boolean)beforehand;
       return fromMapResult;
     }
   }

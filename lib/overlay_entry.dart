@@ -18,6 +18,9 @@ enum BoostSpecificEntryRefreshMode {
 
   ///move an existing entry to top
   moveToTop,
+
+  ///Add a new entry for rendering beforehand
+  beforehand,
 }
 
 ///Refresh an specific entry instead of all of entries to enhance the performace
@@ -65,6 +68,11 @@ void refreshSpecificOverlayEntries(
       _lastEntries.add(existingEntry);
       existingEntry.remove();
       overlayState.insert(existingEntry);
+      break;
+    case BoostSpecificEntryRefreshMode.beforehand:
+      final entry = _ContainerOverlayEntry(container);
+      _lastEntries.insert(_lastEntries.length - 1, entry);
+      overlayState.insert(entry, below: _lastEntries.last);
       break;
   }
 

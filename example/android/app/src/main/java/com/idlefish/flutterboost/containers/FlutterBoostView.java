@@ -27,6 +27,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostView extends LifecycleView implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostView";
+    private static HashMap<String/*url*/, FlutterBoostView> sCachedViews = new HashMap<String, FlutterBoostView>();
     private final String who = UUID.randomUUID().toString();
     private Callback callback;
     private boolean hasCreated;
@@ -48,6 +49,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         private RenderMode renderMode = RenderMode.texture;
         private TransparencyMode transparencyMode = TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
+        private boolean keepCache = false;
         private String url;
         private HashMap<String, Object> params;
 
@@ -64,6 +66,12 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         public CachedEngineBuilder transparencyMode(
                 @NonNull TransparencyMode transparencyMode) {
             this.transparencyMode = transparencyMode;
+            return this;
+        }
+
+        @NonNull
+        public CachedEngineBuilder keepCache(boolean keepCache) {
+            this.keepCache = keepCache;
             return this;
         }
 
@@ -89,9 +97,19 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
         @NonNull
         public FlutterBoostView build(Activity context, Callback callback) {
-            FlutterBoostView view = new FlutterBoostView(context, callback);
+            FlutterBoostView view = sCachedViews.remove(url);
+            if (view != null
+                    && url.equals(view.getArguments().getString(EXTRA_URL))
+                    && renderMode.equals(view.getArguments().getString(ARG_FLUTTERVIEW_RENDER_MODE))
+                    && transparencyMode.equals(view.getArguments().getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE))) {
+                view.mCallback = callback;
+                if (keepCache) sCachedViews.put(url, view);
+                return view;
+            }
+            view = new FlutterBoostView(context, callback);
             Bundle args = createArgs();
             view.setArguments(args);
+            if (keepCache) sCachedViews.put(url, view);
             return view;
         }
 

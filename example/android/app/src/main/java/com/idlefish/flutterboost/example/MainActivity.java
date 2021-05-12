@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
+import com.idlefish.flutterboost.containers.FlutterBoostView;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mOpenFlutter;
     private TextView mOpenFlutterFragment;
     private TextView mOpenCustomViewTab;
+    private TextView mWarmUpCustomViewTab;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,11 +43,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mOpenFlutter = findViewById(R.id.open_flutter);
         mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
         mOpenCustomViewTab = findViewById(R.id.open_custom_view_tab);
+        mWarmUpCustomViewTab = findViewById(R.id.warm_up_custom_view_tab);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
         mOpenFlutterFragment.setOnClickListener(this);
         mOpenCustomViewTab.setOnClickListener(this);
+        mWarmUpCustomViewTab.setOnClickListener(this);
     }
 
     @Override
@@ -76,6 +80,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
         } else if (v == mOpenCustomViewTab) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_CUSTOM_VIEW_URL, params);
+        } else if (v == mWarmUpCustomViewTab) {
+            String url = "tab_flutter1";
+            params.put("url", url);
+            FlutterBoostView fbv = FlutterBoostView.withCachedEngine(FlutterBoost.ENGINE_ID)
+                    .url(url)
+                    .keepCache(true)
+                    .build(this);
+            fbv.onCreate();
         }
     }
 

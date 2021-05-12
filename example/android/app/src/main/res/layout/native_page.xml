@@ -44,17 +44,36 @@
         android:layout_height="wrap_content"
         android:text="@string/open_flutter" />
 
-    <TextView
-        android:background="@android:color/holo_orange_dark"
-        android:layout_margin="8.0dp"
-        android:padding="8.0dp"
-        android:textColor="@android:color/black"
-        android:id="@+id/open_custom_view_tab"
-        android:textAllCaps="false"
-        android:textSize="16sp"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/open_custom_view_tab" />
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+
+        <TextView
+            android:background="@android:color/holo_orange_dark"
+            android:layout_margin="8.0dp"
+            android:padding="8.0dp"
+            android:textColor="@android:color/black"
+            android:id="@+id/open_custom_view_tab"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/open_custom_view_tab" />
+        <TextView
+            android:background="@android:color/holo_orange_light"
+            android:layout_margin="8.0dp"
+            android:padding="8.0dp"
+            android:textColor="@android:color/black"
+            android:id="@+id/warm_up_custom_view_tab"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/warm_up_custom_view_tab" />
+
+    </LinearLayout>
 
     <TextView
         android:background="@android:color/holo_orange_dark"
