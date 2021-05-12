@@ -5,15 +5,17 @@ import 'package:flutter/widgets.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
-class BoostContainer extends StatefulWidget {
-  BoostContainer({LocalKey key, this.pageInfo}) : super(key: key) {
+class BoostContainer {
+  BoostContainer({this.key, this.pageInfo}) {
     pages.add(BoostPage.create(pageInfo));
   }
 
   static BoostContainer of(BuildContext context) {
-    final container = context.findAncestorWidgetOfExactType<BoostContainer>();
-    return container;
+    final state = context.findAncestorStateOfType<BoostContainerState>();
+    return state.container;
   }
+
+  final LocalKey key;
 
   final PageInfo pageInfo;
 
@@ -28,25 +30,54 @@ class BoostContainer extends StatefulWidget {
   NavigatorState get navigator => _navKey.currentState;
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
+  void refresh() {
+    if (_refreshListener != null) {
+      _refreshListener();
+    }
+  }
+  VoidCallback _refreshListener;
+}
+
+class BoostContainerWidget extends StatefulWidget {
+  BoostContainerWidget({LocalKey key, this.container}) : super(key: container.key);
+
+  final BoostContainer container;
+
   @override
   State<StatefulWidget> createState() => BoostContainerState();
 }
 
-class BoostContainerState extends State<BoostContainer> {
+class BoostContainerState extends State<BoostContainerWidget> {
+  BoostContainer get container => widget.container;
+
   void _updatePagesList() {
-    widget.pages.removeLast();
+    container.pages.removeLast();
   }
 
   @override
   void initState() {
     super.initState();
+    container._refreshListener = refreshContainer;
+  }
+
+  @override
+  void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      oldWidget.container._refreshListener = null;
+      container._refreshListener = refreshContainer;
+    }
+  }
+
+  void refreshContainer() {
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      key: widget._navKey,
-      pages: List<Page<dynamic>>.of(widget._pages),
+      key: widget.container._navKey,
+      pages: List<Page<dynamic>>.of(widget.container.pages),
       onPopPage: (route, result) {
         if (route.didPop(result)) {
           _updatePagesList();
@@ -62,6 +93,7 @@ class BoostContainerState extends State<BoostContainer> {
 
   @override
   void dispose() {
+    container._refreshListener = null;
     super.dispose();
   }
 }
