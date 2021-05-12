@@ -1,7 +1,9 @@
+## v3.0-beta.10
+1. BoostContainer重构，修复容器内打开和关闭页面时界面不刷新问题
+
 ## v3.0-beta.9
-1. 修复容器内打开和关闭页面时界面不刷新问题
-2. 添加前台后台的回调接口
-3. 增加从原生open flutter页面时，open操作完成后的回调能力
+1. 添加前台后台的回调接口
+2. 增加从原生open flutter页面时，open操作完成后的回调能力
 
 Breaking Change:
  [iOS] 增加从原生open flutter页面时，open操作完成后的回调能力 : https://github.com/alibaba/flutter_boost/commit/7f55728955b0afcdbaba5a17543e9dbdf1c24e65
