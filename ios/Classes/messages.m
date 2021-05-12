@@ -50,14 +50,14 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
   if ((NSNull *)result.opaque == [NSNull null]) {
     result.opaque = nil;
   }
-  result.beforehand = dict[@"beforehand"];
-  if ((NSNull *)result.beforehand == [NSNull null]) {
-    result.beforehand = nil;
+  result.preRender = dict[@"preRender"];
+  if ((NSNull *)result.preRender == [NSNull null]) {
+    result.preRender = nil;
   }
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", (self.beforehand ? self.beforehand : [NSNull null]), @"beforehand", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", (self.preRender ? self.preRender : [NSNull null]), @"preRender", nil];
 }
 @end
 

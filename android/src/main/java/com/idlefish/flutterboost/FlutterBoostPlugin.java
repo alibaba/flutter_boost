@@ -110,14 +110,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         pushRoute(uniqueId, pageName, arguments, false, callback);
     }
 
-    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments, boolean beforehand,
+    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments, boolean preRender,
                           final Reply<Void> callback) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments((Map<Object, Object>)(Object) arguments);
-            params.setBeforehand(beforehand);
+            params.setPreRender(preRender);
             channel.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);

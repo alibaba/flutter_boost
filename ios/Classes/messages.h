@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString * uniqueId;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
 @property(nonatomic, strong, nullable) NSNumber * opaque;
-@property(nonatomic, strong, nullable) NSNumber * beforehand;
+@property(nonatomic, strong, nullable) NSNumber * preRender;
 @end
 
 @interface FBStackInfo : NSObject

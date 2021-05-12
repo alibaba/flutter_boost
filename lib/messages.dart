@@ -12,7 +12,7 @@ class CommonParams {
   String uniqueId;
   Map<Object, Object> arguments;
   bool opaque;
-  bool beforehand;
+  bool preRender;
 
   Object encode() {
     final Map<Object, Object> pigeonMap = <Object, Object>{};
@@ -20,7 +20,7 @@ class CommonParams {
     pigeonMap['uniqueId'] = uniqueId;
     pigeonMap['arguments'] = arguments;
     pigeonMap['opaque'] = opaque;
-    pigeonMap['beforehand'] = beforehand;
+    pigeonMap['preRender'] = preRender;
     return pigeonMap;
   }
 
@@ -31,7 +31,7 @@ class CommonParams {
       ..uniqueId = pigeonMap['uniqueId'] as String
       ..arguments = pigeonMap['arguments'] as Map<Object, Object>
       ..opaque = pigeonMap['opaque'] as bool
-      ..beforehand = pigeonMap['beforehand'] as bool;
+      ..preRender = pigeonMap['preRender'] as bool;
   }
 }
 

@@ -205,7 +205,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void push(String pageName,
       {String uniqueId, Map<String, dynamic> arguments,
-      bool withContainer, bool beforehand = false}) {
+      bool withContainer, bool preRender = false}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -224,14 +224,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           withContainer: withContainer);
       if (withContainer) {
         final container = _createContainer(pageInfo);
-        if (beforehand) {
-          // Insert just below the top container.
-          containers.insert(containers.length - 1, container);
-          BoostLifecycleBinding.instance
-              .containerDidPush(container, null);
+        if (preRender) {
+          // Insert to the bottom for just pre-render.
+          containers.insert(0, container);
+          BoostLifecycleBinding.instance.containerDidPush(container, null);
 
           // Add a new overlay entry with this container
-          refreshOnPushBeforehand(container);
+          refreshOnPushPreRender(container);
         } else {
           final previousContainer = topContainer;
           containers.add(container);
@@ -426,9 +425,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///======== refresh method below ===============
   ///
 
-  void refreshOnPushBeforehand(BoostContainer container) {
+  void refreshOnPushPreRender(BoostContainer container) {
     refreshSpecificOverlayEntries(
-        container, BoostSpecificEntryRefreshMode.beforehand);
+        container, BoostSpecificEntryRefreshMode.preRender);
     assert(() {
       _saveStackForHotRestart();
       return true;
