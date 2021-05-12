@@ -208,6 +208,9 @@ static NSUInteger kInstanceCounter = 0;
 }
 
 - (void)viewDidLoad {
+    // Ensure current view controller attach to Flutter engine
+    [self attatchFlutterEngine];
+
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.whiteColor;
 }
