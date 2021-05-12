@@ -3,7 +3,6 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
-import com.idlefish.flutterboost.containers.FlutterViewContainerObserver;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -60,11 +59,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void popRoute(Messages.CommonParams params) {
         String uniqueId = params.getUniqueId();
         if (uniqueId != null) {
-            ContainerShadowNode node = allContainers.get(uniqueId);
-            if (node != null) {
-                if (node.container() != null) {
-                    node.container().finishContainer((Map<String, Object>) (Object)params.getArguments());
-                }
+            FlutterViewContainer container = allContainers.get(uniqueId);
+            if (container != null) {
+                container.finishContainer((Map<String, Object>) (Object)params.getArguments());
             }
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
@@ -192,25 +189,20 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         Log.v(TAG, "## onContainerHide: " + channel);
     }
 
-    private final Map<String, ContainerShadowNode> allContainers = new LinkedHashMap<>();
-    private ContainerShadowNode getCurrentShadowNode() {
-        if (allContainers.size() > 0) {
-            LinkedList<String> listKeys = new LinkedList<String>(allContainers.keySet());
-            return allContainers.get(listKeys.getLast());
-        }
-        return null;
-    }
-
+    private final Map<String, FlutterViewContainer> allContainers = new LinkedHashMap<>();
     public FlutterViewContainer findContainerById(String uniqueId) {
         if (allContainers.containsKey(uniqueId)) {
-            return allContainers.get(uniqueId).container();
+            return allContainers.get(uniqueId);
         }
         return null;
     }
 
     public FlutterViewContainer getTopContainer() {
-        ContainerShadowNode top = getCurrentShadowNode();
-        return top != null ? top.container() : null;
+        if (allContainers.size() > 0) {
+            LinkedList<String> listKeys = new LinkedList<String>(allContainers.keySet());
+            return allContainers.get(listKeys.getLast());
+        }
+        return null;
     }
 
     public boolean isTopContainer(String uniqueId) {
@@ -221,7 +213,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return false;
     }
 
-    public void reorderContainer(String uniqueId, ContainerShadowNode container) {
+    public void reorderContainer(String uniqueId, FlutterViewContainer container) {
         if (uniqueId == null || container == null) return;
         if (allContainers.containsKey(uniqueId)) {
             allContainers.remove(uniqueId);
@@ -238,70 +230,29 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return new LinkedList<String>(allContainers.keySet());
     }
 
-    public static class ContainerShadowNode implements FlutterViewContainerObserver {
-        private WeakReference<FlutterViewContainer> container;
-        private FlutterBoostPlugin plugin;
+    public void onContainerCreated(FlutterViewContainer container) {
+        Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
+    }
 
-        public static ContainerShadowNode create(FlutterViewContainer container, FlutterBoostPlugin plugin) {
-            return new ContainerShadowNode(container, plugin);
-        }
+    public void onContainerAppeared(FlutterViewContainer container) {
+        String uniqueId = container.getUniqueId();
+        reorderContainer(uniqueId, container);
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), null);
 
-        private ContainerShadowNode(FlutterViewContainer container, FlutterBoostPlugin plugin) {
-            assert container != null;
-            this.container = new WeakReference<>(container);
-            this.plugin = plugin;
-        }
+        onContainerShow(uniqueId);
+        Log.v(TAG, "#onContainerAppeared: " + uniqueId + ", " + getContainers());
+    }
 
-        public FlutterViewContainer container() {
-            return container.get();
-        }
+    public void onContainerDisappeared(FlutterViewContainer container) {
+        String uniqueId = container.getUniqueId();
+        onContainerHide(uniqueId);
+        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " + getContainers());
+    }
 
-        public String getUniqueId() {
-            if (container() != null) {
-                return container().getUniqueId();
-            }
-            return null;
-        }
-
-        public String getUrl() {
-            if (container() != null) {
-                return container().getUrl();
-            }
-            return null;
-        }
-
-        public Map<String, Object> getUrlParams() {
-            if (container() != null) {
-                return container().getUrlParams();
-            }
-            return null;
-        }
-
-        @Override
-        public void onCreateView() {
-            Log.v(TAG, "#onCreateView: " + getUniqueId() + ", " + plugin.getContainers());
-        }
-
-        @Override
-        public void onAppear() {
-            plugin.reorderContainer(getUniqueId(), this);
-            plugin.pushRoute(getUniqueId(), getUrl(), getUrlParams(), null);
-
-            plugin.onContainerShow(getUniqueId());
-            Log.v(TAG, "#onAppear: " + getUniqueId() + ", " + plugin.getContainers());
-        }
-
-        @Override
-        public void onDisappear() {
-            plugin.onContainerHide(getUniqueId());
-            Log.v(TAG, "#onDisappear: " + getUniqueId() + ", " + plugin.getContainers());
-        }
-
-        @Override
-        public void onDestroyView() {
-            plugin.removeRoute(getUniqueId(), null);
-            plugin.removeContainer(getUniqueId());
-            Log.v(TAG, "#onDestroyView: " + getUniqueId() + ", " + plugin.getContainers());
-        }
+    public void onContainerDestroyed(FlutterViewContainer container) {
+        String uniqueId = container.getUniqueId();
+        removeRoute(uniqueId, null);
+        removeContainer(uniqueId);
+        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " + getContainers());
     }
 }

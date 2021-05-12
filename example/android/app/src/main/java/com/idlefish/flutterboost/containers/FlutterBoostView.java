@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostPlugin;
+import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +27,6 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostView extends LifecycleView implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostView";
-    private FlutterViewContainerObserver mObserver;
     private Callback mCallback;
     private boolean mCreateAndStart;
     private boolean mIsDestroyed;
@@ -39,20 +39,18 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     @NonNull
-    public static CachedEngineBuilder withCachedEngine(@NonNull String engineId) {
-        return new CachedEngineBuilder(engineId);
+    public static CachedEngineBuilder withCachedEngine() {
+        return new CachedEngineBuilder();
     }
 
     public static class CachedEngineBuilder {
-        private final String engineId;
         private RenderMode renderMode = RenderMode.texture;
         private TransparencyMode transparencyMode = TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
         private String url;
         private HashMap<String, String> urlParam;
 
-        private CachedEngineBuilder(@NonNull String engineId) {
-            this.engineId = engineId;
+        private CachedEngineBuilder() {
         }
 
         @NonNull
@@ -71,7 +69,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         @NonNull
         protected Bundle createArgs() {
             Bundle args = new Bundle();
-            args.putString(ARG_CACHED_ENGINE_ID, engineId);
+            args.putString(ARG_CACHED_ENGINE_ID, FlutterBoost.ENGINE_ID);
             args.putString(
                     ARG_FLUTTERVIEW_RENDER_MODE,
                     renderMode != null ? renderMode.name() : RenderMode.surface.name());
@@ -80,7 +78,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
             args.putSerializable(EXTRA_URL_PARAM, urlParam);
-            args.putString(EXTRA_UNIQUE_ID, UUID.randomUUID().toString());
+            args.putString(EXTRA_UNIQUE_ID, FlutterBoostUtils.createUniqueId(url));
             return args;
         }
 
@@ -119,8 +117,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     @Override
     public void onCreate() {
         super.onCreate();
-        mObserver = FlutterBoostPlugin.ContainerShadowNode.create(this, FlutterBoost.instance().getPlugin());
-        mObserver.onCreateView();
+        FlutterBoost.instance().getPlugin().onContainerCreated(this);
         onStart();
         mCreateAndStart = true;
     }
@@ -132,7 +129,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
             onCreate();
         }
         super.onResume();
-        mObserver.onAppear();
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
@@ -149,7 +146,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     public void onStop() {
         if(isDestroyed()) return;
         super.onStop();
-        mObserver.onDisappear();
+        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
     }
 
     @Override
@@ -157,7 +154,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         if(isDestroyed()) return;
         if (mCreateAndStart) {
             super.onDestroy();
-            mObserver.onDestroyView();
+            FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         }
         mIsDestroyed = true;
     }
@@ -170,10 +167,10 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         if (getVisibility() == View.VISIBLE) {
-            mObserver.onAppear();
+            FlutterBoost.instance().getPlugin().onContainerAppeared(this);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         } else if (getVisibility() == View.GONE) {
-            mObserver.onDisappear();
+            FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         }
     }

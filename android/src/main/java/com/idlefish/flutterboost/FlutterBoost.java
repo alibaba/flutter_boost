@@ -48,7 +48,7 @@ public class FlutterBoost {
 
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback, FlutterBoostOptions options) {
         // 1. initialize default engine
-        FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+        FlutterEngine engine = getEngine();
         if (engine == null) {
             if (options == null) options = FlutterBoostOptions.createDefault();
             engine = new FlutterEngine(application, options.shellArgs());
@@ -73,11 +73,11 @@ public class FlutterBoost {
      */
     public FlutterBoostPlugin getPlugin() {
         if (plugin == null) {
-            FlutterEngine engine = FlutterEngineCache.getInstance().get(ENGINE_ID);
+            FlutterEngine engine = getEngine();
             if (engine == null) {
                 throw new RuntimeException("FlutterBoost might *not* have been initialized yet!!!");
             }
-            plugin = getFlutterBoostPlugin(engine);
+            plugin = FlutterBoostUtils.getPlugin(engine);
         }
         return plugin;
     }
@@ -142,19 +142,6 @@ public class FlutterBoost {
         Messages.CommonParams params= new Messages.CommonParams();
         params.setUniqueId(uniqueId);
         this.getPlugin().popRoute(params);
-    }
-
-    private FlutterBoostPlugin getFlutterBoostPlugin(FlutterEngine engine) {
-        if (engine != null) {
-            try {
-                Class<? extends FlutterPlugin> pluginClass =
-                        (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
-                return (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 
     private void setupActivityLifecycleCallback(Application application) {
