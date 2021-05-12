@@ -76,7 +76,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (FlutterBoost.instance().isAppInBackground() &&
-                    !FlutterBoost.instance().getPlugin().isTopContainer(getUniqueId())) {
+                    !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
                 Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -100,7 +100,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onPause();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (FlutterBoost.instance().isAppInBackground() &&
-                    !FlutterBoost.instance().getPlugin().isTopContainer(getUniqueId())) {
+                    !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
                 Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
