@@ -26,7 +26,7 @@
 #import <Flutter/Flutter.h>
 #import "FlutterBoost.h"
 #import "FlutterBoostPlugin.h"
-#import "FlutterBoostOptions.h"
+#import "Options.h"
 
 @interface FlutterBoost ()
 
@@ -39,11 +39,11 @@
 - (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback{
     
     //调用默认的配置参数进行初始化
-    [self setup:application delegate:delegate callback:callback options:FlutterBoostOptions.createDefault];
+    [self setup:application delegate:delegate callback:callback options:FlutterBoostSetupOptions.createDefault];
     
 }
 
-- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback options:(FlutterBoostOptions*)options{
+- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback options:(FlutterBoostSetupOptions*)options{
     
     if([delegate respondsToSelector:@selector(engine)]){
         self.engine = delegate.engine;
@@ -106,8 +106,16 @@
 #pragma mark - open/close Page
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments completion:(void(^)(BOOL)) completion {
     
-    [self.plugin.delegate pushFlutterRoute:pageName uniqueId:nil arguments:arguments completion:completion];
+    FlutterBoostPushOptions* options = [[FlutterBoostPushOptions alloc]init];
+    options.pageName = pageName;
+    options.arguments = arguments;
+    options.completion = completion;
     
+    [self.plugin.delegate pushFlutterRoute:options];
+}
+
+- (void)open:(FlutterBoostPushOptions* )options{
+    [self.plugin.delegate pushFlutterRoute:options];
 }
 
 - (void)close:(NSString *)uniqueId {

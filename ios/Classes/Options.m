@@ -22,66 +22,33 @@
  * THE SOFTWARE.
  */
 
-#import "FlutterBoostOptions.h"
+#import "Options.h"
 
 
-@implementation FlutterBoostOptionsBuilder
+@implementation FlutterBoostSetupOptions
 
 - (instancetype)init
 {
     self = [super init];
     if (self) {
-        //set default value
-        self.initalRoute = @"/";
         self.dartEntryPoint = @"main";
+        self.initalRoute = @"/";
     }
     return self;
 }
 
-- (FlutterBoostOptionsBuilder*)initalRoute: (NSString*)initalRoute{
-    self.initalRoute = initalRoute;
-    return self;
-}
-
-
-- (FlutterBoostOptionsBuilder*)dartEntryPoint: (NSString*) dartEntryPoint{
-    self.dartEntryPoint = dartEntryPoint;
-    return self;
-}
-
-
-- (FlutterBoostOptionsBuilder*)dartObject: (FlutterDartProject*)dartObject{
-    self.dartObject = dartObject;
-    return self;
-}
-
-- (FlutterBoostOptions*)build{
-    return [[FlutterBoostOptions alloc]initWithBuilder:self];
-}
-@end
-
-
-
-
-@implementation FlutterBoostOptions
-
-+ (FlutterBoostOptions*)createDefault{
-    return [[[FlutterBoostOptionsBuilder alloc]init]build];
-}
-\
-- (instancetype)initWithBuilder:(FlutterBoostOptionsBuilder*)builder
-{
-    self = [super init];
-    if (self) {
-        //set value from builder.
-        self.initalRoute = builder.initalRoute;
-        self.dartEntryPoint = builder.dartEntryPoint;
-        self.dartObject = builder.dartObject;
-    }
-    return self;
++ (FlutterBoostSetupOptions*)createDefault{
+    return [[FlutterBoostSetupOptions alloc] init];
 }
 
 @end
+
+
+@implementation FlutterBoostPushOptions
+
+@end
+
+
 
 
 

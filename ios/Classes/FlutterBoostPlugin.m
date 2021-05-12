@@ -73,9 +73,17 @@
 }
 
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
-    [self.delegate pushFlutterRoute:input.pageName uniqueId:input.uniqueId arguments:input.arguments completion:^(BOOL completion) {
-        //因为这里是flutter端开启新容器push一个页面，所以这里原生用不着，所以这里completion传一个空的即可
-    }];
+    FlutterBoostPushOptions* options = [[FlutterBoostPushOptions alloc]init];
+    options.pageName = input.pageName;
+    options.uniqueId = input.uniqueId;
+    options.arguments = input.arguments;
+    
+    //因为这里是flutter端开启新容器push一个页面，所以这里原生用不着，所以这里completion传一个空的即可
+    options.completion = ^(BOOL completion) {
+        
+    };
+    
+    [self.delegate pushFlutterRoute: options];
 }
 
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {

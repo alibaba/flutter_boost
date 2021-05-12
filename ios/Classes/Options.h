@@ -22,19 +22,45 @@
  * THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "messages.h"
-#import "Options.h"
+
 #import <Flutter/Flutter.h>
 
+//此文件用用于配置FlutterBoost各种配置文件
 
-@protocol  FlutterBoostDelegate <NSObject>
+///启动参数配置
+@interface FlutterBoostSetupOptions : NSObject
 
-@optional
-- (FlutterEngine*) engine;
-@required  
-- (void) pushNativeRoute:(NSString *) pageName arguments:(NSDictionary *) arguments;
-- (void) pushFlutterRoute:(FlutterBoostPushOptions*)options;
-- (void) popRoute:(NSString *)uniqueId;
+///初始路由
+@property (nonatomic, strong) NSString* initalRoute;
+
+///dart 入口
+@property (nonatomic, strong) NSString* dartEntryPoint;
+
+///FlutterDartProject数据
+@property (nonatomic, strong) FlutterDartProject* dartObject;
+
+///创建一个默认的Options对象
++ (FlutterBoostSetupOptions*)createDefault;
+
 @end
 
+
+///新页面打开参数配置
+@interface FlutterBoostPushOptions : NSObject
+
+///页面在路由表中的名字
+@property(nonatomic, strong) NSString* pageName;
+
+///参数
+@property(nonatomic, strong) NSDictionary* arguments;
+
+///参数回传的回调，仅在原生->flutter页面的时候有用
+@property(nonatomic, strong) void(^onPageFinished)(NSDictionary*);
+
+///open方法完成后的回调，仅在原生->flutter页面的时候有用
+@property(nonatomic, strong) void(^completion)(BOOL);
+
+///代理内部会使用，原生往flutter open的时候此参数设为nil即可
+@property(nonatomic, strong) NSString* uniqueId;
+
+@end
