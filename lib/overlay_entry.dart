@@ -111,7 +111,7 @@ class _ContainerOverlayEntry extends OverlayEntry {
   _ContainerOverlayEntry(BoostContainer container)
       : containerUniqueId = container.pageInfo.uniqueId,
         super(
-            builder: (ctx) => container,
+            builder: (ctx) => BoostContainerWidget(container: container),
 
             ///Why the "opaque" is false and "maintainState" is true ? ?
             ///reason video link:  https://www.youtube.com/watch?v=Ya3k828Brt4

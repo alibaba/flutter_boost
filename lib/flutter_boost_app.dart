@@ -231,7 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         // In this case , we don't need to change the overlayEntries data,
         // so we don't call any refresh method
         topContainer.pages.add(BoostPage.create(pageInfo));
-        SchedulerBinding.instance.scheduleFrame();
+        topContainer.refresh();
       }
     }
     Logger.log('push page, uniqueId=$uniqueId, existed=$existed,'
@@ -324,10 +324,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       refreshOnRemove(container);
     } else {
       for (var container in containers) {
-        container.pages
-            .removeWhere((entry) => entry.pageInfo?.uniqueId == uniqueId);
+
+        final page = container.pages.singleWhere(
+                (entry) => entry.pageInfo.uniqueId == uniqueId,
+            orElse: () => null);
+
+        if (page != null) {
+          container.pages.remove(page);
+          container.refresh();
+        }
       }
-      SchedulerBinding.instance.scheduleFrame();
     }
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
