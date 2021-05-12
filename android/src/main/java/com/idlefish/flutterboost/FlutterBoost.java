@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.Map;
@@ -109,7 +110,7 @@ public class FlutterBoost {
      * @return a FlutterView container
      */
     public FlutterViewContainer findFlutterViewContainerById(String uniqueId) {
-        return getPlugin().findContainerById(uniqueId);
+        return FlutterContainerManager.instance().findContainerById(uniqueId);
     }
 
     /**
@@ -120,7 +121,7 @@ public class FlutterBoost {
      * @return the topmost container
      */
     public FlutterViewContainer getTopContainer() {
-        return getPlugin().getTopContainer();
+        return FlutterContainerManager.instance().getTopContainer();
     }
 
     /**
