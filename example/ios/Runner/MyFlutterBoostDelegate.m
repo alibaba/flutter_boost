@@ -26,24 +26,24 @@
     }
 }
 
-- (void) pushFlutterRoute:(NSString *) pageName uniqueId:(NSString *)uniqueId arguments:(NSDictionary *) arguments completion:(void(^)(BOOL)) completion{
+- (void)pushFlutterRoute:(FlutterBoostPushOptions *)options {
     
-    FlutterEngine* engine =  [[FlutterBoost instance ] engine];
+    FlutterEngine* engine =  [[FlutterBoost instance] engine];
     engine.viewController = nil;
-    
+
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
-    
-    [vc setName:pageName uniqueId:uniqueId params:arguments];
-    
-    BOOL animated = [arguments[@"animated"] boolValue];
-    BOOL present= [arguments[@"present"] boolValue];
+
+    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments];
+
+    BOOL animated = [options.arguments[@"animated"] boolValue];
+    BOOL present= [options.arguments[@"present"] boolValue];
     if(present){
         [self.navigationController presentViewController:vc animated:animated completion:^{
-            completion(YES);
+            options.completion(YES);
         }];
     }else{
         [self.navigationController pushViewController:vc animated:animated];
-        completion(YES);
+        options.completion(YES);
     }
 }
 
@@ -59,6 +59,6 @@
     
 }
 
+
+
 @end
-
-

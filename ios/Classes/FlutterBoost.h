@@ -29,7 +29,7 @@
 #import "FlutterBoostDelegate.h"
 #import "FlutterBoostPlugin.h"
 #import "FBFlutterViewContainer.h"
-#import "FlutterBoostOptions.h"
+#import "Options.h"
 #import "messages.h"
 
 
@@ -61,7 +61,7 @@
 /// @param delegate FlutterBoostDelegate的实例，用于实现Push和Pop的具体策略
 /// @param callback 初始化完成以后的回调
 /// @param options 启动的配置，如果需要自定义请使用此参数
-- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback options:(FlutterBoostOptions*)options;
+- (void)setup:(UIApplication*)application delegate:(id<FlutterBoostDelegate>)delegate callback:(void (^)(FlutterEngine *engine))callback options:(FlutterBoostSetupOptions*)options;
 
 /// 关闭页面，混合栈推荐使用的用于操作页面的接口
 /// @param uniqueId 关闭的页面唯一ID符
@@ -73,6 +73,11 @@
 /// @param arguments 传入页面的参数; 若有特殊逻辑，可以通过这个参数设置回调的id
 /// @param completion 页面open操作完成的回调，注意，从原生调用此方法跳转此参数才会生效
 - (void)open:(NSString *)pageName arguments:(NSDictionary *)arguments completion:(void(^)(BOOL)) completion;
+
+
+/// 利用启动参数配置开启新页面
+/// @param options 配置参数
+- (void)open:(FlutterBoostPushOptions* )options;
 
 
 /// 将原生页面的数据回传到flutter侧的页面的的方法
