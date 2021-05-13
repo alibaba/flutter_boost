@@ -54,25 +54,37 @@
     //从options中获取参数
     NSString* initialRoute = options.initalRoute;
     NSString* dartEntrypointFunctionName = options.dartEntryPoint;
-    
-    
-    [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
-    
-    if(callback){
-        callback(self.engine);
-    }
-    
-    Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-    SEL selector = NSSelectorFromString(@"registerWithRegistry:");
-    if (clazz && selector && self.engine) {
-        if ([clazz respondsToSelector:selector]) {
-            ((void (*)(id, SEL, NSObject<FlutterPluginRegistry>*registry))[clazz methodForSelector:selector])(clazz, selector, self.engine);
+
+    void(^engineRun)(void) = ^(void) {
+            NSLog(@"[FlutterBoost] engine run start");
+
+            [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
+
+            if(callback){
+                callback(self.engine);
+            }
+
+            Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
+            SEL selector = NSSelectorFromString(@"registerWithRegistry:");
+            if (clazz && selector && self.engine) {
+                if ([clazz respondsToSelector:selector]) {
+                    ((void (*)(id, SEL, NSObject<FlutterPluginRegistry>*registry))[clazz methodForSelector:selector])(clazz, selector, self.engine);
+                }
+            }
+
+            self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
+            self.plugin.delegate=delegate;
+            NSLog(@"[FlutterBoost] engine run end");
+        };
+
+        if ([NSThread isMainThread]){
+            engineRun();
+        }else{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                engineRun();
+            });
         }
-    }
-    
-    self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
-    self.plugin.delegate=delegate;
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification
