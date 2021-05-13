@@ -35,16 +35,33 @@ class BoostContainer {
       _refreshListener();
     }
   }
+
   VoidCallback _refreshListener;
 }
 
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey key, this.container}) : super(key: container.key);
+  BoostContainerWidget({LocalKey key, this.container})
+      : super(key: container.key);
 
   final BoostContainer container;
 
   @override
   State<StatefulWidget> createState() => BoostContainerState();
+
+  @override
+  // ignore: invalid_override_of_non_virtual_member
+  bool operator ==(Object other) {
+    if (other is BoostContainerWidget) {
+      BoostContainerWidget otherWidget = other;
+      return this.container.pageInfo.uniqueId ==
+          otherWidget.container.pageInfo.uniqueId;
+    }
+    return super == other;
+  }
+
+  @override
+  // ignore: invalid_override_of_non_virtual_member
+  int get hashCode => container.pageInfo.uniqueId.hashCode;
 }
 
 class BoostContainerState extends State<BoostContainerWidget> {
