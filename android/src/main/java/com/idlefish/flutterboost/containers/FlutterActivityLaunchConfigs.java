@@ -15,7 +15,6 @@ public class FlutterActivityLaunchConfigs {
 
     // for onActivityResult
     public static final String ACTIVITY_RESULT_KEY = "ActivityResult";
-    public static final String NATIVE_PAGE_URL_KEY = "native_page_url";
 
     private FlutterActivityLaunchConfigs() {}
 }

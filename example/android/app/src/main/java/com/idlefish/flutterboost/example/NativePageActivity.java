@@ -9,7 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.HashMap;
@@ -17,8 +16,6 @@ import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.NATIVE_PAGE_URL_KEY;
 
 public class NativePageActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -69,12 +66,9 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void finish() {
         Intent intent = new Intent();
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("msg","This message is from NativePageActivity!!!");
-        result.put("bool", true);
-        result.put("int", 666);
-        intent.putExtra(NATIVE_PAGE_URL_KEY, "native");
-        intent.putExtra(ACTIVITY_RESULT_KEY, result);
+        intent.putExtra("msg","This message is from NativePageActivity!!!");
+        intent.putExtra("bool", true);
+        intent.putExtra("int", 666);
         setResult(Activity.RESULT_OK, intent);
         super.finish();
     }

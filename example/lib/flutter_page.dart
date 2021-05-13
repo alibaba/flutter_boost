@@ -158,7 +158,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.instance.push("native"),
+                onTap: () => BoostNavigator.instance.push("native").then((value) => print("return:${value?.toString()}")),
               ),
               InkWell(
                 child: Container(
