@@ -56,7 +56,6 @@
     NSString* dartEntrypointFunctionName = options.dartEntryPoint;
 
     void(^engineRun)(void) = ^(void) {
-            NSLog(@"[FlutterBoost] engine run start");
 
             [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
 
@@ -74,7 +73,6 @@
 
             self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
             self.plugin.delegate=delegate;
-            NSLog(@"[FlutterBoost] engine run end");
         };
 
         if ([NSThread isMainThread]){
