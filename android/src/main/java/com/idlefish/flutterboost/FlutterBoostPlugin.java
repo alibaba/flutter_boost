@@ -7,12 +7,8 @@ import androidx.annotation.NonNull;
 
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
-import com.idlefish.flutterboost.utils.BundleUtil;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -224,7 +220,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 if (null != pageName){
                     params.setPageName(pageName);
                     if(intent!=null){
-                        Map<Object, Object> result = BundleUtil.bundleToMap(intent.getExtras());
+                        Map<Object, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
                         params.setArguments(result);
                     }
                     channel.onNativeResult(params, reply -> {});
