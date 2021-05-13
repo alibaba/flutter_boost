@@ -3,8 +3,6 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 import android.util.SparseArray;
 
-import androidx.annotation.NonNull;
-
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
@@ -211,7 +209,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     @Override
-    public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         activityPluginBinding.addActivityResultListener((requestCode, resultCode, intent) -> {
             if (channel != null) {
                 Messages.CommonParams params = new Messages.CommonParams();
@@ -238,7 +236,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     @Override
-    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
 
     }
 
