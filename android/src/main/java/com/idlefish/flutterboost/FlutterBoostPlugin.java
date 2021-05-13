@@ -1,9 +1,13 @@
 package com.idlefish.flutterboost;
 
 import android.util.Log;
+import android.util.SparseArray;
+
+import androidx.annotation.NonNull;
 
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
+import com.idlefish.flutterboost.utils.BundleUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -12,12 +16,16 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
-public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi {
+public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi, ActivityAware {
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
     private Messages.FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
     private Messages.StackInfo dartStack;
+    private SparseArray<String> pageNames;
+    private int requestCode = 1000;
 
     public void setDelegate(FlutterBoostDelegate delegate) {
         this.delegate = delegate;
@@ -31,6 +39,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         channel = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
+        pageNames = new SparseArray<String>();
     }
 
     @Override
@@ -41,7 +50,11 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     @Override
     public void pushNativeRoute(Messages.CommonParams params) {
         if (delegate != null) {
-            delegate.pushNativeRoute(params.getPageName(), (Map<String, Object>) (Object)params.getArguments());
+            requestCode++;
+            if(pageNames!=null){
+                pageNames.put(requestCode,params.getPageName());
+            }
+            delegate.pushNativeRoute(params.getPageName(), (Map<String, Object>) (Object)params.getArguments(),requestCode);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
@@ -133,21 +146,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public void onNativeResult(String name, Map<String, Object> result, final Reply<Void> callback) {
-        if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
-            params.setPageName(name);
-            params.setArguments((Map<Object, Object>)(Object) result);
-            channel.onNativeResult(params,reply -> {
-                if (callback != null) {
-                    callback.reply(null);
-                }
-            });
-        } else {
-            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
-        }
-    }
-
     public void onForeground() {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
@@ -214,5 +212,42 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         removeRoute(uniqueId, null);
         FlutterContainerManager.instance().removeContainer(uniqueId);
         Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " +  FlutterContainerManager.instance().getContainers());
+    }
+
+    @Override
+    public void onAttachedToActivity(@NonNull ActivityPluginBinding activityPluginBinding) {
+        activityPluginBinding.addActivityResultListener((requestCode, resultCode, intent) -> {
+            if (channel != null) {
+                Messages.CommonParams params = new Messages.CommonParams();
+                String pageName = pageNames.get(requestCode);
+                pageNames.remove(requestCode);
+                if (null != pageName){
+                    params.setPageName(pageName);
+                    if(intent!=null){
+                        Map<Object, Object> result = BundleUtil.bundleToMap(intent.getExtras());
+                        params.setArguments(result);
+                    }
+                    channel.onNativeResult(params, reply -> {});
+                }
+            } else {
+                throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+            }
+            return true;
+        });
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding activityPluginBinding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+
     }
 }
