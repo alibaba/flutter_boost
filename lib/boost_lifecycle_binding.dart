@@ -30,7 +30,17 @@ class BoostLifecycleBinding {
 
   static final BoostLifecycleBinding instance = BoostLifecycleBinding._();
 
-  List<BoostLifecycleObserver> _observerList = <BoostLifecycleObserver>[];
+  final List<BoostLifecycleObserver> _observerList = <BoostLifecycleObserver>[];
+
+  List<NavigatorObserver> navigatorObserverList = <NavigatorObserver>[];
+
+  void addNavigatorObserver(NavigatorObserver observer) {
+    navigatorObserverList.add(observer);
+  }
+
+  bool removeNavigatorObserver(NavigatorObserver observer) {
+    return navigatorObserverList.remove(observer);
+  }
 
   void addBoostLifecycleObserver(BoostLifecycleObserver observer) {
     _observerList.add(observer);

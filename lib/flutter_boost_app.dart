@@ -463,26 +463,14 @@ class BoostPage<T> extends Page<T> {
 }
 
 class BoostNavigatorObserver extends NavigatorObserver {
-  BoostNavigatorObserver._internal();
-
-  factory BoostNavigatorObserver() => _instance;
-
-  static BoostNavigatorObserver _instance = BoostNavigatorObserver._internal();
-
-  List<NavigatorObserver> _navigatorObserverList = <NavigatorObserver>[];
-
-  void addNavigatorObserver(NavigatorObserver observer) {
-    _navigatorObserverList.add(observer);
-  }
-
-  bool removeNavigatorObserver(NavigatorObserver observer) {
-    return _navigatorObserverList.remove(observer);
-  }
+  BoostNavigatorObserver();
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didPush(route, previousRoute);
       }
     }
@@ -495,8 +483,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didPop(route, previousRoute);
       }
     }
@@ -508,8 +498,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didRemove(route, previousRoute);
       }
     }
@@ -518,8 +510,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
       }
     }
@@ -528,8 +522,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didStartUserGesture(route, previousRoute);
       }
     }
@@ -538,8 +534,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didStopUserGesture() {
-    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
-      for (NavigatorObserver observer in _navigatorObserverList) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
         observer.didStopUserGesture();
       }
     }
