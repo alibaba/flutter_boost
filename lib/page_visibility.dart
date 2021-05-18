@@ -96,7 +96,7 @@ class PageVisibilityBinding {
       }
     }
     Logger.log(
-        'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
+        'page_visibility, #dispatchPageCreateEvent, ${route.settings.name}');
 
     dispatchGlobalPageCreateEvent(route);
   }

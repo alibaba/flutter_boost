@@ -22,7 +22,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
         uniqueId: arg.uniqueId,
         arguments:
             Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}),
-        preRender: arg.preRender,
+        preRender: arg.preRender ?? false,
         withContainer: true);
   }
 

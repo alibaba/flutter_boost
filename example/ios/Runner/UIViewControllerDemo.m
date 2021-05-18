@@ -23,6 +23,10 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+- (IBAction)preRenderFlutterPage:(id)sender {
+    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"preRender":@(YES)}  ];
+}
+
 - (IBAction)pushFlutterPage:(id)sender {
     
     FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];

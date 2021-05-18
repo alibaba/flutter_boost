@@ -29,6 +29,8 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 
+#include <os/signpost.h>
+
 #define ENGINE [[FlutterBoost instance] engine]
 #define FB_PLUGIN  [FlutterBoostPlugin getPlugin: [[FlutterBoost instance] engine]]
 
@@ -159,6 +161,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)_setup
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "_setup", "name: %@", self.name);
+    }
+
     self.uniqueId = [[NSUUID UUID] UUIDString];
     [self.class instanceCounterIncrease];
 }
@@ -219,11 +228,37 @@ static NSUInteger kInstanceCounter = 0;
 }
 
 - (void)viewDidLoad {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "viewDidLoad", "name: %@", self.name);
+    }
+
     [super viewDidLoad];
     //只有在不透明情况下，才设置背景颜色，否则不设置颜色（也就是默认透明）
     if(self.opaque){
         self.view.backgroundColor = UIColor.whiteColor;
     }
+}
+
+- (void)preRender {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "preRender", "name: %@", self.name);
+    }
+
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName = _name;
+    params.arguments = _params;
+    params.uniqueId = self.uniqueId;
+    params.preRender = [NSNumber numberWithBool:YES];
+    [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
+
+            }];
+    [FB_PLUGIN addContainer:self];
 }
 
 #pragma mark - ScreenShots
@@ -234,6 +269,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)attatchFlutterEngine
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "attatchFlutterEngine", "name: %@", self.name);
+    }
+
     if(ENGINE.viewController != self){
         ENGINE.viewController=self;
     }
@@ -268,6 +310,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "viewWillAppear", "name: %@", self.name);
+    }
+
     //For new page we should attach flutter view in view will appear
     //for better performance.
     FBCommonParams* params = [[FBCommonParams alloc] init];
@@ -290,6 +339,13 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "viewDidAppear", "name: %@", self.name);
+    }
+
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
 
@@ -318,12 +374,26 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "viewWillDisappear", "name: %@", self.name);
+    }
+
     [[[UIApplication sharedApplication] keyWindow] endEditing:YES];
     [super viewWillDisappear:animated];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
 {
+    NSString *systemVersion = [[UIDevice currentDevice] systemVersion];
+    if (systemVersion.floatValue > 12.0) {
+        os_log_t log = os_log_create("com.flutterboost.example", "FBFlutterViewContainer");
+        os_signpost_id_t spid = os_signpost_id_generate(log);
+        os_signpost_event_emit(log, spid, "viewDidDisappear", "name: %@", self.name);
+    }
+
     [super bridge_viewDidDisappear:animated];
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId = self.uniqueId;
