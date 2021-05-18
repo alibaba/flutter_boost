@@ -324,9 +324,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       refreshOnRemove(container);
     } else {
       for (var container in containers) {
-
         final page = container.pages.singleWhere(
-                (entry) => entry.pageInfo.uniqueId == uniqueId,
+            (entry) => entry.pageInfo.uniqueId == uniqueId,
             orElse: () => null);
 
         if (page != null) {
@@ -464,10 +463,29 @@ class BoostPage<T> extends Page<T> {
 }
 
 class BoostNavigatorObserver extends NavigatorObserver {
-  BoostNavigatorObserver();
+  BoostNavigatorObserver._internal();
+
+  factory BoostNavigatorObserver() => _instance;
+
+  static BoostNavigatorObserver _instance = BoostNavigatorObserver._internal();
+
+  List<NavigatorObserver> _navigatorObserverList = <NavigatorObserver>[];
+
+  void addNavigatorObserver(NavigatorObserver observer) {
+    _navigatorObserverList.add(observer);
+  }
+
+  bool removeNavigatorObserver(NavigatorObserver observer) {
+    return _navigatorObserverList.remove(observer);
+  }
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didPush(route, previousRoute);
+      }
+    }
     //handle internal route
     if (previousRoute != null) {
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
@@ -477,9 +495,54 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didPop(route, previousRoute);
+      }
+    }
     if (previousRoute != null) {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didRemove(route, previousRoute);
+      }
+    }
+    super.didRemove(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+      }
+    }
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didStartUserGesture(route, previousRoute);
+      }
+    }
+    super.didStartUserGesture(route, previousRoute);
+  }
+
+  @override
+  void didStopUserGesture() {
+    if (_navigatorObserverList != null && _navigatorObserverList.isNotEmpty) {
+      for (NavigatorObserver observer in _navigatorObserverList) {
+        observer.didStopUserGesture();
+      }
+    }
+    super.didStopUserGesture();
   }
 }
