@@ -32,7 +32,7 @@ class BoostLifecycleBinding {
   void containerDidHide(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
-        .dispatchPageHideEvent(container?.topPage.route);
+        .dispatchPageHideEvent(container?.topPage?.route);
   }
 
   void routeDidPush(Route<dynamic> route, Route<dynamic> previousRoute) {
