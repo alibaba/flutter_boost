@@ -5,6 +5,7 @@ import android.os.Bundle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -14,7 +15,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
  */
 public class FlutterBoostUtils {
   public static String createUniqueId(String name) {
-    return System.currentTimeMillis() + "_" + name;
+    return UUID.randomUUID().toString() + "_" + name;
   }
 
   public static FlutterBoostPlugin getPlugin(FlutterEngine engine) {
