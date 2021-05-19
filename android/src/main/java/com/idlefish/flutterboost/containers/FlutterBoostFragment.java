@@ -172,7 +172,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public String getUrl() {
         if (!getArguments().containsKey(EXTRA_URL)) {
-            throw new RuntimeException("Oops! The fragment url are *MISSED*!");
+            throw new RuntimeException("Oops! The fragment url are *MISSED*! You should "
+                    + "override the |getUrl|, or set url via CachedEngineFragmentBuilder.");
         }
         return getArguments().getString(EXTRA_URL);
     }
