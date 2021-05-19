@@ -14,7 +14,6 @@ import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterView;
@@ -172,6 +171,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getUrl() {
+        if (!getArguments().containsKey(EXTRA_URL)) {
+            throw new RuntimeException("Oops! The fragment url are *MISSED*!");
+        }
         return getArguments().getString(EXTRA_URL);
     }
 
@@ -182,6 +184,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getUniqueId() {
+        if (!getArguments().containsKey(EXTRA_UNIQUE_ID)) {
+            // set default uniqueId
+            getArguments().putString(EXTRA_UNIQUE_ID, FlutterBoostUtils.createUniqueId(getUrl()));
+        }
         return getArguments().getString(EXTRA_UNIQUE_ID);
     }
 

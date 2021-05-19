@@ -203,8 +203,8 @@ class PageVisibilityBinding {
       }
     }
 
-    Logger.log(
-        'page_visibility, #dispatchPageBackgroundEvent, ${route.settings.name}');
+    Logger.log('page_visibility, '
+        '#dispatchPageBackgroundEvent, ${route.settings.name}');
 
     dispatchGlobalBackgroundEvent(route);
   }

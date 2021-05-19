@@ -52,8 +52,8 @@ class BoostContainerWidget extends StatefulWidget {
   // ignore: invalid_override_of_non_virtual_member
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
-      BoostContainerWidget otherWidget = other;
-      return this.container.pageInfo.uniqueId ==
+      var otherWidget = other;
+      return container.pageInfo.uniqueId ==
           otherWidget.container.pageInfo.uniqueId;
     }
     return super == other;

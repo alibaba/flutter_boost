@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
@@ -324,9 +323,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       refreshOnRemove(container);
     } else {
       for (var container in containers) {
-
         final page = container.pages.singleWhere(
-                (entry) => entry.pageInfo.uniqueId == uniqueId,
+            (entry) => entry.pageInfo.uniqueId == uniqueId,
             orElse: () => null);
 
         if (page != null) {
