@@ -199,7 +199,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
-        pushRoute(container.getUniqueId(), getUrl(), getUrlParams(), true/*preRender*/, null);
+        pushRoute(container.getUniqueId(), container.getUrl(), container.getUrlParams(), true/*preRender*/, null);
         Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
     }
 
