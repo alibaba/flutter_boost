@@ -33,6 +33,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostActivity";
+    private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
 
     @Override
@@ -145,6 +146,10 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUrl() {
+        if (!getIntent().hasExtra(EXTRA_URL)) {
+            throw new RuntimeException("Oops! The activity url are *MISSED*! You should "
+                    + "override the |getUrl|, or set url via CachedEngineIntentBuilder.");
+        }
         return getIntent().getStringExtra(EXTRA_URL);
     }
 
@@ -155,7 +160,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUniqueId() {
+        if (!getIntent().hasExtra(EXTRA_URL)) {
+            return this.who;
+        }
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
+    }
+
+    @Override
+    public String getCachedEngineId() {
+      return FlutterBoost.ENGINE_ID;
     }
 
     public static class CachedEngineIntentBuilder {

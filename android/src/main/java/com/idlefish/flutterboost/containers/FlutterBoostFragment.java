@@ -14,6 +14,7 @@ import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterView;
@@ -26,6 +27,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
+    private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private boolean hasResumed = false;
 
@@ -185,11 +187,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getUniqueId() {
-        if (!getArguments().containsKey(EXTRA_UNIQUE_ID)) {
-            // set default uniqueId
-            getArguments().putString(EXTRA_UNIQUE_ID, FlutterBoostUtils.createUniqueId(getUrl()));
-        }
-        return getArguments().getString(EXTRA_UNIQUE_ID);
+        return getArguments().getString(EXTRA_UNIQUE_ID, this.who);
+    }
+
+    @Override
+    public String getCachedEngineId() {
+      return FlutterBoost.ENGINE_ID;
     }
 
     public static class CachedEngineFragmentBuilder {
@@ -210,41 +213,41 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             fragmentClass = subclass;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder url(String url) {
+        public CachedEngineFragmentBuilder url(String url) {
             this.url = url;
             return this;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder urlParams(Map<String, Object> params) {
+        public CachedEngineFragmentBuilder urlParams(Map<String, Object> params) {
             this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder uniqueId(String uniqueId) {
+        public CachedEngineFragmentBuilder uniqueId(String uniqueId) {
             this.uniqueId = uniqueId;
             return this;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder destroyEngineWithFragment(
+        public CachedEngineFragmentBuilder destroyEngineWithFragment(
                 boolean destroyEngineWithFragment) {
             this.destroyEngineWithFragment = destroyEngineWithFragment;
             return this;
         }
 
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder renderMode( RenderMode renderMode) {
+        public CachedEngineFragmentBuilder renderMode( RenderMode renderMode) {
             this.renderMode = renderMode;
             return this;
         }
 
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder transparencyMode(
+        public CachedEngineFragmentBuilder transparencyMode(
                  TransparencyMode transparencyMode) {
             this.transparencyMode = transparencyMode;
             return this;
         }
 
-        public FlutterBoostFragment.CachedEngineFragmentBuilder shouldAttachEngineToActivity(
+        public CachedEngineFragmentBuilder shouldAttachEngineToActivity(
                 boolean shouldAttachEngineToActivity) {
             this.shouldAttachEngineToActivity = shouldAttachEngineToActivity;
             return this;
