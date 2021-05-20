@@ -27,6 +27,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostView extends LifecycleView implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostView";
+    private final String mWho = UUID.randomUUID().toString();
     private Callback mCallback;
     private boolean mCreateAndStart;
     private boolean mIsDestroyed;
@@ -193,6 +194,11 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
     }
 
+    @Override
+    public String getCachedEngineId() {
+      return getArguments().getString(ARG_CACHED_ENGINE_ID, FlutterBoost.ENGINE_ID);
+    }
+
     public void onFlutterUiDisplayed() {
         if (mCallback != null) {
             mCallback.onFlutterUiDisplayed();
@@ -215,18 +221,20 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
     }
 
-    @Nullable
     public String getUrl() {
+        if (!getArguments().containsKey(EXTRA_URL)) {
+            throw new RuntimeException("Oops! The view url are *MISSED*! You should "
+                    + "override the |getUrl|, or set url via CachedEngineBuilder.");
+        }
         return getArguments().getString(EXTRA_URL);
     }
 
-    @Nullable
-    public HashMap<String, Object> getUrlParams() {
+    public Map<String, Object> getUrlParams() {
         return (HashMap<String, Object>)getArguments().getSerializable(EXTRA_URL_PARAM);
     }
 
     public String getUniqueId() {
-        return getArguments().getString(EXTRA_UNIQUE_ID);
+        return getArguments().getString(EXTRA_UNIQUE_ID, this.mWho);
     }
 
     public interface Callback extends FlutterUiDisplayListener {
