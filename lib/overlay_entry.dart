@@ -115,7 +115,7 @@ class _ContainerOverlayEntry extends OverlayEntry {
 
             ///Why the "opaque" is false and "maintainState" is true ? ?
             ///reason video link:  https://www.youtube.com/watch?v=Ya3k828Brt4
-            opaque: false,
+            opaque: true,
             maintainState: true);
 
   ///This overlay's id,which is the same as the it's related container
