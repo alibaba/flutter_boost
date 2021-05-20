@@ -5,7 +5,7 @@
 
 # Release Note
 
-v3.0-beta.10
+v3.0-beta.11
 
 PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING CHANGE
 
@@ -38,7 +38,7 @@ androidx branch
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-beta.10'
+        ref: 'v3.0-beta.11'
 ```
 
 
