@@ -33,7 +33,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostActivity";
-    private final String who = UUID.randomUUID().toString();
+    private final String uniqueId = UUID.randomUUID().toString();
     private FlutterView flutterView;
 
     @Override
@@ -161,7 +161,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public String getUniqueId() {
         if (!getIntent().hasExtra(EXTRA_URL)) {
-            return this.who;
+            return uniqueId;
         }
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
     }

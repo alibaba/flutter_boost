@@ -27,7 +27,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostView extends LifecycleView implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostView";
-    private final String mWho = UUID.randomUUID().toString();
+    private final String mUniqueId = UUID.randomUUID().toString();
     private Callback mCallback;
     private boolean mCreateAndStart;
     private boolean mIsDestroyed;
@@ -234,7 +234,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     public String getUniqueId() {
-        return getArguments().getString(EXTRA_UNIQUE_ID, this.mWho);
+        return getArguments().getString(EXTRA_UNIQUE_ID, mUniqueId);
     }
 
     public interface Callback extends FlutterUiDisplayListener {

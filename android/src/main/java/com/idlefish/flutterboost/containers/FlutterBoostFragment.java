@@ -27,7 +27,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
-    private final String who = UUID.randomUUID().toString();
+    private final String uniqueId = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private boolean hasResumed = false;
 
@@ -187,7 +187,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getUniqueId() {
-        return getArguments().getString(EXTRA_UNIQUE_ID, this.who);
+        return getArguments().getString(EXTRA_UNIQUE_ID, uniqueId);
     }
 
     @Override
