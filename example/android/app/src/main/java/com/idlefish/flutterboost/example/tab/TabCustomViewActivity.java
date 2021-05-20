@@ -26,14 +26,14 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     private int lastId = -1;
 
     private  FlutterBoostView createFlutterBoostView(String url) {
-        HashMap<String, String> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         params.put("url", url);
         // #1. create FlutterBoostView
         return FlutterBoostView.withCachedEngine()
                 .transparencyMode(TransparencyMode.transparent)
                 .renderMode(RenderMode.texture)
                 .url(url)
-                .params(params)
+                .urlParams(params)
                 .build(this, this);
     }
 
