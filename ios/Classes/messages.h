@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString * pageName;
 @property(nonatomic, copy, nullable) NSString * uniqueId;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
+@property(nonatomic, strong, nullable) NSNumber * opaque;
 @end
 
 @interface FBStackInfo : NSObject

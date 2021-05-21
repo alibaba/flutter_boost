@@ -62,6 +62,7 @@
 @property (nonatomic,copy) NSString *uniqueId;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
+@property(nonatomic, assign) BOOL opaque;
 @end
 
 @implementation FBFlutterViewContainer
@@ -105,11 +106,13 @@
     return [self init];
 }
 
-- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params
+- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque
 {
     if(!_name && name){
         _name = name;
         _params = params;
+        _opaque = opaque;
+        self.viewOpaque = opaque;
         if (uniqueId != nil) {
             _uniqueId = uniqueId;
         }
@@ -159,6 +162,7 @@ static NSUInteger kInstanceCounter = 0;
         params.pageName = _name;
         params.arguments = _params;
         params.uniqueId = self.uniqueId;
+        params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
 
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
                 }];
@@ -210,7 +214,9 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.whiteColor;
+    if(self.opaque){
+        self.view.backgroundColor = UIColor.whiteColor;
+    }
 }
 
 #pragma mark - ScreenShots
@@ -259,6 +265,8 @@ static NSUInteger kInstanceCounter = 0;
     params.pageName = _name;
     params.arguments = _params;
     params.uniqueId = self.uniqueId;
+    params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
+    
     [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
            
             }];

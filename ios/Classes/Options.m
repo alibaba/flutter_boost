@@ -46,6 +46,16 @@
 
 @implementation FlutterBoostRouteOptions
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        //设置opaque默认为YES
+        self.opaque = YES;
+    }
+    return self;
+}
+
 @end
 
 

@@ -33,7 +33,7 @@
 
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
 
-    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments];
+    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments opaque:options.opaque];
 
     BOOL animated = [options.arguments[@"animated"] boolValue];
     BOOL present= [options.arguments[@"present"] boolValue];
