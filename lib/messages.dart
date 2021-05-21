@@ -11,12 +11,14 @@ class CommonParams {
   String pageName;
   String uniqueId;
   Map<Object, Object> arguments;
+  bool opaque;
 
   Object encode() {
     final Map<Object, Object> pigeonMap = <Object, Object>{};
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
     pigeonMap['arguments'] = arguments;
+    pigeonMap['opaque'] = opaque;
     return pigeonMap;
   }
 
@@ -25,7 +27,8 @@ class CommonParams {
     return CommonParams()
       ..pageName = pigeonMap['pageName'] as String
       ..uniqueId = pigeonMap['uniqueId'] as String
-      ..arguments = pigeonMap['arguments'] as Map<Object, Object>;
+      ..arguments = pigeonMap['arguments'] as Map<Object, Object>
+      ..opaque = pigeonMap['opaque'] as bool;
   }
 }
 

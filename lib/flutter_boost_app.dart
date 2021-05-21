@@ -181,7 +181,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<T> pushWithResult<T extends Object>(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+      {String uniqueId,
+      Map<String, dynamic> arguments,
+      bool withContainer,
+      bool opaque = true}) {
     final completer = Completer<T>();
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
@@ -189,18 +192,25 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final params = CommonParams()
         ..pageName = pageName
         ..uniqueId = uniqueId
+        ..opaque = opaque
         ..arguments = arguments ?? <String, dynamic>{};
       nativeRouterApi.pushFlutterRoute(params);
     } else {
       push(pageName,
-          uniqueId: uniqueId, arguments: arguments, withContainer: false);
+          uniqueId: uniqueId,
+          arguments: arguments,
+          withContainer: false,
+          opaque: opaque);
     }
     _pendingResult[uniqueId] = completer;
     return completer.future;
   }
 
   void push(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+      {String uniqueId,
+      Map<String, dynamic> arguments,
+      bool withContainer,
+      bool opaque = true}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -216,7 +226,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           pageName: pageName,
           uniqueId: uniqueId ?? _createUniqueId(pageName),
           arguments: arguments,
-          withContainer: withContainer);
+          withContainer: withContainer,
+          opaque: opaque);
       if (withContainer) {
         final container = _createContainer(pageInfo);
         final previousContainer = topContainer;

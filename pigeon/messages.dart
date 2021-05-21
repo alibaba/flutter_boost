@@ -4,6 +4,7 @@ class CommonParams {
   String pageName;
   String uniqueId;
   Map<String, Object> arguments;
+  bool opaque;
 }
 
 class StackInfo {
@@ -37,5 +38,6 @@ void configurePigeon(PigeonOptions opts) {
   opts.objcHeaderOut = 'ios/Classes/messages.h';
   opts.objcSourceOut = 'ios/Classes/messages.m';
   opts.objcOptions.prefix = 'FB';
-  opts.javaOut = 'android/src/main/java/com/idlefish/flutterboost/Messages.java';
+  opts.javaOut =
+      'android/src/main/java/com/idlefish/flutterboost/Messages.java';
 }
