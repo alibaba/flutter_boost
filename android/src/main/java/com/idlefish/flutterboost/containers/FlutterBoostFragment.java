@@ -29,7 +29,6 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
-    private boolean hasResumed = false;
 
     private void findFlutterView(View view) {
         if (view instanceof ViewGroup) {
@@ -67,6 +66,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         View view = super.onCreateView(inflater, container, savedInstanceState);
         assert(flutterView == null);
         findFlutterView(view);
+        flutterView.detachFromFlutterEngine();
         return view;
     }
 
@@ -99,16 +99,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         assert(flutterView != null);
-        if (!hasResumed) {
-            flutterView.detachFromFlutterEngine();
-        }
         super.onResume();
         if (!isHidden()) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        hasResumed = true;
     }
 
     @Override
