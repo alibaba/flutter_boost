@@ -232,7 +232,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () {
                   BoostNavigator.instance.push("transparentWidget",
-                      withContainer: true, opaque: false);
+                      withContainer: false, opaque: false);
                 },
               ),
               InkWell(

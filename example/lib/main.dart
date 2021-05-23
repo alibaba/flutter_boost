@@ -45,9 +45,9 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   }
 
   @override
-  void onForground(Route route) {
+  void onForeground(Route route) {
     Logger.log(
-        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForground route:${route.settings.name}');
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForeground route:${route.settings.name}');
   }
 
   @override
