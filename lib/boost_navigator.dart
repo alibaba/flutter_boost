@@ -127,16 +127,10 @@ class BoostNavigator {
 }
 
 class PageInfo {
-  PageInfo(
-      {this.pageName,
-      this.uniqueId,
-      this.arguments,
-      this.withContainer,
-      this.opaque = true});
+  PageInfo({this.pageName, this.uniqueId, this.arguments, this.withContainer});
 
   bool withContainer;
   String pageName;
   String uniqueId;
-  bool opaque;
   Map<String, dynamic> arguments;
 }

@@ -263,18 +263,6 @@ class _PushWidgetState extends State<PushWidget> {
   VoidCallback _backPressedListenerUnsub;
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _backPressedListenerUnsub?.call();
