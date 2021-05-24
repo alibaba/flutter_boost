@@ -112,7 +112,16 @@
         _name = name;
         _params = params;
         _opaque = opaque;
-        self.viewOpaque = opaque;
+        //
+        //这里如果是不透明的情况，才将viewOpaque 设为false，
+        //并且才将modalStyle设为UIModalPresentationOverFullScreen
+        //因为UIModalPresentationOverFullScreen模式下，下面的vc重新显示的时候不会
+        //调用viewAppear相关生命周期,所以需要手动调用beginAppearanceTransition相关方法来触发
+        //
+        if(!_opaque){
+            self.viewOpaque = opaque;
+            self.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        }
         if (uniqueId != nil) {
             _uniqueId = uniqueId;
         }
@@ -139,7 +148,6 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
-//        [FLUTTER_APP pause];
         [FBLifecycle pause ];
     }
 }
@@ -174,10 +182,7 @@ static NSUInteger kInstanceCounter = 0;
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
         [self notifyWillDealloc];
-        
-        if (self.engine.viewController == self) {
-            [self detatchFlutterEngine];
-        }
+        [self detachFlutterEngineIfNeeded];
     }
     [super didMoveToParentViewController:parent];
 }
@@ -190,6 +195,7 @@ static NSUInteger kInstanceCounter = 0;
         }
         //当VC被dismiss时，就通知flutter层销毁page
         [self notifyWillDealloc];
+        [self detachFlutterEngineIfNeeded];
     }];
 }
 
@@ -214,6 +220,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //只有在不透明情况下，才设置背景颜色，否则不设置颜色（也就是默认透明）
     if(self.opaque){
         self.view.backgroundColor = UIColor.whiteColor;
     }
@@ -232,15 +239,17 @@ static NSUInteger kInstanceCounter = 0;
     }
 }
 
-- (void)detatchFlutterEngine
+- (void)detachFlutterEngineIfNeeded
 {
-    //need to call [surfaceUpdated:NO] to detach the view controller's ref from
-    //interal engine platformViewController,or dealloc will not be called after controller close.
-    //detail:https://github.com/flutter/engine/blob/07e2520d5d8f837da439317adab4ecd7bff2f72d/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L529
-    [self surfaceUpdated:NO];
-    
-    if(ENGINE.viewController != nil) {
-        ENGINE.viewController = nil;
+    if (self.engine.viewController == self) {
+        //need to call [surfaceUpdated:NO] to detach the view controller's ref from
+        //interal engine platformViewController,or dealloc will not be called after controller close.
+        //detail:https://github.com/flutter/engine/blob/07e2520d5d8f837da439317adab4ecd7bff2f72d/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L529
+        [self surfaceUpdated:NO];
+        
+        if(ENGINE.viewController != nil) {
+            ENGINE.viewController = nil;
+        }
     }
 }
 

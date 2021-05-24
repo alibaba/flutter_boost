@@ -35,15 +35,19 @@
     [[FlutterBoost instance]open:options];
 }
 
-- (IBAction)present:(id)sender {
-    
+- (IBAction)present:(id)sender {    
     FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
-    options.pageName = @"secondStateful";
+    options.pageName = @"transparentWidget";
     options.arguments = @{@"present":@(YES)};
+    options.opaque = NO;
     options.completion = ^(BOOL completion) {
 
     };
 
     [[FlutterBoost instance]open:options];
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 @end
