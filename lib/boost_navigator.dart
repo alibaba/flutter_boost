@@ -132,7 +132,7 @@ class PageInfo {
       this.uniqueId,
       this.arguments,
       this.withContainer,
-      this.opaque});
+      this.opaque = true});
 
   bool withContainer;
   String pageName;
