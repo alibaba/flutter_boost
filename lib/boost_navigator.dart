@@ -59,7 +59,9 @@ class BoostNavigator {
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments, bool withContainer = false}) async {
+      {Map<String, dynamic> arguments,
+      bool withContainer = false,
+      bool opaque = true}) async {
     var pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
@@ -84,7 +86,9 @@ class BoostNavigator {
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
           return appState.pushWithResult(pushOption.name,
-              arguments: pushOption.arguments, withContainer: withContainer);
+              arguments: pushOption.arguments,
+              withContainer: withContainer,
+              opaque: opaque);
         } else {
           final params = CommonParams()
             ..pageName = pushOption.name

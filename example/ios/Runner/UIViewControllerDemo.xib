@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,7 +17,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nzh-7M-COj">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nzh-7M-COj">
                     <rect key="frame" x="127" y="313.5" width="121" height="40"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="WtG-3o-XWQ"/>
@@ -30,20 +28,20 @@
                         <action selector="pushFlutterPage:" destination="-1" eventType="touchUpInside" id="NCF-bc-bsK"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DT7-uk-4YM">
-                    <rect key="frame" x="117.5" y="361" width="140" height="40"/>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DT7-uk-4YM">
+                    <rect key="frame" x="97.5" y="361" width="180" height="40"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="NXI-Pz-Jlx"/>
                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="140" id="QqC-Lf-gkn"/>
                         <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="cQZ-3Y-0HG"/>
                     </constraints>
-                    <state key="normal" title="Present Flutter Page"/>
+                    <state key="normal" title="Present transparernt page"/>
                     <connections>
                         <action selector="present:" destination="-1" eventType="touchUpInside" id="2xc-IT-njo"/>
                     </connections>
                 </button>
                 <textField opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="This a native page" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bCg-og-n1K">
-                    <rect key="frame" x="121" y="120" width="133" height="17"/>
+                    <rect key="frame" x="121" y="120" width="133" height="18.5"/>
                     <color key="textColor" red="1" green="0.034776387922296426" blue="0.45555885506455018" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <textInputTraits key="textInputTraits"/>

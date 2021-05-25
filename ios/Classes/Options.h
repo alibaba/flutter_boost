@@ -63,4 +63,6 @@
 ///代理内部会使用，原生往flutter open的时候此参数设为nil即可
 @property(nonatomic, strong) NSString* uniqueId;
 
+///这个页面是否透明 注意:default value = YES
+@property(nonatomic,assign) BOOL opaque;
 @end

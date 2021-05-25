@@ -27,16 +27,14 @@
 }
 
 - (void)pushFlutterRoute:(FlutterBoostRouteOptions *)options {
+    FBFlutterViewContainer *vc = FBFlutterViewContainer.new;
+    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments opaque:options.opaque];
     
-    FlutterEngine* engine =  [[FlutterBoost instance] engine];
-    engine.viewController = nil;
-
-    FBFlutterViewContainer *vc = FBFlutterViewContainer.new ;
-
-    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments];
-
+    //是否伴随动画
     BOOL animated = [options.arguments[@"animated"] boolValue];
-    BOOL present= [options.arguments[@"present"] boolValue];
+    //是否是present的方式打开,如果要push的页面是透明的，那么也要以present形式打开
+    BOOL present = [options.arguments[@"present"] boolValue] || !options.opaque;
+    
     if(present){
         [self.navigationController presentViewController:vc animated:animated completion:^{
             options.completion(YES);
@@ -48,15 +46,30 @@
 }
 
 - (void) popRoute:(FlutterBoostRouteOptions *)options {
-    
+    //拿到当前vc
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
+    //present的情况，走dismiss逻辑
     if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
-        [vc dismissViewControllerAnimated:YES completion:^{}];
+        
+        //这里分为两种情况，由于UIModalPresentationOverFullScreen下，生命周期显示会有问题
+        //所以需要手动调用的场景，从而使下面底部的vc调用viewAppear相关逻辑
+        if(vc.modalPresentationStyle == UIModalPresentationOverFullScreen){
+            
+            //这里手动beginAppearanceTransition触发页面生命周期
+            [self.navigationController.topViewController beginAppearanceTransition:YES animated:NO];
+            
+            [vc dismissViewControllerAnimated:YES completion:^{
+                [self.navigationController.topViewController endAppearanceTransition];
+            }];
+        }else{
+            //正常场景，直接dismiss
+            [vc dismissViewControllerAnimated:YES completion:^{}];
+        }
     }else{
+        //否则走pop逻辑
         [self.navigationController popViewControllerAnimated:YES];
     }
-    
 }
 
 

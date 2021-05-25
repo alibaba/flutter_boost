@@ -45,9 +45,9 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   }
 
   @override
-  void onForground(Route route) {
+  void onForeground(Route route) {
     Logger.log(
-        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForground route:${route.settings.name}');
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForeground route:${route.settings.name}');
   }
 
   @override
@@ -133,7 +133,12 @@ class _MyAppState extends State<MyApp> {
     },
     'transparentWidget': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => TransparentWidget());
+          barrierColor: Colors.black12,
+          transitionDuration: const Duration(),
+          reverseTransitionDuration: const Duration(),
+          opaque: false,
+          settings: settings,
+          pageBuilder: (_, __, ___) => TransparentWidget());
     },
     'radialExpansion': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

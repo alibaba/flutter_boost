@@ -181,7 +181,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<T> pushWithResult<T extends Object>(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+      {String uniqueId,
+      Map<String, dynamic> arguments,
+      bool withContainer,
+      bool opaque = true}) {
     final completer = Completer<T>();
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
@@ -189,6 +192,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final params = CommonParams()
         ..pageName = pageName
         ..uniqueId = uniqueId
+        ..opaque = opaque
         ..arguments = arguments ?? <String, dynamic>{};
       nativeRouterApi.pushFlutterRoute(params);
     } else {

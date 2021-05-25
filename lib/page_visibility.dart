@@ -12,7 +12,7 @@ class GlobalPageVisibilityObserver {
 
   void onPageDestroy(Route<dynamic> route) {}
 
-  void onForground(Route<dynamic> route) {}
+  void onForeground(Route<dynamic> route) {}
 
   void onBackground(Route<dynamic> route) {}
 }
@@ -268,7 +268,7 @@ class PageVisibilityBinding {
   void dispatchGlobalForgroundEvent(Route<dynamic> route) {
     final globalObserversList = _globalListeners.toList();
     for (var observer in globalObserversList) {
-      observer.onForground(route);
+      observer.onForeground(route);
     }
 
     Logger.log('page_visibility, #dispatchGlobalForgroudEvent');

@@ -28,5 +28,5 @@
 - (NSDictionary *)params;
 - (NSDictionary *)uniqueId;
 - (NSString *)uniqueIDString;
-- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params;
+- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque;
 @end
