@@ -48,7 +48,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             if(pageNames!=null){
                 pageNames.put(requestCode,params.getPageName());
             }
-            delegate.pushNativeRoute(params.getPageName(), (Map<String, Object>) (Object)params.getArguments(),requestCode);
+            FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
+                    .pageName(params.getPageName())
+                    .arguments((Map<String, Object>) (Object) params.getArguments())
+                    .requestCode(requestCode)
+                    .build();
+            delegate.pushNativeRoute(options);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
@@ -57,7 +62,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     @Override
     public void pushFlutterRoute(Messages.CommonParams params) {
         if (delegate != null) {
-            delegate.pushFlutterRoute(params.getPageName(), params.getUniqueId(), (Map<String, Object>) (Object)params.getArguments());
+            FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
+                    .pageName(params.getPageName())
+                    .uniqueId(params.getUniqueId())
+                    .arguments((Map<String, Object>) (Object)params.getArguments())
+                    .build();
+            delegate.pushFlutterRoute(options);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }

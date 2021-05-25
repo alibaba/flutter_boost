@@ -2,7 +2,6 @@ package com.idlefish.flutterboost;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
@@ -13,7 +12,6 @@ import java.util.Map;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
@@ -44,14 +42,14 @@ public class FlutterBoost {
      * @param callback Invoke the callback when the engine was started.
      */
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
-        setup(application, delegate, callback, FlutterBoostOptions.createDefault());
+        setup(application, delegate, callback, FlutterBoostSetupOptions.createDefault());
     }
 
-    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback, FlutterBoostOptions options) {
+    public void setup(Application application, FlutterBoostDelegate delegate, Callback callback, FlutterBoostSetupOptions options) {
         // 1. initialize default engine
         FlutterEngine engine = getEngine();
         if (engine == null) {
-            if (options == null) options = FlutterBoostOptions.createDefault();
+            if (options == null) options = FlutterBoostSetupOptions.createDefault();
             engine = new FlutterEngine(application, options.shellArgs());
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
@@ -131,7 +129,11 @@ public class FlutterBoost {
      * @param arguments The bussiness arguments.
      */
     public void open(String name, Map<String, Object> arguments) {
-        this.getPlugin().getDelegate().pushFlutterRoute(name, null, arguments);
+        FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
+                .pageName(name)
+                .arguments(arguments)
+                .build();
+        this.getPlugin().getDelegate().pushFlutterRoute(options);
     }
 
     /**
