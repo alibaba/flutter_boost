@@ -237,7 +237,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ' withContainer=$withContainer, arguments:$arguments, $containers');
   }
 
-  void popWithResult<T extends Object>([T result]) {
+  Future<bool> popWithResult<T extends Object>([T result]) async {
     final uniqueId = topContainer?.topPage?.pageInfo?.uniqueId;
     if (_pendingResult.containsKey(uniqueId)) {
       _pendingResult[uniqueId].complete(result);
@@ -247,20 +247,22 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult.remove(uniqueId);
     }
 
-    result is Map<String, dynamic> ? pop(arguments: result) : pop();
+    return await (result is Map<String, dynamic>
+        ? pop(arguments: result)
+        : pop());
   }
 
-  Future<void> pop({String uniqueId, Map<String, dynamic> arguments}) async {
+  Future<bool> pop({String uniqueId, Map<String, dynamic> arguments}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
       if (container == null) {
         Logger.error('uniqueId=$uniqueId not find');
-        return;
+        return false;
       }
       if (container != topContainer) {
-        _removeContainer(container);
-        return;
+        await _removeContainer(container);
+        return true;
       }
     } else {
       container = topContainer;
@@ -277,14 +279,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
         ..arguments = arguments ?? <String, dynamic>{};
-      _nativeRouterApi.popRoute(params);
+      await nativeRouterApi.popRoute(params);
     }
 
     Logger.log(
         'pop container, uniqueId=$uniqueId, arguments:$arguments, $container');
+    return true;
   }
 
-  void _removeContainer(BoostContainer page) {
+  void _removeContainer(BoostContainer page) async {
     containers.remove(page);
     if (page.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
@@ -292,7 +295,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = page.pageInfo.pageName
         ..uniqueId = page.pageInfo.uniqueId
         ..arguments = page.pageInfo.arguments;
-      _nativeRouterApi.popRoute(params);
+      await _nativeRouterApi.popRoute(params);
     }
   }
 

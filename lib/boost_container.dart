@@ -37,6 +37,11 @@ class BoostContainer {
   }
 
   VoidCallback _refreshListener;
+
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+      ' pages:$pages)';
 }
 
 class BoostContainerWidget extends StatefulWidget {
