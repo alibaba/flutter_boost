@@ -1,17 +1,17 @@
 package com.idlefish.flutterboost;
 
-public class FlutterBoostOptions {
+public class FlutterBoostSetupOptions {
     private final String initialRoute;
     private final String dartEntrypoint;
     private final String[] shellArgs;
 
-    private FlutterBoostOptions(Builder builder) {
+    private FlutterBoostSetupOptions(Builder builder) {
         this.initialRoute = builder.initialRoute;
         this.dartEntrypoint = builder.dartEntrypoint;
         this.shellArgs = builder.shellArgs;
     }
 
-    public static FlutterBoostOptions createDefault() {
+    public static FlutterBoostSetupOptions createDefault() {
       return new Builder().build();
     }
 
@@ -71,8 +71,8 @@ public class FlutterBoostOptions {
             return this;
         }
 
-        public FlutterBoostOptions build() {
-            FlutterBoostOptions options = new FlutterBoostOptions(this);
+        public FlutterBoostSetupOptions build() {
+            FlutterBoostSetupOptions options = new FlutterBoostSetupOptions(this);
             return options;
         }
     }
