@@ -21,6 +21,8 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   TextEditingController _controller = TextEditingController();
 
+  GlobalKey<ScaffoldState> key = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     ///
@@ -83,6 +85,7 @@ class _MainPageState extends State<MainPage> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        key: key,
         appBar: CupertinoNavigationBar(
           leading: CupertinoNavigationBarBackButton(
             onPressed: () {
@@ -160,6 +163,6 @@ class _MainPageState extends State<MainPage> {
     final bar = SnackBar(
         content: Text('return value is $value'),
         duration: const Duration(seconds: 1));
-    ScaffoldMessenger.of(context).showSnackBar(bar);
+    key.currentState.showSnackBar(bar);
   }
 }
