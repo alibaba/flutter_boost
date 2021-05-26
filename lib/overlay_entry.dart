@@ -5,6 +5,14 @@ import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
 
+typedef FlutterBoostSetPreRenderCallback = void Function(OverlayEntry, bool);
+void _defaultSetPreRenderCallback(OverlayEntry entry, bool value) {
+  print('_defaultSetPreRenderCallback does nothing.');
+  entry.preRender = value;
+}
+///
+FlutterBoostSetPreRenderCallback setPreRenderCallback = _defaultSetPreRenderCallback;
+
 final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
 List<_ContainerOverlayEntry> _lastEntries = <_ContainerOverlayEntry>[];
 
@@ -67,10 +75,12 @@ void refreshSpecificOverlayEntries(
       _lastEntries.remove(existingEntry);
       _lastEntries.add(existingEntry);
       existingEntry.remove();
+      existingEntry.setPreRender(value: false);
       overlayState.insert(existingEntry);
       break;
     case BoostSpecificEntryRefreshMode.preRender:
       final entry = _ContainerOverlayEntry(container);
+      entry.setPreRender(value: true);
       // Insert to the bottom for just pre-render.
       final first = _lastEntries.first;
       _lastEntries.insert(0, entry);
@@ -124,6 +134,11 @@ class _ContainerOverlayEntry extends OverlayEntry {
             builder: (ctx) => BoostContainerWidget(container: container),
             opaque: true,
             maintainState: true);
+
+  void setPreRender({@required bool value}) {
+    assert(value != null);
+    setPreRenderCallback(this, value);
+  }
 
   ///This overlay's id,which is the same as the it's related container
   final String containerUniqueId;
