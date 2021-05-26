@@ -28,9 +28,9 @@ PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING
 
 # 使用文档
 
-- [集成详细步骤]()
-- [基本的路由API]()
-- [页面生命周期监测相关API]()
+- [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/install.md)
+- [基本的路由API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
+- [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/lifecycle.md)
 
 
 # FAQ
