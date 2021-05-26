@@ -14,12 +14,6 @@ import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
 
 void main() {
-  void _setPreRenderCallback(OverlayEntry entry, bool value) {
-    print('_setPreRenderCallback entry=$entry value=$value');
-    entry.preRender = value;
-  }
-  setPreRenderCallback = _setPreRenderCallback;
-
   PageVisibilityBinding.instance
       .addGlobalObserver(AppGlobalPageVisibilityObserver());
   runApp(MyApp());

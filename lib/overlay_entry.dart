@@ -7,10 +7,16 @@ import 'boost_container.dart';
 
 typedef FlutterBoostSetPreRenderCallback = void Function(OverlayEntry, bool);
 void _defaultSetPreRenderCallback(OverlayEntry entry, bool value) {
-  print('_defaultSetPreRenderCallback does nothing.');
-  entry.preRender = value;
+  // For common flutter engine, does nothing.
 }
-///
+///For custom flutter engine, Hummer provides API [OverlayEntry.preRender] to enable 
+///pre-render an offstage OverlayEntry. If application demands this pre-rendering
+///ability, it is the responsibility of application to override [setPreRenderCallback]
+///to make use of the API, simply like:
+///void overrideSetPreRenderCallback(OverlayEntry entry, bool value) {
+///  entry.preRender = value;
+///}
+///setPreRenderCallback = overrideSetPreRenderCallback;
 FlutterBoostSetPreRenderCallback setPreRenderCallback = _defaultSetPreRenderCallback;
 
 final GlobalKey<OverlayState> overlayKey = GlobalKey<OverlayState>();
@@ -135,6 +141,7 @@ class _ContainerOverlayEntry extends OverlayEntry {
             opaque: true,
             maintainState: true);
 
+  ///Effective for Hummer only, see comments of [setPreRenderCallback].
   void setPreRender({@required bool value}) {
     assert(value != null);
     setPreRenderCallback(this, value);

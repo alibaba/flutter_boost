@@ -55,7 +55,7 @@
     if(preRender){
         [vc preRender];
         _cachedFBFlutterViewContainer = vc;
-        _cachedPageName = pageName;
+        _cachedPageName = options.pageName;
     }else if(present){
         [self.navigationController presentViewController:vc animated:animated completion:^{
             options.completion(YES);

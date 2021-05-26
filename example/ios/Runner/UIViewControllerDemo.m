@@ -24,7 +24,14 @@
 }
 
 - (IBAction)preRenderFlutterPage:(id)sender {
-    [[FlutterBoost instance] open:@"flutterPage" arguments:@{@"preRender":@(YES)}  ];
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
+    options.pageName = @"flutterPage";
+    options.arguments = @{@"preRender":@(YES)};
+    options.completion = ^(BOOL completion) {
+        
+    };
+    
+    [[FlutterBoost instance]open:options];
 }
 
 - (IBAction)pushFlutterPage:(id)sender {
