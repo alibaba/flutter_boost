@@ -137,7 +137,7 @@ public class App extends Application {
 
 到此为止Android的集成流程就全部完成
 
-#### 下一步：[基本路由API文档](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
+### 下一步：[基本路由API文档](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
 
 ## iOS部分
 1. 首先到自己的iOS目录下，执行`pod init`,之后执行一次`pod install`
@@ -252,7 +252,7 @@ FlutterBoost.instance().setup(application, delegate: delegate) { engine in
 ```
 到此为止，所有的前置内容均已完成
 
-#### 下一步：[基本路由API文档](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
+### 下一步：[基本路由API文档](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
 
 
 
