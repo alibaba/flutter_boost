@@ -19,7 +19,7 @@ public class FlutterBoost {
 
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
-    private boolean isAppInBackground = false;
+    private boolean isTopActivityInPauseState = false;
 
     private FlutterBoost() {}
     private static class LazyHolder {
@@ -151,12 +151,12 @@ public class FlutterBoost {
         application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
     }
 
-    public boolean isAppInBackground() {
-        return isAppInBackground;
+    public boolean isTopActivityInPauseState() {
+        return isTopActivityInPauseState;
     }
 
-    /*package*/ void setAppIsInBackground(boolean inBackground) {
-        isAppInBackground = inBackground;
+    /*package*/ void setTopActivityIsInPauseState(boolean paused) {
+        isTopActivityInPauseState = paused;
     }
 
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
@@ -164,12 +164,10 @@ public class FlutterBoost {
         private boolean isActivityChangingConfigurations = false;
     
         private void dispatchForegroundEvent() {
-            FlutterBoost.instance().setAppIsInBackground(false);
             FlutterBoost.instance().getPlugin().onForeground();
         }
     
         private void dispatchBackgroundEvent() {
-            FlutterBoost.instance().setAppIsInBackground(true);
             FlutterBoost.instance().getPlugin().onBackground();
         }
     
@@ -188,11 +186,17 @@ public class FlutterBoost {
     
         @Override
         public void onActivityResumed(Activity activity) {
+            if (activity == topActivity) {
+                FlutterBoost.instance().setTopActivityIsInPauseState(false);
+            }
             topActivity = activity;
         }
     
         @Override
         public void onActivityPaused(Activity activity) {
+            if (activity == topActivity) {
+                FlutterBoost.instance().setTopActivityIsInPauseState(true);
+            }
         }
     
         @Override

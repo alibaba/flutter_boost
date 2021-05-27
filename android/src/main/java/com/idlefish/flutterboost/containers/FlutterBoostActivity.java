@@ -36,12 +36,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        FlutterBoost.instance().getPlugin().onContainerCreated(this);
-    }
-
     private void findFlutterView(View view) {
         if (view instanceof ViewGroup) {
             ViewGroup vp = (ViewGroup) view;
@@ -57,6 +51,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        findFlutterView(getWindow().getDecorView());
+        FlutterBoost.instance().getPlugin().onContainerCreated(this);
+    }
+
     // @Override
     public void detachFromFlutterEngine() {
         /**
@@ -69,13 +70,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onResume() {
-        if (flutterView == null) {
-            findFlutterView(getWindow().getDecorView());
-        }
-
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (FlutterBoost.instance().isAppInBackground() &&
+            if (FlutterBoost.instance().isTopActivityInPauseState() &&
                     !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
                 Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
@@ -84,6 +81,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        assert(flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
     }
@@ -99,13 +97,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onPause() {
         super.onPause();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (FlutterBoost.instance().isAppInBackground() &&
+            if (FlutterBoost.instance().isTopActivityInPauseState() &&
                     !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
                 Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
             }
         }
+        assert(flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
