@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_boost/boost_channel.dart';
 
 import 'boost_container.dart';
 import 'boost_flutter_router_api.dart';
@@ -16,14 +17,14 @@ import 'overlay_entry.dart';
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
 class FlutterBoostApp extends StatefulWidget {
-  FlutterBoostApp(
-    FlutterBoostRouteFactory routeFactory, {
+  FlutterBoostApp(FlutterBoostRouteFactory routeFactory, {
     FlutterBoostAppBuilder appBuilder,
     String initialRoute,
 
     ///interceptors is to intercept push operation now
     List<BoostInterceptor> interceptors,
-  })  : appBuilder = appBuilder ?? _materialAppBuilder,
+  })
+      : appBuilder = appBuilder ?? _materialAppBuilder,
         interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
@@ -45,7 +46,7 @@ class FlutterBoostApp extends StatefulWidget {
 
 class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, Completer<Object>> _pendingResult =
-      <String, Completer<Object>>{};
+  <String, Completer<Object>>{};
 
   List<BoostContainer> get containers => _containers;
   final List<BoostContainer> _containers = <BoostContainer>[];
@@ -62,6 +63,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi _boostFlutterRouterApi;
 
   final Set<int> _activePointers = <int>{};
+
+  ///Things about method channel
+  final Map<String, List<EventListener>> _listenersTable = Map();
 
   @override
   void initState() {
@@ -128,7 +132,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   String _createUniqueId(String pageName) {
-    return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
+    return '${DateTime
+        .now()
+        .millisecondsSinceEpoch}_$pageName';
   }
 
   BoostContainer _createContainer(PageInfo pageInfo) {
@@ -182,9 +188,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   Future<T> pushWithResult<T extends Object>(String pageName,
       {String uniqueId,
-      Map<String, dynamic> arguments,
-      bool withContainer,
-      bool opaque = true}) {
+        Map<String, dynamic> arguments,
+        bool withContainer,
+        bool opaque = true}) {
     final completer = Completer<T>();
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
@@ -313,7 +319,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-        (element) => element.pageInfo.uniqueId == uniqueId,
+            (element) => element.pageInfo.uniqueId == uniqueId,
         orElse: () => null);
   }
 
@@ -331,7 +337,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     } else {
       for (var container in containers) {
         final page = container.pages.singleWhere(
-            (entry) => entry.pageInfo.uniqueId == uniqueId,
+                (entry) => entry.pageInfo.uniqueId == uniqueId,
             orElse: () => null);
 
         if (page != null) {
@@ -390,7 +396,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     assert(topPage != null);
     Future<void>.delayed(
       const Duration(seconds: 1),
-      () => _completePendingNativeResultIfNeeded(topPage),
+          () => _completePendingNativeResultIfNeeded(topPage),
     );
   }
 
@@ -398,6 +404,46 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidHide(container);
   }
+
+  ///
+  ///Methods below are about Custom events with native side
+  ///
+
+  ///Calls when Native send event to flutter(here)
+  void onReceiveEventFromNative(CommonParams params) {
+    //Get the name and args from native
+    String key = params.key;
+    Map args = params.arguments;
+    assert(key != null);
+
+    //Get all of listeners matching this key
+    final List<EventListener> listeners = _listenersTable[key];
+
+    if (listeners == null) return;
+
+    for (final listenr in listeners) {
+      listenr(key, args);
+    }
+  }
+
+  ///Add event listener in flutter side with a [key] and [listener]
+  VoidCallback addEventListener(String key, EventListener listener) {
+    assert(key != null && listener != null);
+
+    List<EventListener> listeners = _listenersTable[key];
+    if (listeners == null) {
+      listeners = [];
+      _listenersTable[key] = listeners;
+    }
+
+    listeners.add(listener);
+
+    return () {
+      listeners.remove(listener);
+    };
+  }
+
+  ///Interal methods below
 
   PageInfo getTopPageInfo() {
     return topContainer?.topPage?.pageInfo;

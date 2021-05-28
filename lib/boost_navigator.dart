@@ -30,7 +30,7 @@ class BoostNavigator {
 
   static final BoostNavigator _instance = BoostNavigator._();
 
-  FlutterBoostAppState appState;
+  FlutterBoostAppState _appState;
 
   FlutterBoostRouteFactory _routeFactory;
 
@@ -45,7 +45,7 @@ class BoostNavigator {
   static BoostNavigator of() => instance;
 
   static BoostNavigator get instance {
-    _instance.appState ??= overlayKey.currentContext
+    _instance._appState ??= overlayKey.currentContext
         ?.findAncestorStateOfType<FlutterBoostAppState>();
     return _instance;
   }
@@ -66,7 +66,7 @@ class BoostNavigator {
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
-    for (var interceptor in appState.interceptors) {
+    for (var interceptor in _appState.interceptors) {
       future = future.then<dynamic>((dynamic _state) {
         final state = _state as InterceptorState<dynamic>;
         if (state.type == InterceptorResultType.next) {
@@ -85,7 +85,7 @@ class BoostNavigator {
         assert(state.type == InterceptorResultType.next);
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
-          return appState.pushWithResult(pushOption.name,
+          return _appState.pushWithResult(pushOption.name,
               arguments: pushOption.arguments,
               withContainer: withContainer,
               opaque: opaque);
@@ -93,8 +93,8 @@ class BoostNavigator {
           final params = CommonParams()
             ..pageName = pushOption.name
             ..arguments = pushOption.arguments;
-          appState.nativeRouterApi.pushNativeRoute(params);
-          return appState.pendNativeResult(pushOption.name);
+          _appState.nativeRouterApi.pushNativeRoute(params);
+          return _appState.pendNativeResult(pushOption.name);
         }
       } else {
         assert(state.type == InterceptorResultType.resolve);
@@ -105,18 +105,18 @@ class BoostNavigator {
 
   /// Pop the top-most page off the hybrid stack.
   Future<bool> pop<T extends Object>([T result]) async =>
-      await appState.popWithResult(result);
+      await _appState.popWithResult(result);
 
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
-  void remove(String uniqueId) => appState.pop(uniqueId: uniqueId);
+  void remove(String uniqueId) => _appState.pop(uniqueId: uniqueId);
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;
   ///
   /// This is a legacy API for backwards compatibility.
-  PageInfo getTopPageInfo() => appState.getTopPageInfo();
+  PageInfo getTopPageInfo() => _appState.getTopPageInfo();
 
   PageInfo getTopByContext(BuildContext context) =>
       BoostContainer.of(context).pageInfo;
@@ -124,7 +124,7 @@ class BoostNavigator {
   /// Return the number of flutter pages
   ///
   /// This is a legacy API for backwards compatibility.
-  int pageSize() => appState.pageSize();
+  int pageSize() => _appState.pageSize();
 }
 
 class PageInfo {

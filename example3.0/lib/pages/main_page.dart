@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class Model {
   Model(this.title, this.onTap);
@@ -22,6 +22,48 @@ class _MainPageState extends State<MainPage> {
   TextEditingController _controller = TextEditingController();
 
   GlobalKey<ScaffoldState> key = GlobalKey();
+
+  VoidCallback removeListener;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ///这里添加监听，原生利用'event'这个key发送过来消息的时候，下面的函数会调用，
+    ///这里就是简单的在flutter上弹一个弹窗
+    removeListener =
+        BoostChannel.instance.addEventListener("event", (key, arguments) {
+      OverlayEntry entry = OverlayEntry(builder: (_) {
+        return Center(
+            child: Material(
+          color: Colors.transparent,
+          child: Container(
+            alignment: Alignment.center,
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+                color: Colors.red, borderRadius: BorderRadius.circular(4)),
+            child: Text('这是native传来的参数：${arguments.toString()}',
+                style: TextStyle(color: Colors.white)),
+          ),
+        ));
+      });
+
+      Overlay.of(context).insert(entry);
+
+      Future.delayed(const Duration(seconds: 2), () {
+        entry.remove();
+      });
+      return;
+    });
+  }
+
+  @override
+  void dispose() {
+    ///记得解除注册
+    removeListener?.call();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +98,7 @@ class _MainPageState extends State<MainPage> {
       Model("open lifecycle test page", () {
         BoostNavigator.instance.push(
           "lifecyclePage",
-          withContainer: false,
+          withContainer: true,
         );
       }),
       Model("open dialog without container", () {
@@ -73,6 +115,12 @@ class _MainPageState extends State<MainPage> {
 
             ///如果开启新容器，需要指定opaque为false
             opaque: false);
+      }),
+      Model("send event to native", () {
+        ///传值给原生
+        BoostChannel.instance
+            .sendEventToNative("event", {'data': "event from flutter"});
+        BoostNavigator.instance.pop();
       }),
     ];
 
@@ -97,7 +145,7 @@ class _MainPageState extends State<MainPage> {
         body: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            emptyBox(0, 20),
+            emptyBox(0, 50),
             _buildHeader(),
             emptyBox(0, 30),
             SliverToBoxAdapter(
@@ -110,6 +158,7 @@ class _MainPageState extends State<MainPage> {
                 delegate: SliverChildBuilderDelegate(
                     (ctx, index) => item(models[index]),
                     childCount: models.length)),
+            emptyBox(0, 50),
           ],
         ),
       ),
@@ -149,7 +198,7 @@ class _MainPageState extends State<MainPage> {
         onPressed: model.onTap,
         child: Text(model.title,
             style: TextStyle(
-                fontSize: 22,
+                fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.w500)),
       ),

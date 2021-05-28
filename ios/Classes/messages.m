@@ -50,10 +50,14 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
   if ((NSNull *)result.opaque == [NSNull null]) {
     result.opaque = nil;
   }
+  result.key = dict[@"key"];
+  if ((NSNull *)result.key == [NSNull null]) {
+    result.key = nil;
+  }
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", (self.key ? self.key : [NSNull null]), @"key", nil];
 }
 @end
 
@@ -168,6 +172,16 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
     completion(nil);
   }];
 }
+- (void)sendEventToFlutter:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.FlutterRouterApi.sendEventToFlutter"
+      binaryMessenger:self.binaryMessenger];
+  NSDictionary* inputMap = [input toMap];
+  [channel sendMessage:inputMap reply:^(id reply) {
+    completion(nil);
+  }];
+}
 @end
 void FBNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<FBNativeRouterApi> api) {
   {
@@ -247,6 +261,23 @@ void FBNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<FBNat
         FBStackInfo *input = [FBStackInfo fromMap:message];
         FlutterError *error;
         [api saveStackToHost:input error:&error];
+        callback(wrapResult(nil, error));
+      }];
+    }
+    else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.NativeRouterApi.sendEventToNative"
+        binaryMessenger:binaryMessenger];
+    if (api) {
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FBCommonParams *input = [FBCommonParams fromMap:message];
+        FlutterError *error;
+        [api sendEventToNative:input error:&error];
         callback(wrapResult(nil, error));
       }];
     }

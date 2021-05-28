@@ -26,12 +26,13 @@ class _SimplePageState extends State<SimplePage> {
         ),
       ),
       body: Center(
-        child: Column(
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
             const SizedBox(height: 100),
-            const Text("Simple flutter page", style: TextStyle(fontSize: 26)),
+            Align(alignment: Alignment.center,child: const Text("Simple flutter page", style: TextStyle(fontSize: 26))),
             const SizedBox(height: 50),
-            Text("data:${widget.data}", style: TextStyle(fontSize: 26)),
+            Align(alignment: Alignment.center,child: Text("data:${widget.data}", style: TextStyle(fontSize: 26))),
             const SizedBox(height: 50),
             Padding(
                 padding: const EdgeInsets.all(8.0),

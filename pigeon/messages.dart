@@ -5,8 +5,12 @@ class CommonParams {
   String uniqueId;
   Map<String, Object> arguments;
   bool opaque;
+  String key;
 }
 
+class EventParam{
+
+}
 class StackInfo {
   List<String> containers;
   Map<String, List<Map<String, Object>>> routes;
@@ -19,6 +23,7 @@ abstract class NativeRouterApi {
   void popRoute(CommonParams param);
   StackInfo getStackFromHost();
   void saveStackToHost(StackInfo stack);
+  void sendEventToNative(CommonParams params);
 }
 
 @FlutterApi()
@@ -31,6 +36,7 @@ abstract class FlutterRouterApi {
   void onNativeResult(CommonParams param);
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
+  void sendEventToFlutter(CommonParams params);
 }
 
 void configurePigeon(PigeonOptions opts) {

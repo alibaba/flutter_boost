@@ -31,6 +31,7 @@
 @interface FlutterBoostPlugin ()<FBNativeRouterApi>
 @property(nonatomic, strong) FBFlutterContainerManager* containerManager;
 @property(nonatomic, strong) FBStackInfo* stackInfo;
+@property(nonatomic, strong) NSMutableDictionary<NSString*,NSMutableArray<FBEventListener>*>* listenersTable;
 @end
 
 @implementation FlutterBoostPlugin
@@ -64,6 +65,7 @@
     if (self) {
         _flutterApi = [[FBFlutterRouterApi alloc] initWithBinaryMessenger:messenger];
         _containerManager= [FBFlutterContainerManager new];
+        _listenersTable = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -107,6 +109,47 @@
 -(void)saveStackToHost:(FBStackInfo*)input error:(FlutterError *_Nullable *_Nonnull)error {
     self.stackInfo = input;
 }
+
+//flutter端将会调用此方法给native发送信息,所以这里将是接收事件的逻辑
+- (void)sendEventToNative:(nonnull FBCommonParams *)input error:(FlutterError * _Nullable __autoreleasing * _Nonnull)error {
+    
+    NSString* key = input.key;
+    NSDictionary* args = input.arguments;
+    
+    assert(key != nil);
+    
+    //如果arg是null，那么就生成一个空的字典传过去，避免null造成的崩溃
+    if(args == nil){
+        args = [NSDictionary dictionary];
+    }
+    
+    //从总事件表中找到和key对应的事件监听者列表
+    NSMutableArray* listeners = self.listenersTable[key];
+    
+    if(listeners == nil) return;
+    
+    for (FBEventListener listener in listeners) {
+        listener(key,args);
+    }
+}
+
+- (FBVoidCallback)addEventListener:(FBEventListener)listener
+                 forName:(NSString *)key{
+    assert(key != nil && listener != nil);
+    
+    NSMutableArray<FBEventListener>* listeners = self.listenersTable[key];
+    if(listeners == nil){
+        listeners = [[NSMutableArray alloc] init];
+        self.listenersTable[key] = listeners;
+    }
+    
+    [listeners addObject:listener];
+    
+    return ^{
+        [listeners removeObject:listener];
+    };
+}
+
 @end
 
 

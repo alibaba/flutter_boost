@@ -86,5 +86,17 @@
 /// @param arguments 你想传的参数
 - (void)sendResultToFlutterWithPageName:(NSString*)pageName arguments:(NSDictionary*) arguments;
 
+/// 添加一个事件监听
+/// @param listener FBEventListener类型的函数
+/// @param key 事件标识符
+/// @return 用于移除监听器的一个函数，直接调用此函数可以移除此监听器避免内存泄漏
+- (FBVoidCallback)addEventListener:(FBEventListener)listener
+                           forName:(NSString *)key;
+
+/// 将自定义事件传递给flutter侧
+/// @param key 事件的标识符
+/// @param arguments 事件的参数
+- (void)sendEventToFlutterWith:(NSString*)key arguments:(NSDictionary*)arguments;
+
 @end
 
