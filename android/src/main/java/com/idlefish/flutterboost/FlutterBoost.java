@@ -174,7 +174,7 @@ public class FlutterBoost {
      * @param key  the key of this event
      * @param args the arguments of this event
      */
-    public void sendEventToFlutterWith(String key, Map<Object, Object> args) {
+    public void sendEventToFlutter(String key, Map<Object, Object> args) {
         Messages.CommonParams params = new Messages.CommonParams();
         params.setKey(key);
         params.setArguments(args);
