@@ -31,6 +31,7 @@ PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING
 - [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/install.md)
 - [基本的路由API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
 - [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/lifecycle.md)
+- [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/event.md)
 
 
 # FAQ
