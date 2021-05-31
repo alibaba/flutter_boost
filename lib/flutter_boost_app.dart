@@ -420,8 +420,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     if (listeners == null) return;
 
-    for (final listenr in listeners) {
-      listenr(key, args);
+    for (final listener in listeners) {
+      listener(key, args);
     }
   }
 
