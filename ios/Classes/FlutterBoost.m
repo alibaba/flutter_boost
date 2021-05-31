@@ -54,35 +54,35 @@
     //从options中获取参数
     NSString* initialRoute = options.initalRoute;
     NSString* dartEntrypointFunctionName = options.dartEntryPoint;
-
+    
     void(^engineRun)(void) = ^(void) {
-
-            [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
-
-            if(callback){
-                callback(self.engine);
-            }
-
-            Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-            SEL selector = NSSelectorFromString(@"registerWithRegistry:");
-            if (clazz && selector && self.engine) {
-                if ([clazz respondsToSelector:selector]) {
-                    ((void (*)(id, SEL, NSObject<FlutterPluginRegistry>*registry))[clazz methodForSelector:selector])(clazz, selector, self.engine);
-                }
-            }
-
-            self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
-            self.plugin.delegate=delegate;
-        };
-
-        if ([NSThread isMainThread]){
-            engineRun();
-        }else{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                engineRun();
-            });
+        
+        [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
+        
+        if(callback){
+            callback(self.engine);
         }
-
+        
+        Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
+        SEL selector = NSSelectorFromString(@"registerWithRegistry:");
+        if (clazz && selector && self.engine) {
+            if ([clazz respondsToSelector:selector]) {
+                ((void (*)(id, SEL, NSObject<FlutterPluginRegistry>*registry))[clazz methodForSelector:selector])(clazz, selector, self.engine);
+            }
+        }
+        
+        self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
+        self.plugin.delegate=delegate;
+    };
+    
+    if ([NSThread isMainThread]){
+        engineRun();
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            engineRun();
+        });
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationWillEnterForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification
@@ -139,7 +139,7 @@
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.pageName = pageName;
     params.arguments = arguments;
-
+    
     [self.plugin.flutterApi onNativeResult:params completion:^(NSError * error) {
         
     }];
@@ -155,10 +155,26 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     FBCommonParams* params = [[FBCommonParams alloc] init];
-    [ self.plugin.flutterApi onForeground:params completion:^(NSError * error) {
+    [self.plugin.flutterApi onForeground:params completion:^(NSError * error) {
         
     }];
 }
+
+
+- (FBVoidCallback)addEventListener:(FBEventListener)listener
+                 forName:(NSString *)key{
+    return [self.plugin addEventListener:listener forName:key];
+}
+
+- (void)sendEventToFlutterWith:(NSString*)key arguments:(NSDictionary*)arguments{
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.key = key;
+    params.arguments = arguments;
+    [self.plugin.flutterApi sendEventToFlutter:params completion:^(NSError * error) {
+        
+    }];
+}
+
 
 - (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];

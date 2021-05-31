@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, copy, nullable) NSString * uniqueId;
 @property(nonatomic, strong, nullable) NSDictionary * arguments;
 @property(nonatomic, strong, nullable) NSNumber * opaque;
+@property(nonatomic, copy, nullable) NSString * key;
 @end
 
 @interface FBStackInfo : NSObject
@@ -32,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)onNativeResult:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onContainerShow:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onContainerHide:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)sendEventToFlutter:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 @end
 @protocol FBNativeRouterApi
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
@@ -39,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(nullable FBStackInfo *)getStackFromHost:(FlutterError *_Nullable *_Nonnull)error;
 -(void)saveStackToHost:(FBStackInfo*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(void)sendEventToNative:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
 extern void FBNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<FBNativeRouterApi> _Nullable api);

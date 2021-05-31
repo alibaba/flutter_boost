@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_boost/boost_channel.dart';
 
 import 'boost_container.dart';
 import 'boost_flutter_router_api.dart';
@@ -62,6 +63,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostFlutterRouterApi _boostFlutterRouterApi;
 
   final Set<int> _activePointers = <int>{};
+
+  ///Things about method channel
+  final Map<String, List<EventListener>> _listenersTable =
+      <String, List<EventListener>>{};
 
   @override
   void initState() {
@@ -398,6 +403,46 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidHide(container);
   }
+
+  ///
+  ///Methods below are about Custom events with native side
+  ///
+
+  ///Calls when Native send event to flutter(here)
+  void onReceiveEventFromNative(CommonParams params) {
+    //Get the name and args from native
+    String key = params.key;
+    Map args = params.arguments;
+    assert(key != null);
+
+    //Get all of listeners matching this key
+    final List<EventListener> listeners = _listenersTable[key];
+
+    if (listeners == null) return;
+
+    for (final listener in listeners) {
+      listener(key, args);
+    }
+  }
+
+  ///Add event listener in flutter side with a [key] and [listener]
+  VoidCallback addEventListener(String key, EventListener listener) {
+    assert(key != null && listener != null);
+
+    List<EventListener> listeners = _listenersTable[key];
+    if (listeners == null) {
+      listeners = [];
+      _listenersTable[key] = listeners;
+    }
+
+    listeners.add(listener);
+
+    return () {
+      listeners.remove(listener);
+    };
+  }
+
+  ///Interal methods below
 
   PageInfo getTopPageInfo() {
     return topContainer?.topPage?.pageInfo;

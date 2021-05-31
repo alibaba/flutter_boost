@@ -45,4 +45,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   @override
   void onContainerShow(CommonParams arg) => appState.onContainerShow(arg);
+
+  ///When native send msg to flutter,this method will be called
+  @override
+  void sendEventToFlutter(CommonParams arg) =>
+      appState.onReceiveEventFromNative(arg);
 }

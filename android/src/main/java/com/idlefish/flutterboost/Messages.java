@@ -32,12 +32,17 @@ public class Messages {
     public Boolean getOpaque() { return opaque; }
     public void setOpaque(Boolean setterArg) { this.opaque = setterArg; }
 
+    private String key;
+    public String getKey() { return key; }
+    public void setKey(String setterArg) { this.key = setterArg; }
+
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
       toMapResult.put("arguments", arguments);
       toMapResult.put("opaque", opaque);
+      toMapResult.put("key", key);
       return toMapResult;
     }
     static CommonParams fromMap(Map<String, Object> map) {
@@ -50,6 +55,8 @@ public class Messages {
       fromMapResult.arguments = (Map<Object, Object>)arguments;
       Object opaque = map.get("opaque");
       fromMapResult.opaque = (Boolean)opaque;
+      Object key = map.get("key");
+      fromMapResult.key = (String)key;
       return fromMapResult;
     }
   }
@@ -153,6 +160,14 @@ public class Messages {
         callback.reply(null);
       });
     }
+    public void sendEventToFlutter(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.sendEventToFlutter", new StandardMessageCodec());
+      Map<String, Object> inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
   }
 
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
@@ -162,6 +177,7 @@ public class Messages {
     void popRoute(CommonParams arg);
     StackInfo getStackFromHost();
     void saveStackToHost(StackInfo arg);
+    void sendEventToNative(CommonParams arg);
 
     /** Sets up an instance of `NativeRouterApi` to handle messages through the `binaryMessenger`. */
     static void setup(BinaryMessenger binaryMessenger, NativeRouterApi api) {
@@ -257,6 +273,27 @@ public class Messages {
               @SuppressWarnings("ConstantConditions")
               StackInfo input = StackInfo.fromMap((Map<String, Object>)message);
               api.saveStackToHost(input);
+              wrapped.put("result", null);
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+            }
+            reply.reply(wrapped);
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.NativeRouterApi.sendEventToNative", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              @SuppressWarnings("ConstantConditions")
+              CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
+              api.sendEventToNative(input);
               wrapped.put("result", null);
             }
             catch (Error | RuntimeException exception) {

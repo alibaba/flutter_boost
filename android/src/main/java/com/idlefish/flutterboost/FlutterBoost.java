@@ -21,7 +21,9 @@ public class FlutterBoost {
     private FlutterBoostPlugin plugin;
     private boolean isAppInBackground = false;
 
-    private FlutterBoost() {}
+    private FlutterBoost() {
+    }
+
     private static class LazyHolder {
         static final FlutterBoost INSTANCE = new FlutterBoost();
     }
@@ -36,10 +38,10 @@ public class FlutterBoost {
 
     /**
      * Initializes engine and plugin.
-     * 
+     *
      * @param application the application
-     * @param delegate the FlutterBoostDelegate
-     * @param callback Invoke the callback when the engine was started.
+     * @param delegate    the FlutterBoostDelegate
+     * @param callback    Invoke the callback when the engine was started.
      */
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback) {
         setup(application, delegate, callback, FlutterBoostSetupOptions.createDefault());
@@ -54,7 +56,7 @@ public class FlutterBoost {
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
                     FlutterMain.findAppBundlePath(), options.dartEntrypoint()));
-            if(callback != null) callback.onStart(engine);
+            if (callback != null) callback.onStart(engine);
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
 
@@ -80,7 +82,7 @@ public class FlutterBoost {
         }
         return plugin;
     }
-    
+
     /**
      * Gets the FlutterEngine in use.
      *
@@ -101,9 +103,9 @@ public class FlutterBoost {
 
     /**
      * Gets the FlutterView container with uniqueId.
-     *
+     * <p>
      * This is a legacy API for backwards compatibility.
-     * 
+     *
      * @param uniqueId The uniqueId of the container
      * @return a FlutterView container
      */
@@ -113,9 +115,9 @@ public class FlutterBoost {
 
     /**
      * Gets the topmost container
-     * 
+     * <p>
      * This is a legacy API for backwards compatibility.
-     * 
+     *
      * @return the topmost container
      */
     public FlutterViewContainer getTopContainer() {
@@ -123,10 +125,10 @@ public class FlutterBoost {
     }
 
     /**
-     * Open a Flutter page with name and arguments.
-     * 
-     * @param name The Flutter route name.
+     * @param name      The Flutter route name.
      * @param arguments The bussiness arguments.
+     * @deprecated use open(FlutterBoostRouteOptions options) instead
+     * Open a Flutter page with name and arguments.
      */
     public void open(String name, Map<String, Object> arguments) {
         FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
@@ -137,14 +139,48 @@ public class FlutterBoost {
     }
 
     /**
+     * Use FlutterBoostRouteOptions to open a new Page
+     *
+     * @param options FlutterBoostRouteOptions object
+     */
+    public void open(FlutterBoostRouteOptions options) {
+        this.getPlugin().getDelegate().pushFlutterRoute(options);
+    }
+
+    /**
      * Close the Flutter page with uniqueId.
-     * 
+     *
      * @param uniqueId The uniqueId of the Flutter page
      */
     public void close(String uniqueId) {
-        Messages.CommonParams params= new Messages.CommonParams();
+        Messages.CommonParams params = new Messages.CommonParams();
         params.setUniqueId(uniqueId);
         this.getPlugin().popRoute(params);
+    }
+
+    /**
+     * Add a event listener
+     *
+     * @param listener
+     * @return ListenerRemover, you can use this to remove this listener
+     */
+    public ListenerRemover addEventListener(String key, EventListener listener) {
+        return this.plugin.addEventListener(key, listener);
+    }
+
+    /**
+     * Send the event to flutter
+     *
+     * @param key  the key of this event
+     * @param args the arguments of this event
+     */
+    public void sendEventToFlutter(String key, Map<Object, Object> args) {
+        Messages.CommonParams params = new Messages.CommonParams();
+        params.setKey(key);
+        params.setArguments(args);
+        this.getPlugin().getChannel().sendEventToFlutter(params, reply -> {
+
+        });
     }
 
     private void setupActivityLifecycleCallback(Application application) {
@@ -162,39 +198,39 @@ public class FlutterBoost {
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
         private int activityReferences = 0;
         private boolean isActivityChangingConfigurations = false;
-    
+
         private void dispatchForegroundEvent() {
             FlutterBoost.instance().setAppIsInBackground(false);
             FlutterBoost.instance().getPlugin().onForeground();
         }
-    
+
         private void dispatchBackgroundEvent() {
             FlutterBoost.instance().setAppIsInBackground(true);
             FlutterBoost.instance().getPlugin().onBackground();
         }
-    
+
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             topActivity = activity;
         }
-    
+
         @Override
         public void onActivityStarted(Activity activity) {
             if (++activityReferences == 1 && !isActivityChangingConfigurations) {
                 // App enters foreground
-                dispatchForegroundEvent();                
+                dispatchForegroundEvent();
             }
         }
-    
+
         @Override
         public void onActivityResumed(Activity activity) {
             topActivity = activity;
         }
-    
+
         @Override
         public void onActivityPaused(Activity activity) {
         }
-    
+
         @Override
         public void onActivityStopped(Activity activity) {
             isActivityChangingConfigurations = activity.isChangingConfigurations();
@@ -204,11 +240,11 @@ public class FlutterBoost {
             }
 
         }
-    
+
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
         }
-    
+
         @Override
         public void onActivityDestroyed(Activity activity) {
         }

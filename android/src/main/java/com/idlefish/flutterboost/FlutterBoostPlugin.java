@@ -6,7 +6,10 @@ import android.util.SparseArray;
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -21,12 +24,22 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     private SparseArray<String> pageNames;
     private int requestCode = 1000;
 
+    private HashMap<String, LinkedList<EventListener>> listenersTable = new HashMap<>();
+
+    public Messages.FlutterRouterApi getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Messages.FlutterRouterApi channel) {
+        this.channel = channel;
+    }
+
     public void setDelegate(FlutterBoostDelegate delegate) {
         this.delegate = delegate;
     }
 
     public FlutterBoostDelegate getDelegate() {
-        return delegate ;
+        return delegate;
     }
 
     @Override
@@ -45,8 +58,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void pushNativeRoute(Messages.CommonParams params) {
         if (delegate != null) {
             requestCode++;
-            if(pageNames!=null){
-                pageNames.put(requestCode,params.getPageName());
+            if (pageNames != null) {
+                pageNames.put(requestCode, params.getPageName());
             }
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
@@ -65,7 +78,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
                     .uniqueId(params.getUniqueId())
-                    .arguments((Map<String, Object>) (Object)params.getArguments())
+                    .arguments((Map<String, Object>) (Object) params.getArguments())
                     .build();
             delegate.pushFlutterRoute(options);
         } else {
@@ -79,7 +92,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         if (uniqueId != null) {
             FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
             if (container != null) {
-                container.finishContainer((Map<String, Object>) (Object)params.getArguments());
+                container.finishContainer((Map<String, Object>) (Object) params.getArguments());
             }
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
@@ -101,6 +114,42 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         Log.v(TAG, "#saveStackToHost: " + dartStack);
     }
 
+    @Override
+    public void sendEventToNative(Messages.CommonParams arg) {
+        //deal with the event from flutter side
+        String key = arg.getKey();
+        Map<Object, Object> arguments = arg.getArguments();
+        assert (key != null);
+
+        if (arguments == null) {
+            arguments = new HashMap<>();
+        }
+
+        List<EventListener> listeners = listenersTable.get(key);
+        if (listeners == null) {
+            return;
+        }
+
+        for (EventListener listener :
+                listeners) {
+            listener.onEvent(key, arguments);
+        }
+    }
+
+    ListenerRemover addEventListener(String key, EventListener listener) {
+        assert (key != null && listener != null);
+
+        LinkedList<EventListener> listeners = listenersTable.get(key);
+        if (listeners == null) {
+            listeners = new LinkedList<>();
+            listenersTable.put(key, listeners);
+        }
+        listeners.add(listener);
+
+        LinkedList<EventListener> finalListeners = listeners;
+        return () -> finalListeners.remove(listener);
+    }
+
     public interface Reply<T> {
         void reply(T reply);
     }
@@ -111,7 +160,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
-            params.setArguments((Map<Object, Object>)(Object) arguments);
+            params.setArguments((Map<Object, Object>) (Object) arguments);
             channel.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -122,11 +171,11 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public void popRoute(String uniqueId,final Reply<Void> callback) {
+    public void popRoute(String uniqueId, final Reply<Void> callback) {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
-            channel.popRoute(params,reply -> {
+            channel.popRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
                 }
@@ -140,7 +189,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
-            channel.removeRoute(params,reply -> {
+            channel.removeRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
                 }
@@ -153,7 +202,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onForeground() {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
-            channel.onForeground(params, reply -> {});
+            channel.onForeground(params, reply -> {
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -163,7 +213,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onBackground() {
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
-            channel.onBackground(params, reply -> {});
+            channel.onBackground(params, reply -> {
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -174,7 +225,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
-            channel.onContainerShow(params, reply -> {});
+            channel.onContainerShow(params, reply -> {
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -185,7 +237,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         if (channel != null) {
             Messages.CommonParams params = new Messages.CommonParams();
             params.setUniqueId(uniqueId);
-            channel.onContainerHide(params, reply -> {});
+            channel.onContainerHide(params, reply -> {
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -208,14 +261,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     public void onContainerDisappeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         onContainerHide(uniqueId);
-        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " +  FlutterContainerManager.instance().getContainers());
+        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         removeRoute(uniqueId, null);
         FlutterContainerManager.instance().removeContainer(uniqueId);
-        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " +  FlutterContainerManager.instance().getContainers());
+        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     @Override
@@ -225,13 +278,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                 Messages.CommonParams params = new Messages.CommonParams();
                 String pageName = pageNames.get(requestCode);
                 pageNames.remove(requestCode);
-                if (null != pageName){
+                if (null != pageName) {
                     params.setPageName(pageName);
-                    if(intent!=null){
+                    if (intent != null) {
                         Map<Object, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
                         params.setArguments(result);
                     }
-                    channel.onNativeResult(params, reply -> {});
+                    channel.onNativeResult(params, reply -> {
+                    });
                 }
             } else {
                 throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
