@@ -38,6 +38,9 @@ BoostNavigator.instance.push(
 
 ///然后这样弹出即可
 BoostNavigator.instance.push("dialogPage");
+
+///如果要接收参数返回参数的形式
+final result = await BoostNavigator.instance.push("dialogPage");
 ```
 
 
