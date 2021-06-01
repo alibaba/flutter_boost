@@ -53,12 +53,15 @@ public class FlutterBoost {
         if (engine == null) {
             if (options == null) options = FlutterBoostSetupOptions.createDefault();
             engine = new FlutterEngine(application, options.shellArgs());
+            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
+        }
+
+        if (!engine.getDartExecutor().isExecutingDart()) {
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
                     FlutterMain.findAppBundlePath(), options.dartEntrypoint()));
-            if (callback != null) callback.onStart(engine);
-            FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
+        if (callback != null) callback.onStart(engine);
 
         // 2. set delegate
         getPlugin().setDelegate(delegate);
