@@ -519,10 +519,7 @@ class BoostNavigatorObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     //handle internal route
     if (previousRoute != null) {
-      //add postFrameCallback to ensure the event dispatch after the target page is created.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
-      });
+      BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
     }
     super.didPush(route, previousRoute);
   }

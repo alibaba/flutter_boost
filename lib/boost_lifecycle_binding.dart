@@ -43,12 +43,11 @@ class BoostLifecycleBinding {
       hasShownPageIds.add(id);
 
       // This case indicates it is the first time that this container show
-      // So we should dispatch event in addPostFrameCallback
+      // So we should dispatch event using
+      // PageVisibilityBinding.dispatchPageShowEventOnPageShowFirstTime
       // to ensure the page will receive callback
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        PageVisibilityBinding.instance
-            .dispatchPageShowEvent(container.topPage.route);
-      });
+      PageVisibilityBinding.instance
+          .dispatchPageShowEventOnPageShowFirstTime(container.topPage.route);
     } else {
       PageVisibilityBinding.instance
           .dispatchPageShowEvent(container.topPage.route);
@@ -64,7 +63,8 @@ class BoostLifecycleBinding {
   void routeDidPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidPush');
     PageVisibilityBinding.instance.dispatchPageCreateEvent(route);
-    PageVisibilityBinding.instance.dispatchPageShowEvent(route);
+    PageVisibilityBinding.instance
+        .dispatchPageShowEventOnPageShowFirstTime(route);
     PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
   }
 
