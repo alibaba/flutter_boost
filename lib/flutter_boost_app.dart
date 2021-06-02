@@ -68,10 +68,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, List<EventListener>> _listenersTable =
       <String, List<EventListener>>{};
 
-  ///Indicates which container is to load first time
-  ///It will be assigned when [BoostPage] is created
-  String firstTimeLoadPageId = "";
-
   @override
   void initState() {
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
@@ -142,11 +138,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
-
-    // Record the new page id to judge it is first time to load
-    // We set firstTimeLoadPageId = pageInfo.uniqueId,
-    // because the container 's first page id is container 's id
-    firstTimeLoadPageId = pageInfo.uniqueId;
     return BoostContainer(
         key: ValueKey<String>(pageInfo.uniqueId), pageInfo: pageInfo);
   }
@@ -396,19 +387,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void onContainerShow(CommonParams params) {
     final container = _findContainerByUniqueId(params.uniqueId);
-
-    //Indicates the first time to load page
-    if (container.pageInfo.uniqueId == firstTimeLoadPageId) {
-      //reset id to empty
-      firstTimeLoadPageId = "";
-
-      //wait frame update callback to gurantee containerDidShow event dispatch after page is created
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        BoostLifecycleBinding.instance.containerDidShow(container);
-      });
-    } else {
-      BoostLifecycleBinding.instance.containerDidShow(container);
-    }
+    BoostLifecycleBinding.instance.containerDidShow(container);
 
     // Try to complete pending native result when container closed.
     final topPage = topContainer?.topPage?.pageInfo?.uniqueId;
