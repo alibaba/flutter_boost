@@ -68,6 +68,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, List<EventListener>> _listenersTable =
       <String, List<EventListener>>{};
 
+  ///Indicates which container is to load first time
+  ///It will be assigned when [BoostPage] is created
+  String firstTimeLoadPageId = "";
+
   @override
   void initState() {
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
@@ -138,6 +142,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer _createContainer(PageInfo pageInfo) {
     pageInfo.uniqueId ??= _createUniqueId(pageInfo.pageName);
+
+    // Record the new page id to judge it is first time to load
+    // We set firstTimeLoadPageId = pageInfo.uniqueId,
+    // because the container 's first page id is container 's id
+    firstTimeLoadPageId = pageInfo.uniqueId;
     return BoostContainer(
         key: ValueKey<String>(pageInfo.uniqueId), pageInfo: pageInfo);
   }
@@ -237,7 +246,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         refreshOnPush(container);
       } else {
         // In this case , we don't need to change the overlayEntries data,
-        // so we don't call any refresh method
         topContainer.pages.add(BoostPage.create(pageInfo));
         topContainer.refresh();
       }
@@ -388,7 +396,19 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void onContainerShow(CommonParams params) {
     final container = _findContainerByUniqueId(params.uniqueId);
-    BoostLifecycleBinding.instance.containerDidShow(container);
+
+    //Indicates the first time to load page
+    if (container.pageInfo.uniqueId == firstTimeLoadPageId) {
+      //reset id to empty
+      firstTimeLoadPageId = "";
+
+      //wait frame update callback to gurantee containerDidShow event dispatch after page is created
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        BoostLifecycleBinding.instance.containerDidShow(container);
+      });
+    } else {
+      BoostLifecycleBinding.instance.containerDidShow(container);
+    }
 
     // Try to complete pending native result when container closed.
     final topPage = topContainer?.topPage?.pageInfo?.uniqueId;
@@ -520,7 +540,10 @@ class BoostNavigatorObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     //handle internal route
     if (previousRoute != null) {
-      BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
+      //add postFrameCallback to ensure the event dispatch after the target page is created.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
+      });
     }
     super.didPush(route, previousRoute);
   }
