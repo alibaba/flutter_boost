@@ -97,20 +97,22 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: widget.container._navKey,
-      pages: List<Page<dynamic>>.of(widget.container.pages),
-      onPopPage: (route, result) {
-        if (route.didPop(result)) {
-          _updatePagesList();
-          return true;
-        }
-        return false;
-      },
-      observers: <NavigatorObserver>[
-        BoostNavigatorObserver(),
-      ],
-    );
+    return HeroControllerScope(
+        controller: HeroController(),
+        child: Navigator(
+          key: widget.container._navKey,
+          pages: List<Page<dynamic>>.of(widget.container.pages),
+          onPopPage: (route, result) {
+            if (route.didPop(result)) {
+              _updatePagesList();
+              return true;
+            }
+            return false;
+          },
+          observers: <NavigatorObserver>[
+            BoostNavigatorObserver(),
+          ],
+        ));
   }
 
   @override
