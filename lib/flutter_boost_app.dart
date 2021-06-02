@@ -237,7 +237,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         refreshOnPush(container);
       } else {
         // In this case , we don't need to change the overlayEntries data,
-        // so we don't call any refresh method
         topContainer.pages.add(BoostPage.create(pageInfo));
         topContainer.refresh();
       }

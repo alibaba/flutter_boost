@@ -9,6 +9,12 @@ class BoostLifecycleBinding {
 
   static final BoostLifecycleBinding instance = BoostLifecycleBinding._();
 
+  ///This set contains all of the ids that has been shown
+  ///It is to solve the quesition that the page can't receive onPageShow callback event when showing
+  ///on screen first time.
+  ///Because it is not be added to [PageVisibilityBinding] before dispatching [containerDidShow] event
+  Set<String> hasShownPageIds = <String>{};
+
   void containerDidPush(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
@@ -21,12 +27,31 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
     PageVisibilityBinding.instance
         .dispatchPageDestroyEvent(container.topPage.route);
+
+    //When container pop,remove the id from set to avoid this id still remain in the set
+    final id = container.pageInfo.uniqueId;
+    final bool removed = hasShownPageIds.remove(id);
+    assert(removed);
   }
 
   void containerDidShow(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
-    PageVisibilityBinding.instance
-        .dispatchPageShowEvent(container.topPage.route);
+
+    final id = container.pageInfo.uniqueId;
+    assert(id != null);
+    if (!hasShownPageIds.contains(id)) {
+      hasShownPageIds.add(id);
+
+      // This case indicates it is the first time that this container show
+      // So we should dispatch event using
+      // PageVisibilityBinding.dispatchPageShowEventOnPageShowFirstTime
+      // to ensure the page will receive callback
+      PageVisibilityBinding.instance
+          .dispatchPageShowEventOnPageShowFirstTime(container.topPage.route);
+    } else {
+      PageVisibilityBinding.instance
+          .dispatchPageShowEvent(container.topPage.route);
+    }
   }
 
   void containerDidHide(BoostContainer container) {
@@ -38,7 +63,8 @@ class BoostLifecycleBinding {
   void routeDidPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidPush');
     PageVisibilityBinding.instance.dispatchPageCreateEvent(route);
-    PageVisibilityBinding.instance.dispatchPageShowEvent(route);
+    PageVisibilityBinding.instance
+        .dispatchPageShowEventOnPageShowFirstTime(route);
     PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
   }
 

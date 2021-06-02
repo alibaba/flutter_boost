@@ -37,7 +37,7 @@ class AppLifecycleObserver with GlobalPageVisibilityObserver {
   @override
   void onPageShow(Route route) {
     super.onPageShow(route);
-    print("AppLifecycleObserver - AppLifecycleObserver");
+    print("AppLifecycleObserver - onPageShow");
   }
 }
 
@@ -90,13 +90,21 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
-    });
+
+    ///请在didChangeDependencies中注册而不是initState中
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    ///注册监听器
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
   }
 
   @override
   void dispose() {
+    ///移除监听器
     PageVisibilityBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -113,7 +121,19 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
         ),
       ),
       body: Center(
-        child: Text('simple lifecycle test page',style: TextStyle(fontSize: 24)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('simple lifecycle test page', style: TextStyle(fontSize: 24)),
+            const SizedBox(height: 40),
+            CupertinoButton.filled(
+                child: Text('push simple page'),
+                onPressed: () {
+                  BoostNavigator.instance
+                      .push("simplePage", withContainer: true);
+                }),
+          ],
+        ),
       ),
     );
   }
