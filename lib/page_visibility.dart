@@ -3,15 +3,15 @@ import 'package:flutter/scheduler.dart';
 
 import 'logger.dart';
 
-///observer for all pages visibility
+///Observer for all pages visibility
 class GlobalPageVisibilityObserver {
-  void onPageCreate(Route<dynamic> route) {}
+  void onPagePush(Route<dynamic> route) {}
 
   void onPageShow(Route<dynamic> route) {}
 
   void onPageHide(Route<dynamic> route) {}
 
-  void onPageDestroy(Route<dynamic> route) {}
+  void onPagePop(Route<dynamic> route) {}
 
   void onForeground(Route<dynamic> route) {}
 
@@ -88,13 +88,13 @@ class PageVisibilityBinding {
     Logger.log('page_visibility, #removeGlobalObserver, $observer');
   }
 
-  void dispatchPageCreateEvent(Route<dynamic> route) {
+  void dispatchPagePushEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
     ///just dispatch for global observers
-    dispatchGlobalPageCreateEvent(route);
+    dispatchGlobalPagePushEvent(route);
   }
 
   void dispatchPageShowEvent(Route<dynamic> route) {
@@ -147,13 +147,13 @@ class PageVisibilityBinding {
     dispatchGlobalPageHideEvent(route);
   }
 
-  void dispatchPageDestroyEvent(Route<dynamic> route) {
+  void dispatchPagePopEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
     ///just dispatch for global observers
-    dispatchGlobalPageDestroyEvent(route);
+    dispatchGlobalPagePopEvent(route);
   }
 
   void dispatchPageForgroundEvent(Route<dynamic> route) {
@@ -200,17 +200,17 @@ class PageVisibilityBinding {
     dispatchGlobalBackgroundEvent(route);
   }
 
-  void dispatchGlobalPageCreateEvent(Route<dynamic> route) {
+  void dispatchGlobalPagePushEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
     final globalObserversList = _globalListeners.toList();
 
     for (var observer in globalObserversList) {
-      observer.onPageCreate(route);
+      observer.onPagePush(route);
     }
 
-    Logger.log('page_visibility, #dispatchGlobalPageCreateEvent, '
+    Logger.log('page_visibility, #dispatchGlobalPagePushEvent, '
         '${route.settings.name}');
   }
 
@@ -242,17 +242,17 @@ class PageVisibilityBinding {
         '${route.settings.name}');
   }
 
-  void dispatchGlobalPageDestroyEvent(Route<dynamic> route) {
+  void dispatchGlobalPagePopEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
     final globalObserversList = _globalListeners.toList();
     for (var observer in globalObserversList) {
-      observer.onPageDestroy(route);
+      observer.onPagePop(route);
     }
 
-    Logger.log('page_visibility, #dispatchGlobalPageDestroyEvent, '
+    Logger.log('page_visibility, #dispatchGlobalPagePopEvent, '
         '${route.settings.name}');
   }
 
