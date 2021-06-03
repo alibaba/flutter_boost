@@ -50,7 +50,7 @@
     [super viewDidDisappear:animated];
 }
 - (void)bridge_viewWillAppear:(BOOL)animated {
-//    [FLUTTER_APP inactive];
+    //    [FLUTTER_APP inactive];
     [FBLifecycle inactive ];
     [super viewWillAppear:animated];
 }
@@ -71,10 +71,10 @@
 {
     if(self = [super initWithEngine:ENGINE
                             nibName:_flbNibName
-                            bundle:_flbNibBundle]){
+                             bundle:_flbNibBundle]){
         //NOTES:在present页面时，默认是全屏，如此可以触发底层VC的页面事件。否则不会触发而导致异常
         self.modalPresentationStyle = UIModalPresentationFullScreen;
-
+        
         [self _setup];
     }
     return self;
@@ -139,7 +139,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter++;
     if(kInstanceCounter == 1){
-//        [FLUTTER_APP resume];
+        //        [FLUTTER_APP resume];
         [FBLifecycle resume ];
     }
 }
@@ -171,9 +171,9 @@ static NSUInteger kInstanceCounter = 0;
         params.arguments = _params;
         params.uniqueId = self.uniqueId;
         params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
-
+        
         [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-                }];
+        }];
     }
     [super willMoveToParentViewController:parent];
 }
@@ -188,7 +188,7 @@ static NSUInteger kInstanceCounter = 0;
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
-
+    
     [super dismissViewControllerAnimated:flag completion:^(){
         if (completion) {
             completion();
@@ -211,10 +211,10 @@ static NSUInteger kInstanceCounter = 0;
     params.arguments = _params;
     params.uniqueId = self.uniqueId;
     [FB_PLUGIN.flutterApi removeRoute: params  completion:^(NSError * e) {
-
-            }];
-    [FB_PLUGIN removeContainer:self];
         
+    }];
+    [FB_PLUGIN removeContainer:self];
+    
     [self.class instanceCounterDecrease];
 }
 
@@ -277,32 +277,32 @@ static NSUInteger kInstanceCounter = 0;
     params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
     
     [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-           
-            }];
+        
+    }];
     [FB_PLUGIN addContainer:self];
-
+    
     [self attatchFlutterEngine];
-
+    
     [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
-   
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
-
+    
     //根据淘宝特价版日志证明，即使在UIViewController的viewDidAppear下，application也可能在inactive模式，此时如果提交渲染会导致GPU后台渲染而crash
     //参考：https://github.com/flutter/flutter/issues/57973
     //https://github.com/flutter/engine/pull/18742
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
         [self surfaceUpdated:YES];
-
+        
     }
     [super viewDidAppear:animated];
-
+    
     // Enable or disable pop gesture
     // note: if disablePopGesture is nil, do nothing
     if (self.disablePopGesture) {
@@ -312,7 +312,7 @@ static NSUInteger kInstanceCounter = 0;
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId = self.uniqueId;
     [FB_PLUGIN.flutterApi onContainerShow:params completion:^(NSError * e) {
-    
+        
     }];
 }
 
@@ -328,7 +328,7 @@ static NSUInteger kInstanceCounter = 0;
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId = self.uniqueId;
     [FB_PLUGIN.flutterApi onContainerHide:params completion:^(NSError * e) {
-    
+        
     }];
 }
 

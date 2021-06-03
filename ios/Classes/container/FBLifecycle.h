@@ -24,7 +24,7 @@
 
 
 @interface FBLifecycle : NSObject
-+ (void)pause ;
++ (void)pause;
 + (void)resume;
 + (void)inactive;
 @end
