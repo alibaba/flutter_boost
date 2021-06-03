@@ -23,10 +23,9 @@ class BoostChannel {
 
   ///Add event listener in flutter side, which is to listen the events from native side
   ///The [VoldCallBack] is to remove this listener
-  VoidCallback addEventListener(String key, EventListener listener){
+  VoidCallback addEventListener(String key, EventListener listener) {
     return _appState.addEventListener(key, listener);
   }
-
 
   ///Send a custom event to native with [key] and [args]
   ///Calls when flutter(here) wants to send event to native side

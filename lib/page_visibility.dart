@@ -3,30 +3,37 @@ import 'package:flutter/scheduler.dart';
 
 import 'logger.dart';
 
-///observer for all pages visibility
+///Observer for all pages visibility
 class GlobalPageVisibilityObserver {
-  void onPageCreate(Route<dynamic> route) {}
+  void onPagePush(Route<dynamic> route) {}
 
   void onPageShow(Route<dynamic> route) {}
 
   void onPageHide(Route<dynamic> route) {}
 
-  void onPageDestroy(Route<dynamic> route) {}
+  void onPagePop(Route<dynamic> route) {}
 
   void onForeground(Route<dynamic> route) {}
 
   void onBackground(Route<dynamic> route) {}
 }
 
-///observer for single page visibility
+///Observer for single page visibility
 class PageVisibilityObserver {
-  void onPageCreate() {}
+  ///
+  /// Tip:If you want to do things when page is created,
+  /// please in your [StatefulWidget]'s [State]
+  /// and write your code in [initState] method to initialize
+  ///
+  /// And If you want to do things when page is destory,
+  /// please write code in the [dispose] method
+  ///
 
+  /// It can be regarded as Android "onResume" or iOS "viewDidAppear"
   void onPageShow() {}
 
+  /// It can be regarded as Android "onStop" or iOS "viewDidDisappear"
   void onPageHide() {}
-
-  void onPageDestroy() {}
 
   void onForeground() {}
 
@@ -81,25 +88,13 @@ class PageVisibilityBinding {
     Logger.log('page_visibility, #removeGlobalObserver, $observer');
   }
 
-  void dispatchPageCreateEvent(Route<dynamic> route) {
+  void dispatchPagePushEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
-    final observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (var observer in observers) {
-        try {
-          observer.onPageCreate();
-        } on Exception catch (e) {
-          Logger.log(e.toString());
-        }
-      }
-    }
-    Logger.log(
-        'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
-
-    dispatchGlobalPageCreateEvent(route);
+    ///just dispatch for global observers
+    dispatchGlobalPagePushEvent(route);
   }
 
   void dispatchPageShowEvent(Route<dynamic> route) {
@@ -152,26 +147,13 @@ class PageVisibilityBinding {
     dispatchGlobalPageHideEvent(route);
   }
 
-  void dispatchPageDestroyEvent(Route<dynamic> route) {
+  void dispatchPagePopEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
-    final observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (var observer in observers) {
-        try {
-          observer.onPageDestroy();
-        } on Exception catch (e) {
-          Logger.log(e.toString());
-        }
-      }
-    }
-
-    Logger.log(
-        'page_visibility, #dispatchPageDestroyEvent, ${route.settings.name}');
-
-    dispatchGlobalPageDestroyEvent(route);
+    ///just dispatch for global observers
+    dispatchGlobalPagePopEvent(route);
   }
 
   void dispatchPageForgroundEvent(Route<dynamic> route) {
@@ -218,17 +200,17 @@ class PageVisibilityBinding {
     dispatchGlobalBackgroundEvent(route);
   }
 
-  void dispatchGlobalPageCreateEvent(Route<dynamic> route) {
+  void dispatchGlobalPagePushEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
     final globalObserversList = _globalListeners.toList();
 
     for (var observer in globalObserversList) {
-      observer.onPageCreate(route);
+      observer.onPagePush(route);
     }
 
-    Logger.log('page_visibility, #dispatchGlobalPageCreateEvent, '
+    Logger.log('page_visibility, #dispatchGlobalPagePushEvent, '
         '${route.settings.name}');
   }
 
@@ -260,17 +242,17 @@ class PageVisibilityBinding {
         '${route.settings.name}');
   }
 
-  void dispatchGlobalPageDestroyEvent(Route<dynamic> route) {
+  void dispatchGlobalPagePopEvent(Route<dynamic> route) {
     if (route == null) {
       return;
     }
 
     final globalObserversList = _globalListeners.toList();
     for (var observer in globalObserversList) {
-      observer.onPageDestroy(route);
+      observer.onPagePop(route);
     }
 
-    Logger.log('page_visibility, #dispatchGlobalPageDestroyEvent, '
+    Logger.log('page_visibility, #dispatchGlobalPagePopEvent, '
         '${route.settings.name}');
   }
 

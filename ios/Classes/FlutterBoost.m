@@ -162,7 +162,7 @@
 
 
 - (FBVoidCallback)addEventListener:(FBEventListener)listener
-                 forName:(NSString *)key{
+                           forName:(NSString *)key{
     return [self.plugin addEventListener:listener forName:key];
 }
 

@@ -21,7 +21,7 @@ void main() {
 
 class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   @override
-  void onPageCreate(Route<dynamic> route) {
+  void onPagePush(Route<dynamic> route) {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageCreate route:${route.settings.name}');
   }
@@ -39,7 +39,7 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   }
 
   @override
-  void onPageDestroy(Route<dynamic> route) {
+  void onPagePop(Route<dynamic> route) {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageDestroy route:${route.settings.name}');
   }

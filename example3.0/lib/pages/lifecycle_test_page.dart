@@ -17,15 +17,15 @@ class AppLifecycleObserver with GlobalPageVisibilityObserver {
   }
 
   @override
-  void onPageCreate(Route route) {
-    super.onPageCreate(route);
-    print("AppLifecycleObserver - onPageCreate");
+  void onPagePush(Route route) {
+    super.onPagePush(route);
+    print("AppLifecycleObserver - onPagePush");
   }
 
   @override
-  void onPageDestroy(Route route) {
-    super.onPageDestroy(route);
-    print("AppLifecycleObserver - onPageDestroy");
+  void onPagePop(Route route) {
+    super.onPagePop(route);
+    print("AppLifecycleObserver - onPagePop");
   }
 
   @override
@@ -61,18 +61,6 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
   void onForeground() {
     super.onForeground();
     print("LifecycleTestPage - onForeground");
-  }
-
-  @override
-  void onPageCreate() {
-    super.onPageCreate();
-    print("LifecycleTestPage - onPageCreate");
-  }
-
-  @override
-  void onPageDestroy() {
-    super.onPageDestroy();
-    print("LifecycleTestPage - onPageDestroy");
   }
 
   @override
