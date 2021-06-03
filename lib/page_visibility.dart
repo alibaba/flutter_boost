@@ -18,15 +18,22 @@ class GlobalPageVisibilityObserver {
   void onBackground(Route<dynamic> route) {}
 }
 
-///observer for single page visibility
+///Observer for single page visibility
 class PageVisibilityObserver {
-  void onPageCreate() {}
+  ///
+  /// Tip:If you want to do things when page is created,
+  /// please in your [StatefulWidget]'s [State]
+  /// and write your code in [initState] method to initialize
+  ///
+  /// And If you want to do things when page is destory,
+  /// please write code in the [dispose] method
+  ///
 
+  /// It can be regarded as Android "onResume" or iOS "viewDidAppear"
   void onPageShow() {}
 
+  /// It can be regarded as Android "onStop" or iOS "viewDidDisappear"
   void onPageHide() {}
-
-  void onPageDestroy() {}
 
   void onForeground() {}
 
@@ -86,19 +93,7 @@ class PageVisibilityBinding {
       return;
     }
 
-    final observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (var observer in observers) {
-        try {
-          observer.onPageCreate();
-        } on Exception catch (e) {
-          Logger.log(e.toString());
-        }
-      }
-    }
-    Logger.log(
-        'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
-
+    ///just dispatch for global observers
     dispatchGlobalPageCreateEvent(route);
   }
 
@@ -157,20 +152,7 @@ class PageVisibilityBinding {
       return;
     }
 
-    final observers = _listeners[route]?.toList();
-    if (observers != null) {
-      for (var observer in observers) {
-        try {
-          observer.onPageDestroy();
-        } on Exception catch (e) {
-          Logger.log(e.toString());
-        }
-      }
-    }
-
-    Logger.log(
-        'page_visibility, #dispatchPageDestroyEvent, ${route.settings.name}');
-
+    ///just dispatch for global observers
     dispatchGlobalPageDestroyEvent(route);
   }
 

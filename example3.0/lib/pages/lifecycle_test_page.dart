@@ -64,18 +64,6 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
   }
 
   @override
-  void onPageCreate() {
-    super.onPageCreate();
-    print("LifecycleTestPage - onPageCreate");
-  }
-
-  @override
-  void onPageDestroy() {
-    super.onPageDestroy();
-    print("LifecycleTestPage - onPageDestroy");
-  }
-
-  @override
   void onPageHide() {
     super.onPageHide();
     print("LifecycleTestPage - onPageHide");
