@@ -32,8 +32,10 @@ PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING
 - [基本的路由API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
 - [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/lifecycle.md)
 - [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/event.md)
-- [如何向我们提issue]()
-- [如何向我们提PR]()
+
+# 建设文档
+- [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/issue.md)
+- [如何向我们提PR](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/pr.md)
 
 
 # FAQ
