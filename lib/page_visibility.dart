@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'logger.dart';
 
@@ -120,6 +121,14 @@ class PageVisibilityBinding {
         'page_visibility, #dispatchPageShowEvent, ${route.settings.name}');
 
     dispatchGlobalPageShowEvent(route);
+  }
+
+  ///When page show first time,we should dispatch event in [FrameCallback]
+  ///to avoid the page can't receive the show event
+  void dispatchPageShowEventOnPageShowFirstTime(Route<dynamic> route) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      dispatchPageShowEvent(route);
+    });
   }
 
   void dispatchPageHideEvent(Route<dynamic> route) {
