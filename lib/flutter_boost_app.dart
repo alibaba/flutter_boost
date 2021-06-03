@@ -318,7 +318,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
     return containers.singleWhere(
-        (element) => element.pageInfo.uniqueId == uniqueId,
+            (element) =>
+            element.pages.any((element) =>
+            element.pageInfo.uniqueId == uniqueId),
         orElse: () => null);
   }
 
