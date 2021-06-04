@@ -11,6 +11,7 @@ import com.idlefish.flutterboost.FlutterBoost;
 
 import java.util.UUID;
 
+import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.platform.PlatformPlugin;
@@ -28,7 +29,7 @@ public abstract class FlutterBoostViewBase extends FrameLayout implements Flutte
     public FlutterBoostViewBase(ComponentActivity activity) {
         super(activity);
         this.activity = activity;
-        flutterView = new FlutterView(activity);
+        flutterView = new FlutterView(activity, new FlutterTextureView(activity));
         addView(flutterView);
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
     }
@@ -40,11 +41,11 @@ public abstract class FlutterBoostViewBase extends FrameLayout implements Flutte
     private void hookActivityAndView() {
         assert(activity !=  null && flutterView != null);
         FlutterEngine engine = FlutterBoost.instance().getEngine();
-        engine.getLifecycleChannel().appIsResumed();
         assert(engine != null);
         platformPlugin = new PlatformPlugin(activity, engine.getPlatformChannel());
         engine.getActivityControlSurface().attachToActivity(activity, activity.getLifecycle());
         flutterView.attachToFlutterEngine(engine);
+        engine.getLifecycleChannel().appIsResumed();
         hasHooked = true;
     }
 

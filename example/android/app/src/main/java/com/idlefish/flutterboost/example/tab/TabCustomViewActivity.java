@@ -54,15 +54,6 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         bottomNavigation.setSelectedItemId(lastId);
     }
 
-    // #2. override these onResume/onPause/onStop lifecycle callbacks
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (lastId != R.id.navigation_native) {
-            mTabs.get(lastId).setVisibility(View.GONE);
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -88,14 +79,16 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         switch (id) {
             case R.id.navigation_flutter1:
             case R.id.navigation_flutter2: {
+                FlutterBoostViewBase selectedTab = mTabs.get(id);
+                selectedTab.setVisibility(View.VISIBLE);
+
                 if (lastId == R.id.navigation_native) {
                     mTabView.setVisibility(View.GONE);
                 } else {
-                    mTabs.get(lastId).setVisibility(View.GONE);
+                    if (id != lastId) {
+                        mTabs.get(lastId).setVisibility(View.GONE);
+                    }
                 }
-
-                FlutterBoostViewBase selectedTab = mTabs.get(id);
-                selectedTab.setVisibility(View.VISIBLE);
                 break;
             }
             case R.id.navigation_native:{
