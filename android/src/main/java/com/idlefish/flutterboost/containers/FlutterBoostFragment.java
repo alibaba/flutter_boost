@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
@@ -31,21 +30,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
 
-    private void findFlutterView(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup vp = (ViewGroup) view;
-            for (int i = 0; i < vp.getChildCount(); i++) {
-                View child = vp.getChildAt(i);
-                if (child instanceof FlutterView) {
-                    flutterView = (FlutterView) child;
-                    return;
-                } else {
-                    findFlutterView(child);
-                }
-            }
-        }
-    }
-
     // @Override
     public void detachFromFlutterEngine() {
         /**
@@ -65,8 +49,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        assert(flutterView == null);
-        findFlutterView(view);
+        flutterView = FlutterBoostUtils.findFlutterView(view);
+        assert(flutterView != null);
         flutterView.detachFromFlutterEngine();
         return view;
     }
@@ -99,10 +83,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onResume() {
-        assert(flutterView != null);
         super.onResume();
         if (!isHidden()) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+            assert(flutterView != null);
             ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
             assert(getFlutterEngine() != null);
             getFlutterEngine().getLifecycleChannel().appIsResumed();
@@ -116,9 +100,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onPause() {
-        assert(flutterView != null);
         super.onPause();
         if (!isHidden()) {
+            assert(flutterView != null);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
             assert(getFlutterEngine() != null);
             getFlutterEngine().getLifecycleChannel().appIsResumed();

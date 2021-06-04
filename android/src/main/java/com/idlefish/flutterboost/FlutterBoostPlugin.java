@@ -6,7 +6,6 @@ import android.util.SparseArray;
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,10 +27,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     public Messages.FlutterRouterApi getChannel() {
         return channel;
-    }
-
-    public void setChannel(Messages.FlutterRouterApi channel) {
-        this.channel = channel;
     }
 
     public void setDelegate(FlutterBoostDelegate delegate) {
