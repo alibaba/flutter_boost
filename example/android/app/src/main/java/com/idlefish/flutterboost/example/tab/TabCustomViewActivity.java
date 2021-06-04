@@ -10,31 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.containers.FlutterBoostView;
+import com.idlefish.flutterboost.containers.FlutterBoostViewBase;
 import com.idlefish.flutterboost.example.R;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import io.flutter.embedding.android.RenderMode;
-import io.flutter.embedding.android.TransparencyMode;
-
-public class TabCustomViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, FlutterBoostView.Callback {
-    SparseArray<FlutterBoostView> mTabs = new SparseArray<>();
+public class TabCustomViewActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+    SparseArray<FlutterBoostViewBase> mTabs = new SparseArray<>();
     TabView mTabView;
     private int lastId = -1;
 
-    private  FlutterBoostView createFlutterBoostView(String url) {
+    private FlutterBoostViewBase createFlutterBoostView(String url) {
         Map<String, Object> params = new HashMap<>();
         params.put("url", url);
-        // #1. create FlutterBoostView
-        return FlutterBoostView.withCachedEngine()
-                .transparencyMode(TransparencyMode.transparent)
-                .renderMode(RenderMode.texture)
-                .url(url)
-                .urlParams(params)
-                .build(this, this);
+        // #1. create CustomFlutterView
+        return new CustomFlutterView(this, url, params);
     }
 
     @Override
@@ -55,7 +46,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         mTabView.setVisibility(View.INVISIBLE);
 
         for (int i = 0; i < mTabs.size(); i++) {
-            FlutterBoostView tabContainer = mTabs.valueAt(i);
+            FlutterBoostViewBase tabContainer = mTabs.valueAt(i);
             container.addView(tabContainer, -1, -1);
         }
 
@@ -68,15 +59,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     protected void onStop() {
         super.onStop();
         if (lastId != R.id.navigation_native) {
-            mTabs.get(lastId).onStop();
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (lastId != R.id.navigation_native) {
-            mTabs.get(lastId).onPause();
+            mTabs.get(lastId).setVisibility(View.GONE);
         }
     }
 
@@ -84,7 +67,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     protected void onResume() {
         super.onResume();
         if (lastId != R.id.navigation_native) {
-            mTabs.get(lastId).onResume();
+            mTabs.get(lastId).setVisibility(View.VISIBLE);
         }
     }
 
@@ -92,8 +75,8 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     protected void onDestroy() {
         super.onDestroy();
         for (int i = 0; i < mTabs.size(); i++) {
-            FlutterBoostView tabContainer = mTabs.valueAt(i);
-            tabContainer.onDestroy();
+            FlutterBoostViewBase tabContainer = mTabs.valueAt(i);
+            tabContainer.destroy();
         }
         mTabView.onDestroy();
     }
@@ -111,7 +94,7 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
                     mTabs.get(lastId).setVisibility(View.GONE);
                 }
 
-                FlutterBoostView selectedTab = mTabs.get(id);
+                FlutterBoostViewBase selectedTab = mTabs.get(id);
                 selectedTab.setVisibility(View.VISIBLE);
                 break;
             }
@@ -133,24 +116,8 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
         if (lastId == R.id.navigation_native) {
             finish();
         } else {
-            FlutterBoostView currentTab = mTabs.get(lastId);
+            FlutterBoostViewBase currentTab = mTabs.get(lastId);
             currentTab.onBackPressed();
         }
-    }
-
-    // #5. handle view close event and other callback
-    @Override
-    public void finishContainer(Map<String, Object> result) {
-        finish();
-    }
-
-    @Override
-    public void onFlutterUiDisplayed() {
-        // Todo:
-    }
-
-    @Override
-    public void onFlutterUiNoLongerDisplayed() {
-        // Todo:
     }
 }
