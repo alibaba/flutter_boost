@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
@@ -39,22 +36,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
-    }
-
-    private void findFlutterView(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup vp = (ViewGroup) view;
-            for (int i = 0; i < vp.getChildCount(); i++) {
-                View child = vp.getChildAt(i);
-                if (child instanceof FlutterView) {
-                    flutterView = (FlutterView) child;
-                    return;
-                } else {
-                    findFlutterView(child);
-                }
-            }
-        }
     }
 
     // @Override
@@ -69,10 +52,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onResume() {
-        if (flutterView == null) {
-            findFlutterView(getWindow().getDecorView());
-        }
-
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (FlutterBoost.instance().isAppInBackground() &&
@@ -84,6 +63,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
     }
@@ -106,6 +86,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                 return;
             }
         }
+        assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }

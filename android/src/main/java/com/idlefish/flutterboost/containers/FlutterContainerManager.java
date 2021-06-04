@@ -1,7 +1,5 @@
 package com.idlefish.flutterboost.containers;
 
-import com.idlefish.flutterboost.FlutterBoost;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
