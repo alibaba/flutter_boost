@@ -134,7 +134,7 @@
 }
 
 - (FBVoidCallback)addEventListener:(FBEventListener)listener
-                 forName:(NSString *)key{
+                           forName:(NSString *)key{
     assert(key != nil && listener != nil);
     
     NSMutableArray<FBEventListener>* listeners = self.listenersTable[key];

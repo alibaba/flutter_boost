@@ -19,14 +19,14 @@ class BoostLifecycleBinding {
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
     PageVisibilityBinding.instance
-        .dispatchPageCreateEvent(container.topPage.route);
+        .dispatchPagePushEvent(container.topPage.route);
   }
 
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
     PageVisibilityBinding.instance
-        .dispatchPageDestroyEvent(container.topPage.route);
+        .dispatchPagePopEvent(container.topPage.route);
 
     //When container pop,remove the id from set to avoid this id still remain in the set
     final id = container.pageInfo.uniqueId;
@@ -62,7 +62,7 @@ class BoostLifecycleBinding {
 
   void routeDidPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidPush');
-    PageVisibilityBinding.instance.dispatchPageCreateEvent(route);
+    PageVisibilityBinding.instance.dispatchPagePushEvent(route);
     PageVisibilityBinding.instance
         .dispatchPageShowEventOnPageShowFirstTime(route);
     PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
@@ -72,7 +72,7 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidPop');
     PageVisibilityBinding.instance.dispatchPageHideEvent(route);
     PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
-    PageVisibilityBinding.instance.dispatchPageDestroyEvent(route);
+    PageVisibilityBinding.instance.dispatchPagePopEvent(route);
   }
 
   void appDidEnterForeground(BoostContainer container) {

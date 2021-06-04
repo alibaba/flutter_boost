@@ -294,15 +294,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return true;
   }
 
-  void _removeContainer(BoostContainer page) async {
-    containers.remove(page);
-    if (page.pageInfo.withContainer) {
-      Logger.log('_removeContainer ,  uniqueId=${page.pageInfo.uniqueId}');
+  Future<void> _removeContainer(BoostContainer container) async {
+    containers.remove(container);
+    if (container.pageInfo.withContainer) {
+      Logger.log('_removeContainer ,  uniqueId=${container.pageInfo.uniqueId}');
       final params = CommonParams()
-        ..pageName = page.pageInfo.pageName
-        ..uniqueId = page.pageInfo.uniqueId
-        ..arguments = page.pageInfo.arguments;
-      await _nativeRouterApi.popRoute(params);
+        ..pageName = container.pageInfo.pageName
+        ..uniqueId = container.pageInfo.uniqueId
+        ..arguments = container.pageInfo.arguments;
+       return await _nativeRouterApi.popRoute(params);
     }
   }
 
