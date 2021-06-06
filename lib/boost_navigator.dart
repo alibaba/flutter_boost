@@ -61,7 +61,8 @@ class BoostNavigator {
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments,
       bool withContainer = false,
-      bool opaque = true}) async {
+      bool opaque = true,
+      bool replacement = false}) async {
     var pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
@@ -88,7 +89,8 @@ class BoostNavigator {
           return appState.pushWithResult(pushOption.name,
               arguments: pushOption.arguments,
               withContainer: withContainer,
-              opaque: opaque);
+              opaque: opaque,
+              replacement: replacement);
         } else {
           final params = CommonParams()
             ..pageName = pushOption.name

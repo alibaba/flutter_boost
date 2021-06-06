@@ -189,7 +189,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       {String uniqueId,
       Map<String, dynamic> arguments,
       bool withContainer,
-      bool opaque = true}) {
+      bool opaque = true,
+      bool replacement = false}) {
     final completer = Completer<T>();
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
@@ -202,14 +203,20 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       nativeRouterApi.pushFlutterRoute(params);
     } else {
       push(pageName,
-          uniqueId: uniqueId, arguments: arguments, withContainer: false);
+          uniqueId: uniqueId,
+          arguments: arguments,
+          withContainer: false,
+          replacement: replacement);
     }
     _pendingResult[uniqueId] = completer;
     return completer.future;
   }
 
   void push(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+      {String uniqueId,
+      Map<String, dynamic> arguments,
+      bool withContainer,
+      bool replacement = false}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -237,7 +244,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         refreshOnPush(container);
       } else {
         // In this case , we don't need to change the overlayEntries data,
-        topContainer.pages.add(BoostPage.create(pageInfo));
+        final newPage = BoostPage.create(pageInfo);
+        if (replacement) {
+          topContainer.pages.removeLast();
+        }
+        topContainer.pages.add(newPage);
         topContainer.refresh();
       }
     }
@@ -303,7 +314,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
         ..arguments = container.pageInfo.arguments;
-       return await _nativeRouterApi.popRoute(params);
+      return await _nativeRouterApi.popRoute(params);
     }
   }
 
@@ -316,10 +327,21 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
+    //We find container use container's PageInfo first,if we get a container,return it.
+    //Or we will traverse all pages in all container to find the page matching this id
+    //then return this page's container
+
+    BoostContainer result = containers.singleWhere(
+        (element) => element.pageInfo.uniqueId == uniqueId,
+        orElse: () => null);
+
+    if (result != null) {
+      return result;
+    }
+
     return containers.singleWhere(
-            (element) =>
-            element.pages.any((element) =>
-            element.pageInfo.uniqueId == uniqueId),
+        (element) => element.pages
+            .any((element) => element.pageInfo.uniqueId == uniqueId),
         orElse: () => null);
   }
 
@@ -532,5 +554,11 @@ class BoostNavigatorObserver extends NavigatorObserver {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didRemove(Route route, Route previousRoute) {
+    super.didRemove(route, previousRoute);
+    BoostLifecycleBinding.instance.routeDidRemove(route);
   }
 }
