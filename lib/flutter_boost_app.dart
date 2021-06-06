@@ -246,7 +246,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         // In this case , we don't need to change the overlayEntries data,
         final newPage = BoostPage.create(pageInfo);
         if (replacement) {
-          topContainer.pages.removeLast();
+          final topPage = topContainer.pages.removeLast();
+
+          //This page is removed
+          //So we complete and remove its completer in set
+          _completePendingResultIfNeeded(topPage.pageInfo.uniqueId);
         }
         topContainer.pages.add(newPage);
         topContainer.refresh();
