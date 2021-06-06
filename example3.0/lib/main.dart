@@ -1,3 +1,4 @@
+import 'package:example/pages/simple_replacement_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
@@ -12,6 +13,26 @@ void main() {
   PageVisibilityBinding.instance.addGlobalObserver(AppLifecycleObserver());
 
   runApp(MyApp());
+}
+
+class Simple2 extends StatefulWidget {
+  const Simple2({Key key}) : super(key: key);
+
+  @override
+  _Simple2State createState() => _Simple2State();
+}
+
+class _Simple2State extends State<Simple2> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          BoostNavigator.instance.pop();
+        },
+        child: Scaffold(
+          backgroundColor: Colors.red,
+        ));
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -44,11 +65,20 @@ class _MyAppState extends State<MyApp> {
             );
           });
     },
-
-    ///生命周期例子页面
     'lifecyclePage': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => LifecycleTestPage());
+    },
+
+
+    ///生命周期例子页面
+    'replacementPage': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ReplacementPage());
+    },
+    'simple2': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => Simple2());
     },
 
     ///透明弹窗页面

@@ -54,10 +54,14 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
   if ((NSNull *)result.key == [NSNull null]) {
     result.key = nil;
   }
+  result.replacement = dict[@"replacement"];
+  if ((NSNull *)result.replacement == [NSNull null]) {
+    result.replacement = nil;
+  }
   return result;
 }
 -(NSDictionary*)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", (self.key ? self.key : [NSNull null]), @"key", nil];
+  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageName ? self.pageName : [NSNull null]), @"pageName", (self.uniqueId ? self.uniqueId : [NSNull null]), @"uniqueId", (self.arguments ? self.arguments : [NSNull null]), @"arguments", (self.opaque ? self.opaque : [NSNull null]), @"opaque", (self.key ? self.key : [NSNull null]), @"key", (self.replacement ? self.replacement : [NSNull null]), @"replacement", nil];
 }
 @end
 

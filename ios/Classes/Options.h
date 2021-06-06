@@ -65,4 +65,8 @@
 
 ///这个页面是否透明 注意:default value = YES
 @property(nonatomic,assign) BOOL opaque;
+
+///这个页面是否将会代替前面一个页面（也就是在push这个页面的时候，是否退出当前页面？）default value = false
+///若为true：从A->B ,push到B完成后，A页面将销毁
+@property(nonatomic, assign) BOOL replacement;
 @end

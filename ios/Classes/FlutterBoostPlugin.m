@@ -80,6 +80,7 @@
     options.uniqueId = input.uniqueId;
     options.arguments = input.arguments;
     options.opaque = [input.opaque boolValue];
+    options.replacement = [input.replacement boolValue];
     
     //因为这里是flutter端开启新容器push一个页面，所以这里原生用不着，所以这里completion传一个空的即可
     options.completion = ^(BOOL completion) {

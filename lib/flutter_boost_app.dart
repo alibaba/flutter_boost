@@ -199,6 +199,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = pageName
         ..uniqueId = uniqueId
         ..opaque = opaque
+        ..replacement = replacement
         ..arguments = arguments ?? <String, dynamic>{};
       nativeRouterApi.pushFlutterRoute(params);
     } else {

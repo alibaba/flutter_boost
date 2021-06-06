@@ -6,11 +6,9 @@ class CommonParams {
   Map<String, Object> arguments;
   bool opaque;
   String key;
+  bool replacement;
 }
 
-class EventParam{
-
-}
 class StackInfo {
   List<String> containers;
   Map<String, List<Map<String, Object>>> routes;

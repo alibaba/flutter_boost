@@ -116,6 +116,17 @@ class _MainPageState extends State<MainPage> {
             ///如果开启新容器，需要指定opaque为false
             opaque: false);
       }),
+      Model("push replacement with container", () {
+        BoostNavigator.instance.push(
+          "replacementPage",
+          withContainer: true,
+          replacement: true,
+        );
+      }),
+      Model("push replacement without container", () {
+        BoostNavigator.instance
+            .push("replacementPage", withContainer: false, replacement: true);
+      }),
       Model("send event to native", () {
         ///传值给原生
         BoostChannel.instance

@@ -44,6 +44,10 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
     }
     
     func pushFlutterRoute(_ options: FlutterBoostRouteOptions!) {
+        
+        FlutterBoost.instance().engine().viewController = nil
+        
+        
         let vc:FBFlutterViewContainer = FBFlutterViewContainer()
         vc.setName(options.pageName, uniqueId: options.uniqueId, params: options.arguments,opaque: options.opaque)
         
@@ -59,6 +63,12 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
             self.navigationController?.present(vc, animated: isAnimated, completion: nil)
         }else{
             self.navigationController?.pushViewController(vc, animated: isAnimated)
+            
+            if options.replacement {
+                let count = self.navigationController!.viewControllers.count
+                
+                self.navigationController?.viewControllers.remove(at: count - 2)
+            }
         }
     }
     
