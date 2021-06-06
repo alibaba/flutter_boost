@@ -36,6 +36,10 @@ public class Messages {
     public String getKey() { return key; }
     public void setKey(String setterArg) { this.key = setterArg; }
 
+    private Boolean replacement;
+    public Boolean getReplacement() { return replacement; }
+    public void setReplacement(Boolean setterArg) { this.replacement = setterArg; }
+
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("pageName", pageName);
@@ -43,6 +47,7 @@ public class Messages {
       toMapResult.put("arguments", arguments);
       toMapResult.put("opaque", opaque);
       toMapResult.put("key", key);
+      toMapResult.put("replacement", replacement);
       return toMapResult;
     }
     static CommonParams fromMap(Map<String, Object> map) {
@@ -57,6 +62,8 @@ public class Messages {
       fromMapResult.opaque = (Boolean)opaque;
       Object key = map.get("key");
       fromMapResult.key = (String)key;
+      Object replacement = map.get("replacement");
+      fromMapResult.replacement = (Boolean)replacement;
       return fromMapResult;
     }
   }

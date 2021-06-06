@@ -74,6 +74,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
                     .pageName(params.getPageName())
                     .uniqueId(params.getUniqueId())
                     .arguments((Map<String, Object>) (Object) params.getArguments())
+                    .replacement(params.getReplacement())
                     .build();
             delegate.pushFlutterRoute(options);
         } else {

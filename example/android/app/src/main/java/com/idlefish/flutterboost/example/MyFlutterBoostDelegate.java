@@ -1,5 +1,6 @@
 package com.idlefish.flutterboost.example;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.idlefish.flutterboost.FlutterBoost;
@@ -29,6 +30,12 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
                 .url(options.pageName())
                 .urlParams(options.arguments())
                 .build(FlutterBoost.instance().currentActivity());
+
+        Activity previous = FlutterBoost.instance().currentActivity();
         FlutterBoost.instance().currentActivity().startActivity(intent);
+
+        if(options.replacement()){
+            previous.finish();
+        }
     }
 }
