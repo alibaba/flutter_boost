@@ -7,3 +7,4 @@ export 'flutter_boost_app.dart';
 export 'logger.dart';
 export 'page_visibility.dart';
 export 'boost_channel.dart';
+export 'boost_flutter_binding.dart';

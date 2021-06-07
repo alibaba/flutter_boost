@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'boost_container.dart';
 import 'logger.dart';
 import 'page_visibility.dart';
+import 'boost_flutter_binding.dart';
 
 class BoostLifecycleBinding {
   BoostLifecycleBinding._();
@@ -79,11 +80,14 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
     PageVisibilityBinding.instance
         .dispatchPageForgroundEvent(container.topPage.route);
+
+    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
   void appDidEnterBackground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
     PageVisibilityBinding.instance
         .dispatchPageBackgroundEvent(container.topPage.route);
+    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.paused);
   }
 }
