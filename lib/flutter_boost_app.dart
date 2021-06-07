@@ -247,17 +247,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   Future<bool> popWithResult<T extends Object>([T result]) async {
     final uniqueId = topContainer?.topPage?.pageInfo?.uniqueId;
-    if (_pendingResult.containsKey(uniqueId)) {
-      _pendingResult[uniqueId].complete(result);
-
-      ///Need to remove this completer after calling completer.complete(result)
-      /// reason: https://github.com/alibaba/flutter_boost/issues/1020
-      _pendingResult.remove(uniqueId);
-    }
+    _completePendingResultIfNeeded(uniqueId, result: result);
 
     return await (result is Map<String, dynamic>
         ? pop(arguments: result)
         : pop());
+  }
+
+  void removeWithResult([String uniqueId, Map<String, dynamic> result]) {
+    _completePendingResultIfNeeded(uniqueId, result: result);
+    pop(uniqueId: uniqueId, arguments: result);
   }
 
   Future<bool> pop({String uniqueId, Map<String, dynamic> arguments}) async {
@@ -380,9 +379,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     });
   }
 
-  void _completePendingResultIfNeeded(String uniqueId) {
+  void _completePendingResultIfNeeded<T extends Object>(String uniqueId,
+      {T result}) {
     if (uniqueId != null && _pendingResult.containsKey(uniqueId)) {
-      _pendingResult[uniqueId].complete();
+      _pendingResult[uniqueId].complete(result);
       _pendingResult.remove(uniqueId);
     }
   }

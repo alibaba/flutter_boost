@@ -110,8 +110,10 @@ class BoostNavigator {
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
+  /// Please use [BoostNavigator.pop] instead.
+  @deprecated
   void remove(String uniqueId, {Map<String, dynamic> arguments}) =>
-      appState.pop(uniqueId: uniqueId, arguments: arguments);
+      appState.removeWithResult(uniqueId, arguments);
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;
