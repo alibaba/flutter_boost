@@ -16,6 +16,7 @@ import 'package:flutter_boost_example/tab/simple_widget.dart';
 void main() {
   PageVisibilityBinding.instance
       .addGlobalObserver(AppGlobalPageVisibilityObserver());
+  CustomFlutterBinding();
   runApp(MyApp());
 }
 
@@ -55,6 +56,10 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onBackground route:${route.settings.name}');
   }
+}
+
+class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {
+
 }
 
 class CustomInterceptor1 extends BoostInterceptor {
