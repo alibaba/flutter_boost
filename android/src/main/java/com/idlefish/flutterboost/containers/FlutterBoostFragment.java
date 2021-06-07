@@ -34,7 +34,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void detachFromFlutterEngine() {
         /**
          * Override and do nothing.
-         * 
+         *
          * The idea here is to avoid releasing delegate when
          * a new FlutterFragment is attached in Flutter2.0.
          */
@@ -63,7 +63,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         } else {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
         }
         super.onHiddenChanged(hidden);
     }
@@ -73,7 +73,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         assert(flutterView != null);
         if (isVisibleToUser) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
         } else {
             FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
@@ -87,7 +87,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (!isHidden()) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
             assert(flutterView != null);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine(), this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
             assert(getFlutterEngine() != null);
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
@@ -157,7 +157,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public String getUrl() {
         if (!getArguments().containsKey(EXTRA_URL)) {
             throw new RuntimeException("Oops! The fragment url are *MISSED*! You should "
-                    + "override the |getUrl|, or set url via CachedEngineFragmentBuilder.");
+                    + "override the |getUrl|, or set url via Builder.");
         }
         return getArguments().getString(EXTRA_URL);
     }
@@ -177,7 +177,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
-    public static class CachedEngineFragmentBuilder {
+    public static class Builder {
         private final Class<? extends FlutterBoostFragment> fragmentClass;
         private boolean destroyEngineWithFragment = false;
         private RenderMode renderMode = RenderMode.surface;
@@ -187,49 +187,49 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         private HashMap<String, Object> params;
         private String uniqueId;
 
-        public CachedEngineFragmentBuilder() {
+        public Builder() {
             this(FlutterBoostFragment.class);
         }
 
-        public CachedEngineFragmentBuilder(Class<? extends FlutterBoostFragment> subclass) {
+        public Builder(Class<? extends FlutterBoostFragment> subclass) {
             fragmentClass = subclass;
         }
 
-        public CachedEngineFragmentBuilder url(String url) {
+        public Builder url(String url) {
             this.url = url;
             return this;
         }
 
-        public CachedEngineFragmentBuilder urlParams(Map<String, Object> params) {
+        public Builder urlParams(Map<String, Object> params) {
             this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
 
-        public CachedEngineFragmentBuilder uniqueId(String uniqueId) {
+        public Builder uniqueId(String uniqueId) {
             this.uniqueId = uniqueId;
             return this;
         }
 
-        public CachedEngineFragmentBuilder destroyEngineWithFragment(
+        public Builder destroyEngineWithFragment(
                 boolean destroyEngineWithFragment) {
             this.destroyEngineWithFragment = destroyEngineWithFragment;
             return this;
         }
 
 
-        public CachedEngineFragmentBuilder renderMode( RenderMode renderMode) {
+        public Builder renderMode( RenderMode renderMode) {
             this.renderMode = renderMode;
             return this;
         }
 
 
-        public CachedEngineFragmentBuilder transparencyMode(
+        public Builder transparencyMode(
                  TransparencyMode transparencyMode) {
             this.transparencyMode = transparencyMode;
             return this;
         }
 
-        public CachedEngineFragmentBuilder shouldAttachEngineToActivity(
+        public Builder shouldAttachEngineToActivity(
                 boolean shouldAttachEngineToActivity) {
             this.shouldAttachEngineToActivity = shouldAttachEngineToActivity;
             return this;
@@ -260,7 +260,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         /**
          * Constructs a new {@code FlutterFragment} (or a subclass) that is configured based on
-         * properties set on this {@code CachedEngineFragmentBuilder}.
+         * properties set on this {@code Builder}.
          */
         public <T extends FlutterBoostFragment> T build() {
             try {

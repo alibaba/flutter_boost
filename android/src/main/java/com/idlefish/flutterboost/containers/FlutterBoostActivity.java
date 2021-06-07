@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -40,11 +41,10 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
     }
 
-    // @Override
-    public void detachFromFlutterEngine() {
+    /* @Override */ public void detachFromFlutterEngine() {
         /**
          * Override and do nothing.
-         * 
+         *
          * The idea here is to avoid releasing delegate when
          * a new FlutterActivity is attached in Flutter2.0.
          */
@@ -64,8 +64,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
-                getFlutterEngine(), this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
     }
 
     @Override
@@ -129,7 +128,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     public String getUrl() {
         if (!getIntent().hasExtra(EXTRA_URL)) {
             throw new RuntimeException("Oops! The activity url are *MISSED*! You should "
-                    + "override the |getUrl|, or set url via CachedEngineIntentBuilder.");
+                    + "override the |getUrl|, or set url via IntentBuilder.");
         }
         return getIntent().getStringExtra(EXTRA_URL);
     }
@@ -152,7 +151,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
-    public static class CachedEngineIntentBuilder {
+    public static class IntentBuilder {
         private final Class<? extends FlutterBoostActivity> activityClass;
         private boolean destroyEngineWithActivity = false;
         private String backgroundMode = DEFAULT_BACKGROUND_MODE;
@@ -160,33 +159,35 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         private HashMap<String, Object> params;
         private String uniqueId;
 
-        public CachedEngineIntentBuilder(Class<? extends FlutterBoostActivity> activityClass) {
-            this.activityClass = activityClass;
+        public IntentBuilder() {
+            this(FlutterBoostActivity.class);
         }
 
+        public IntentBuilder(Class<? extends FlutterBoostActivity> subclass) {
+            activityClass = subclass;
+        }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder destroyEngineWithActivity(boolean destroyEngineWithActivity) {
+        public FlutterBoostActivity.IntentBuilder destroyEngineWithActivity(boolean destroyEngineWithActivity) {
             this.destroyEngineWithActivity = destroyEngineWithActivity;
             return this;
         }
 
-
-        public FlutterBoostActivity.CachedEngineIntentBuilder backgroundMode(io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode backgroundMode) {
+        public FlutterBoostActivity.IntentBuilder backgroundMode(BackgroundMode backgroundMode) {
             this.backgroundMode = backgroundMode.name();
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder url(String url) {
+        public FlutterBoostActivity.IntentBuilder url(String url) {
             this.url = url;
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder urlParams(Map<String, Object> params) {
+        public FlutterBoostActivity.IntentBuilder urlParams(Map<String, Object> params) {
             this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder uniqueId(String uniqueId) {
+        public FlutterBoostActivity.IntentBuilder uniqueId(String uniqueId) {
             this.uniqueId = uniqueId;
             return this;
         }
@@ -201,5 +202,4 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     .putExtra(EXTRA_UNIQUE_ID, uniqueId != null ? uniqueId : FlutterBoostUtils.createUniqueId(url));
         }
     }
-
 }

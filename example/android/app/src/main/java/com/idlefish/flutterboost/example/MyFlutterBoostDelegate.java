@@ -22,7 +22,7 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
     @Override
     public void pushFlutterRoute(FlutterBoostRouteOptions options) {
-        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
+        Intent intent = new FlutterBoostActivity.IntentBuilder()
                 .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
                 .destroyEngineWithActivity(false)
                 .uniqueId(options.uniqueId())

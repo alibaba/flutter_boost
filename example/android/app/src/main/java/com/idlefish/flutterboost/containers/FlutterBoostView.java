@@ -6,10 +6,8 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
@@ -19,6 +17,7 @@ import java.util.UUID;
 import io.flutter.embedding.android.LifecycleView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
@@ -131,7 +130,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
         super.onResume();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -154,7 +153,9 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     public void onDestroy() {
         if(hasDestroyed()) return;
         if (hasCreated) {
+            FlutterEngine engine = getFlutterEngine();
             super.onDestroy();
+            engine.getLifecycleChannel().appIsResumed();
             FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         }
         hasDestroyed = true;
@@ -169,7 +170,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
         if (getVisibility() == View.VISIBLE) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine());
         } else if (getVisibility() == View.GONE) {
             FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
             ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());

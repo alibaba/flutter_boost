@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == mOpenNative) {
             NativeRouter.openPageByUrl(this, NativeRouter.NATIVE_PAGE_URL , params);
         } else if (v == mOpenFlutter) {
-            Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
+            Intent intent = new FlutterBoostActivity.IntentBuilder()
                     .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
                     .destroyEngineWithActivity(false)
                     .url("flutterPage")
