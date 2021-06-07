@@ -5,6 +5,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'pages/dialog_page.dart';
 import 'pages/lifecycle_test_page.dart';
 import 'pages/main_page.dart';
+import 'pages/replacement_page.dart';
 import 'pages/simple_page.dart';
 
 void main() {
@@ -49,6 +50,10 @@ class _MyAppState extends State<MyApp> {
     'lifecyclePage': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => LifecycleTestPage());
+    },
+    'replacementPage': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ReplacementPage());
     },
 
     ///透明弹窗页面

@@ -101,12 +101,16 @@ class _MainPageState extends State<MainPage> {
           withContainer: true,
         );
       }),
-      Model("open dialog without container", () {
-        BoostNavigator.instance.push(
-          "dialogPage",
+      Model("push replacement with Container", () {
+        BoostNavigator.instance.pushReplacement(
+          "replacementPage",
+          withContainer: true,
+        );
+      }),
+      Model("push replacement without container", () {
+        BoostNavigator.instance.pushReplacement(
+          "replacementPage",
           withContainer: false,
-
-          ///如果不需要开启新容器的情况下可以不用管opaque参数
         );
       }),
       Model("open dialog with container", () {

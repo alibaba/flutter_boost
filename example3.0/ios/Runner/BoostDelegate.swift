@@ -8,10 +8,6 @@
 import UIKit
 import flutter_boost
 
-
-import UIKit
-import flutter_boost
-
 class BoostDelegate: NSObject,FlutterBoostDelegate {
     
     ///您用来push的导航栏
@@ -44,6 +40,10 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
     }
     
     func pushFlutterRoute(_ options: FlutterBoostRouteOptions!) {
+        
+        let engine = FlutterBoost.instance().engine()
+        engine?.viewController = nil
+        
         let vc:FBFlutterViewContainer = FBFlutterViewContainer()
         vc.setName(options.pageName, uniqueId: options.uniqueId, params: options.arguments,opaque: options.opaque)
         
@@ -82,10 +82,30 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
             }
             
         }else{
-            self.navigationController?.popViewController(animated: true)
+            //pop场景
+            
+            //找到和要移除的id对应的vc
+            guard let viewControllers = self.navigationController?.viewControllers else{
+                return
+            }
+            
+            var containerToRemove:FBFlutterViewContainer?
+            for item in viewControllers.reversed() {
+                if let container = item as? FBFlutterViewContainer,container.uniqueIDString() == options.uniqueId {
+                    containerToRemove = container
+                    break
+                }
+            }
+            if(containerToRemove == nil){
+                fatalError("uniqueId is wrong!!!")
+            }
+            
+            if self.navigationController?.topViewController == containerToRemove {
+                self.navigationController?.popViewController(animated: true)
+            }else{
+                containerToRemove?.removeFromParent()
+            }
         }
-        
-        //否则直接执行pop逻辑
         
         //这里在pop的时候将参数带出,并且从结果表中移除
         if let onPageFinshed = resultTable[options.pageName] {
