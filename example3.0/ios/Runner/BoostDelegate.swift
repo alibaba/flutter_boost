@@ -17,9 +17,6 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
     ///您用来push的导航栏
     var navigationController:UINavigationController?
     
-    ///用来存返回flutter侧返回结果的表
-    var resultTable:Dictionary<String,([AnyHashable:Any]?)->Void> = [:];
-    
     func pushNativeRoute(_ pageName: String!, arguments: [AnyHashable : Any]!) {
         
         //用参数来控制是push还是pop
@@ -44,15 +41,17 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
     }
     
     func pushFlutterRoute(_ options: FlutterBoostRouteOptions!) {
-        let vc:FBFlutterViewContainer = FBFlutterViewContainer()
-        vc.setName(options.pageName, uniqueId: options.uniqueId, params: options.arguments,opaque: options.opaque)
         
+        let engine = FlutterBoost.instance().engine()
+        engine?.viewController = nil
+        
+        let vc:FBFlutterViewContainer = FBFlutterViewContainer()
+        //给FBFlutterViewContainer设置路由配置
+        vc.setRouteOptions(options)
+
         //用参数来控制是push还是pop
         let isPresent = (options.arguments?["isPresent"] as? Bool)  ?? false
         let isAnimated = (options.arguments?["isAnimated"] as? Bool) ?? true
-        
-        //对这个页面设置结果
-        resultTable[options.pageName] = options.onPageFinished;
         
         //如果是present模式 ，或者要不透明模式，那么就需要以present模式打开页面
         if(isPresent || !options.opaque){
@@ -84,14 +83,5 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
         }else{
             self.navigationController?.popViewController(animated: true)
         }
-        
-        //否则直接执行pop逻辑
-        
-        //这里在pop的时候将参数带出,并且从结果表中移除
-        if let onPageFinshed = resultTable[options.pageName] {
-            onPageFinshed(options.arguments)
-            resultTable.removeValue(forKey: options.pageName)
-        }
-        
     }
 }

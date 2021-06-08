@@ -26,13 +26,12 @@ class HomeViewController: UIViewController {
             print("open operation is completed")
         }
         
-        //这个是页面关闭并且返回数据的回调，回调实际需要根据您的Delegate中的popRoute来调用
+        //这个是页面关闭并且返回数据的回调
         options.onPageFinished = {[weak self] dic in
             if let data = dic?["data"] as? String{
                 self?.resultLabel.text = "return data is: \(data)"
             }
         }
-        
         FlutterBoost.instance().open(options)
     }
     

@@ -32,11 +32,15 @@ typedef void (^FBEventListener) (NSString *name ,
                                  NSDictionary *arguments);
 typedef void (^FBVoidCallback)(void);
 
+typedef void (^FBOnPageFinshedCallback)(NSDictionary*);
+
 @interface FlutterBoostPlugin : NSObject <FlutterPlugin>
 @property (nonatomic, strong) id<FlutterBoostDelegate> delegate;
 @property(nonatomic, strong) FBFlutterRouterApi* flutterApi;
 - (void)addContainer:(id<FBFlutterContainer>)vc;
 - (void)removeContainer:(id<FBFlutterContainer>)vc;
 - (FBVoidCallback)addEventListener:(FBEventListener)listener forName:(NSString *)key;
+- (void)addFlutterPageCallback:(FBOnPageFinshedCallback) callback forId:(NSString*) uniqueId;
+- (void)completeFlutterPageCallbackIfNeeded:(NSString*)uniqueId arguments:(NSDictionary*) args;
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine ;
 @end

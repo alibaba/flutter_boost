@@ -46,7 +46,10 @@
    
     FBFlutterViewContainer *fvc = FBFlutterViewContainer.new ;
 
-    [fvc setName:@"tab_friend" uniqueId:nil params:@{} opaque:YES];
+    FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
+    options.pageName = @"tab_friend";
+    [fvc setRouteOptions:options];
+
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
 
 

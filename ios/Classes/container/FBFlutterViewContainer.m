@@ -50,7 +50,6 @@
     [super viewDidDisappear:animated];
 }
 - (void)bridge_viewWillAppear:(BOOL)animated {
-    //    [FLUTTER_APP inactive];
     [FBLifecycle inactive ];
     [super viewWillAppear:animated];
 }
@@ -106,12 +105,11 @@
     return [self init];
 }
 
-- (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque
-{
-    if(!_name && name){
-        _name = name;
-        _params = params;
-        _opaque = opaque;
+- (void)setRouteOptions:(FlutterBoostRouteOptions*)options{
+    if(!_name && options.pageName){
+        _name = options.pageName;
+        _params = options.arguments;
+        _opaque = options.opaque;
         //
         //这里如果是不透明的情况，才将viewOpaque 设为false，
         //并且才将modalStyle设为UIModalPresentationOverFullScreen
@@ -119,11 +117,15 @@
         //调用viewAppear相关生命周期,所以需要手动调用beginAppearanceTransition相关方法来触发
         //
         if(!_opaque){
-            self.viewOpaque = opaque;
+            self.viewOpaque = _opaque;
             self.modalPresentationStyle = UIModalPresentationOverFullScreen;
         }
-        if (uniqueId != nil) {
-            _uniqueId = uniqueId;
+        if (options.uniqueId != nil) {
+            _uniqueId = options.uniqueId;
+        }
+        //走到这里之后，self.uniqueId 要么是flutter生成传过来的，要么是自己创建的，所以此时id一定有值
+        if (options.onPageFinished) {
+            [FB_PLUGIN addFlutterPageCallback:options.onPageFinished forId:self.uniqueId];
         }
     }
 }
@@ -139,7 +141,6 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter++;
     if(kInstanceCounter == 1){
-        //        [FLUTTER_APP resume];
         [FBLifecycle resume ];
     }
 }
@@ -148,7 +149,7 @@ static NSUInteger kInstanceCounter = 0;
 {
     kInstanceCounter--;
     if([self.class instanceCounter] == 0){
-        [FBLifecycle pause ];
+        [FBLifecycle pause];
     }
 }
 
@@ -180,9 +181,12 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (!parent) {
+        //先detach才能调用notifyDealloc，因为在只有一个容器的情况下，
+        //[FBLifecycle pause]会导致内部engine.viewcontroller置nil，从而走不到下面的surfaceUpdate逻辑
+        //从而造成dealloc无法按时进行
+        [self detachFlutterEngineIfNeeded];
         //当VC被移出parent时，就通知flutter层销毁page
         [self notifyWillDealloc];
-        [self detachFlutterEngineIfNeeded];
     }
     [super didMoveToParentViewController:parent];
 }
@@ -193,14 +197,17 @@ static NSUInteger kInstanceCounter = 0;
         if (completion) {
             completion();
         }
+        //先调用detach再调用notify，原因见didMoveToParentViewController
+        [self detachFlutterEngineIfNeeded];
         //当VC被dismiss时，就通知flutter层销毁page
         [self notifyWillDealloc];
-        [self detachFlutterEngineIfNeeded];
     }];
 }
 
 - (void)dealloc
 {
+    //这里是避免没有手动调popRoute的情况，会在这个vc销毁的时候移除回传的callback防止泄漏
+    [FB_PLUGIN completeFlutterPageCallbackIfNeeded:_uniqueId arguments:[NSDictionary dictionary]];
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -241,6 +248,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)detachFlutterEngineIfNeeded
 {
+    
     if (self.engine.viewController == self) {
         //need to call [surfaceUpdated:NO] to detach the view controller's ref from
         //interal engine platformViewController,or dealloc will not be called after controller close.

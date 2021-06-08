@@ -32,13 +32,15 @@
 @property(nonatomic, strong) FBFlutterContainerManager* containerManager;
 @property(nonatomic, strong) FBStackInfo* stackInfo;
 @property(nonatomic, strong) NSMutableDictionary<NSString*,NSMutableArray<FBEventListener>*>* listenersTable;
+
+//用于存放从flutter返回数据到native的字典
+@property(nonatomic, strong) NSMutableDictionary<NSString*, FBOnPageFinshedCallback>* callbackTable;
 @end
 
 @implementation FlutterBoostPlugin
 
 - (void)addContainer:(id<FBFlutterContainer>)vc {
     [self.containerManager addUnique:vc];
-    
 }
 
 - (void)removeContainer:(id<FBFlutterContainer>)vc {
@@ -66,6 +68,7 @@
         _flutterApi = [[FBFlutterRouterApi alloc] initWithBinaryMessenger:messenger];
         _containerManager= [FBFlutterContainerManager new];
         _listenersTable = [[NSMutableDictionary alloc] init];
+        _callbackTable = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -96,6 +99,9 @@
         options.pageName = input.pageName;
         options.uniqueId = input.uniqueId;
         options.arguments = input.arguments;
+        
+        //做参数回传
+        [self completeFlutterPageCallbackIfNeeded:options.uniqueId arguments: options.arguments];
         
         //调用代理回调给调用层
         [self.delegate popRoute:options];
@@ -148,6 +154,25 @@
     return ^{
         [listeners removeObject:listener];
     };
+}
+
+- (void)addFlutterPageCallback:(FBOnPageFinshedCallback) callback forId:(NSString*) uniqueId{
+    assert(uniqueId != nil &&
+           callback != nil &&
+           self.callbackTable[uniqueId] == nil);
+    
+    self.callbackTable[uniqueId] = callback;
+}
+- (void)completeFlutterPageCallbackIfNeeded:(NSString*)uniqueId arguments:(NSDictionary*) args{
+    
+    assert(uniqueId != nil);
+    
+    if (self.callbackTable[uniqueId]) {
+        FBOnPageFinshedCallback callback = self.callbackTable[uniqueId];
+        callback(args);
+        //调用后移除
+        [self.callbackTable removeObjectForKey:uniqueId];
+    }
 }
 
 @end

@@ -19,7 +19,11 @@
 - (instancetype)init{
     if (self = [super init]) {
         _flutterContainer = [[FBFlutterViewContainer alloc]init];
-        [_flutterContainer setName:@"embedded" uniqueId:nil params:@{} opaque:YES];
+        
+        FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
+        options.pageName = @"embedded";
+        options.opaque = YES;
+        [_flutterContainer setRouteOptions:options];
     }
     return self;
 }

@@ -27,8 +27,9 @@
 }
 
 - (void)pushFlutterRoute:(FlutterBoostRouteOptions *)options {
+    
     FBFlutterViewContainer *vc = FBFlutterViewContainer.new;
-    [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments opaque:options.opaque];
+    [vc setRouteOptions:options];
     
     //是否伴随动画
     BOOL animated = [options.arguments[@"animated"] boolValue];
