@@ -37,6 +37,11 @@ class BoostContainer {
   }
 
   VoidCallback _refreshListener;
+
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+      ' pages:$pages)';
 }
 
 class BoostContainerWidget extends StatefulWidget {
@@ -52,8 +57,8 @@ class BoostContainerWidget extends StatefulWidget {
   // ignore: invalid_override_of_non_virtual_member
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
-      BoostContainerWidget otherWidget = other;
-      return this.container.pageInfo.uniqueId ==
+      var otherWidget = other;
+      return container.pageInfo.uniqueId ==
           otherWidget.container.pageInfo.uniqueId;
     }
     return super == other;
@@ -92,20 +97,22 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: widget.container._navKey,
-      pages: List<Page<dynamic>>.of(widget.container.pages),
-      onPopPage: (route, result) {
-        if (route.didPop(result)) {
-          _updatePagesList();
-          return true;
-        }
-        return false;
-      },
-      observers: <NavigatorObserver>[
-        BoostNavigatorObserver(),
-      ],
-    );
+    return HeroControllerScope(
+        controller: HeroController(),
+        child: Navigator(
+          key: widget.container._navKey,
+          pages: List<Page<dynamic>>.of(widget.container.pages),
+          onPopPage: (route, result) {
+            if (route.didPop(result)) {
+              _updatePagesList();
+              return true;
+            }
+            return false;
+          },
+          observers: <NavigatorObserver>[
+            BoostNavigatorObserver(),
+          ],
+        ));
   }
 
   @override

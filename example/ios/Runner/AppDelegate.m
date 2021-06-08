@@ -46,7 +46,7 @@
    
     FBFlutterViewContainer *fvc = FBFlutterViewContainer.new ;
 
-    [fvc setName:@"tab_friend" uniqueId:nil params:@{}];
+    [fvc setName:@"tab_friend" uniqueId:nil params:@{} opaque:YES];
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
 
 

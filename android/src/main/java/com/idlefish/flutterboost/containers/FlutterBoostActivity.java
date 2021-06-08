@@ -5,11 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
@@ -33,27 +30,14 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostActivity";
+    private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
-    }
-
-    private void findFlutterView(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup vp = (ViewGroup) view;
-            for (int i = 0; i < vp.getChildCount(); i++) {
-                View child = vp.getChildAt(i);
-                if (child instanceof FlutterView) {
-                    flutterView = (FlutterView) child;
-                    return;
-                } else {
-                    findFlutterView(child);
-                }
-            }
-        }
     }
 
     // @Override
@@ -68,10 +52,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onResume() {
-        if (flutterView == null) {
-            findFlutterView(getWindow().getDecorView());
-        }
-
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (FlutterBoost.instance().isAppInBackground() &&
@@ -83,6 +63,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
                 getFlutterEngine(), this);
     }
@@ -105,6 +86,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                 return;
             }
         }
+        assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
@@ -145,6 +127,10 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUrl() {
+        if (!getIntent().hasExtra(EXTRA_URL)) {
+            throw new RuntimeException("Oops! The activity url are *MISSED*! You should "
+                    + "override the |getUrl|, or set url via CachedEngineIntentBuilder.");
+        }
         return getIntent().getStringExtra(EXTRA_URL);
     }
 
@@ -155,7 +141,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUniqueId() {
+        if (!getIntent().hasExtra(EXTRA_URL)) {
+            return this.who;
+        }
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
+    }
+
+    @Override
+    public String getCachedEngineId() {
+      return FlutterBoost.ENGINE_ID;
     }
 
     public static class CachedEngineIntentBuilder {

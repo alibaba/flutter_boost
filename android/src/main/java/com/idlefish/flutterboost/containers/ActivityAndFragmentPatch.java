@@ -2,7 +2,6 @@ package com.idlefish.flutterboost.containers;
 
 import com.idlefish.flutterboost.FlutterBoost;
 
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;

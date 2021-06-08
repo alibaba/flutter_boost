@@ -33,7 +33,7 @@
 + (void)pause{
     [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
     if(ENGINE.viewController != nil){
-//        [(FBFlutterContainer *) ENGINE.viewController  surfaceUpdated:NO];
+        //        [(FBFlutterContainer *) ENGINE.viewController  surfaceUpdated:NO];
         ENGINE.viewController = nil;
     }
 }

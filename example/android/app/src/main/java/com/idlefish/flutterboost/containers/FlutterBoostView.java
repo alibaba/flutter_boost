@@ -27,15 +27,16 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostView extends LifecycleView implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostView";
-    private Callback mCallback;
-    private boolean mCreateAndStart;
-    private boolean mIsDestroyed;
+    private final String who = UUID.randomUUID().toString();
+    private Callback callback;
+    private boolean hasCreated;
+    private boolean hasDestroyed;
 
-    private boolean isDestroyed() {
-        if (mIsDestroyed) {
+    private boolean hasDestroyed() {
+        if (hasDestroyed) {
             Log.w(TAG, "Application attempted to call on a destroyed View", new Throwable());
         }
-        return mIsDestroyed;
+        return hasDestroyed;
     }
 
     @NonNull
@@ -48,7 +49,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         private TransparencyMode transparencyMode = TransparencyMode.transparent;
         private boolean shouldAttachEngineToActivity = true;
         private String url;
-        private HashMap<String, String> urlParam;
+        private HashMap<String, Object> params;
 
         private CachedEngineBuilder() {
         }
@@ -77,7 +78,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
                     ARG_FLUTTERVIEW_TRANSPARENCY_MODE,
                     transparencyMode != null ? transparencyMode.name() : TransparencyMode.transparent.name());
             args.putString(EXTRA_URL, url);
-            args.putSerializable(EXTRA_URL_PARAM, urlParam);
+            args.putSerializable(EXTRA_URL_PARAM, params);
             args.putString(EXTRA_UNIQUE_ID, FlutterBoostUtils.createUniqueId(url));
             return args;
         }
@@ -102,15 +103,15 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         @NonNull
-        public CachedEngineBuilder params(@NonNull HashMap<String, String> param) {
-            this.urlParam = param;
+        public CachedEngineBuilder urlParams(@NonNull Map<String, Object> params) {
+            this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
             return this;
         }
     }
 
     private FlutterBoostView(Activity context, Callback callback) {
         super(context);
-        mCallback = callback;
+        this.callback = callback;
     }
 
 
@@ -119,13 +120,13 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         super.onCreate();
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         onStart();
-        mCreateAndStart = true;
+        hasCreated = true;
     }
 
     @Override
     public void onResume() {
-        if(isDestroyed()) return;
-        if (!mCreateAndStart) {
+        if(hasDestroyed()) return;
+        if (!hasCreated) {
             onCreate();
         }
         super.onResume();
@@ -136,7 +137,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
     @Override
     public void onPause() {
-        if(isDestroyed()) return;
+        if(hasDestroyed()) return;
         super.onPause();
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
@@ -144,25 +145,25 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
     @Override
     public void onStop() {
-        if(isDestroyed()) return;
+        if(hasDestroyed()) return;
         super.onStop();
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
     }
 
     @Override
     public void onDestroy() {
-        if(isDestroyed()) return;
-        if (mCreateAndStart) {
+        if(hasDestroyed()) return;
+        if (hasCreated) {
             super.onDestroy();
             FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         }
-        mIsDestroyed = true;
+        hasDestroyed = true;
     }
 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        if (!mCreateAndStart) {
+        if (!hasCreated) {
             onCreate();
         }
 
@@ -186,16 +187,21 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
     @Override
     public void finishContainer(Map<String, Object> result) {
-        if (mCallback != null) {
-            mCallback.finishContainer(result);
+        if (callback != null) {
+            callback.finishContainer(result);
         } else {
             getActivity().finish();
         }
     }
 
+    @Override
+    public String getCachedEngineId() {
+      return getArguments().getString(ARG_CACHED_ENGINE_ID, FlutterBoost.ENGINE_ID);
+    }
+
     public void onFlutterUiDisplayed() {
-        if (mCallback != null) {
-            mCallback.onFlutterUiDisplayed();
+        if (callback != null) {
+            callback.onFlutterUiDisplayed();
         } else {
             Activity attachedActivity = getActivity();
             if (attachedActivity instanceof FlutterUiDisplayListener) {
@@ -205,8 +211,8 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     public void onFlutterUiNoLongerDisplayed() {
-        if (mCallback != null) {
-            mCallback.onFlutterUiNoLongerDisplayed();
+        if (callback != null) {
+            callback.onFlutterUiNoLongerDisplayed();
         } else {
             Activity attachedActivity = getActivity();
             if (attachedActivity instanceof FlutterUiDisplayListener) {
@@ -215,18 +221,20 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
     }
 
-    @Nullable
     public String getUrl() {
+        if (!getArguments().containsKey(EXTRA_URL)) {
+            throw new RuntimeException("Oops! The view url are *MISSED*! You should "
+                    + "override the |getUrl|, or set url via CachedEngineBuilder.");
+        }
         return getArguments().getString(EXTRA_URL);
     }
 
-    @Nullable
-    public HashMap<String, Object> getUrlParams() {
+    public Map<String, Object> getUrlParams() {
         return (HashMap<String, Object>)getArguments().getSerializable(EXTRA_URL_PARAM);
     }
 
     public String getUniqueId() {
-        return getArguments().getString(EXTRA_UNIQUE_ID);
+        return getArguments().getString(EXTRA_UNIQUE_ID, this.who);
     }
 
     public interface Callback extends FlutterUiDisplayListener {

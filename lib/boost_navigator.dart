@@ -59,7 +59,9 @@ class BoostNavigator {
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments, bool withContainer = false}) async {
+      {Map<String, dynamic> arguments,
+      bool withContainer = false,
+      bool opaque = true}) async {
     var pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
@@ -84,7 +86,9 @@ class BoostNavigator {
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
           return appState.pushWithResult(pushOption.name,
-              arguments: pushOption.arguments, withContainer: withContainer);
+              arguments: pushOption.arguments,
+              withContainer: withContainer,
+              opaque: opaque);
         } else {
           final params = CommonParams()
             ..pageName = pushOption.name
@@ -100,12 +104,16 @@ class BoostNavigator {
   }
 
   /// Pop the top-most page off the hybrid stack.
-  void pop<T extends Object>([T result]) => appState.popWithResult(result);
+  Future<bool> pop<T extends Object>([T result]) async =>
+      await appState.popWithResult(result);
 
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
-  void remove(String uniqueId) => appState.pop(uniqueId: uniqueId);
+  /// Please use [BoostNavigator.pop] instead.
+  @deprecated
+  void remove(String uniqueId, {Map<String, dynamic> arguments}) =>
+      appState.removeWithResult(uniqueId, arguments);
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;

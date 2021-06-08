@@ -158,7 +158,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.instance.push("native").then((value) => print("return:${value?.toString()}")),
+                onTap: () => BoostNavigator.instance
+                    .push("native")
+                    .then((value) => print("return:${value?.toString()}")),
               ),
               InkWell(
                 child: Container(
@@ -229,18 +231,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  // final overlay = Overlay.of(context);
-                  // OverlayEntry entry = OverlayEntry(builder: (_) {
-                  //   return TransparentWidget();
-                  // });
-                  // overlay.insert(entry);
-                  //
-                  // Future.delayed(const Duration(milliseconds: 2000), () {
-                  //   entry.remove();
-                  // });
-
-                  BoostNavigator.instance
-                      .push("transparentWidget", withContainer: true);
+                  BoostNavigator.instance.push("transparentWidget",
+                      withContainer: false, opaque: false);
                 },
               ),
               InkWell(
@@ -269,18 +261,6 @@ class PushWidget extends StatefulWidget {
 
 class _PushWidgetState extends State<PushWidget> {
   VoidCallback _backPressedListenerUnsub;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
 
   @override
   void dispose() {

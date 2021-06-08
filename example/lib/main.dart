@@ -16,12 +16,13 @@ import 'package:flutter_boost_example/tab/simple_widget.dart';
 void main() {
   PageVisibilityBinding.instance
       .addGlobalObserver(AppGlobalPageVisibilityObserver());
+  CustomFlutterBinding();
   runApp(MyApp());
 }
 
 class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   @override
-  void onPageCreate(Route<dynamic> route) {
+  void onPagePush(Route<dynamic> route) {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageCreate route:${route.settings.name}');
   }
@@ -39,15 +40,15 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   }
 
   @override
-  void onPageDestroy(Route<dynamic> route) {
+  void onPagePop(Route<dynamic> route) {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onPageDestroy route:${route.settings.name}');
   }
 
   @override
-  void onForground(Route route) {
+  void onForeground(Route route) {
     Logger.log(
-        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForground route:${route.settings.name}');
+        'boost_lifecycle: AppGlobalPageVisibilityObserver.onForeground route:${route.settings.name}');
   }
 
   @override
@@ -55,6 +56,10 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
     Logger.log(
         'boost_lifecycle: AppGlobalPageVisibilityObserver.onBackground route:${route.settings.name}');
   }
+}
+
+class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {
+
 }
 
 class CustomInterceptor1 extends BoostInterceptor {
@@ -133,7 +138,12 @@ class _MyAppState extends State<MyApp> {
     },
     'transparentWidget': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => TransparentWidget());
+          barrierColor: Colors.black12,
+          transitionDuration: const Duration(),
+          reverseTransitionDuration: const Duration(),
+          opaque: false,
+          settings: settings,
+          pageBuilder: (_, __, ___) => TransparentWidget());
     },
     'radialExpansion': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
