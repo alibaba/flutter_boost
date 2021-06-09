@@ -8,10 +8,6 @@
 import UIKit
 import flutter_boost
 
-
-import UIKit
-import flutter_boost
-
 class BoostDelegate: NSObject,FlutterBoostDelegate {
     
     ///您用来push的导航栏
@@ -52,7 +48,7 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
         let isAnimated = (options.arguments?["isAnimated"] as? Bool) ?? true
         
         //对这个页面设置结果
-        resultTable[options.pageName] = options.onPageFinished;
+        resultTable[vc.uniqueIDString()] = options.onPageFinished;
         
         //如果是present模式 ，或者要不透明模式，那么就需要以present模式打开页面
         if(isPresent || !options.opaque){
@@ -82,15 +78,35 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
             }
             
         }else{
-            self.navigationController?.popViewController(animated: true)
+            //pop场景
+            
+            //找到和要移除的id对应的vc
+            guard let viewControllers = self.navigationController?.viewControllers else{
+                return
+            }
+            
+            var containerToRemove:FBFlutterViewContainer?
+            for item in viewControllers.reversed() {
+                if let container = item as? FBFlutterViewContainer,container.uniqueIDString() == options.uniqueId {
+                    containerToRemove = container
+                    break
+                }
+            }
+            if(containerToRemove == nil){
+                fatalError("uniqueId is wrong!!!")
+            }
+            
+            if self.navigationController?.topViewController == containerToRemove {
+                self.navigationController?.popViewController(animated: true)
+            }else{
+                containerToRemove?.removeFromParent()
+            }
         }
         
-        //否则直接执行pop逻辑
-        
         //这里在pop的时候将参数带出,并且从结果表中移除
-        if let onPageFinshed = resultTable[options.pageName] {
+        if let onPageFinshed = resultTable[options.uniqueId] {
             onPageFinshed(options.arguments)
-            resultTable.removeValue(forKey: options.pageName)
+            resultTable.removeValue(forKey: options.uniqueId)
         }
         
     }

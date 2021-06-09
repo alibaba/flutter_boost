@@ -69,12 +69,12 @@
 
 - (instancetype)init
 {
+    ENGINE.viewController = nil;
     if(self = [super initWithEngine:ENGINE
                             nibName:_flbNibName
                              bundle:_flbNibBundle]){
         //NOTES:在present页面时，默认是全屏，如此可以触发底层VC的页面事件。否则不会触发而导致异常
         self.modalPresentationStyle = UIModalPresentationFullScreen;
-        
         [self _setup];
     }
     return self;
@@ -83,6 +83,7 @@
 - (instancetype)initWithProject:(FlutterDartProject*)projectOrNil
                         nibName:(NSString*)nibNameOrNil
                          bundle:(NSBundle*)nibBundleOrNil  {
+    ENGINE.viewController = nil;
     if (self = [super initWithProject:projectOrNil nibName:nibNameOrNil bundle:nibBundleOrNil]) {
         [self _setup];
     }
@@ -103,6 +104,7 @@
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     _flbNibName = nibNameOrNil;
     _flbNibBundle = nibBundleOrNil;
+    ENGINE.viewController = nil;
     return [self init];
 }
 
@@ -181,8 +183,8 @@ static NSUInteger kInstanceCounter = 0;
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }
     [super didMoveToParentViewController:parent];
 }
@@ -194,8 +196,8 @@ static NSUInteger kInstanceCounter = 0;
             completion();
         }
         //当VC被dismiss时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }];
 }
 

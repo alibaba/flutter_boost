@@ -31,8 +31,7 @@ class BoostLifecycleBinding {
 
     //When container pop,remove the id from set to avoid this id still remain in the set
     final id = container.pageInfo.uniqueId;
-    final bool removed = hasShownPageIds.remove(id);
-    assert(removed);
+    hasShownPageIds.remove(id);
   }
 
   void containerDidShow(BoostContainer container) {
@@ -73,6 +72,11 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidPop');
     PageVisibilityBinding.instance.dispatchPageHideEvent(route);
     PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
+    PageVisibilityBinding.instance.dispatchPagePopEvent(route);
+  }
+
+  void routeDidRemove(Route<dynamic> route){
+    Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidRemove');
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
   }
 
