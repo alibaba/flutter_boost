@@ -40,10 +40,6 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
     }
     
     func pushFlutterRoute(_ options: FlutterBoostRouteOptions!) {
-        
-        let engine = FlutterBoost.instance().engine()
-        engine?.viewController = nil
-        
         let vc:FBFlutterViewContainer = FBFlutterViewContainer()
         vc.setName(options.pageName, uniqueId: options.uniqueId, params: options.arguments,opaque: options.opaque)
         
@@ -52,7 +48,7 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
         let isAnimated = (options.arguments?["isAnimated"] as? Bool) ?? true
         
         //对这个页面设置结果
-        resultTable[options.pageName] = options.onPageFinished;
+        resultTable[vc.uniqueIDString()] = options.onPageFinished;
         
         //如果是present模式 ，或者要不透明模式，那么就需要以present模式打开页面
         if(isPresent || !options.opaque){
@@ -108,9 +104,9 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
         }
         
         //这里在pop的时候将参数带出,并且从结果表中移除
-        if let onPageFinshed = resultTable[options.pageName] {
+        if let onPageFinshed = resultTable[options.uniqueId] {
             onPageFinshed(options.arguments)
-            resultTable.removeValue(forKey: options.pageName)
+            resultTable.removeValue(forKey: options.uniqueId)
         }
         
     }
