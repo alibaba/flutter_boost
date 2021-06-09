@@ -50,8 +50,6 @@
     [super viewDidDisappear:animated];
 }
 - (void)bridge_viewWillAppear:(BOOL)animated {
-    //    [FLUTTER_APP inactive];
-    [FBLifecycle inactive ];
     [super viewWillAppear:animated];
 }
 @end
