@@ -181,8 +181,8 @@ static NSUInteger kInstanceCounter = 0;
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }
     [super didMoveToParentViewController:parent];
 }
@@ -194,8 +194,8 @@ static NSUInteger kInstanceCounter = 0;
             completion();
         }
         //当VC被dismiss时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }];
 }
 
