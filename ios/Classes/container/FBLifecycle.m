@@ -31,19 +31,15 @@
 @implementation FBLifecycle
 
 + (void)pause{
-    [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.paused"];
+    [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@2}];
     if(ENGINE.viewController != nil){
-        //        [(FBFlutterContainer *) ENGINE.viewController  surfaceUpdated:NO];
         ENGINE.viewController = nil;
     }
 }
 + (void)resume{
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
-        [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.resumed"];
+        [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@0}];
     }
-}
-+ (void)inactive{
-    [[ENGINE lifecycleChannel] sendMessage:@"AppLifecycleState.inactive"];
 }
 
 @end
