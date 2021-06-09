@@ -264,7 +264,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
       if (container == null) {
-        Logger.error('uniqueId=$uniqueId not find');
+        Logger.error('uniqueId=$uniqueId not found');
         return false;
       }
       if (container != topContainer) {
@@ -279,14 +279,28 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     assert(currentPage != null);
     _completePendingResultIfNeeded(currentPage);
 
-    final handled = await container?.navigator?.maybePop();
-    if (handled != null && !handled) {
-      assert(container.pageInfo.withContainer);
-      final params = CommonParams()
-        ..pageName = container.pageInfo.pageName
-        ..uniqueId = container.pageInfo.uniqueId
-        ..arguments = arguments ?? <String, dynamic>{};
-      await nativeRouterApi.popRoute(params);
+    //  1.If uniqueId == null,indicate we simply call BoostNavigaotor.pop(),
+    //so we call navigator?.maybePop();
+    //  2.If uniqueId is topPage's uniqueId,so we navigator?.maybePop();
+    //  3.If uniqueId is not topPage's uniqueId,so we will remove an existing page in container
+    if (uniqueId == null ||
+        uniqueId == container.pages.last.pageInfo.uniqueId) {
+      final handled = await container?.navigator?.maybePop();
+      if (handled != null && !handled) {
+        assert(container.pageInfo.withContainer);
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments = arguments ?? <String, dynamic>{};
+        await nativeRouterApi.popRoute(params);
+      }
+    } else {
+      _completePendingResultIfNeeded(uniqueId);
+      container.pages.removeWhere((element) {
+        return element.pageInfo.uniqueId == uniqueId;
+      });
+
+      container.refresh();
     }
 
     Logger.log(
@@ -295,14 +309,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<void> _removeContainer(BoostContainer container) async {
-    containers.remove(container);
     if (container.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${container.pageInfo.uniqueId}');
       final params = CommonParams()
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
         ..arguments = container.pageInfo.arguments;
-       return await _nativeRouterApi.popRoute(params);
+      return await _nativeRouterApi.popRoute(params);
     }
   }
 
@@ -315,10 +328,25 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
+    //Because first page can be removed from container.
+    //So we find id in container's PageInfo
+    //If we can't find a container matching this id,
+    //we will traverse all pages in all containers
+    //to find the page matching this id,and return its container
+    //
+    //If we can't find any container or page matching this id,we return null
+
+    BoostContainer result = containers.singleWhere(
+        (element) => element.pageInfo.uniqueId == uniqueId,
+        orElse: () => null);
+
+    if (result != null) {
+      return result;
+    }
+
     return containers.singleWhere(
-            (element) =>
-            element.pages.any((element) =>
-            element.pageInfo.uniqueId == uniqueId),
+        (element) => element.pages
+            .any((element) => element.pageInfo.uniqueId == uniqueId),
         orElse: () => null);
   }
 
@@ -532,5 +560,13 @@ class BoostNavigatorObserver extends NavigatorObserver {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didRemove(Route route, Route previousRoute) {
+    super.didRemove(route, previousRoute);
+    if (route != null) {
+      BoostLifecycleBinding.instance.routeDidRemove(route);
+    }
   }
 }

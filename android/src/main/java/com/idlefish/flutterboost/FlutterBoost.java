@@ -19,6 +19,7 @@ public class FlutterBoost {
 
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
+    private boolean isBackForegroundEventOverridden = false;
     private boolean isAppInBackground = false;
 
     private FlutterBoost() {
@@ -48,10 +49,14 @@ public class FlutterBoost {
     }
 
     public void setup(Application application, FlutterBoostDelegate delegate, Callback callback, FlutterBoostSetupOptions options) {
+        if (options == null) {
+            options = FlutterBoostSetupOptions.createDefault();
+        }
+        isBackForegroundEventOverridden = options.shouldOverrideBackForegroundEvent();
+
         // 1. initialize default engine
         FlutterEngine engine = getEngine();
         if (engine == null) {
-            if (options == null) options = FlutterBoostSetupOptions.createDefault();
             engine = new FlutterEngine(application, options.shellArgs());
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
@@ -67,7 +72,7 @@ public class FlutterBoost {
         getPlugin().setDelegate(delegate);
 
         //3. register ActivityLifecycleCallbacks
-        setupActivityLifecycleCallback(application);
+        setupActivityLifecycleCallback(application, isBackForegroundEventOverridden);
     }
 
     /**
@@ -102,6 +107,25 @@ public class FlutterBoost {
      */
     public Activity currentActivity() {
         return topActivity;
+    }
+
+    /**
+     * Informs FlutterBoost of the back/foreground state.
+     *
+     * @param background a boolean indicating if the app goes to background
+     *                   or foreground.
+     */
+    public void dispatchBackForegroundEvent(boolean background) {
+        if (!isBackForegroundEventOverridden) {
+            throw new RuntimeException("Oops! You should set override enable first by FlutterBoostSetupOptions.");
+        }
+
+        if (background) {
+            getPlugin().onBackground();
+        } else {
+            getPlugin().onForeground();
+        }
+        setAppIsInBackground(background);
     }
 
     /**
@@ -186,8 +210,8 @@ public class FlutterBoost {
         });
     }
 
-    private void setupActivityLifecycleCallback(Application application) {
-        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle());
+    private void setupActivityLifecycleCallback(Application application, boolean isBackForegroundEventOverridden) {
+        application.registerActivityLifecycleCallbacks(new BoostActivityLifecycle(isBackForegroundEventOverridden));
     }
 
     public boolean isAppInBackground() {
@@ -201,13 +225,26 @@ public class FlutterBoost {
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {
         private int activityReferences = 0;
         private boolean isActivityChangingConfigurations = false;
+        private boolean isBackForegroundEventOverridden = false;
+
+        public BoostActivityLifecycle(boolean isBackForegroundEventOverridden) {
+            this.isBackForegroundEventOverridden = isBackForegroundEventOverridden;
+        }
 
         private void dispatchForegroundEvent() {
+            if (isBackForegroundEventOverridden) {
+                return;
+            }
+
             FlutterBoost.instance().setAppIsInBackground(false);
             FlutterBoost.instance().getPlugin().onForeground();
         }
 
         private void dispatchBackgroundEvent() {
+            if (isBackForegroundEventOverridden) {
+                return;
+            }
+
             FlutterBoost.instance().setAppIsInBackground(true);
             FlutterBoost.instance().getPlugin().onBackground();
         }

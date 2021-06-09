@@ -4,11 +4,13 @@ public class FlutterBoostSetupOptions {
     private final String initialRoute;
     private final String dartEntrypoint;
     private final String[] shellArgs;
+    private final boolean shouldOverrideBackForegroundEvent;
 
     private FlutterBoostSetupOptions(Builder builder) {
         this.initialRoute = builder.initialRoute;
         this.dartEntrypoint = builder.dartEntrypoint;
         this.shellArgs = builder.shellArgs;
+        this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
     }
 
     public static FlutterBoostSetupOptions createDefault() {
@@ -25,6 +27,10 @@ public class FlutterBoostSetupOptions {
 
     public String[] shellArgs() {
         return shellArgs;
+    }
+
+    public boolean shouldOverrideBackForegroundEvent() {
+        return shouldOverrideBackForegroundEvent;
     }
 
     @Override
@@ -45,12 +51,14 @@ public class FlutterBoostSetupOptions {
         }
         return "initialRoute:" + this.initialRoute +
                 ", dartEntrypoint:" + this.dartEntrypoint +
+                ", shouldOverrideBackForegroundEvent:" + this.shouldOverrideBackForegroundEvent +
                 ", shellArgs:" + sb.toString();
     }
 
     public static class Builder {
         private String initialRoute = "/";
         private String dartEntrypoint = "main";
+        private boolean shouldOverrideBackForegroundEvent = false;
         private String[] shellArgs;
 
         public Builder() {
@@ -68,6 +76,12 @@ public class FlutterBoostSetupOptions {
 
         public Builder shellArgs(String[] shellArgs){
             this.shellArgs = shellArgs;
+            return this;
+        }
+
+        // Determines whether to override back/foreground event.
+        public Builder shouldOverrideBackForegroundEvent(boolean override) {
+            shouldOverrideBackForegroundEvent = override;
             return this;
         }
 
