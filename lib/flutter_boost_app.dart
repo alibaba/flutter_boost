@@ -547,8 +547,9 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    //handle internal route
-    if (previousRoute != null) {
+    //handle internal route but ignore dialog or abnormal route.
+    //otherwise, the normal page will be affected.
+    if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
     }
     super.didPush(route, previousRoute);
@@ -556,7 +557,7 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (previousRoute != null) {
+    if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
