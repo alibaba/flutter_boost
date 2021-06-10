@@ -153,7 +153,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     private void checkEngineState() {
-        if (engine == null || engine.getDartExecutor().isExecutingDart()) {
+        if (engine == null || !engine.getDartExecutor().isExecutingDart()) {
             throw new RuntimeException("The engine is not ready for use. " +
                     "The message may be drop silently by the engine. " +
                     "You should check 'DartExecutor.isExecutingDart()' first!");

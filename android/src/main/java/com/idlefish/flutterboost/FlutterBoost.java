@@ -231,22 +231,17 @@ public class FlutterBoost {
             this.isBackForegroundEventOverridden = isBackForegroundEventOverridden;
         }
 
-        private void dispatchForegroundEvent() {
+        private void dispatchBackForegroundEvent(boolean background) {
             if (isBackForegroundEventOverridden) {
                 return;
             }
 
-            FlutterBoost.instance().setAppIsInBackground(false);
-            FlutterBoost.instance().getPlugin().onForeground();
-        }
-
-        private void dispatchBackgroundEvent() {
-            if (isBackForegroundEventOverridden) {
-                return;
+            if (background) {
+                FlutterBoost.instance().getPlugin().onBackground();
+            } else {
+                FlutterBoost.instance().getPlugin().onForeground();\
             }
-
-            FlutterBoost.instance().setAppIsInBackground(true);
-            FlutterBoost.instance().getPlugin().onBackground();
+            FlutterBoost.instance().setAppIsInBackground(background);
         }
 
         @Override
@@ -258,7 +253,7 @@ public class FlutterBoost {
         public void onActivityStarted(Activity activity) {
             if (++activityReferences == 1 && !isActivityChangingConfigurations) {
                 // App enters foreground
-                dispatchForegroundEvent();
+                dispatchBackForegroundEvent(false);
             }
         }
 
@@ -276,7 +271,7 @@ public class FlutterBoost {
             isActivityChangingConfigurations = activity.isChangingConfigurations();
             if (--activityReferences == 0 && !isActivityChangingConfigurations) {
                 // App enters background
-                dispatchBackgroundEvent();
+                dispatchBackForegroundEvent(true);
             }
 
         }
