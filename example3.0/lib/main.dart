@@ -17,7 +17,7 @@ void main() {
   runApp(MyApp());
 }
 
-///创建一个自定义的Binding，集成和with的关系如下，里面什么都不用写
+///创建一个自定义的Binding，继承和with的关系如下，里面什么都不用写
 class CustomFlutterBinding extends WidgetsFlutterBinding
     with BoostFlutterBinding {}
 
