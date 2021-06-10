@@ -26,7 +26,8 @@
 @protocol FBFlutterContainer <NSObject>
 - (NSString *)name;
 - (NSDictionary *)params;
-- (NSDictionary *)uniqueId;
+- (NSString *)uniqueId;
 - (NSString *)uniqueIDString;
+- (BOOL)opaque;
 - (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque;
 @end

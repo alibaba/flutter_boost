@@ -35,8 +35,13 @@ typedef void (^FBVoidCallback)(void);
 @interface FlutterBoostPlugin : NSObject <FlutterPlugin>
 @property (nonatomic, strong) id<FlutterBoostDelegate> delegate;
 @property(nonatomic, strong) FBFlutterRouterApi* flutterApi;
-- (void)addContainer:(id<FBFlutterContainer>)vc;
-- (void)removeContainer:(id<FBFlutterContainer>)vc;
+
+- (void)containerCreated:(id<FBFlutterContainer>)container;
+- (void)containerWillAppear:(id<FBFlutterContainer>)container;
+- (void)containerAppeard:(id<FBFlutterContainer>)container;
+- (void)containerDisappeard:(id<FBFlutterContainer>)container;
+- (void)containerDestroyed:(id<FBFlutterContainer>)container;
+
 - (FBVoidCallback)addEventListener:(FBEventListener)listener forName:(NSString *)key;
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine ;
 @end

@@ -26,8 +26,10 @@
 #import "FBFlutterContainerManager.h"
 
 @interface FBFlutterContainerManager()
-@property (nonatomic,strong) NSMutableArray *idStk;
-@property (nonatomic,strong) NSMutableDictionary *existedID;
+@property (nonatomic, strong) NSMutableDictionary *allContainers;
+@property (nonatomic, strong) NSMutableArray *activeContainers;
+//@property (nonatomic,strong) NSMutableArray *idStk;
+//@property (nonatomic,strong) NSMutableDictionary *existedID;
 @end
 
 @implementation FBFlutterContainerManager
@@ -35,67 +37,55 @@
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.idStk= [NSMutableArray new];
-        self.existedID = [NSMutableDictionary dictionary];
+        _allContainers = [NSMutableDictionary dictionary];
+        _activeContainers = [NSMutableArray new];
     }
     
     return self;
 }
 
-- (BOOL)contains:(id<FBFlutterContainer>)vc
-{
-    if (vc) {
-        return self.existedID[vc.uniqueIDString]?YES:NO;
+- (void)addContainer:(id<FBFlutterContainer>)container forUniqueId:(NSString *)uniqueId {
+    self.allContainers[uniqueId] = container;
+}
+
+- (void)activeContainer:(id<FBFlutterContainer>)container forUniqueId:(NSString *)uniqueId {
+    if (uniqueId == nil || container == nil) return;
+    assert(self.allContainers[uniqueId] != nil);
+    if ([self.activeContainers containsObject:container]) {
+        [self.activeContainers removeObject:container];
     }
-    
+    [self.activeContainers addObject:container];
+}
+
+- (void)removeContainerByUniqueId:(NSString *)uniqueId {
+    if (!uniqueId) return;
+    id<FBFlutterContainer> container = self.allContainers[uniqueId];
+    [self.allContainers removeObjectForKey:uniqueId];
+    [self.activeContainers removeObject:container];
+}
+
+- (id<FBFlutterContainer>)findContainerByUniqueId:(NSString *)uniqueId {
+    return self.allContainers[uniqueId];
+}
+
+- (id<FBFlutterContainer>)getTopContainer {
+    if (self.activeContainers.count) {
+        return self.activeContainers.lastObject;
+    }
+    return nil;
+}
+
+- (BOOL)isTopContainer:(NSString *)uniqueId {
+    id<FBFlutterContainer> top = [self getTopContainer];
+    if (top != nil && [top.uniqueIDString isEqualToString:uniqueId]) {
+        return YES;
+    }
     return NO;
 }
-- (BOOL)containUniqueId:(NSString* ) uniqueId {
-    return self.existedID[uniqueId]?YES:NO;
+
+- (NSInteger)containerSize {
+    return self.allContainers.count;
 }
 
-
-- (void)addUnique:(id<FBFlutterContainer>)vc
-{
-    if (vc) {
-        if(!self.existedID[vc.uniqueIDString]){
-            [self.idStk addObject:vc.uniqueIDString];
-        }
-        self.existedID[vc.uniqueIDString] = vc.name;
-    }
-#if DEBUG
-    [self dump:@"ADD"];
-#endif
-}
-
-- (void)remove:(id<FBFlutterContainer>)vc
-{
-    if (vc) {
-        [self.existedID removeObjectForKey:vc.uniqueIDString];
-        [self.idStk removeObject:vc.uniqueIDString];
-    }
-#if DEBUG
-    [self dump:@"REMOVE"];
-#endif
-}
-
-- (NSString *)peak
-{
-    return self.idStk.lastObject;
-}
-
-- (NSInteger)pageCount{
-    return self.idStk.count;
-}
-
-#if DEBUG
-- (void)dump:(NSString*)flag{
-    NSMutableString *log = [[NSMutableString alloc]initWithFormat:@"[DEBUG]--%@--PageStack uid/name", flag];
-    for(NSString *uid in self.idStk){
-        [log appendFormat:@"-->%@/%@",uid, self.existedID[uid]];
-    }
-    NSLog(@"%@\n", log);
-}
-#endif
 @end
 
