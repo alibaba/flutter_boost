@@ -260,28 +260,35 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void onContainerCreated(FlutterViewContainer container) {
         Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
+        FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
+        if (FlutterContainerManager.instance().getContainerSize() == 1) {
+           FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
+        }
     }
 
     public void onContainerAppeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        FlutterContainerManager.instance().reorderContainer(uniqueId, container);
+        FlutterContainerManager.instance().activateContainer(uniqueId, container);
         pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
 
         onContainerShow(uniqueId);
-        Log.v(TAG, "#onContainerAppeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
+//        Log.v(TAG, "#onContainerAppeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         onContainerHide(uniqueId);
-        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
+//        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         removeRoute(uniqueId, reply -> {});
         FlutterContainerManager.instance().removeContainer(uniqueId);
-        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
+        if (FlutterContainerManager.instance().getContainerSize() == 0) {
+            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_PAUSED);
+        }
+//        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     @Override
