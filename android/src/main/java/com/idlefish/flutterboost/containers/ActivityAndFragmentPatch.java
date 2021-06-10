@@ -12,14 +12,11 @@ import io.flutter.embedding.engine.FlutterEngine;
  * 2.接管键盘回退事件
  * 3. 把 attachToFlutterEngine，调用时机放到onResume。
  * 4. onPause 时 flutterView.detachFromFlutterEngine()
- * <p>
- * 5. FlutterActivityAndFragmentDelegate 去除flutterEngine.getLifecycleChannel().appIsDetached
- * 6. FlutterActivityAndFragmentDelegate 去除flutterEngine.getLifecycleChannel().appIsPaused
  */
 public class ActivityAndFragmentPatch {
 
     /**
-     * 重写 getRenderMode ,boost指定texture
+     * 重写 getRenderMode，boost指定texture
      *
      * @return
      */
@@ -45,9 +42,8 @@ public class ActivityAndFragmentPatch {
      * @param
      * @param
      */
-    public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
+    public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
         flutterView.attachToFlutterEngine(flutterEngine);
-        flutterEngine.getLifecycleChannel().appIsResumed();
     }
 
 
@@ -56,8 +52,7 @@ public class ActivityAndFragmentPatch {
      *
      * @param flutterView
      */
-    public static void onPauseDetachFromFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
+    public static void onPauseDetachFromFlutterEngine(FlutterView flutterView) {
         flutterView.detachFromFlutterEngine();
-        flutterEngine.getLifecycleChannel().appIsInactive();
     }
 }
