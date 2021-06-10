@@ -84,14 +84,11 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
     PageVisibilityBinding.instance
         .dispatchPageForgroundEvent(container.topPage.route);
-
-    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
   void appDidEnterBackground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
     PageVisibilityBinding.instance
         .dispatchPageBackgroundEvent(container.topPage.route);
-    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.paused);
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_channel.dart';
+import 'package:flutter_boost/boost_flutter_binding.dart';
 
 import 'boost_container.dart';
 import 'boost_flutter_router_api.dart';
@@ -45,6 +46,8 @@ class FlutterBoostApp extends StatefulWidget {
 }
 
 class FlutterBoostAppState extends State<FlutterBoostApp> {
+  static const String _app_lifecycle_changed_key = "app_lifecycle_changed_key";
+
   final Map<String, Completer<Object>> _pendingResult =
       <String, Completer<Object>>{};
 
@@ -68,6 +71,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, List<EventListener>> _listenersTable =
       <String, List<EventListener>>{};
 
+  VoidCallback _lifecycleStateListenerRemover;
+
   @override
   void initState() {
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
@@ -80,13 +85,48 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refresh();
+      _addAppLifecycleStateEventListener();
     });
+
+    //setup the AppLifecycleState change event launched from native
 
     // try to restore routes from host when hot restart.
     assert(() {
       _restoreStackForHotRestart();
       return true;
     }());
+  }
+
+  ///Setup the AppLifecycleState change event launched from native
+  ///Here,the [AppLifecycleState] is depends on the native container's num
+  ///if container num >= 1,the state == [AppLifecycleState.resumed]
+  ///else state == [AppLifecycleState.paused]
+  void _addAppLifecycleStateEventListener() {
+    _lifecycleStateListenerRemover = BoostChannel.instance
+        .addEventListener(_app_lifecycle_changed_key, (key, arguments) {
+      //we just deal two situation,resume and pause
+      //and 0 is resumed
+      //and 2 is paused
+
+      final int index = arguments["lifecycleState"];
+
+      if (index == AppLifecycleState.resumed.index) {
+        print("resume");
+        BoostFlutterBinding.instance
+            .changeAppLifecycleState(AppLifecycleState.resumed);
+      } else if (index == AppLifecycleState.paused.index) {
+        print("pause");
+        BoostFlutterBinding.instance
+            .changeAppLifecycleState(AppLifecycleState.paused);
+      }
+      return;
+    });
+  }
+
+  @override
+  void dispose() {
+    _lifecycleStateListenerRemover.call();
+    super.dispose();
   }
 
   @override
