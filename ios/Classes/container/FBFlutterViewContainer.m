@@ -264,7 +264,7 @@
     if (self.disablePopGesture) {
         self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
     }
-    [FB_PLUGIN containerAppeard:self];
+    [FB_PLUGIN containerAppeared:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -276,7 +276,7 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super bridge_viewDidDisappear:animated];
-    [FB_PLUGIN containerDisappeard:self];
+    [FB_PLUGIN containerDisappeared:self];
 }
 
 - (void)installSplashScreenViewIfNecessary {

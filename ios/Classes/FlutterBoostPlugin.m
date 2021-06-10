@@ -58,7 +58,7 @@
     [self.containerManager activeContainer:vc forUniqueId:vc.uniqueIDString];
 }
 
-- (void)containerAppeard:(id<FBFlutterContainer>)vc {
+- (void)containerAppeared:(id<FBFlutterContainer>)vc {
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId = vc.uniqueId;
     [self.flutterApi onContainerShow:params completion:^(NSError * e) {
@@ -66,7 +66,7 @@
     }];
 }
 
-- (void)containerDisappeard:(id<FBFlutterContainer>)vc {
+- (void)containerDisappeared:(id<FBFlutterContainer>)vc {
     FBCommonParams* params = [[FBCommonParams alloc] init];
     params.uniqueId = vc.uniqueId;
     [self.flutterApi onContainerHide:params completion:^(NSError * e) {

@@ -38,8 +38,8 @@ typedef void (^FBVoidCallback)(void);
 
 - (void)containerCreated:(id<FBFlutterContainer>)container;
 - (void)containerWillAppear:(id<FBFlutterContainer>)container;
-- (void)containerAppeard:(id<FBFlutterContainer>)container;
-- (void)containerDisappeard:(id<FBFlutterContainer>)container;
+- (void)containerAppeared:(id<FBFlutterContainer>)container;
+- (void)containerDisappeared:(id<FBFlutterContainer>)container;
 - (void)containerDestroyed:(id<FBFlutterContainer>)container;
 
 - (FBVoidCallback)addEventListener:(FBEventListener)listener forName:(NSString *)key;
