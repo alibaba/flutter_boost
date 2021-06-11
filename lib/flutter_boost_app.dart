@@ -14,6 +14,7 @@ import 'boost_navigator.dart';
 import 'logger.dart';
 import 'messages.dart';
 import 'overlay_entry.dart';
+import 'boost_flutter_binding.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -75,6 +76,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   @override
   void initState() {
+    assert(BoostFlutterBinding.instance != null,'BoostFlutterBinding is not initialized，please refer to "class CustomFlutterBinding" in example project');
+
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
