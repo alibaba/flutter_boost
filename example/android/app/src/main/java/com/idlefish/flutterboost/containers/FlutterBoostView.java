@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.FlutterBoost;
+import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
@@ -129,14 +131,16 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
         super.onResume();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine());
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
     @Override
     public void onPause() {
         if(hasDestroyed()) return;
         super.onPause();
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView());
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
     @Override
@@ -165,10 +169,10 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
         if (getVisibility() == View.VISIBLE) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine());
+            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
         } else if (getVisibility() == View.GONE) {
             FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView());
+            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
         }
     }
 

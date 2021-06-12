@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
+
+import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -51,28 +52,13 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     return mFlutterView;
   }
 
-  private FlutterView findFlutterView(View view) {
-    if (view instanceof ViewGroup) {
-      ViewGroup vp = (ViewGroup) view;
-      for (int i = 0; i < vp.getChildCount(); i++) {
-        View child = vp.getChildAt(i);
-        if (child instanceof FlutterView) {
-          return (FlutterView) child;
-        } else {
-          return findFlutterView(child);
-        }
-      }
-    }
-    return null;
-  }
-
   public void onCreate() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
     mDelegate = new FlutterActivityAndFragmentDelegate(this);
     mDelegate.onAttach(getContext());
     mView = mDelegate.onCreateView(null, null, null);
     addView(mView);
-    mFlutterView = findFlutterView(mView);
+    mFlutterView = FlutterBoostUtils.findFlutterView(mView);
   }
 
   public void onStart() {

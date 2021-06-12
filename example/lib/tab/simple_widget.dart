@@ -79,12 +79,23 @@ class _SimpleWidgetState extends State<SimpleWidget>
                 alignment: AlignmentDirectional.center,
               ),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 margin: const EdgeInsets.only(top: 32.0),
                 child: Text(
                   widget.uniqueId,
-                  style: TextStyle(fontSize: 22.0, color: Colors.red),
+                  style: TextStyle(fontSize: 16.0, color: Colors.red),
                 ),
                 alignment: AlignmentDirectional.center,
+              ),
+              const CupertinoTextField(
+                prefix: Icon(
+                  CupertinoIcons.person_solid,
+                  color: CupertinoColors.lightBackgroundGray,
+                  size: 28.0,
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
+                clearButtonMode: OverlayVisibilityMode.editing,
+                textCapitalization: TextCapitalization.words,
               ),
               InkWell(
                 child: Container(

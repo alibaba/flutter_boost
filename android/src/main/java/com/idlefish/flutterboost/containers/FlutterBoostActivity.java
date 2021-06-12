@@ -17,6 +17,7 @@ import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
+import io.flutter.embedding.engine.FlutterEngine;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
@@ -63,12 +64,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
+                getFlutterEngine(), this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
     }
 
@@ -84,12 +87,16 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
         }
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView);
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
     @Override
     protected void onDestroy() {
+        // Get engine before |super.onDestroy| callback.
+        FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
+        engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
     }
 
