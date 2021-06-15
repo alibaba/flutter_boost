@@ -607,6 +607,7 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    // Support closing container page via |Navigator:|.
     if (previousRoute == null) {
       assert(route.settings is BoostPage);
       var uniqueId = (route.settings as BoostPage).pageInfo.uniqueId;
