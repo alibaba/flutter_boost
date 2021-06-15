@@ -23,7 +23,7 @@ class BoostContainer {
 
   List<BoostPage<dynamic>> get pages => _pages;
 
-  BoostPage<dynamic> get topPage => pages.last;
+  BoostPage<dynamic> get topPage => pages.isEmpty ? null : pages.last;
 
   int get size => pages.length;
 
