@@ -6,8 +6,10 @@ import 'overlay_entry.dart';
 
 typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 
-///The [BoostChannel] is a tool to get [FlutterBoostAppState] to operate the Custom events
-///We can get this by calling "BoostChannel.instance"
+/// The [BoostChannel] is a tool to get [FlutterBoostAppState]
+/// to operate the Custom events
+///
+/// We can get this by calling "BoostChannel.instance"
 class BoostChannel {
   BoostChannel._();
 
@@ -21,8 +23,10 @@ class BoostChannel {
     return _instance;
   }
 
-  ///Add event listener in flutter side, which is to listen the events from native side
-  ///The [VoldCallBack] is to remove this listener
+  /// Add event listener in flutter side, which is to listen
+  /// the events from native side
+  ///
+  /// The [VoldCallBack] is to remove this listener
   VoidCallback addEventListener(String key, EventListener listener) {
     return _appState.addEventListener(key, listener);
   }
@@ -34,7 +38,7 @@ class BoostChannel {
 
     args ??= {};
 
-    CommonParams params = CommonParams()
+    var params = CommonParams()
       ..key = key
       ..arguments = args;
     _appState.nativeRouterApi.sendEventToNative(params);
