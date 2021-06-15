@@ -112,7 +112,6 @@ class BoostNavigator {
     final result =
         push(name, arguments: arguments, withContainer: withContainer);
 
-
     Future.delayed(const Duration(milliseconds: 100), () {
       remove(id);
     });
@@ -127,7 +126,6 @@ class BoostNavigator {
   ///
   /// This API is for backwards compatibility.
   /// Please use [BoostNavigator.pop] instead.
-  @deprecated
   void remove(String uniqueId, {Map<String, dynamic> arguments}) =>
       appState.removeWithResult(uniqueId, arguments);
 

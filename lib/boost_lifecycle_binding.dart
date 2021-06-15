@@ -3,17 +3,17 @@ import 'package:flutter/widgets.dart';
 import 'boost_container.dart';
 import 'logger.dart';
 import 'page_visibility.dart';
-import 'boost_flutter_binding.dart';
 
 class BoostLifecycleBinding {
   BoostLifecycleBinding._();
 
   static final BoostLifecycleBinding instance = BoostLifecycleBinding._();
 
-  ///This set contains all of the ids that has been shown
-  ///It is to solve the quesition that the page can't receive onPageShow callback event when showing
-  ///on screen first time.
-  ///Because it is not be added to [PageVisibilityBinding] before dispatching [containerDidShow] event
+  /// This set contains all of the ids that has been shown.
+  /// It is to solve the quesition that the page can't receive onPageShow
+  /// callback event when showing on screen first time.
+  /// Because it is not be added to [PageVisibilityBinding] before
+  /// dispatching [containerDidShow] event
   Set<String> hasShownPageIds = <String>{};
 
   void containerDidPush(
@@ -29,7 +29,8 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPagePopEvent(container.topPage.route);
 
-    //When container pop,remove the id from set to avoid this id still remain in the set
+    // When container pop,remove the id from set to avoid
+    // this id still remain in the set
     final id = container.pageInfo.uniqueId;
     hasShownPageIds.remove(id);
   }
@@ -75,7 +76,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
   }
 
-  void routeDidRemove(Route<dynamic> route){
+  void routeDidRemove(Route<dynamic> route) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidRemove');
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
   }
