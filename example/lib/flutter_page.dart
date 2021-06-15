@@ -155,6 +155,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
+                      'Pop with Navigator',
+                      style: TextStyle(fontSize: 22.0, color: Colors.blue),
+                    )),
+                onTap: () => Navigator.of(context).pop(),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),

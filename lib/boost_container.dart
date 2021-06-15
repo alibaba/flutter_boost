@@ -99,7 +99,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
   Widget build(BuildContext context) {
     return HeroControllerScope(
         controller: HeroController(),
-        child: Navigator(
+        child: NavigatorExt(
           key: widget.container._navKey,
           pages: List<Page<dynamic>>.of(widget.container.pages),
           onPopPage: (route, result) {
@@ -119,5 +119,30 @@ class BoostContainerState extends State<BoostContainerWidget> {
   void dispose() {
     container._refreshListener = null;
     super.dispose();
+  }
+}
+
+class NavigatorExt extends Navigator {
+  NavigatorExt({
+    Key key,
+    List<Page<dynamic>> pages,
+    PopPageCallback onPopPage,
+    List<NavigatorObserver> observers,
+  }) : super(
+            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+
+  @override
+  NavigatorState createState() => NavigatorExtState();
+}
+
+class NavigatorExtState extends NavigatorState {
+  @override
+  void pop<T extends Object>([T result]) {
+    // Taking over container page
+    if (!canPop()) {
+      BoostNavigator.instance.pop(result);
+    } else {
+      super.pop(result);
+    }
   }
 }
