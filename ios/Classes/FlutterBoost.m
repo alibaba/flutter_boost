@@ -59,10 +59,6 @@
         
         [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
         
-        if(callback){
-            callback(self.engine);
-        }
-        
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         SEL selector = NSSelectorFromString(@"registerWithRegistry:");
         if (clazz && selector && self.engine) {
@@ -73,6 +69,10 @@
         
         self.plugin= [FlutterBoostPlugin getPlugin:self.engine];
         self.plugin.delegate=delegate;
+        
+        if(callback){
+            callback(self.engine);
+        }
     };
     
     if ([NSThread isMainThread]){
