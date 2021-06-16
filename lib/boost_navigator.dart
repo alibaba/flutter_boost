@@ -103,6 +103,22 @@ class BoostNavigator {
     });
   }
 
+  ///1.Push a new page onto pageStack
+  ///2.remove(pop) previous page
+  Future<T> pushReplacement<T extends Object>(String name,
+      {Map<String, dynamic> arguments, bool withContainer = false}) async {
+    final id = getTopPageInfo().uniqueId;
+
+    final result =
+        push(name, arguments: arguments, withContainer: withContainer);
+
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+      remove(id);
+    });
+    return result;
+  }
+
   /// Pop the top-most page off the hybrid stack.
   Future<bool> pop<T extends Object>([T result]) async =>
       await appState.popWithResult(result);

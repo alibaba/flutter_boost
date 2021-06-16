@@ -50,8 +50,6 @@
     [super viewDidDisappear:animated];
 }
 - (void)bridge_viewWillAppear:(BOOL)animated {
-    //    [FLUTTER_APP inactive];
-    [FBLifecycle inactive ];
     [super viewWillAppear:animated];
 }
 @end
@@ -69,12 +67,12 @@
 
 - (instancetype)init
 {
+    ENGINE.viewController = nil;
     if(self = [super initWithEngine:ENGINE
                             nibName:_flbNibName
                              bundle:_flbNibBundle]){
         //NOTES:在present页面时，默认是全屏，如此可以触发底层VC的页面事件。否则不会触发而导致异常
         self.modalPresentationStyle = UIModalPresentationFullScreen;
-        
         [self _setup];
     }
     return self;
@@ -83,6 +81,7 @@
 - (instancetype)initWithProject:(FlutterDartProject*)projectOrNil
                         nibName:(NSString*)nibNameOrNil
                          bundle:(NSBundle*)nibBundleOrNil  {
+    ENGINE.viewController = nil;
     if (self = [super initWithProject:projectOrNil nibName:nibNameOrNil bundle:nibBundleOrNil]) {
         [self _setup];
     }
@@ -103,6 +102,7 @@
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     _flbNibName = nibNameOrNil;
     _flbNibBundle = nibBundleOrNil;
+    ENGINE.viewController = nil;
     return [self init];
 }
 
@@ -126,41 +126,15 @@
             _uniqueId = uniqueId;
         }
     }
+    [FB_PLUGIN containerCreated:self];
 }
 
-static NSUInteger kInstanceCounter = 0;
-
-+ (NSUInteger)instanceCounter
-{
-    return kInstanceCounter;
-}
-
-+ (void)instanceCounterIncrease
-{
-    kInstanceCounter++;
-    if(kInstanceCounter == 1){
-        //        [FLUTTER_APP resume];
-        [FBLifecycle resume ];
-    }
-}
-
-+ (void)instanceCounterDecrease
-{
-    kInstanceCounter--;
-    if([self.class instanceCounter] == 0){
-        [FBLifecycle pause ];
-    }
-}
-
-- (NSString *)uniqueIDString
-{
+- (NSString *)uniqueIDString {
     return self.uniqueId;
 }
 
-- (void)_setup
-{
+- (void)_setup {
     self.uniqueId = [[NSUUID UUID] UUIDString];
-    [self.class instanceCounterIncrease];
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent {
@@ -181,8 +155,8 @@ static NSUInteger kInstanceCounter = 0;
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }
     [super didMoveToParentViewController:parent];
 }
@@ -194,8 +168,8 @@ static NSUInteger kInstanceCounter = 0;
             completion();
         }
         //当VC被dismiss时，就通知flutter层销毁page
-        [self notifyWillDealloc];
         [self detachFlutterEngineIfNeeded];
+        [self notifyWillDealloc];
     }];
 }
 
@@ -206,16 +180,7 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)notifyWillDealloc
 {
-    FBCommonParams* params =[[FBCommonParams alloc] init ];
-    params.pageName = _name;
-    params.arguments = _params;
-    params.uniqueId = self.uniqueId;
-    [FB_PLUGIN.flutterApi removeRoute: params  completion:^(NSError * e) {
-        
-    }];
-    [FB_PLUGIN removeContainer:self];
-    
-    [self.class instanceCounterDecrease];
+    [FB_PLUGIN containerDestroyed:self];
 }
 
 - (void)viewDidLoad {
@@ -268,19 +233,10 @@ static NSUInteger kInstanceCounter = 0;
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+    [FB_PLUGIN containerWillAppear:self];
     //For new page we should attach flutter view in view will appear
     //for better performance.
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.pageName = _name;
-    params.arguments = _params;
-    params.uniqueId = self.uniqueId;
-    params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
-    
-    [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-        
-    }];
-    [FB_PLUGIN addContainer:self];
-    
     [self attatchFlutterEngine];
     
     [super bridge_viewWillAppear:animated];
@@ -308,12 +264,7 @@ static NSUInteger kInstanceCounter = 0;
     if (self.disablePopGesture) {
         self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
     }
-    
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.uniqueId = self.uniqueId;
-    [FB_PLUGIN.flutterApi onContainerShow:params completion:^(NSError * e) {
-        
-    }];
+    [FB_PLUGIN containerAppeared:self];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -325,11 +276,7 @@ static NSUInteger kInstanceCounter = 0;
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super bridge_viewDidDisappear:animated];
-    FBCommonParams* params = [[FBCommonParams alloc] init];
-    params.uniqueId = self.uniqueId;
-    [FB_PLUGIN.flutterApi onContainerHide:params completion:^(NSError * e) {
-        
-    }];
+    [FB_PLUGIN containerDisappeared:self];
 }
 
 - (void)installSplashScreenViewIfNecessary {

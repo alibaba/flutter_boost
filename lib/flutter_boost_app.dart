@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_boost/boost_channel.dart';
+import 'package:flutter_boost/boost_flutter_binding.dart';
 
 import 'boost_container.dart';
 import 'boost_flutter_router_api.dart';
@@ -13,6 +14,7 @@ import 'boost_navigator.dart';
 import 'logger.dart';
 import 'messages.dart';
 import 'overlay_entry.dart';
+import 'boost_flutter_binding.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -45,6 +47,8 @@ class FlutterBoostApp extends StatefulWidget {
 }
 
 class FlutterBoostAppState extends State<FlutterBoostApp> {
+  static const String _app_lifecycle_changed_key = "app_lifecycle_changed_key";
+
   final Map<String, Completer<Object>> _pendingResult =
       <String, Completer<Object>>{};
 
@@ -68,8 +72,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, List<EventListener>> _listenersTable =
       <String, List<EventListener>>{};
 
+  VoidCallback _lifecycleStateListenerRemover;
+
   @override
   void initState() {
+    assert(BoostFlutterBinding.instance != null,'BoostFlutterBinding is not initialized，please refer to "class CustomFlutterBinding" in example project');
+
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
@@ -80,13 +88,48 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refresh();
+      _addAppLifecycleStateEventListener();
     });
+
+    //setup the AppLifecycleState change event launched from native
 
     // try to restore routes from host when hot restart.
     assert(() {
       _restoreStackForHotRestart();
       return true;
     }());
+  }
+
+  ///Setup the AppLifecycleState change event launched from native
+  ///Here,the [AppLifecycleState] is depends on the native container's num
+  ///if container num >= 1,the state == [AppLifecycleState.resumed]
+  ///else state == [AppLifecycleState.paused]
+  void _addAppLifecycleStateEventListener() {
+    _lifecycleStateListenerRemover = BoostChannel.instance
+        .addEventListener(_app_lifecycle_changed_key, (key, arguments) {
+      //we just deal two situation,resume and pause
+      //and 0 is resumed
+      //and 2 is paused
+
+      final int index = arguments["lifecycleState"];
+
+      if (index == AppLifecycleState.resumed.index) {
+        print("resume");
+        BoostFlutterBinding.instance
+            .changeAppLifecycleState(AppLifecycleState.resumed);
+      } else if (index == AppLifecycleState.paused.index) {
+        print("pause");
+        BoostFlutterBinding.instance
+            .changeAppLifecycleState(AppLifecycleState.paused);
+      }
+      return;
+    });
+  }
+
+  @override
+  void dispose() {
+    _lifecycleStateListenerRemover.call();
+    super.dispose();
   }
 
   @override
@@ -264,7 +307,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
       if (container == null) {
-        Logger.error('uniqueId=$uniqueId not find');
+        Logger.error('uniqueId=$uniqueId not found');
         return false;
       }
       if (container != topContainer) {
@@ -279,14 +322,28 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     assert(currentPage != null);
     _completePendingResultIfNeeded(currentPage);
 
-    final handled = await container?.navigator?.maybePop();
-    if (handled != null && !handled) {
-      assert(container.pageInfo.withContainer);
-      final params = CommonParams()
-        ..pageName = container.pageInfo.pageName
-        ..uniqueId = container.pageInfo.uniqueId
-        ..arguments = arguments ?? <String, dynamic>{};
-      await nativeRouterApi.popRoute(params);
+    //  1.If uniqueId == null,indicate we simply call BoostNavigaotor.pop(),
+    //so we call navigator?.maybePop();
+    //  2.If uniqueId is topPage's uniqueId,so we navigator?.maybePop();
+    //  3.If uniqueId is not topPage's uniqueId,so we will remove an existing page in container
+    if (uniqueId == null ||
+        uniqueId == container.pages.last.pageInfo.uniqueId) {
+      final handled = await container?.navigator?.maybePop();
+      if (handled != null && !handled) {
+        assert(container.pageInfo.withContainer);
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments = arguments ?? <String, dynamic>{};
+        await nativeRouterApi.popRoute(params);
+      }
+    } else {
+      _completePendingResultIfNeeded(uniqueId);
+      container.pages.removeWhere((element) {
+        return element.pageInfo.uniqueId == uniqueId;
+      });
+
+      container.refresh();
     }
 
     Logger.log(
@@ -295,14 +352,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<void> _removeContainer(BoostContainer container) async {
-    containers.remove(container);
     if (container.pageInfo.withContainer) {
       Logger.log('_removeContainer ,  uniqueId=${container.pageInfo.uniqueId}');
       final params = CommonParams()
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
         ..arguments = container.pageInfo.arguments;
-       return await _nativeRouterApi.popRoute(params);
+      return await _nativeRouterApi.popRoute(params);
     }
   }
 
@@ -315,10 +371,25 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {
+    //Because first page can be removed from container.
+    //So we find id in container's PageInfo
+    //If we can't find a container matching this id,
+    //we will traverse all pages in all containers
+    //to find the page matching this id,and return its container
+    //
+    //If we can't find any container or page matching this id,we return null
+
+    BoostContainer result = containers.singleWhere(
+        (element) => element.pageInfo.uniqueId == uniqueId,
+        orElse: () => null);
+
+    if (result != null) {
+      return result;
+    }
+
     return containers.singleWhere(
-            (element) =>
-            element.pages.any((element) =>
-            element.pageInfo.uniqueId == uniqueId),
+        (element) => element.pages
+            .any((element) => element.pageInfo.uniqueId == uniqueId),
         orElse: () => null);
   }
 
@@ -519,8 +590,9 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    //handle internal route
-    if (previousRoute != null) {
+    //handle internal route but ignore dialog or abnormal route.
+    //otherwise, the normal page will be affected.
+    if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
     }
     super.didPush(route, previousRoute);
@@ -528,9 +600,17 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (previousRoute != null) {
+    if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didRemove(Route route, Route previousRoute) {
+    super.didRemove(route, previousRoute);
+    if (route != null) {
+      BoostLifecycleBinding.instance.routeDidRemove(route);
+    }
   }
 }

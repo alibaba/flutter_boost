@@ -26,6 +26,7 @@
 #import "messages.h"
 #import "FlutterBoost.h"
 #import "FBFlutterContainerManager.h"
+#import "FBLifecycle.h"
 
 
 @interface FlutterBoostPlugin ()<FBNativeRouterApi>
@@ -36,13 +37,55 @@
 
 @implementation FlutterBoostPlugin
 
-- (void)addContainer:(id<FBFlutterContainer>)vc {
-    [self.containerManager addUnique:vc];
-    
+
+- (void)containerCreated:(id<FBFlutterContainer>)vc {
+    [self.containerManager addContainer:vc forUniqueId:vc.uniqueIDString];
+    if (self.containerManager.containerSize == 1) {
+        [FBLifecycle resume];
+    }
 }
 
-- (void)removeContainer:(id<FBFlutterContainer>)vc {
-    [self.containerManager remove:vc];
+- (void)containerWillAppear:(id<FBFlutterContainer>)vc {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.pageName = vc.name;
+    params.arguments = vc.params;
+    params.uniqueId = vc.uniqueId;
+    params.opaque = [[NSNumber alloc] initWithBool:vc.opaque];
+    
+    [self.flutterApi pushRoute: params completion:^(NSError * e) {
+        
+    }];
+    [self.containerManager activeContainer:vc forUniqueId:vc.uniqueIDString];
+}
+
+- (void)containerAppeared:(id<FBFlutterContainer>)vc {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.uniqueId = vc.uniqueId;
+    [self.flutterApi onContainerShow:params completion:^(NSError * e) {
+        
+    }];
+}
+
+- (void)containerDisappeared:(id<FBFlutterContainer>)vc {
+    FBCommonParams* params = [[FBCommonParams alloc] init];
+    params.uniqueId = vc.uniqueId;
+    [self.flutterApi onContainerHide:params completion:^(NSError * e) {
+        
+    }];
+}
+
+- (void)containerDestroyed:(id<FBFlutterContainer>)vc {
+    FBCommonParams* params =[[FBCommonParams alloc] init ];
+    params.pageName = vc.name;
+    params.arguments = vc.params;
+    params.uniqueId = vc.uniqueId;
+    [self.flutterApi removeRoute: params  completion:^(NSError * e) {
+        
+    }];
+    [self.containerManager removeContainerByUniqueId:vc.uniqueIDString];
+    if (self.containerManager.containerSize == 0) {
+        [FBLifecycle pause];
+    }
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>  *)registrar {
@@ -90,7 +133,7 @@
 }
 
 -(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
-    if([self.containerManager containUniqueId:input.uniqueId]){
+    if([self.containerManager findContainerByUniqueId:input.uniqueId]){
         //封装成options传回代理
         FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
         options.pageName = input.pageName;

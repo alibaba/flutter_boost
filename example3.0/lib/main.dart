@@ -5,14 +5,21 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'pages/dialog_page.dart';
 import 'pages/lifecycle_test_page.dart';
 import 'pages/main_page.dart';
+import 'pages/replacement_page.dart';
 import 'pages/simple_page.dart';
 
 void main() {
   ///添加全局生命周期监听类
   PageVisibilityBinding.instance.addGlobalObserver(AppLifecycleObserver());
 
+  ///这里的CustomFlutterBinding调用务必不可缺少，用于控制Boost状态的resume和pause
+  CustomFlutterBinding();
   runApp(MyApp());
 }
+
+///创建一个自定义的Binding，继承和with的关系如下，里面什么都不用写
+class CustomFlutterBinding extends WidgetsFlutterBinding
+    with BoostFlutterBinding {}
 
 class MyApp extends StatefulWidget {
   @override
@@ -49,6 +56,10 @@ class _MyAppState extends State<MyApp> {
     'lifecyclePage': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => LifecycleTestPage());
+    },
+    'replacementPage': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ReplacementPage());
     },
 
     ///透明弹窗页面

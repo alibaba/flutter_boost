@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import io.flutter.embedding.engine.FlutterEngine;
@@ -16,11 +17,16 @@ import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
+    public static final String APP_LIFECYCLE_CHANGED_KEY = "app_lifecycle_changed_key";
+    public static final String LIFECYCLE_STATE = "lifecycleState";
+    public static final int FLUTTER_APP_STATE_RESUMED = 0;
+    public static final int FLUTTER_APP_STATE_PAUSED = 2;
 
     private Activity topActivity = null;
     private FlutterBoostPlugin plugin;
     private boolean isBackForegroundEventOverridden = false;
     private boolean isAppInBackground = false;
+
 
     private FlutterBoost() {
     }
@@ -220,6 +226,13 @@ public class FlutterBoost {
 
     /*package*/ void setAppIsInBackground(boolean inBackground) {
         isAppInBackground = inBackground;
+    }
+
+    public void changeFlutterAppLifecycle(int state) {
+        assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
+        Map arguments = new HashMap();
+        arguments.put(LIFECYCLE_STATE, state);
+        sendEventToFlutter(APP_LIFECYCLE_CHANGED_KEY, arguments);
     }
 
     private class BoostActivityLifecycle implements Application.ActivityLifecycleCallbacks {

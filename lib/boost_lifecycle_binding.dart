@@ -31,8 +31,7 @@ class BoostLifecycleBinding {
 
     //When container pop,remove the id from set to avoid this id still remain in the set
     final id = container.pageInfo.uniqueId;
-    final bool removed = hasShownPageIds.remove(id);
-    assert(removed);
+    hasShownPageIds.remove(id);
   }
 
   void containerDidShow(BoostContainer container) {
@@ -76,18 +75,20 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
   }
 
+  void routeDidRemove(Route<dynamic> route){
+    Logger.log('boost_lifecycle: BoostLifecycleBinding.routeDidRemove');
+    PageVisibilityBinding.instance.dispatchPagePopEvent(route);
+  }
+
   void appDidEnterForeground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
     PageVisibilityBinding.instance
         .dispatchPageForgroundEvent(container.topPage.route);
-
-    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
   void appDidEnterBackground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
     PageVisibilityBinding.instance
         .dispatchPageBackgroundEvent(container.topPage.route);
-    BoostFlutterBinding.instance.changeAppLifecycleState(AppLifecycleState.paused);
   }
 }
