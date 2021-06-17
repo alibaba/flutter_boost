@@ -29,6 +29,9 @@ class BoostContainer extends ChangeNotifier {
   /// Number of pages
   int numPages() => pages.length;
 
+  NavigatorState get navigator => _navKey.currentState;
+  final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
+
   Future<T> addPage<T extends Object>(BoostPage page) {
     if (page != null) {
       _pages.add(page);
@@ -45,9 +48,6 @@ class BoostContainer extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  NavigatorState get navigator => _navKey.currentState;
-  final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   @override
   String toString() =>
