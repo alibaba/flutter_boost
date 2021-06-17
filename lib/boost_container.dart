@@ -124,7 +124,6 @@ class BoostContainerState extends State<BoostContainerWidget> {
           pages: List<Page<dynamic>>.of(widget.container.pages),
           onPopPage: (route, result) {
             if (route.didPop(result)) {
-              print('xlog, #onPopPage, result:$result, route:$route');
               assert(route.settings is BoostPage);
               _updatePagesList(route.settings as BoostPage, result);
               return true;
