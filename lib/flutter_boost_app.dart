@@ -221,10 +221,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             var arguments = Map<String, dynamic>.from(
                 route['arguments'] ?? <String, dynamic>{});
             withContainer
-                ? pushWithContainer(pageName,
+                ? pushContainer(pageName,
                     uniqueId: uniqueId, arguments: arguments)
-                : _pushWithoutContainer(pageName,
-                    uniqueId: uniqueId, arguments: arguments);
+                : _pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
             withContainer = false;
           }
         }
@@ -252,12 +251,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult[uniqueId] = completer;
       return completer.future;
     } else {
-      return _pushWithoutContainer(pageName,
-          uniqueId: uniqueId, arguments: arguments);
+      return _pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
     }
   }
 
-  Future<T> _pushWithoutContainer<T extends Object>(String pageName,
+  Future<T> _pushPage<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
     Logger.log('pushWithoutContainer, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
@@ -270,7 +268,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return topContainer.addPage(BoostPage.create(pageInfo));
   }
 
-  void pushWithContainer(String pageName,
+  void pushContainer(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
@@ -297,7 +295,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       // Add a new overlay entry with this container
       refreshOnPush(container);
     }
-    Logger.log('pushWithContainer, uniqueId=$uniqueId, existed=$existed,'
+    Logger.log('pushContainer, uniqueId=$uniqueId, existed=$existed,'
         ' arguments:$arguments, $containers');
   }
 
