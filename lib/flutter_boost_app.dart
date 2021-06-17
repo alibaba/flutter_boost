@@ -346,7 +346,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           ..pageName = container.pageInfo.pageName
           ..uniqueId = container.pageInfo.uniqueId
           ..arguments =
-              (result is Map<String, dynamic>) ? result : {'args': result};
+              (result is Map<String, dynamic>) ? result : <String, dynamic>{};
         await nativeRouterApi.popRoute(params);
       }
     } else {
