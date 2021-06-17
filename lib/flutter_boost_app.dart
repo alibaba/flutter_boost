@@ -216,11 +216,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         final List<Object> routeList = stack.routes[uniqueId];
         if (routeList != null) {
           for (Map<Object, Object> route in routeList) {
-            push(route['pageName'] as String,
-                uniqueId: route['uniqueId'] as String,
-                arguments: Map<String, dynamic>.from(
-                    route['arguments'] ?? <String, dynamic>{}),
-                withContainer: withContainer);
+            var pageName = route['pageName'] as String;
+            var uniqueId = route['uniqueId'] as String;
+            var arguments = Map<String, dynamic>.from(
+                route['arguments'] ?? <String, dynamic>{});
+            withContainer
+                ? pushWithContainer(pageName,
+                    uniqueId: uniqueId, arguments: arguments)
+                : _pushWithoutContainer(pageName,
+                    uniqueId: uniqueId, arguments: arguments);
             withContainer = false;
           }
         }
@@ -255,17 +259,19 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   Future<T> _pushWithoutContainer<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
-    assert(topContainer != null);
+    Logger.log('pushWithoutContainer, uniqueId=$uniqueId, name=$pageName,'
+        ' arguments:$arguments, $topContainer');
     final pageInfo = PageInfo(
         pageName: pageName,
         uniqueId: uniqueId ?? _createUniqueId(pageName),
         arguments: arguments,
         withContainer: false);
+    assert(topContainer != null);
     return topContainer.addPage(BoostPage.create(pageInfo));
   }
 
-  void push(String pageName,
-      {String uniqueId, Map<String, dynamic> arguments, bool withContainer}) {
+  void pushWithContainer(String pageName,
+      {String uniqueId, Map<String, dynamic> arguments}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -281,23 +287,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           pageName: pageName,
           uniqueId: uniqueId ?? _createUniqueId(pageName),
           arguments: arguments,
-          withContainer: withContainer);
-      if (withContainer) {
-        final container = _createContainer(pageInfo);
-        final previousContainer = topContainer;
-        containers.add(container);
-        BoostLifecycleBinding.instance
-            .containerDidPush(container, previousContainer);
+          withContainer: true);
+      final container = _createContainer(pageInfo);
+      final previousContainer = topContainer;
+      containers.add(container);
+      BoostLifecycleBinding.instance
+          .containerDidPush(container, previousContainer);
 
-        // Add a new overlay entry with this container
-        refreshOnPush(container);
-      } else {
-        // In this case , we don't need to change the overlayEntries data
-        topContainer.addPage(BoostPage.create(pageInfo));
-      }
+      // Add a new overlay entry with this container
+      refreshOnPush(container);
     }
-    Logger.log('push page, uniqueId=$uniqueId, existed=$existed,'
-        ' withContainer=$withContainer, arguments:$arguments, $containers');
+    Logger.log('pushWithContainer, uniqueId=$uniqueId, existed=$existed,'
+        ' arguments:$arguments, $containers');
   }
 
   Future<bool> popWithResult<T extends Object>([T result]) async {
@@ -584,7 +585,9 @@ class BoostPage<T> extends Page<T> {
   final Completer<T> _popCompleter = Completer<T>();
 
   void didComplete(T result) {
-    _popCompleter.complete(result);
+    if (!_popCompleter.isCompleted) {
+      _popCompleter.complete(result);
+    }
   }
 
   @override

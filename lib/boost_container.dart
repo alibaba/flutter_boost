@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
-class BoostContainer {
+class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
     _pages.add(BoostPage.create(pageInfo));
   }
@@ -32,7 +32,7 @@ class BoostContainer {
   Future<T> addPage<T extends Object>(BoostPage page) {
     if (page != null) {
       _pages.add(page);
-      refresh();
+      notifyListeners();
       return page.popped;
     }
     return null;
@@ -41,21 +41,13 @@ class BoostContainer {
   void removePage(BoostPage page, {dynamic result}) {
     if (page != null) {
       _pages.remove(page);
-      refresh();
       page.didComplete(result);
+      notifyListeners();
     }
   }
 
   NavigatorState get navigator => _navKey.currentState;
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
-
-  void refresh() {
-    if (_refreshListener != null) {
-      _refreshListener();
-    }
-  }
-
-  VoidCallback _refreshListener;
 
   @override
   String toString() =>
@@ -98,17 +90,18 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void initState() {
+    assert(container != null);
+    container.addListener(refreshContainer);
     super.initState();
-    container._refreshListener = refreshContainer;
   }
 
   @override
   void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget != widget) {
-      oldWidget.container._refreshListener = null;
-      container._refreshListener = refreshContainer;
+      oldWidget.container.removeListener(refreshContainer);
+      container.addListener(refreshContainer);
     }
+    super.didUpdateWidget(oldWidget);
   }
 
   void refreshContainer() {
@@ -120,8 +113,8 @@ class BoostContainerState extends State<BoostContainerWidget> {
     return HeroControllerScope(
         controller: HeroController(),
         child: NavigatorExt(
-          key: widget.container._navKey,
-          pages: List<Page<dynamic>>.of(widget.container.pages),
+          key: container._navKey,
+          pages: List<Page<dynamic>>.of(container.pages),
           onPopPage: (route, result) {
             if (route.didPop(result)) {
               assert(route.settings is BoostPage);
@@ -138,7 +131,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void dispose() {
-    container._refreshListener = null;
+    container.removeListener(refreshContainer);
     super.dispose();
   }
 }
