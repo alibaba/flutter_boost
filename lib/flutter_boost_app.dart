@@ -223,7 +223,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             withContainer
                 ? pushContainer(pageName,
                     uniqueId: uniqueId, arguments: arguments)
-                : _pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
+                : pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
             withContainer = false;
           }
         }
@@ -251,13 +251,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult[uniqueId] = completer;
       return completer.future;
     } else {
-      return _pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
+      return pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
     }
   }
 
-  Future<T> _pushPage<T extends Object>(String pageName,
+  Future<T> pushPage<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
-    Logger.log('pushWithoutContainer, uniqueId=$uniqueId, name=$pageName,'
+    Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
     final pageInfo = PageInfo(
         pageName: pageName,
