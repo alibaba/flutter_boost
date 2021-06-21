@@ -64,15 +64,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
-                getFlutterEngine(), this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
     }
 
     @Override
@@ -86,6 +84,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                 return;
             }
         }
+
+        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
