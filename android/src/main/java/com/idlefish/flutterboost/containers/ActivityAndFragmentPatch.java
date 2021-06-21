@@ -45,7 +45,7 @@ public class ActivityAndFragmentPatch {
      * @param
      * @param
      */
-    public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine, FlutterViewContainer container) {
+    public static void onResumeAttachToFlutterEngine(FlutterView flutterView, FlutterEngine flutterEngine) {
         flutterView.attachToFlutterEngine(flutterEngine);
         flutterEngine.getLifecycleChannel().appIsResumed();
     }
