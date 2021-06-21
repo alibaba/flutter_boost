@@ -1,3 +1,56 @@
+## v3.0-preview.5
+1. Native侧代码重构
+  a.uniqueId的创建方式与Dart侧保持一致
+  b.去掉ContainerShadowNode抽象代码
+  c.去掉Flutter容器创建时不必要的engineId参数
+2. open方法实现自定义配置参数，增强拓展性
+3. [双端一致性] Android端抽象出FlutterContainerManager的概念
+4. 原生 onActivityResult 回传参数到Flutter 重构
+5. 增加线程判断，确保 engine run 在主线程，可以让业务在子线程 setup boost
+6. [android] 修复Tab场景下多个Fragment使用了同一个FlutterView，以及解决Fragment第一次显示时不能正确切换surface的问题
+7. FlutterBoostFragment优化
+8. [android]当FlutterFragment的onCreateView回调时，暂不attache到引擎
+9. iOS侧透明能力提供
+10. 增加example3.0
+11. 修复FlutterFragment退出后，下面的容器页面出现假死问题
+12. 为了业务能更方便地从2.0升级到3.0，为remove接口提供argument可选参数
+13. 【dart,Android,iOS】均提供自定义事件发送机制，事件均可双向传递
+14. [Android] 允许业务复用提前创建的引擎
+15. FIXED:HeroController.didPush assert(navigator != null) 报空异常
+16. 确保onPageShow事件能够在页面创建的时候调用到
+17. PageVisibility不再提供create和destroy方法，另外onPageCreate和onPageDestroy改名为onPagePush和onPagePop
+18. FIXED:同一个容器提供多个FlutterView,业务层通过remove(uniqueId)，指定id移除非首个flutterview会失效
+19. Boost接管handleAppLifecycleStateChanged，让Flutter生命周期与应用前后台对齐
+20. BoostNavigator添加pushReplacement方法，同时修复pop和findContainerById的逻辑 
+21. 过滤内部路由RouteSettings.name为null的路由事件，如对话框路等非页面路由事件，否则影响正常页面生命周期
+22. [双端一致性] iOS端FBFlutterContainerManager与Android统一，FLutterBoostPlugin生命周期相关逻辑统一
+23. 调整 Flutter Engine 初始化流程，避免使用异步方式产生插件注册时序问题
+24. 支持通过原生Navigator关闭容器页面
+25. 重构内部路由Pop时的结果回传逻辑
+26. [Android] 修复特定场景下（例如，ViewPager2）onPageHide事件未触发的问题
+
+Breaking Change
+1.为了后续Delegate的可扩展性，增加一个FlutterBoostRouteOptions的概念用于封装参数，Delegate的push和pop的参数传递都依赖这个对象
+
+具体见
+https://github.com/alibaba/flutter_boost/commit/14a3be59f97cad24bdba8663a79f3d17359641df
+https://github.com/alibaba/flutter_boost/commit/c085258e09b79dc6c3660d384409c50e2497ef4b
+https://github.com/alibaba/flutter_boost/commit/ce48530ad7114703d3a8dfb02e4e32543c9aaa10
+https://github.com/alibaba/flutter_boost/commit/47676230f21472c28791660ec93515f41d4f6c2f
+
+2. BoostNavigator提供的pop接口改为异步
+https://github.com/alibaba/flutter_boost/commit/d2d1fdc100dee34085b76d597194b93309e0cd0f
+
+3. PageVisibility不再提供create和destroy方法，另外onPageCreate和onPageDestroy改名为onPagePush和onPagePop
+原先写在onPageCreate和onPageDestroy的代码，写到initState和dispose中
+https://github.com/alibaba/flutter_boost/commit/e2f15b234260ede810e943c4f8248fd07fce6414
+
+4. Boost接管handleAppLifecycleStateChanged，让容器数量决定Flutter的resume和pause状态
+请移步接入文档，看BoostFlutterBinding的使用方式
+https://github.com/alibaba/flutter_boost/commit/173c910ff8ed971eacfa1a263745921ae5cd5689
+https://github.com/alibaba/flutter_boost/commit/abc2598f48dbcbeabf48057eec6d7737b0e21989
+
+
 ## v3.0-beta.11
 1. 修复透明页面背景是前一个Container的问题
 2. 重写BoostContainerWidget判等方法，避免框架层对已存在页面进行rebuild
