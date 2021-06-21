@@ -5,9 +5,9 @@
 
 # Release Note
 
-v3.0-beta.11
+v3.0-preview.5
 
-PS：每次更新beta版本以前，请阅读CHANGELOG，查看是否有BREAKING CHANGE
+PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新的接入文档与使用文档。
 
 - 1.flutter sdk升级不需要升级boost
 - 2.简化架构
