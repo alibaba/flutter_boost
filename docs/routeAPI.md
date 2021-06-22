@@ -14,7 +14,7 @@ BoostNavigator.instance.push(
 参数名 | 意义 | 是否可选
 -------- | -----| -----
 `name` | 页面在路由表中的名字 | NO
-`withContainer` | 是否需伴随原生容器弹出 | YES 
+`withContainer` | 是否需伴随原生容器弹出 | YES
 `arguments` | 携带到下一页面的参数 | YES
 `opaque` | 页面是否透明(下面会再次提到) | YES
 
@@ -69,7 +69,7 @@ BoostNavigator.instance.pop(result);
 参数名 | 意义 | 是否可选
 -------- | -----| -----
 `result` | 返回的参数 | YES
- - ##### 一定注意，当result返回给flutter页面的时候，可以是任何形式，如果返回给原生页面，需要是`Map<String, dynamic>`类型
+ - ##### 一定注意：如果打开的Flutter页面不带容器（例如，通过原生的Navigator.push，或者withContainer=false），那么pop时，result可以是任何类型；如果打开的页面是一个带容器的Flutter页面（即，withContainer=true）或一个Native页面，那么result需要是`Map<String, dynamic>`类型。
 
 
 
@@ -91,10 +91,100 @@ FlutterBoost.instance().close(uniqueId);
 ```
 
 
-### 3.原生参数回传flutter todo
-```java
+### 3.页面关闭时，返回结果给前一个页面
+#### 3.1 Flutter页面退出时，传递参数给上一个Native页面
 
+FlutterBoostActivity示例如下：
+```java
+// 1. 打开Flutter页面，等待返回结果
+Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
+        .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.opaque)
+        .destroyEngineWithActivity(false)
+        .url("DialogPage")
+        .urlParams(params)
+        .build(this);
+startActivityForResult(intent, REQUEST_CODE);
+
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    // 处理返回结果
+}
 ```
+
+```dart
+// 2. 关闭Flutter页面，返回结果
+InkWell(
+child: Container(
+    padding: const EdgeInsets.all(8.0),
+    margin: const EdgeInsets.all(8.0),
+    color: Colors.yellow,
+    child: Text(
+        'Pop with Navigator',
+        style: TextStyle(fontSize: 22.0, color: Colors.blue),
+    )),
+// 这里也可以使用: Navigator.of(context).pop({'retval' : 'I am from dart...'})
+onTap: () => BoostNavigator.instance.pop({'retval' : 'I am from dart...'}),
+),
+```
+
+注：如需定制，请自行实现FlutterViewContainer的finishContainer接口。
+
+#### 3.2 Native页面退出时，传递参数给上一个Flutter页面
+
+```dart
+// 1. 从Flutter页面打开一个Native页面，并处理返回结果
+InkWell(
+child: Container(
+    padding: const EdgeInsets.all(8.0),
+    margin: const EdgeInsets.all(8.0),
+    color: Colors.yellow,
+    child: Text(
+        'open native page',
+        style: TextStyle(fontSize: 22.0, color: Colors.black),
+    )),
+onTap: () => BoostNavigator.instance
+    .push("ANativePage") // Native页面路由
+    .then((value) => print('retval:$value')),
+),
+```
+
+```java
+// 2. Native页面退出时，返回结果
+@Override
+public void finish() {
+    Intent intent = new Intent();
+    intent.putExtra("msg","This message is from Native!!!");
+    intent.putExtra("bool", true);
+    intent.putExtra("int", 666);
+    setResult(Activity.RESULT_OK, intent);  // 返回结果给dart
+    super.finish();
+}
+```
+
+#### 3.3 Flutter页面退出时，传递参数给上一个Flutter页面
+```dart
+// 1. 打开一个Flutter页面，并处理返回结果
+InkWell(
+child: Container(
+    padding: const EdgeInsets.all(8.0),
+    margin: const EdgeInsets.all(8.0),
+    color: Colors.yellow,
+    child: Text(
+        'open transparent widget',
+        style: TextStyle(fontSize: 22.0, color: Colors.black),
+    )),
+onTap: () {
+    // 如果withContainer为false时，也可以使用原生的Navigator
+    final result = await BoostNavigator.instance.push("AFlutterPage",
+        withContainer: true, opaque: false);
+},
+),
+
+// 2. 页面关闭，并返回结果
+// 这里也可以使用原生的 Navigator
+onTap: () => BoostNavigator.instance.pop({'retval' : 'I am from dart...'}),
+```
+
 ## iOS
 
 ### 1.开启新页面统一API
