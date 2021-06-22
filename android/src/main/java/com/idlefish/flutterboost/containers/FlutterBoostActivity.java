@@ -141,7 +141,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUniqueId() {
-        if (!getIntent().hasExtra(EXTRA_URL)) {
+        if (!getIntent().hasExtra(EXTRA_UNIQUE_ID)) {
             return this.who;
         }
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
