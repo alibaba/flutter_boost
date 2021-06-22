@@ -34,7 +34,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void detachFromFlutterEngine() {
         /**
          * Override and do nothing.
-         * 
+         *
          * The idea here is to avoid releasing delegate when
          * a new FlutterFragment is attached in Flutter2.0.
          */
@@ -130,6 +130,14 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onBackPressed() {
         ActivityAndFragmentPatch.onBackPressed();
+    }
+
+    @Override
+    public boolean shouldRestoreAndSaveState() {
+      if (getArguments().containsKey(ARG_ENABLE_STATE_RESTORATION)) {
+        return getArguments().getBoolean(ARG_ENABLE_STATE_RESTORATION);
+      }
+      return true;
     }
 
     @Override
