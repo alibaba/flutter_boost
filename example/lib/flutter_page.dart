@@ -219,8 +219,20 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("webview", withContainer: true)
-                    .then((value) =>
-                        print('xlog, webview, Return Value:$value')),
+                    .then(
+                        (value) => print('xlog, webview, Return Value:$value')),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'State Restoration Example',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("state_restoration", withContainer: true),
               ),
               InkWell(
                 child: Container(

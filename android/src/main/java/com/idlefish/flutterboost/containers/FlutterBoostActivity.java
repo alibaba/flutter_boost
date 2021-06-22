@@ -24,6 +24,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
@@ -44,7 +45,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     public void detachFromFlutterEngine() {
         /**
          * Override and do nothing.
-         * 
+         *
          * The idea here is to avoid releasing delegate when
          * a new FlutterActivity is attached in Flutter2.0.
          */
@@ -98,6 +99,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onDestroy();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+    }
+
+    @Override
+    public boolean shouldRestoreAndSaveState() {
+      if (getIntent().hasExtra(EXTRA_ENABLE_STATE_RESTORATION)) {
+        return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
+      }
+      return true;
     }
 
     @Override
