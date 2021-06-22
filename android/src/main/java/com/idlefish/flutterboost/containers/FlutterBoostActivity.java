@@ -101,6 +101,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     @Override
+    public boolean shouldRestoreAndSaveState() {
+        return true;
+    }
+
+    @Override
     public void onBackPressed() {
         ActivityAndFragmentPatch.onBackPressed();
     }

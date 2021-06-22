@@ -6,6 +6,7 @@ import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
+import 'package:flutter_boost_example/case/state_restoration.dart';
 import 'package:flutter_boost_example/case/transparent_widget.dart';
 import 'package:flutter_boost_example/case/radial_hero_animation.dart';
 import 'package:flutter_boost_example/case/webview_flutter_demo.dart';
@@ -59,9 +60,8 @@ class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {
   }
 }
 
-class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {
-
-}
+class CustomFlutterBinding extends WidgetsFlutterBinding
+    with BoostFlutterBinding {}
 
 class CustomInterceptor1 extends BoostInterceptor {
   @override
@@ -229,6 +229,11 @@ class _MyAppState extends State<MyApp> {
     'webview': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
+    },
+    'state_restoration': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => StateRestorationDemo());
     },
     'mediaquery': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
