@@ -28,14 +28,14 @@ PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新�
 
 # 使用文档
 
-- [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/install.md)
-- [基本的路由API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/routeAPI.md)
-- [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/lifecycle.md)
-- [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/event.md)
+- [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/master/docs/install.md)
+- [基本的路由API](https://github.com/alibaba/flutter_boost/blob/master/docs/routeAPI.md)
+- [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md)
+- [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/master/docs/event.md)
 
 # 建设文档
-- [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/issue.md)
-- [如何向我们提PR](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/pr.md)
+- [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md)
+- [如何向我们提PR](https://github.com/alibaba/flutter_boost/blob/master/docs/pr.md)
 
 
 # FAQ

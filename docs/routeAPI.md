@@ -132,4 +132,4 @@ FlutterBoost.instance().close(uniqueId)
 FlutterBoost.instance().sendResultToFlutter(withPageName: "pageName", arguments: ["key":"value"])
 ```
 
-### 下一步：[生命周期API](https://github.com/alibaba/flutter_boost/blob/task/doc/docs/lifecycle.md)
+### 下一步：[生命周期API](https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md)
