@@ -18,6 +18,7 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
@@ -33,6 +34,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private static final String TAG = "FlutterBoostActivity";
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
+    private PlatformPlugin platformPlugin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
         }
 
+        platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
@@ -89,6 +92,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -107,6 +111,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
       }
       return true;
+    }
+
+    @Override
+    public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        return null;
     }
 
     @Override

@@ -20,6 +20,7 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
@@ -29,6 +30,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
+    private PlatformPlugin platformPlugin;
 
     // @Override
     public void detachFromFlutterEngine() {
@@ -59,11 +61,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onHiddenChanged(boolean hidden) {
         assert(flutterView != null);
         if (hidden) {
-            FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+            didFragmentHide();
         } else {
-            FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+            didFragmentShow();
         }
         super.onHiddenChanged(hidden);
     }
@@ -72,11 +72,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void setUserVisibleHint(boolean isVisibleToUser) {
         assert(flutterView != null);
         if (isVisibleToUser) {
-            FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+            didFragmentShow();
         } else {
-            FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+            didFragmentHide();
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -84,10 +82,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        assert(flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
-        assert(getFlutterEngine() != null);
+        didFragmentShow();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -99,10 +94,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
-        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        assert(flutterView != null);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
-        assert(getFlutterEngine() != null);
+        didFragmentHide();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -138,6 +130,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         return getArguments().getBoolean(ARG_ENABLE_STATE_RESTORATION);
       }
       return true;
+    }
+
+    @Override
+    public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        return null;
     }
 
     @Override
@@ -177,6 +174,18 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public String getCachedEngineId() {
       return FlutterBoost.ENGINE_ID;
+    }
+
+    private void didFragmentShow() {
+        platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+    }
+
+    private void didFragmentHide() {
+        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
+        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        platformPlugin = null;
     }
 
     public static class CachedEngineFragmentBuilder {
