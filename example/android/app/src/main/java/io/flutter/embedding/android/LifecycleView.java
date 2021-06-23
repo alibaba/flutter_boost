@@ -33,6 +33,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   private FlutterView mFlutterView;
   private Bundle mArguments;
   private FlutterActivityAndFragmentDelegate mDelegate;
+  private PlatformPlugin platformPlugin;
   private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
 
   public LifecycleView(Activity context) {
@@ -68,11 +69,13 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public void onResume() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+    platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
     mDelegate.onResume();
   }
 
   public void onPause() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+    platformPlugin = null;
     mDelegate.onPause();
   }
 
@@ -175,11 +178,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   @Nullable
   public PlatformPlugin providePlatformPlugin(
       @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
-    if (activity != null) {
-      return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
-    } else {
-      return null;
-    }
+    return null;
   }
 
   public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
