@@ -185,8 +185,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
-        // To avoid the issue of show/hide event sequence, do not call |destroy|
-        // platformPlugin.destroy();
         platformPlugin = null;
     }
 
