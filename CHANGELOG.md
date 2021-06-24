@@ -1,3 +1,7 @@
+
+## v3.0-beta.12
+1. FlutterBoostActivity的onActivityResult添加super调用
+
 ## v3.0-beta.11
 1. 修复透明页面背景是前一个Container的问题
 2. 重写BoostContainerWidget判等方法，避免框架层对已存在页面进行rebuild

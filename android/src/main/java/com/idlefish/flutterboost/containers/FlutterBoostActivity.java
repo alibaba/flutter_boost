@@ -166,6 +166,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             Map<String, Object> result = (HashMap<String, Object>)data.getSerializableExtra(ACTIVITY_RESULT_KEY);
             FlutterBoost.instance().getPlugin().onNativeResult(pageName, result, null);
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public static class CachedEngineIntentBuilder {
