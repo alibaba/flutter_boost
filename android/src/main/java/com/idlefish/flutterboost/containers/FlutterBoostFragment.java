@@ -129,12 +129,19 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
       if (getArguments().containsKey(ARG_ENABLE_STATE_RESTORATION)) {
         return getArguments().getBoolean(ARG_ENABLE_STATE_RESTORATION);
       }
+      // Defaults to |true|.
       return true;
     }
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
         return null;
+    }
+
+    @Override
+    public boolean shouldDestroyEngineWithHost() {
+        // The |FlutterEngine| should outlive this FlutterFragment.
+        return false;
     }
 
     @Override

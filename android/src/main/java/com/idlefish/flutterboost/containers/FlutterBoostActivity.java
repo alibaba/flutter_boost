@@ -66,6 +66,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
@@ -92,6 +93,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
         platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
@@ -107,15 +109,28 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public boolean shouldRestoreAndSaveState() {
-      if (getIntent().hasExtra(EXTRA_ENABLE_STATE_RESTORATION)) {
-        return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
-      }
-      return true;
+        if (getIntent().hasExtra(EXTRA_ENABLE_STATE_RESTORATION)) {
+            return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
+        }
+        // Defaults to |true|.
+        return true;
     }
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
         return null;
+    }
+
+    @Override
+    public boolean shouldDestroyEngineWithHost() {
+        // The |FlutterEngine| should outlive this FlutterActivity.
+        return false;
+    }
+
+    @Override
+    public boolean shouldAttachEngineToActivity() {
+        // We manually manage the relationship between the Activity and FlutterEngine here.
+        return false;
     }
 
     @Override
