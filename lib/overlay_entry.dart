@@ -33,9 +33,6 @@ void refreshSpecificOverlayEntries(
     return;
   }
 
-  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final framesEnabled = SchedulerBinding.instance.framesEnabled;
-
   //deal with different situation
   switch (mode) {
     case BoostSpecificEntryRefreshMode.add:
@@ -71,6 +68,8 @@ void refreshSpecificOverlayEntries(
   // https://github.com/alibaba/flutter_boost/issues/1056
   // Ensure this frame is refreshed after schedule frame,
   // otherwise the PageState.dispose may not be called
+  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
+  final framesEnabled = SchedulerBinding.instance.framesEnabled;
   if (hasScheduledFrame || !framesEnabled) {
     SchedulerBinding.instance.scheduleWarmUpFrame();
   }
@@ -94,14 +93,13 @@ void refreshAllOverlayEntries(List<BoostContainer> containers) {
           (container) => _ContainerOverlayEntry(container))
       .toList(growable: true);
 
-  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final framesEnabled = SchedulerBinding.instance.framesEnabled;
-
   overlayState.insertAll(_lastEntries);
 
   // https://github.com/alibaba/flutter_boost/issues/1056
   // Ensure this frame is refreshed after schedule frame，
   // otherwise the PageState.dispose may not be called
+  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
+  final framesEnabled = SchedulerBinding.instance.framesEnabled;
   if (hasScheduledFrame || !framesEnabled) {
     SchedulerBinding.instance.scheduleWarmUpFrame();
   }
