@@ -50,6 +50,10 @@ void refreshSpecificOverlayEntries(
         //remove from the list and overlay
         _lastEntries.remove(entryToRemove);
         entryToRemove.remove();
+        // https://github.com/alibaba/flutter_boost/issues/1056
+        // Ensure this frame is refreshed after schedule frame,
+        // otherwise the PageState.dispose may not be called
+        SchedulerBinding.instance.scheduleWarmUpFrame();
       }
       break;
     case BoostSpecificEntryRefreshMode.moveToTop:
@@ -63,15 +67,6 @@ void refreshSpecificOverlayEntries(
       existingEntry.remove();
       overlayState.insert(existingEntry);
       break;
-  }
-
-  // https://github.com/alibaba/flutter_boost/issues/1056
-  // Ensure this frame is refreshed after schedule frame,
-  // otherwise the PageState.dispose may not be called
-  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final framesEnabled = SchedulerBinding.instance.framesEnabled;
-  if (hasScheduledFrame || !framesEnabled) {
-    SchedulerBinding.instance.scheduleWarmUpFrame();
   }
 }
 
