@@ -19,8 +19,8 @@
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.5'
-```
+        ref: 'v3.0-preview.6'
+```l
 之后在flutter工程下运行`flutter pub get`
 dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
 ```dart

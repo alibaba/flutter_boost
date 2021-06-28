@@ -1,3 +1,8 @@
+## v3.0-preview.6
+1.[iOS] 修复iOS打开Flutter页面再关闭不走dispose逻辑问题
+2.[Android] 解决setSystemUIOverlayStyle不生效的问题
+3.[Android] 默认开启状态恢复功能
+
 ## v3.0-preview.5
 1. Native侧代码重构
   a.uniqueId的创建方式与Dart侧保持一致

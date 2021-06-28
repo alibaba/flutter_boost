@@ -37,7 +37,7 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.5'
+        ref: 'v3.0-preview.6'
 ```
 
 

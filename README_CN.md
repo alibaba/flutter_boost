@@ -26,6 +26,17 @@ PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新�
 1.在继续之前，您需要将Flutter集成到你现有的项目中。
 2.boost3.0版本支持的flutter sdk 版本为 >= 1.22
 
+## 将FlutterBoost添加到你的Flutter工程依赖中
+
+打开你的工程的pubspec.yaml ，增加以下依赖
+
+```json
+flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'v3.0-preview.6'
+```
+
 # 使用文档
 
 - [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/master/docs/install.md)
