@@ -22,7 +22,6 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static WeakReference<MainActivity> sRef;
     private final int REQUEST_CODE = 999;
     private TextView mOpenNative;
     private TextView mOpenFlutter;
@@ -33,7 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sRef = new WeakReference<>(this);
+        if((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0){
+            finish();
+            return;
+        }
 
         setContentView(R.layout.native_page);
 
@@ -51,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        sRef.clear();
-        sRef = null;
     }
 
     @Override
