@@ -82,8 +82,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        didFragmentShow();
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if (!isHidden()) {
+            didFragmentShow();
+            getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
     }
 
     @Override
