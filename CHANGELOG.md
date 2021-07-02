@@ -1,3 +1,10 @@
+## v3.0-preview.7
+1. [Android] 解决前一个页面destroy时导致当前页面的PlatformViewsChannel断开的问题 (#1250)
+2. Hfix #1229 修复example中从Flutter页面推后台再回前天，栈顶页面是Native的页面的问题
+3. 修复单引擎多VC下问题：1.updateViewportMetrics在键盘唤起时被多个VC调用 2.Tab初始化场景下导致的Crash
+4. 修复 FlutterBoostFragment跳转新的FlutterBoostFragment，返回上一个FlutterFragment后不响应点击事件
+
+
 ## v3.0-preview.6
 1.[iOS] 修复iOS打开Flutter页面再关闭不走dispose逻辑问题
 2.[Android] 解决setSystemUIOverlayStyle不生效的问题
