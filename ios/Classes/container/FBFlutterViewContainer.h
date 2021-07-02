@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSNumber *disablePopGesture;
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
+- (void)updateViewportMetrics;
 @end
 
 

@@ -40,6 +40,7 @@
 - (void)bridge_viewDidDisappear:(BOOL)animated;
 - (void)bridge_viewWillAppear:(BOOL)animated;
 - (void)surfaceUpdated:(BOOL)appeared;
+- (void)updateViewportMetrics;
 @end
 
 #pragma clang diagnostic push
@@ -184,6 +185,9 @@
 }
 
 - (void)viewDidLoad {
+    // Ensure current view controller attach to Flutter engine
+    [self attatchFlutterEngine];
+    
     [super viewDidLoad];
     //只有在不透明情况下，才设置背景颜色，否则不设置颜色（也就是默认透明）
     if(self.opaque){
@@ -221,6 +225,12 @@
 - (void)surfaceUpdated:(BOOL)appeared {
     if (self.engine && self.engine.viewController == self) {
         [super surfaceUpdated:appeared];
+    }
+}
+
+- (void)updateViewportMetrics {
+    if (self.engine && self.engine.viewController == self) {
+        [super updateViewportMetrics];
     }
 }
 
