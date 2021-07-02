@@ -94,6 +94,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
         getFlutterEngine().getActivityControlSurface().detachFromActivity();
+        platformPlugin.destroy();
         platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
