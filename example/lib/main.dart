@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'simple_page_widgets.dart';
 import 'flutter_to_flutter_sample.dart';
+import 'flutter_webview.dart';
 
 void main() {
   runApp(MyApp());
@@ -27,7 +28,7 @@ class _MyAppState extends State<MyApp> {
       'tab': (pageName, params, _) => TabRouteWidget(),
       'platformView': (pageName, params, _) => PlatformRouteWidget(),
       'flutterFragment': (pageName, params, _) => FragmentRouteWidget(params),
-
+      'webview': (pageName, params, _) => WebViewExample(),
       ///可以在native层通过 getContainerParams 来传递参数
       'flutterPage': (pageName, params, _) {
         print("flutterPage params:$params");

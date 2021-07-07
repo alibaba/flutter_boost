@@ -464,6 +464,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget> {
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
+                      'open webview',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => FlutterBoost.singleton.open("webview"),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
                       'open tab',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
