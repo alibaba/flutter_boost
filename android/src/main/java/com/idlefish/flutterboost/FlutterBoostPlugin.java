@@ -81,6 +81,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
                     .uniqueId(params.getUniqueId())
+                    .opaque(params.getOpaque())
                     .arguments((Map<String, Object>) (Object) params.getArguments())
                     .build();
             delegate.pushFlutterRoute(options);
