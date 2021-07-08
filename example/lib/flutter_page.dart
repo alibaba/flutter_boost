@@ -101,7 +101,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: 1000,
           margin: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,7 +284,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () {
                   BoostNavigator.instance.push("transparentWidget",
-                      withContainer: false, opaque: false);
+                      withContainer: true, opaque: false);
                 },
               ),
               InkWell(
