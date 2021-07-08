@@ -35,6 +35,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
+    private boolean isAttachedToActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+        attachToActivity();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
@@ -93,7 +94,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
-        getFlutterEngine().getActivityControlSurface().detachFromActivity();
+        detachFromActivity();
         platformPlugin.destroy();
         platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
@@ -184,6 +185,29 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public String getCachedEngineId() {
       return FlutterBoost.ENGINE_ID;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // lifecycle is onActivityResult->onResume
+        attachToActivity();
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void attachToActivity() {
+        if (isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = true;
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+    }
+
+    private void detachFromActivity() {
+        if (!isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = false;
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
     }
 
     public static class CachedEngineIntentBuilder {
