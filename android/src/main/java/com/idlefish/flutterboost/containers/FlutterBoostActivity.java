@@ -32,6 +32,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostActivity";
+    private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
@@ -42,6 +43,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onCreate(savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
+        if (DEBUG) Log.e(TAG, "#onCreate: " + this);
     }
 
     // @Override
@@ -71,12 +73,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
         ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+        if (DEBUG) Log.e(TAG, "#onResume: " + this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if (DEBUG) Log.e(TAG, "#onStop: " + this);
     }
 
     @Override
@@ -98,6 +102,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         platformPlugin.destroy();
         platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if (DEBUG) Log.e(TAG, "#onPause: " + this);
     }
 
     @Override
@@ -107,6 +112,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onDestroy();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+        if (DEBUG) Log.e(TAG, "#onDestroy: " + this);
     }
 
     @Override
@@ -192,6 +198,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         // lifecycle is onActivityResult->onResume
         attachToActivity();
         super.onActivityResult(requestCode, resultCode, data);
+        if (DEBUG) Log.e(TAG, "#onActivityResult: " + this);
     }
 
     private void attachToActivity() {
