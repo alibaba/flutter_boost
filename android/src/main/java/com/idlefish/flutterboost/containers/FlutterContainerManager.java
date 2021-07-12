@@ -1,12 +1,14 @@
 package com.idlefish.flutterboost.containers;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
+import io.flutter.Log;
+
 public class FlutterContainerManager {
+    private static final String TAG = "FlutterContainerManager";
+    private static final boolean DEBUG = false;
 
     private FlutterContainerManager() {
     }
@@ -24,7 +26,7 @@ public class FlutterContainerManager {
 
     public void addContainer(String uniqueId, FlutterViewContainer container) {
         allContainers.put(uniqueId, container);
-
+        if (DEBUG) Log.e(TAG, "#addContainer:" + toString());
     }
 
     public void activateContainer(String uniqueId, FlutterViewContainer container) {
@@ -35,12 +37,14 @@ public class FlutterContainerManager {
             activeContainers.remove(container);
         }
         activeContainers.add(container);
+        if (DEBUG) Log.e(TAG, "#activateContainer:" + toString());
     }
 
     public void removeContainer(String uniqueId) {
         if (uniqueId == null) return;
         FlutterViewContainer container = allContainers.remove(uniqueId);
         activeContainers.remove(container);
+        if (DEBUG) Log.e(TAG, "#removeContainer:" + toString());
     }
 
 
@@ -68,5 +72,13 @@ public class FlutterContainerManager {
 
     public int getContainerSize() {
         return allContainers.size();
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("activeContainers=" + activeContainers.size() + ", [");
+        activeContainers.forEach((value) -> sb.append(value.getUrl() + ','));
+        sb.append("]");
+        return sb.toString();
     }
 }

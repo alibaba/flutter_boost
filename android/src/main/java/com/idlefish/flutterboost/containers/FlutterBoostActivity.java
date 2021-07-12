@@ -72,7 +72,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         attachToActivity();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+        flutterView.attachToFlutterEngine(getFlutterEngine());
         if (DEBUG) Log.e(TAG, "#onResume: " + this);
     }
 
@@ -97,7 +97,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        flutterView.detachFromFlutterEngine();
         detachFromActivity();
         platformPlugin.destroy();
         platformPlugin = null;
@@ -143,12 +143,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed();
+        // Intercept the user's press of the back key.
+        FlutterBoost.instance().getPlugin().popRoute(null, null);
     }
 
     @Override
     public RenderMode getRenderMode() {
-        return ActivityAndFragmentPatch.getRenderMode();
+        // Default to |FlutterTextureView|.
+        return RenderMode.texture;
     }
 
     @Override

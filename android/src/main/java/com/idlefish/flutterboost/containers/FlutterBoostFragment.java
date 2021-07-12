@@ -57,6 +57,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
         assert(flutterView != null);
+        // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.e(TAG, "#onCreateView: " + this);
         return view;
@@ -98,7 +99,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public RenderMode getRenderMode() {
-        return ActivityAndFragmentPatch.getRenderMode();
+        // Default to |FlutterTextureView|.
+        return RenderMode.texture;
     }
 
     @Override
@@ -135,7 +137,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed();
+        // Intercept the user's press of the back key.
+        FlutterBoost.instance().getPlugin().popRoute(null, null);
     }
 
     @Override
@@ -198,20 +201,34 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     private void didFragmentShow() {
-        platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        // Attache plugins to the activity.
+
+        // Create the platform plugin.
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        }
+
+        // Attach plugins to the activity.
         getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getActivity().getLifecycle());
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView, getFlutterEngine());
+
+        // Attach rendering pipeline.
+        flutterView.attachToFlutterEngine(getFlutterEngine());
     }
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+
         // Plugins are no longer attached to the activity.
         getFlutterEngine().getActivityControlSurface().detachFromActivity();
-        platformPlugin.destroy();
-        platformPlugin = null;
+
+        // Release Flutter's control of UI such as system chrome.
+        if (platformPlugin != null) {
+            platformPlugin.destroy();
+            platformPlugin = null;
+        }
+
+        // Detach rendering pipeline.
+        flutterView.detachFromFlutterEngine();
     }
 
     public static class CachedEngineFragmentBuilder {
