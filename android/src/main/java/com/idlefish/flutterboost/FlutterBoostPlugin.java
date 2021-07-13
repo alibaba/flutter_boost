@@ -105,19 +105,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     @Override
-    public void popRoute(CommonParams params) {
-        String uniqueId = params.getUniqueId();
-        if (uniqueId != null) {
-            FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
-            if (container != null) {
-                container.finishContainer((Map<String, Object>) (Object) params.getArguments());
-            }
-        } else {
-            throw new RuntimeException("Oops!! The unique id is null!");
-        }
-    }
-
-    @Override
     public StackInfo getStackFromHost() {
         if (dartStack == null) {
             return StackInfo.fromMap(new HashMap());
