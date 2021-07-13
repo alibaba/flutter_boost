@@ -34,6 +34,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
+    private boolean isAttachedToActivity = false;
 
     // @Override
     public void detachFromFlutterEngine() {
@@ -209,8 +210,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
 
         // Attach plugins to the activity.
-        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getActivity().getLifecycle());
-
+        attachToActivity();
         // Attach rendering pipeline.
         flutterView.attachToFlutterEngine(getFlutterEngine());
     }
@@ -219,8 +219,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
 
         // Plugins are no longer attached to the activity.
-        getFlutterEngine().getActivityControlSurface().detachFromActivity();
-
+        detachFromActivity();
         // Release Flutter's control of UI such as system chrome.
         if (platformPlugin != null) {
             platformPlugin.destroy();
@@ -229,6 +228,37 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         // Detach rendering pipeline.
         flutterView.detachFromFlutterEngine();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // lifecycle is onRequestPermissionsResult->onResume
+        attachToActivity();
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // lifecycle is onActivityResult->onResume
+        attachToActivity();
+        super.onActivityResult(requestCode, resultCode, data);
+        if (DEBUG) Log.e(TAG, "#onActivityResult: " + this);
+    }
+
+    private void attachToActivity() {
+        if (isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = true;
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+    }
+
+    private void detachFromActivity() {
+        if (!isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = false;
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
     }
 
     public static class CachedEngineFragmentBuilder {
