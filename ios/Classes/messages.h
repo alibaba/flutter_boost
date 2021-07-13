@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol FBNativeRouterApi
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
--(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
+-(void)popRoute:(nullable FBCommonParams *)input completion:(void(^)(FlutterError *_Nullable))completion;
 -(nullable FBStackInfo *)getStackFromHost:(FlutterError *_Nullable *_Nonnull)error;
 -(void)saveStackToHost:(FBStackInfo*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)sendEventToNative:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
