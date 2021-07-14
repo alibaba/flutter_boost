@@ -188,7 +188,12 @@ public class FlutterBoost {
     public void close(String uniqueId) {
         Messages.CommonParams params = new Messages.CommonParams();
         params.setUniqueId(uniqueId);
-        this.getPlugin().popRoute(params);
+        this.getPlugin().popRoute(params,new Messages.Result<Void>(){
+            @Override
+            public void success(Void result) {
+
+            }
+        });
     }
 
     /**

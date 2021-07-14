@@ -3,6 +3,7 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.idlefish.flutterboost.Messages.Result;
 import com.idlefish.flutterboost.Messages.CommonParams;
 import com.idlefish.flutterboost.Messages.FlutterRouterApi;
 import com.idlefish.flutterboost.Messages.NativeRouterApi;
@@ -91,14 +92,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     @Override
-    void popRoute(CommonParams arg, Result<void> result) {
+    public void popRoute(CommonParams params, Messages.Result<Void> result) {
         String uniqueId = params.getUniqueId();
         if (uniqueId != null) {
             FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
             if (container != null) {
                 container.finishContainer((Map<String, Object>) (Object) params.getArguments());
             }
-            result.success();
+            result.success(null);
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
         }

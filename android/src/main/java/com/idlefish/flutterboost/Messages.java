@@ -178,7 +178,7 @@ public class Messages {
   public interface NativeRouterApi {
     void pushNativeRoute(CommonParams arg);
     void pushFlutterRoute(CommonParams arg);
-    void popRoute(CommonParams arg, Result<void> result);
+    void popRoute(CommonParams arg, Result<Void> result);
     StackInfo getStackFromHost();
     void saveStackToHost(StackInfo arg);
     void sendEventToNative(CommonParams arg);
@@ -236,7 +236,7 @@ public class Messages {
             try {
               @SuppressWarnings("ConstantConditions")
               CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
-              api.popRoute(input, result -> { wrapped.put("result", result.toMap()); reply.reply(wrapped); });
+              api.popRoute(input, result -> { reply.reply(null); });
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));

@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
+import com.idlefish.flutterboost.Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -144,7 +145,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onBackPressed() {
         // Intercept the user's press of the back key.
-        FlutterBoost.instance().getPlugin().popRoute(null, null);
+        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
     }
 
     @Override
