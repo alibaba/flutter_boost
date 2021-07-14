@@ -196,6 +196,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // lifecycle is onRequestPermissionsResult->onResume
+        attachToActivity();
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // lifecycle is onActivityResult->onResume
