@@ -35,7 +35,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
-    private boolean isAttachedToActivity = false;
 
     // @Override
     public void detachFromFlutterEngine() {
@@ -50,7 +49,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (DEBUG) Log.e(TAG, "#onAttach: " + this);
+        if (DEBUG) Log.d(TAG, "#onAttach: " + this);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         assert(flutterView != null);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
-        if (DEBUG) Log.e(TAG, "#onCreateView: " + this);
+        if (DEBUG) Log.d(TAG, "#onCreateView: " + this);
         return view;
     }
 
@@ -74,7 +73,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentShow();
         }
         super.onHiddenChanged(hidden);
-        if (DEBUG) Log.e(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
+        if (DEBUG) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
 
     @Override
@@ -86,7 +85,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentHide();
         }
         super.setUserVisibleHint(isVisibleToUser);
-        if (DEBUG) Log.e(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
+        if (DEBUG) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
     }
 
     @Override
@@ -96,7 +95,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        if (DEBUG) Log.e(TAG, "#onResume: " + this);
+        if (DEBUG) Log.d(TAG, "#onResume: " + this);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onPause();
         didFragmentHide();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onPause: " + this);
+        if (DEBUG) Log.d(TAG, "#onPause: " + this);
     }
 
     @Override
@@ -118,14 +117,14 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onStop();
         assert(getFlutterEngine() != null);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onStop: " + this);
+        if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
-        if (DEBUG) Log.e(TAG, "#onDestroyView: " + this);
+        if (DEBUG) Log.d(TAG, "#onDestroyView: " + this);
     }
 
     @Override
@@ -134,7 +133,14 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onDetach();
         assert(engine != null);
         engine.getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onDetach: " + this);
+        if (DEBUG) Log.d(TAG, "#onDetach: " + this);
+    }
+
+    @Override
+    // This method is called right before the activity's onPause() callback.
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (DEBUG) Log.d(TAG, "#onUserLeaveHint: " + this);
     }
 
     @Override
@@ -203,63 +209,45 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     private void didFragmentShow() {
+        // try to detach prevous container from the engine.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && top != this) top.detachFromEngineIfNeeded();
+
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-
-        // Create the platform plugin.
-        if (platformPlugin == null) {
-            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-        }
-
-        // Attach plugins to the activity.
-        attachToActivity();
-        // Attach rendering pipeline.
-        flutterView.attachToFlutterEngine(getFlutterEngine());
+        tryToAttachToEngine();
     }
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
+        // We defer |tryToDetachFromEngine| call to new Flutter container's |onResume|;
+        // tryToDetachFromEngine();
+    }
 
-        // Plugins are no longer attached to the activity.
-        detachFromActivity();
-        // Release Flutter's control of UI such as system chrome.
+    private void tryToAttachToEngine() {
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            // Attach plugins to the activity.
+            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+            // Attach rendering pipeline.
+            flutterView.attachToFlutterEngine(getFlutterEngine());
+        }
+    }
+
+    private void tryToDetachFromEngine() {
         if (platformPlugin != null) {
+            // Plugins are no longer attached to the activity.
+            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+            // Release Flutter's control of UI such as system chrome.
             platformPlugin.destroy();
             platformPlugin = null;
+            // Detach rendering pipeline.
+            flutterView.detachFromFlutterEngine();
         }
-
-        // Detach rendering pipeline.
-        flutterView.detachFromFlutterEngine();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // lifecycle is onRequestPermissionsResult->onResume
-        attachToActivity();
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // lifecycle is onActivityResult->onResume
-        attachToActivity();
-        super.onActivityResult(requestCode, resultCode, data);
-        if (DEBUG) Log.e(TAG, "#onActivityResult: " + this);
-    }
-
-    private void attachToActivity() {
-        if (isAttachedToActivity) {
-            return;
-        }
-        isAttachedToActivity = true;
-        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
-    }
-
-    private void detachFromActivity() {
-        if (!isAttachedToActivity) {
-            return;
-        }
-        isAttachedToActivity = false;
-        getFlutterEngine().getActivityControlSurface().detachFromActivity();
+    public void detachFromEngineIfNeeded() {
+        tryToDetachFromEngine();
     }
 
     public static class CachedEngineFragmentBuilder {
