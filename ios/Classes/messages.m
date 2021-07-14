@@ -226,9 +226,18 @@ void FBNativeRouterApiSetup(id<FlutterBinaryMessenger> binaryMessenger, id<FBNat
     if (api) {
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         FBCommonParams *input = [FBCommonParams fromMap:message];
-        FlutterError *error;
-        [api popRoute:input error:&error];
-        callback(wrapResult(nil, error));
+        [api popRoute:input completion:^(FlutterError *_Nullable error) {
+          //pigeon 生成出来的代码有bug，这里先手动修改，等待其修复
+          NSMutableDictionary *reply = [@{} mutableCopy];
+          if (error) {
+            reply[@"error"] = @{
+                @"code":error.code ?: @"",
+                @"message":error.message ?: @"",
+                @"details":error.details ?: [NSNull null],
+            };
+          }
+          callback(reply);
+        }];
       }];
     }
     else {

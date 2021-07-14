@@ -170,11 +170,15 @@ public class Messages {
     }
   }
 
+  public interface Result<T> {
+    void success(T result);
+  }
+
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/
   public interface NativeRouterApi {
     void pushNativeRoute(CommonParams arg);
     void pushFlutterRoute(CommonParams arg);
-    void popRoute(CommonParams arg);
+    void popRoute(CommonParams arg, Result<Void> result);
     StackInfo getStackFromHost();
     void saveStackToHost(StackInfo arg);
     void sendEventToNative(CommonParams arg);
@@ -232,13 +236,12 @@ public class Messages {
             try {
               @SuppressWarnings("ConstantConditions")
               CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
-              api.popRoute(input);
-              wrapped.put("result", null);
+              api.popRoute(input, result -> { reply.reply(null); });
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));
+              reply.reply(wrapped);
             }
-            reply.reply(wrapped);
           });
         } else {
           channel.setMessageHandler(null);

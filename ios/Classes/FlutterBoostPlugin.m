@@ -132,14 +132,17 @@
     [self.delegate pushFlutterRoute: options];
 }
 
--(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
+-(void)popRoute:(nullable FBCommonParams *)input completion:(void(^)(FlutterError *_Nullable))completion
+{
     if([self.containerManager findContainerByUniqueId:input.uniqueId]){
         //封装成options传回代理
         FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
         options.pageName = input.pageName;
         options.uniqueId = input.uniqueId;
         options.arguments = input.arguments;
-
+        options.completion = ^(BOOL ret) {
+            completion(nil);
+        };
         //调用代理回调给调用层
         [self.delegate popRoute:options];
     };
