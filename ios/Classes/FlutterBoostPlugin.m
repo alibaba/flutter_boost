@@ -148,19 +148,6 @@
     };
 }
 
--(void)popRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error {
-    if([self.containerManager findContainerByUniqueId:input.uniqueId]){
-        //封装成options传回代理
-        FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
-        options.pageName = input.pageName;
-        options.uniqueId = input.uniqueId;
-        options.arguments = input.arguments;
-
-        //调用代理回调给调用层
-        [self.delegate popRoute:options];
-    };
-}
-
 -(FBStackInfo *)getStackFromHost:(FlutterError *_Nullable *_Nonnull)error {
     if (self.stackInfo == nil) {
         return [[FBStackInfo alloc] init];
