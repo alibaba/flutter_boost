@@ -236,7 +236,7 @@ public class Messages {
             try {
               @SuppressWarnings("ConstantConditions")
               CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
-              api.popRoute(input, result -> { reply.reply(null); });
+              api.popRoute(input, result -> { reply.reply(wrapped); });
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));
