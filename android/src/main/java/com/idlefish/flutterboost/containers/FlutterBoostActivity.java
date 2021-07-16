@@ -117,7 +117,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         getFlutterEngine().getLifecycleChannel().appIsResumed();
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
-        fixBlankScreenWhenActivityTransition();
+        setIsFlutterUiDisplayed(false);
         if (DEBUG) Log.d(TAG, "#onPause: " + this);
     }
 
@@ -142,7 +142,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
     }
 
-    private void fixBlankScreenWhenActivityTransition() {
+    // Fix black screen when activity transition
+    private void setIsFlutterUiDisplayed(boolean isDisplayed) {
         try {
             FlutterRenderer flutterRenderer = getFlutterEngine().getRenderer();
             Field isDisplayingFlutterUiField = FlutterRenderer.class.getDeclaredField("isDisplayingFlutterUi");
