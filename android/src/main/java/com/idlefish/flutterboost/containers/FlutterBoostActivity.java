@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
@@ -151,6 +151,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             isDisplayingFlutterUiField.setBoolean(flutterRenderer, false);
             assert(!flutterRenderer.isDisplayingFlutterUi());
         } catch (Exception e) {
+            Log.e(TAG, "You *should* keep fields in io.flutter.embedding.engine.renderer.FlutterRenderer.");
             e.printStackTrace();
         }
     }
