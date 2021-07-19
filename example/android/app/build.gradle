@@ -46,6 +46,21 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+
+            // Enables code shrinking, obfuscation, and optimization for only
+            // your project's release build type.
+            minifyEnabled true
+
+            // Enables resource shrinking, which is performed by the
+            // Android Gradle plugin.
+            shrinkResources true
+
+            // Includes the default ProGuard rules files that are packaged with
+            // the Android Gradle plugin. To learn more, go to the section about
+            // R8 configuration files.
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
         }
     }
 }
@@ -53,7 +68,7 @@ android {
 flutter {
     source '../..'
 }
- 
+
 dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -13,4 +13,5 @@ public interface FlutterViewContainer {
     Map<String, Object> getUrlParams();
     String getUniqueId();
     void finishContainer(Map<String, Object> result);
+    default void detachFromEngineIfNeeded() {}
 }
