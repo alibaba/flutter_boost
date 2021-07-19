@@ -1,3 +1,10 @@
+## v3.0-preview.8
+1. [Android] 解决特定场景下半透明弹窗背景黑/白屏、传参丢失、请求权限失败，以及image_picker插件不可用等问题
+2. [Android] 修复FlutterBoostActivity和FlutterBoostFragment接收不到请求权限结果的bug
+3. 解决 iOS dismissViewController completion 异步回调事件不完整的问题
+4. [Android] 适配页面透明参数，增加测试案例 (#1265)
+5. [Android] fix #1264 修复由于这条提交 #1250 导致FlutterboosrActivity 接收不到onActivityResult 回调结果 的bug
+
 ## v3.0-preview.7
 1. [Android] 解决前一个页面destroy时导致当前页面的PlatformViewsChannel断开的问题 (#1250)
 2. Hfix #1229 修复example中从Flutter页面推后台再回前天，栈顶页面是Native的页面的问题
