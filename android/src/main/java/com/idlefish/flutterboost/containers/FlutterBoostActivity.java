@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
+import com.idlefish.flutterboost.Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,33 +19,39 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.platform.PlatformPlugin;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoostActivity";
+    private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
+    private PlatformPlugin platformPlugin;
+    private boolean isAttachedToActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
+        if (DEBUG) Log.e(TAG, "#onCreate: " + this);
     }
 
     // @Override
     public void detachFromFlutterEngine() {
         /**
          * Override and do nothing.
-         * 
+         *
          * The idea here is to avoid releasing delegate when
          * a new FlutterActivity is attached in Flutter2.0.
          */
@@ -62,17 +69,19 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
         }
 
+        platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        attachToActivity();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView,
-                getFlutterEngine(), this);
+        flutterView.attachToFlutterEngine(getFlutterEngine());
+        if (DEBUG) Log.e(TAG, "#onResume: " + this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
+        if (DEBUG) Log.e(TAG, "#onStop: " + this);
     }
 
     @Override
@@ -86,9 +95,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                 return;
             }
         }
+
+        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         assert (flutterView != null);
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView, getFlutterEngine());
+        flutterView.detachFromFlutterEngine();
+        detachFromActivity();
+        platformPlugin.destroy();
+        platformPlugin = null;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+        if (DEBUG) Log.e(TAG, "#onPause: " + this);
     }
 
     @Override
@@ -98,16 +113,45 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onDestroy();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+        if (DEBUG) Log.e(TAG, "#onDestroy: " + this);
+    }
+
+    @Override
+    public boolean shouldRestoreAndSaveState() {
+        if (getIntent().hasExtra(EXTRA_ENABLE_STATE_RESTORATION)) {
+            return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
+        }
+        // Defaults to |true|.
+        return true;
+    }
+
+    @Override
+    public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        return null;
+    }
+
+    @Override
+    public boolean shouldDestroyEngineWithHost() {
+        // The |FlutterEngine| should outlive this FlutterActivity.
+        return false;
+    }
+
+    @Override
+    public boolean shouldAttachEngineToActivity() {
+        // We manually manage the relationship between the Activity and FlutterEngine here.
+        return false;
     }
 
     @Override
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed();
+        // Intercept the user's press of the back key.
+        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
     }
 
     @Override
     public RenderMode getRenderMode() {
-        return ActivityAndFragmentPatch.getRenderMode();
+        // Default to |FlutterTextureView|.
+        return RenderMode.texture;
     }
 
     @Override
@@ -141,7 +185,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getUniqueId() {
-        if (!getIntent().hasExtra(EXTRA_URL)) {
+        if (!getIntent().hasExtra(EXTRA_UNIQUE_ID)) {
             return this.who;
         }
         return getIntent().getStringExtra(EXTRA_UNIQUE_ID);
@@ -150,6 +194,38 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public String getCachedEngineId() {
       return FlutterBoost.ENGINE_ID;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        // lifecycle is onRequestPermissionsResult->onResume
+        attachToActivity();
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // lifecycle is onActivityResult->onResume
+        attachToActivity();
+        super.onActivityResult(requestCode, resultCode, data);
+        if (DEBUG) Log.e(TAG, "#onActivityResult: " + this);
+    }
+
+    private void attachToActivity() {
+        if (isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = true;
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+    }
+
+    private void detachFromActivity() {
+        if (!isAttachedToActivity) {
+            return;
+        }
+        isAttachedToActivity = false;
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
     }
 
     public static class CachedEngineIntentBuilder {

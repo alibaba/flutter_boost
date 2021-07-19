@@ -7,12 +7,14 @@ public class FlutterBoostRouteOptions {
     private final Map<String, Object> arguments;
     private final int requestCode;
     private final String uniqueId;
+    private final boolean opaque;
 
     private FlutterBoostRouteOptions(FlutterBoostRouteOptions.Builder builder) {
         this.pageName = builder.pageName;
         this.arguments = builder.arguments;
         this.requestCode = builder.requestCode;
         this.uniqueId = builder.uniqueId;
+        this.opaque = builder.opaque;
     }
 
     public String pageName() {
@@ -31,11 +33,16 @@ public class FlutterBoostRouteOptions {
         return uniqueId;
     }
 
+    public boolean opaque() {
+        return opaque;
+    }
+
     public static class Builder {
         private String pageName;
         private Map<String, Object> arguments;
         private int requestCode;
         private String uniqueId;
+        private boolean opaque = true;
 
         public Builder() {
         }
@@ -57,6 +64,11 @@ public class FlutterBoostRouteOptions {
 
         public FlutterBoostRouteOptions.Builder uniqueId(String uniqueId) {
             this.uniqueId = uniqueId;
+            return this;
+        }
+
+        public FlutterBoostRouteOptions.Builder opaque(boolean opaque) {
+            this.opaque = opaque;
             return this;
         }
 

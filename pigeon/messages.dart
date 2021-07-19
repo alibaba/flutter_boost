@@ -20,6 +20,7 @@ class StackInfo {
 abstract class NativeRouterApi {
   void pushNativeRoute(CommonParams param);
   void pushFlutterRoute(CommonParams param);
+  @async
   void popRoute(CommonParams param);
   StackInfo getStackFromHost();
   void saveStackToHost(StackInfo stack);

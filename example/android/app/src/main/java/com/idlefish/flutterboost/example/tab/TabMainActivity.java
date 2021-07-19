@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.containers.ActivityAndFragmentPatch;
 import com.idlefish.flutterboost.containers.FlutterBoostFragment;
 import com.idlefish.flutterboost.example.R;
 

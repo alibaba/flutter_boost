@@ -3,6 +3,11 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.idlefish.flutterboost.Messages.Result;
+import com.idlefish.flutterboost.Messages.CommonParams;
+import com.idlefish.flutterboost.Messages.FlutterRouterApi;
+import com.idlefish.flutterboost.Messages.NativeRouterApi;
+import com.idlefish.flutterboost.Messages.StackInfo;
 import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
@@ -11,21 +16,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
-public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterApi, ActivityAware {
+public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, ActivityAware {
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
-    private Messages.FlutterRouterApi channel;
+    private FlutterEngine engine;
+    private FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
-    private Messages.StackInfo dartStack;
+    private StackInfo dartStack;
     private SparseArray<String> pageNames;
     private int requestCode = 1000;
 
     private HashMap<String, LinkedList<EventListener>> listenersTable = new HashMap<>();
 
-    public Messages.FlutterRouterApi getChannel() {
+    public FlutterRouterApi getChannel() {
         return channel;
     }
 
@@ -39,18 +46,20 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        Messages.NativeRouterApi.setup(binding.getBinaryMessenger(), this);
-        channel = new Messages.FlutterRouterApi(binding.getBinaryMessenger());
+        NativeRouterApi.setup(binding.getBinaryMessenger(), this);
+        engine = binding.getFlutterEngine();
+        channel = new FlutterRouterApi(binding.getBinaryMessenger());
         pageNames = new SparseArray<String>();
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        engine = null;
         channel = null;
     }
 
     @Override
-    public void pushNativeRoute(Messages.CommonParams params) {
+    public void pushNativeRoute(CommonParams params) {
         if (delegate != null) {
             requestCode++;
             if (pageNames != null) {
@@ -68,11 +77,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     @Override
-    public void pushFlutterRoute(Messages.CommonParams params) {
+    public void pushFlutterRoute(CommonParams params) {
         if (delegate != null) {
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
                     .uniqueId(params.getUniqueId())
+                    .opaque(params.getOpaque())
                     .arguments((Map<String, Object>) (Object) params.getArguments())
                     .build();
             delegate.pushFlutterRoute(options);
@@ -82,35 +92,36 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
     }
 
     @Override
-    public void popRoute(Messages.CommonParams params) {
+    public void popRoute(CommonParams params, Messages.Result<Void> result) {
         String uniqueId = params.getUniqueId();
         if (uniqueId != null) {
             FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
             if (container != null) {
                 container.finishContainer((Map<String, Object>) (Object) params.getArguments());
             }
+            result.success(null);
         } else {
             throw new RuntimeException("Oops!! The unique id is null!");
         }
     }
 
     @Override
-    public Messages.StackInfo getStackFromHost() {
+    public StackInfo getStackFromHost() {
         if (dartStack == null) {
-            return Messages.StackInfo.fromMap(new HashMap());
+            return StackInfo.fromMap(new HashMap());
         }
         Log.v(TAG, "#getStackFromHost: " + dartStack);
         return dartStack;
     }
 
     @Override
-    public void saveStackToHost(Messages.StackInfo arg) {
+    public void saveStackToHost(StackInfo arg) {
         dartStack = arg;
         Log.v(TAG, "#saveStackToHost: " + dartStack);
     }
 
     @Override
-    public void sendEventToNative(Messages.CommonParams arg) {
+    public void sendEventToNative(CommonParams arg) {
         //deal with the event from flutter side
         String key = arg.getKey();
         Map<Object, Object> arguments = arg.getArguments();
@@ -125,8 +136,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
             return;
         }
 
-        for (EventListener listener :
-                listeners) {
+        for (EventListener listener : listeners) {
             listener.onEvent(key, arguments);
         }
     }
@@ -145,14 +155,19 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         return () -> finalListeners.remove(listener);
     }
 
-    public interface Reply<T> {
-        void reply(T reply);
+    private void checkEngineState() {
+        if (engine == null || !engine.getDartExecutor().isExecutingDart()) {
+            throw new RuntimeException("The engine is not ready for use. " +
+                    "The message may be drop silently by the engine. " +
+                    "You should check 'DartExecutor.isExecutingDart()' first!");
+        }
     }
 
     public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
-                          final Reply<Void> callback) {
+                          final FlutterRouterApi.Reply<Void> callback) {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments((Map<Object, Object>) (Object) arguments);
@@ -166,9 +181,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public void popRoute(String uniqueId, final Reply<Void> callback) {
+    public void popRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.popRoute(params, reply -> {
                 if (callback != null) {
@@ -180,9 +196,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
         }
     }
 
-    public void removeRoute(String uniqueId, final Reply<Void> callback) {
+    public void removeRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.removeRoute(params, reply -> {
                 if (callback != null) {
@@ -196,7 +213,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     public void onForeground() {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             channel.onForeground(params, reply -> {
             });
         } else {
@@ -207,7 +225,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     public void onBackground() {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             channel.onBackground(params, reply -> {
             });
         } else {
@@ -218,59 +237,65 @@ public class FlutterBoostPlugin implements FlutterPlugin, Messages.NativeRouterA
 
     public void onContainerShow(String uniqueId) {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.onContainerShow(params, reply -> {
             });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onContainerShow: " + channel);
+        Log.v(TAG, "## onContainerShow: " + uniqueId);
     }
 
     public void onContainerHide(String uniqueId) {
         if (channel != null) {
-            Messages.CommonParams params = new Messages.CommonParams();
+            checkEngineState();
+            CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.onContainerHide(params, reply -> {
             });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onContainerHide: " + channel);
+        Log.v(TAG, "## onContainerHide: " + uniqueId);
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
         Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
+        FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
+        if (FlutterContainerManager.instance().getContainerSize() == 1) {
+           FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
+        }
     }
 
     public void onContainerAppeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        FlutterContainerManager.instance().reorderContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), null);
-
+        FlutterContainerManager.instance().activateContainer(uniqueId, container);
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
         onContainerShow(uniqueId);
-        Log.v(TAG, "#onContainerAppeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         onContainerHide(uniqueId);
-        Log.v(TAG, "#onContainerDisappeared: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
     }
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        removeRoute(uniqueId, null);
+        removeRoute(uniqueId, reply -> {});
         FlutterContainerManager.instance().removeContainer(uniqueId);
-        Log.v(TAG, "#onContainerDestroyed: " + uniqueId + ", " + FlutterContainerManager.instance().getContainers());
+        if (FlutterContainerManager.instance().getContainerSize() == 0) {
+            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_PAUSED);
+        }
     }
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
         activityPluginBinding.addActivityResultListener((requestCode, resultCode, intent) -> {
             if (channel != null) {
-                Messages.CommonParams params = new Messages.CommonParams();
+                checkEngineState();
+                CommonParams params = new CommonParams();
                 String pageName = pageNames.get(requestCode);
                 pageNames.remove(requestCode);
                 if (null != pageName) {

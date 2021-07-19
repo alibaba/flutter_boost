@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
+
+import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
@@ -32,6 +33,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   private FlutterView mFlutterView;
   private Bundle mArguments;
   private FlutterActivityAndFragmentDelegate mDelegate;
+  private PlatformPlugin platformPlugin;
   private LifecycleRegistry mLifecycleRegistry = new LifecycleRegistry(this);
 
   public LifecycleView(Activity context) {
@@ -51,28 +53,13 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     return mFlutterView;
   }
 
-  private FlutterView findFlutterView(View view) {
-    if (view instanceof ViewGroup) {
-      ViewGroup vp = (ViewGroup) view;
-      for (int i = 0; i < vp.getChildCount(); i++) {
-        View child = vp.getChildAt(i);
-        if (child instanceof FlutterView) {
-          return (FlutterView) child;
-        } else {
-          return findFlutterView(child);
-        }
-      }
-    }
-    return null;
-  }
-
   public void onCreate() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
     mDelegate = new FlutterActivityAndFragmentDelegate(this);
     mDelegate.onAttach(getContext());
     mView = mDelegate.onCreateView(null, null, null);
     addView(mView);
-    mFlutterView = findFlutterView(mView);
+    mFlutterView = FlutterBoostUtils.findFlutterView(mView);
   }
 
   public void onStart() {
@@ -82,11 +69,13 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public void onResume() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+    platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
     mDelegate.onResume();
   }
 
   public void onPause() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE);
+    platformPlugin = null;
     mDelegate.onPause();
   }
 
@@ -189,11 +178,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   @Nullable
   public PlatformPlugin providePlatformPlugin(
       @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
-    if (activity != null) {
-      return new PlatformPlugin(getActivity(), flutterEngine.getPlatformChannel());
-    } else {
-      return null;
-    }
+    return null;
   }
 
   public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {

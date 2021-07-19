@@ -7,11 +7,6 @@ import com.idlefish.flutterboost.FlutterBoostDelegate;
 import com.idlefish.flutterboost.FlutterBoostRouteOptions;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
-import java.util.Map;
-
-import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
-import com.idlefish.flutterboost.FlutterBoostDelegate;
-
 public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
     @Override
@@ -22,8 +17,8 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
     @Override
     public void pushFlutterRoute(FlutterBoostRouteOptions options) {
-        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
-                .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
+        Class<? extends FlutterBoostActivity> activityClass = options.opaque() ? FlutterBoostActivity.class : TransparencyPageActivity.class;
+        Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(activityClass)
                 .destroyEngineWithActivity(false)
                 .uniqueId(options.uniqueId())
                 .url(options.pageName())

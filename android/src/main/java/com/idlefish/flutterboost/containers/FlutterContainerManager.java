@@ -1,12 +1,18 @@
 package com.idlefish.flutterboost.containers;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class FlutterContainerManager {
+import io.flutter.Log;
 
-    private FlutterContainerManager() {}
+public class FlutterContainerManager {
+    private static final String TAG = "FlutterContainerManager";
+    private static final boolean DEBUG = false;
+
+    private FlutterContainerManager() {
+    }
+
     private static class LazyHolder {
         static final FlutterContainerManager INSTANCE = new FlutterContainerManager();
     }
@@ -15,7 +21,32 @@ public class FlutterContainerManager {
         return FlutterContainerManager.LazyHolder.INSTANCE;
     }
 
-    private final Map<String, FlutterViewContainer> allContainers = new LinkedHashMap<>();
+    private final Map<String, FlutterViewContainer> allContainers = new HashMap<>();
+    private final LinkedList<FlutterViewContainer> activeContainers = new LinkedList<>();
+
+    public void addContainer(String uniqueId, FlutterViewContainer container) {
+        allContainers.put(uniqueId, container);
+        if (DEBUG) Log.e(TAG, "#addContainer:" + toString());
+    }
+
+    public void activateContainer(String uniqueId, FlutterViewContainer container) {
+        if (uniqueId == null || container == null) return;
+        assert (allContainers.containsKey(uniqueId));
+
+        if (activeContainers.contains(container)) {
+            activeContainers.remove(container);
+        }
+        activeContainers.add(container);
+        if (DEBUG) Log.e(TAG, "#activateContainer:" + toString());
+    }
+
+    public void removeContainer(String uniqueId) {
+        if (uniqueId == null) return;
+        FlutterViewContainer container = allContainers.remove(uniqueId);
+        activeContainers.remove(container);
+        if (DEBUG) Log.e(TAG, "#removeContainer:" + toString());
+    }
+
 
     public FlutterViewContainer findContainerById(String uniqueId) {
         if (allContainers.containsKey(uniqueId)) {
@@ -25,9 +56,8 @@ public class FlutterContainerManager {
     }
 
     public FlutterViewContainer getTopContainer() {
-        if (allContainers.size() > 0) {
-            LinkedList<String> listKeys = new LinkedList<String>(allContainers.keySet());
-            return allContainers.get(listKeys.getLast());
+        if (activeContainers.size() > 0) {
+            return activeContainers.getLast();
         }
         return null;
     }
@@ -40,21 +70,15 @@ public class FlutterContainerManager {
         return false;
     }
 
-    public void reorderContainer(String uniqueId, FlutterViewContainer container) {
-        if (uniqueId == null || container == null) return;
-        if (allContainers.containsKey(uniqueId)) {
-            allContainers.remove(uniqueId);
-        }
-        allContainers.put(uniqueId, container);
+    public int getContainerSize() {
+        return allContainers.size();
     }
 
-    public void removeContainer(String uniqueId) {
-        if (uniqueId == null) return;
-        allContainers.remove(uniqueId);
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("activeContainers=" + activeContainers.size() + ", [");
+        activeContainers.forEach((value) -> sb.append(value.getUrl() + ','));
+        sb.append("]");
+        return sb.toString();
     }
-
-    public LinkedList<String> getContainers() {
-        return new LinkedList<String>(allContainers.keySet());
-    }
-
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost_example/case/platform_view.dart';
 import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/page_visibility.dart';
 import 'package:flutter_boost/logger.dart';
-import 'package:flutter_boost_example/case/transparent_widget.dart';
+import 'package:flutter_boost/page_visibility.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params, this.message, this.uniqueId});
@@ -103,7 +101,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
       ),
       body: SingleChildScrollView(
         child: Container(
-          height: 1000,
           margin: const EdgeInsets.all(24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,6 +152,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
+                      'Pop with Navigator',
+                      style: TextStyle(fontSize: 22.0, color: Colors.blue),
+                    )),
+                onTap: () => Navigator.of(context).pop(),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -186,16 +194,57 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                   onTap: () => BoostNavigator.instance
                       .push("willPop", withContainer: true)),
               InkWell(
-                  child: Container(
-                      padding: const EdgeInsets.all(8.0),
-                      margin: const EdgeInsets.all(8.0),
-                      color: Colors.yellow,
-                      child: Text(
-                        'mediaquery demo',
-                        style: TextStyle(fontSize: 22.0, color: Colors.black),
-                      )),
-                  onTap: () => BoostNavigator.instance
-                      .push("mediaquery", withContainer: true)),
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'mediaquery demo(withContainer=false)',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("mediaquery", withContainer: false)
+                    .then((value) =>
+                        print('xlog, mediaquery, Return Value:$value')),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'WebView Example',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("webview", withContainer: true)
+                    .then(
+                        (value) => print('xlog, webview, Return Value:$value')),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'State Restoration Example',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("state_restoration", withContainer: true),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'SystemUiOverlayStyle Example',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("system_ui_overlay_style", withContainer: true),
+              ),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
@@ -206,8 +255,11 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  Navigator.push<dynamic>(context,
-                      MaterialPageRoute<dynamic>(builder: (_) => PushWidget()));
+                  Navigator.push<dynamic>(
+                      context,
+                      MaterialPageRoute<dynamic>(
+                          builder: (_) => PushWidget())).then((value) =>
+                      print('xlog, PushWidget, Return Value: $value'));
                 },
               ),
               InkWell(
@@ -232,7 +284,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () {
                   BoostNavigator.instance.push("transparentWidget",
-                      withContainer: false, opaque: false);
+                      withContainer: true, opaque: false);
                 },
               ),
               InkWell(
@@ -277,7 +329,8 @@ class _PushWidgetState extends State<PushWidget> {
               icon: const Icon(Icons.arrow_back),
               // 如果有抽屉的话的就打开
               onPressed: () {
-                BoostNavigator.instance.pop();
+                // BoostNavigator.instance.pop('Hello, I am from PushWidget.');
+                Navigator.of(context).pop('Hello, I am from PushWidget.');
               },
               // 显示描述信息
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
@@ -287,8 +340,8 @@ class _PushWidgetState extends State<PushWidget> {
         ),
         body: Container(
           color: Colors.red,
-          width: 100,
-          height: 100,
+          width: 300,
+          height: 300,
         ));
   }
 }

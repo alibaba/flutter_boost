@@ -1,10 +1,8 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'logger.dart';
 
 mixin BoostFlutterBinding on WidgetsFlutterBinding {
-
   bool _appLifecycleStateLocked = true;
 
   @override
@@ -22,7 +20,8 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
     if (_appLifecycleStateLocked) {
       return;
     }
-    Logger.log('boost_flutter_binding: handleAppLifecycleStateChanged ${state.toString()}');
+    Logger.log('boost_flutter_binding: '
+        'handleAppLifecycleStateChanged ${state.toString()}');
     super.handleAppLifecycleStateChanged(state);
   }
 

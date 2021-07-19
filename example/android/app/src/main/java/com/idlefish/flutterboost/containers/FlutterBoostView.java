@@ -131,7 +131,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
         super.onResume();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+        flutterView().attachToFlutterEngine(getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -139,7 +139,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     public void onPause() {
         if(hasDestroyed()) return;
         super.onPause();
-        ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
+        flutterView().detachFromFlutterEngine();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
     }
 
@@ -169,15 +169,15 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
 
         if (getVisibility() == View.VISIBLE) {
             FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-            ActivityAndFragmentPatch.onResumeAttachToFlutterEngine(flutterView(), getFlutterEngine(), this);
+            flutterView().attachToFlutterEngine(getFlutterEngine());
         } else if (getVisibility() == View.GONE) {
             FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-            ActivityAndFragmentPatch.onPauseDetachFromFlutterEngine(flutterView(), getFlutterEngine());
+            flutterView().detachFromFlutterEngine();
         }
     }
 
     public void onBackPressed() {
-        ActivityAndFragmentPatch.onBackPressed();
+        FlutterBoost.instance().getPlugin().popRoute(null, null);
     }
 
     @Override

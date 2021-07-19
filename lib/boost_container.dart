@@ -5,9 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
-class BoostContainer {
+class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
-    pages.add(BoostPage.create(pageInfo));
+    _pages.add(BoostPage.create(pageInfo));
   }
 
   static BoostContainer of(BuildContext context) {
@@ -21,22 +21,33 @@ class BoostContainer {
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
 
-  List<BoostPage<dynamic>> get pages => _pages;
+  /// Getter for a list that cannot be changed
+  List<BoostPage<dynamic>> get pages => List.unmodifiable(_pages);
 
   BoostPage<dynamic> get topPage => pages.last;
 
-  int get size => pages.length;
+  /// Number of pages
+  int numPages() => pages.length;
 
   NavigatorState get navigator => _navKey.currentState;
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
-  void refresh() {
-    if (_refreshListener != null) {
-      _refreshListener();
+  Future<T> addPage<T extends Object>(BoostPage page) {
+    if (page != null) {
+      _pages.add(page);
+      notifyListeners();
+      return page.popped;
     }
+    return null;
   }
 
-  VoidCallback _refreshListener;
+  void removePage(BoostPage page, {dynamic result}) {
+    if (page != null) {
+      _pages.remove(page);
+      page.didComplete(result);
+      notifyListeners();
+    }
+  }
 
   @override
   String toString() =>
@@ -72,23 +83,25 @@ class BoostContainerWidget extends StatefulWidget {
 class BoostContainerState extends State<BoostContainerWidget> {
   BoostContainer get container => widget.container;
 
-  void _updatePagesList() {
-    container.pages.removeLast();
+  void _updatePagesList(BoostPage page, dynamic result) {
+    assert(container.topPage == page);
+    container.removePage(page, result: result);
   }
 
   @override
   void initState() {
+    assert(container != null);
+    container.addListener(refreshContainer);
     super.initState();
-    container._refreshListener = refreshContainer;
   }
 
   @override
   void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget != widget) {
-      oldWidget.container._refreshListener = null;
-      container._refreshListener = refreshContainer;
+      oldWidget.container.removeListener(refreshContainer);
+      container.addListener(refreshContainer);
     }
+    super.didUpdateWidget(oldWidget);
   }
 
   void refreshContainer() {
@@ -99,12 +112,13 @@ class BoostContainerState extends State<BoostContainerWidget> {
   Widget build(BuildContext context) {
     return HeroControllerScope(
         controller: HeroController(),
-        child: Navigator(
-          key: widget.container._navKey,
-          pages: List<Page<dynamic>>.of(widget.container.pages),
+        child: NavigatorExt(
+          key: container._navKey,
+          pages: List<Page<dynamic>>.of(container.pages),
           onPopPage: (route, result) {
             if (route.didPop(result)) {
-              _updatePagesList();
+              assert(route.settings is BoostPage);
+              _updatePagesList(route.settings as BoostPage, result);
               return true;
             }
             return false;
@@ -117,7 +131,32 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void dispose() {
-    container._refreshListener = null;
+    container.removeListener(refreshContainer);
     super.dispose();
+  }
+}
+
+class NavigatorExt extends Navigator {
+  NavigatorExt({
+    Key key,
+    List<Page<dynamic>> pages,
+    PopPageCallback onPopPage,
+    List<NavigatorObserver> observers,
+  }) : super(
+            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+
+  @override
+  NavigatorState createState() => NavigatorExtState();
+}
+
+class NavigatorExtState extends NavigatorState {
+  @override
+  void pop<T extends Object>([T result]) {
+    // Taking over container page
+    if (!canPop()) {
+      BoostNavigator.instance.pop(result);
+    } else {
+      super.pop(result);
+    }
   }
 }
