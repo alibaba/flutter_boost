@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -24,7 +25,6 @@ import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.plugin.platform.PlatformPlugin;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.DEFAULT_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
@@ -39,10 +39,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
+    private LifecycleStage stage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        stage = LifecycleStage.ON_CREATE;
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         flutterView.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
@@ -70,12 +72,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onStart() {
         super.onStart();
+        stage = LifecycleStage.ON_START;
         if (DEBUG) Log.d(TAG, "#onStart: " + this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        stage = LifecycleStage.ON_STOP;
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
@@ -83,42 +87,46 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (FlutterBoost.instance().isAppInBackground() &&
-                    !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
-                Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
             }
         }
+
+        stage = LifecycleStage.ON_RESUME;
+
         // try to detach prevous container from the engine.
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
         performAttach();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.d(TAG, "#onResume: " + this);
+        if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (FlutterBoost.instance().isAppInBackground() &&
-                    !FlutterContainerManager.instance().isTopContainer(getUniqueId())) {
-                Log.w(TAG, "Unexpected activity lifecycle event on Android Q. " +
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
             }
         }
+
+        stage = LifecycleStage.ON_PAUSE;
 
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
-        if (DEBUG) Log.d(TAG, "#onPause: " + this);
+        if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void performAttach() {
@@ -166,6 +174,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         // Get engine before |super.onDestroy| callback.
         FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
+        stage = LifecycleStage.ON_DESTROY;
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
@@ -253,10 +262,20 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
+    @Override
+    public boolean isOpaque() {
+        return getBackgroundMode() ==  BackgroundMode.opaque;
+    }
+
+    @Override
+    public boolean isPausing() {
+        return (stage == LifecycleStage.ON_PAUSE || stage == LifecycleStage.ON_STOP) && !isFinishing();
+    }
+
     public static class CachedEngineIntentBuilder {
         private final Class<? extends FlutterBoostActivity> activityClass;
         private boolean destroyEngineWithActivity = false;
-        private String backgroundMode = DEFAULT_BACKGROUND_MODE;
+        private String backgroundMode = BackgroundMode.opaque.name();
         private String url;
         private HashMap<String, Object> params;
         private String uniqueId;
@@ -272,7 +291,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
 
-        public FlutterBoostActivity.CachedEngineIntentBuilder backgroundMode(io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode backgroundMode) {
+        public FlutterBoostActivity.CachedEngineIntentBuilder backgroundMode(BackgroundMode backgroundMode) {
             this.backgroundMode = backgroundMode.name();
             return this;
         }

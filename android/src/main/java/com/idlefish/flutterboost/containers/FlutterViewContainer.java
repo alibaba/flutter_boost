@@ -13,5 +13,7 @@ public interface FlutterViewContainer {
     Map<String, Object> getUrlParams();
     String getUniqueId();
     void finishContainer(Map<String, Object> result);
+    default boolean isPausing() { return false; }
+    default boolean isOpaque() { return true; }
     default void detachFromEngineIfNeeded() {}
 }
