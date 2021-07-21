@@ -3,6 +3,7 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
+    private LifecycleStage stage;
+    private boolean isFinishing = false;
 
     // @Override
     public void detachFromFlutterEngine() {
@@ -45,6 +48,26 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
          * a new FlutterFragment is attached in Flutter2.0.
          */
         if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stage = LifecycleStage.ON_CREATE;
+        if (DEBUG) Log.d(TAG, "#onCreate: " + this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (DEBUG) Log.d(TAG, "#onStart: " + this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stage = LifecycleStage.ON_DESTROY;
+        if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
     @Override
@@ -92,6 +115,16 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
+
+        stage = LifecycleStage.ON_RESUME;
         if (!isHidden()) {
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
@@ -108,14 +141,25 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
+
+        stage = LifecycleStage.ON_PAUSE;
         didFragmentHide();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.d(TAG, "#onPause: " + this);
+        if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        stage = LifecycleStage.ON_STOP;
         assert(getFlutterEngine() != null);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
@@ -178,6 +222,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
+        isFinishing = true;
         if (result != null) {
             Intent intent = new Intent();
             intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
@@ -211,21 +256,28 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
+    @Override
+    public boolean isPausing() {
+        return (stage == LifecycleStage.ON_PAUSE || stage == LifecycleStage.ON_STOP) && !isFinishing;
+    }
+
     private void didFragmentShow() {
         // try to detach prevous container from the engine.
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-        if (top != null && top != this) top.detachFromEngineIfNeeded();
+        if (top != null && top != this) {
+            top.detachFromEngineIfNeeded();
+        }
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         performAttach();
-        if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this);
+        if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         // We defer |performDetach| call to new Flutter container's |onResume|;
         // performDetach();
-        if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this);
+        if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void performAttach() {
@@ -257,11 +309,25 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         performDetach();
     }
 
+    // Defaults to {@link TransparencyMode#opaque}.
+    @Override
+    public TransparencyMode getTransparencyMode() {
+        String transparencyModeName =
+            getArguments()
+                .getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, TransparencyMode.opaque.name());
+        return TransparencyMode.valueOf(transparencyModeName);
+    }
+
+    @Override
+    public boolean isOpaque() {
+        return getTransparencyMode() == TransparencyMode.opaque;
+    }
+
     public static class CachedEngineFragmentBuilder {
         private final Class<? extends FlutterBoostFragment> fragmentClass;
         private boolean destroyEngineWithFragment = false;
         private RenderMode renderMode = RenderMode.surface;
-        private TransparencyMode transparencyMode = TransparencyMode.transparent;
+        private TransparencyMode transparencyMode = TransparencyMode.opaque;
         private boolean shouldAttachEngineToActivity = true;
         private String url = "/";
         private HashMap<String, Object> params;
