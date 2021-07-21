@@ -84,6 +84,21 @@ public class FlutterBoost {
     }
 
     /**
+     *  Releases the engine resource.
+     */
+    public void tearDown() {
+        FlutterEngine engine = getEngine();
+        if (engine != null) {
+            engine.destroy();
+            FlutterEngineCache.getInstance().remove(ENGINE_ID);
+        }
+        topActivity = null;
+        plugin = null;
+        isBackForegroundEventOverridden = false;
+        isAppInBackground = false;
+    }
+
+    /**
      * Gets the FlutterBoostPlugin.
      *
      * @return the FlutterBoostPlugin.
