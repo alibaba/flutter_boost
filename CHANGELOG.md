@@ -1,3 +1,7 @@
+## v3.0-preview.9
+1.  [Android] 解决切后台场景下Android Q生命周期回调异常导致透明弹窗背景不正确问题 (#1288)
+2.  [Android] 增加引擎释放接口 (#1291)
+
 ## v3.0-preview.8
 1. [Android] 解决特定场景下半透明弹窗背景黑/白屏、传参丢失、请求权限失败，以及image_picker插件不可用等问题
 2. [Android] 修复FlutterBoostActivity和FlutterBoostFragment接收不到请求权限结果的bug
