@@ -83,6 +83,9 @@ public class FlutterBoost {
         setupActivityLifecycleCallback(application, isBackForegroundEventOverridden);
     }
 
+    /**
+     *  Releases the engine resource.
+     */
     public void tearDown() {
         FlutterEngine engine = getEngine();
         if (engine != null) {
