@@ -122,10 +122,6 @@ class BoostNavigator {
   Future<bool> pop<T extends Object>([T result]) async =>
       await appState.popWithResult(result);
 
-  /// Pop until page off the hybrid stack.
-  Future<bool> popUntil<T extends Object>(String route) async =>
-      await appState.popWithResult(null, route);
-
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
