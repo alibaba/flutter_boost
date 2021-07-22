@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
 - (void)pushRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)popRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)popUntilRoute:(FBCommonParams *)input completion:(void(^)(NSError *_Nullable))completion;
 - (void)removeRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onForeground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onBackground:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
@@ -39,6 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)pushFlutterRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)popRoute:(nullable FBCommonParams *)input completion:(void(^)(FlutterError *_Nullable))completion;
+-(void)popUntilRoute:(nullable FBCommonParams *)input completion:(void(^)(FlutterError *_Nullable))completion;
 -(nullable FBStackInfo *)getStackFromHost:(FlutterError *_Nullable *_Nonnull)error;
 -(void)saveStackToHost:(FBStackInfo*)input error:(FlutterError *_Nullable *_Nonnull)error;
 -(void)sendEventToNative:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;

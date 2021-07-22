@@ -106,6 +106,17 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     @Override
+    public void popUntilRoute(CommonParams params, Messages.Result<Void> result) {
+        String uniqueId = params.getUniqueId();
+        if (uniqueId != null) {
+            //to do...
+            result.success(null);
+        } else {
+            throw new RuntimeException("Oops!! The unique id is null!");
+        }
+    }
+
+    @Override
     public StackInfo getStackFromHost() {
         if (dartStack == null) {
             return StackInfo.fromMap(new HashMap());
@@ -187,6 +198,21 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.popRoute(params, reply -> {
+                if (callback != null) {
+                    callback.reply(null);
+                }
+            });
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
+
+    public void popUntilRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
+        if (channel != null) {
+            checkEngineState();
+            CommonParams params = new CommonParams();
+            params.setUniqueId(uniqueId);
+            channel.popUntilRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
                 }

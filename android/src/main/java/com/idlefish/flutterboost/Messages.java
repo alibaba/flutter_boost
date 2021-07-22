@@ -112,6 +112,14 @@ public class Messages {
         callback.reply(null);
       });
     }
+    public void popUntilRoute(CommonParams argInput, Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+              new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.popUntilRoute", new StandardMessageCodec());
+      Map<String, Object> inputMap = argInput.toMap();
+      channel.send(inputMap, channelReply -> {
+        callback.reply(null);
+      });
+    }
     public void removeRoute(CommonParams argInput, Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.removeRoute", new StandardMessageCodec());
@@ -179,6 +187,7 @@ public class Messages {
     void pushNativeRoute(CommonParams arg);
     void pushFlutterRoute(CommonParams arg);
     void popRoute(CommonParams arg, Result<Void> result);
+    void popUntilRoute(CommonParams arg, Result<Void> result);
     StackInfo getStackFromHost();
     void saveStackToHost(StackInfo arg);
     void sendEventToNative(CommonParams arg);
@@ -237,6 +246,26 @@ public class Messages {
               @SuppressWarnings("ConstantConditions")
               CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
               api.popRoute(input, result -> { reply.reply(wrapped); });
+            }
+            catch (Error | RuntimeException exception) {
+              wrapped.put("error", wrapError(exception));
+              reply.reply(wrapped);
+            }
+          });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+                new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.NativeRouterApi.popUntilRoute", new StandardMessageCodec());
+        if (api != null) {
+          channel.setMessageHandler((message, reply) -> {
+            Map<String, Object> wrapped = new HashMap<>();
+            try {
+              @SuppressWarnings("ConstantConditions")
+              CommonParams input = CommonParams.fromMap((Map<String, Object>)message);
+              api.popUntilRoute(input, result -> { reply.reply(wrapped); });
             }
             catch (Error | RuntimeException exception) {
               wrapped.put("error", wrapError(exception));

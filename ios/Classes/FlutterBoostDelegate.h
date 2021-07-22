@@ -42,5 +42,9 @@
 
 ///当pop调用涉及到原生容器的时候，此方法将会被调用
 - (void) popRoute:(FlutterBoostRouteOptions *)options;
+
+///当pop调用涉及到原生容器的时候，此方法将会被调用
+- (void) popUntilRoute:(FlutterBoostRouteOptions *)options;
+
 @end
 
