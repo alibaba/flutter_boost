@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -44,11 +45,25 @@ public class FlutterBoostUtils {
             Object value = bundle.get(key);
             if(value instanceof Bundle) {
                 map.put(key, bundleToMap(bundle.getBundle(key)));
-            } else if (value != null){
+            } else if (isStandardMessageCodecType(value)) {
                 map.put(key, value);
             }
         }
         return map;
+    }
+
+    private static boolean isStandardMessageCodecType(Object value) {
+        return  (value instanceof Boolean
+                || value instanceof Number
+                || value instanceof String
+                || value instanceof byte[]
+                || value instanceof int[]
+                || value instanceof long[]
+                || value instanceof double[]
+                || value instanceof String[]
+                || (value instanceof List && ((List<?>) value).size() > 0 && isStandardMessageCodecType(((List<?>) value).get(0)))
+                || (value instanceof Map && ((Map<?, ?>) value).size() > 0 && isStandardMessageCodecType(((Map<?, ?>) value).values().toArray()[0]))
+        );
     }
 
     public static FlutterView findFlutterView(View view) {
