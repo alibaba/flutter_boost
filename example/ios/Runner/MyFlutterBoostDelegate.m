@@ -72,6 +72,33 @@
     }
 }
 
+-(void)popUntilRoute:(FlutterBoostRouteOptions *)options {
+    
+    NSInteger index = self.navigationController.viewControllers.count;
+    
+    while (index > -1) {
+        
+        index = index - 1;
+        
+        FBFlutterViewContainer * vc = self.navigationController.viewControllers[index];
+        if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
+            break;
+        }
+        
+    }
+    
+    if(index != -1){
+        
+        NSArray *vcArr = [self.navigationController.viewControllers subarrayWithRange:NSMakeRange(0, index + 1)];
+        [self.navigationController setViewControllers:vcArr animated:YES];
+        
+    }else{
+        //not found
+        
+    }
+    
+}
+
 
 
 @end
