@@ -8,9 +8,6 @@ class CommonParams {
   String key;
 }
 
-class EventParam{
-
-}
 class StackInfo {
   List<String> containers;
   Map<String, List<Map<String, Object>>> routes;

@@ -137,7 +137,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
 }
 
 class NavigatorExt extends Navigator {
-  NavigatorExt({
+  const NavigatorExt({
     Key key,
     List<Page<dynamic>> pages,
     PopPageCallback onPopPage,
