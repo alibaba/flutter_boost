@@ -221,9 +221,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             var arguments = Map<String, dynamic>.from(
                 route['arguments'] ?? <String, dynamic>{});
             withContainer
-                ? pushContainer(pageName,
+                ? _pushContainer(pageName,
                     uniqueId: uniqueId, arguments: arguments)
-                : pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
+                : _pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
             withContainer = false;
           }
         }
@@ -241,6 +241,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
     if (withContainer) {
+      // Request host to open container.
       final completer = Completer<T>();
       final params = CommonParams()
         ..pageName = pageName
@@ -251,13 +252,52 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult[uniqueId] = completer;
       return completer.future;
     } else {
-      return pushPage(pageName, uniqueId: uniqueId, arguments: arguments);
+      return doPushRoute(pageName,
+          uniqueId: uniqueId, arguments: arguments, withContainer: false);
     }
   }
 
-  Future<T> pushPage<T extends Object>(String pageName,
+  Future<T> doPushRoute<T extends Object>(String pageName,
+      {String uniqueId,
+      Map<String, dynamic> arguments,
+      bool withContainer = false}) {
+    var pushOption =
+        BoostInterceptorOption(pageName, arguments ?? <String, dynamic>{});
+    var future = Future<dynamic>(
+        () => InterceptorState<BoostInterceptorOption>(pushOption));
+    for (var interceptor in interceptors) {
+      future = future.then<dynamic>((dynamic _state) {
+        final state = _state as InterceptorState<dynamic>;
+        if (state.type == InterceptorResultType.next) {
+          final pushHandler = PushInterceptorHandler();
+          interceptor.onPush(state.data, pushHandler);
+          return pushHandler.future;
+        } else {
+          return state;
+        }
+      });
+    }
+
+    return future.then((dynamic _state) {
+      final state = _state as InterceptorState<dynamic>;
+      if (state.data is BoostInterceptorOption) {
+        assert(state.type == InterceptorResultType.next);
+        pushOption = state.data;
+        return withContainer
+            ? _pushContainer(pushOption.name,
+                uniqueId: uniqueId, arguments: pushOption.arguments)
+            : _pushPage(pushOption.name,
+                uniqueId: uniqueId, arguments: pushOption.arguments);
+      } else {
+        assert(state.type == InterceptorResultType.resolve);
+        return Future<T>.value(state.data as T);
+      }
+    });
+  }
+
+  Future<T> _pushPage<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
-    Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
+    Logger.log('_pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
     final pageInfo = PageInfo(
         pageName: pageName,
@@ -268,7 +308,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return topContainer.addPage(BoostPage.create(pageInfo));
   }
 
-  void pushContainer(String pageName,
+  Future<T> _pushContainer<T extends Object>(String pageName,
       {String uniqueId, Map<String, dynamic> arguments}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
@@ -295,8 +335,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       // Add a new overlay entry with this container
       refreshOnPush(container);
     }
-    Logger.log('pushContainer, uniqueId=$uniqueId, existed=$existed,'
+    Logger.log('_pushContainer, uniqueId=$uniqueId, existed=$existed,'
         ' arguments:$arguments, $containers');
+    return Future<void>.value();
   }
 
   Future<bool> popWithResult<T extends Object>([T result]) async {
@@ -464,6 +505,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void onContainerShow(CommonParams params) {
     final container = _findContainerByUniqueId(params.uniqueId);
+    assert(container != null);
     BoostLifecycleBinding.instance.containerDidShow(container);
 
     // Try to complete pending native result when container closed.
