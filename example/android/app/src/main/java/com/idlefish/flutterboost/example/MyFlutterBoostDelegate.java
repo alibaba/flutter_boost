@@ -5,7 +5,10 @@ import android.content.Intent;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostDelegate;
 import com.idlefish.flutterboost.FlutterBoostRouteOptions;
+import com.idlefish.flutterboost.FlutterBoostUtils;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
+
+import java.util.Map;
 
 public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
@@ -25,5 +28,10 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
                 .urlParams(options.arguments())
                 .build(FlutterBoost.instance().currentActivity());
         FlutterBoost.instance().currentActivity().startActivity(intent);
+    }
+
+    @Override
+    public Map<Object, Object> handleActivityResult(Intent intent) {
+        return FlutterBoostUtils.bundleToMap(intent.getExtras());
     }
 }

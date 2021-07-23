@@ -301,7 +301,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
                 if (null != pageName) {
                     params.setPageName(pageName);
                     if (intent != null) {
-                        Map<Object, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
+                        Map<Object, Object> result = delegate.handleActivityResult(intent);
                         params.setArguments(result);
                     }
                     channel.onNativeResult(params, reply -> {
