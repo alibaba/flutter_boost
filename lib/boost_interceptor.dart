@@ -4,17 +4,20 @@ import 'boost_navigator.dart';
 
 ///The request object in Interceptor,which is to passed
 class BoostInterceptorOption {
-  BoostInterceptorOption(this.name, this.arguments);
+  BoostInterceptorOption(this.name, this.arguments, {this.uniqueId});
 
   ///your page name in route table
   String name;
+
+  ///your uniqueId in route table
+  String uniqueId;
 
   ///the arguments you want to pass in next page
   Map<String, dynamic> arguments;
 
   @override
   String toString() =>
-      "Instance of 'BoostInterceptorOption'(name:$name, arguments:$arguments)";
+      "Instance of 'BoostInterceptorOption'(name:$name, uniqueId:$uniqueId, arguments:$arguments)";
 }
 
 enum InterceptorResultType {
@@ -67,6 +70,16 @@ class BoostInterceptor {
   /// If you want to complete the push with some custom data，
   /// you can resolve a [result] object with [handler.resolve].
   ///
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) =>
+  void onPrePush(BoostInterceptorOption option, PushInterceptorHandler handler) =>
+      handler.next(option);
+
+  /// The callback will be executed after the push have been finish.
+  ///
+  /// If have other interceptors, call [handler.next].
+  ///
+  /// If you want to complete the push finish event with some custom data，
+  /// you can resolve a [result] object with [handler.resolve].
+  ///
+  void onPushFinish(BoostInterceptorOption option, PushInterceptorHandler handler) =>
       handler.next(option);
 }

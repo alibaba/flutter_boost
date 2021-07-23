@@ -71,7 +71,7 @@ class BoostNavigator {
         final state = _state as InterceptorState<dynamic>;
         if (state.type == InterceptorResultType.next) {
           final pushHandler = PushInterceptorHandler();
-          interceptor.onPush(state.data, pushHandler);
+          interceptor.onPrePush(state.data, pushHandler);
           return pushHandler.future;
         } else {
           return state;

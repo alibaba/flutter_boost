@@ -295,8 +295,35 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       // Add a new overlay entry with this container
       refreshOnPush(container);
     }
+
+    _pushFinish(pageName, arguments: arguments, uniqueId: uniqueId, withContainer: true);
     Logger.log('pushContainer, uniqueId=$uniqueId, existed=$existed,'
         ' arguments:$arguments, $containers');
+  }
+
+  void _pushFinish(String pageName,
+      {String uniqueId,
+        Map<String, dynamic> arguments,
+        bool withContainer = false,
+        bool opaque = true}) {
+    var pushOption = BoostInterceptorOption(pageName, arguments ?? <String, dynamic>{}, uniqueId: uniqueId);
+    var future = Future<dynamic>(() => InterceptorState<BoostInterceptorOption>(pushOption));
+    for (var interceptor in interceptors) {
+      future = future.then<dynamic>((dynamic _state) {
+        final state = _state as InterceptorState<dynamic>;
+        if (state.type == InterceptorResultType.next) {
+          final pushHandler = PushInterceptorHandler();
+          interceptor.onPushFinish(state.data, pushHandler);
+          return pushHandler.future;
+        } else {
+          return state;
+        }
+      });
+    }
+    future.then((dynamic _state) {
+      final state = _state as InterceptorState<dynamic>;
+      return Future<dynamic>.value(state.data as dynamic);
+    });
   }
 
   Future<bool> popWithResult<T extends Object>([T result]) async {
