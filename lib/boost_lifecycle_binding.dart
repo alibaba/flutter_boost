@@ -26,13 +26,14 @@ class BoostLifecycleBinding {
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
-    PageVisibilityBinding.instance
-        .dispatchPagePopEvent(container.topPage.route);
 
     // When container pop,remove the id from set to avoid
     // this id still remain in the set
     final id = container.pageInfo.uniqueId;
     hasShownPageIds.remove(id);
+
+    PageVisibilityBinding.instance
+        .dispatchPagePopEvent(container.topPage.route);
   }
 
   void containerDidShow(BoostContainer container) {
