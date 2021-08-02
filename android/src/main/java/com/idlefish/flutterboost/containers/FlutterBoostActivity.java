@@ -40,6 +40,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
+    private boolean isAttached = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,29 +125,52 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
 
+        // We Release |PlatformChannel| here to avoid that the native page affected
+        // by system chrome message from flutter.
+        releasePlatformChannel();
+
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
         if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void performAttach() {
-        if (platformPlugin == null) {
-            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        if (!isAttached) {
+            // Attach plugins to the activity.
             getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+
+            if (platformPlugin == null) {
+                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            }
+
+            // Attach rendering pipeline.
             assert (flutterView != null);
             flutterView.attachToFlutterEngine(getFlutterEngine());
+            isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
         }
     }
 
     private void performDetach() {
-        if (platformPlugin != null) {
+        if (isAttached) {
+            // Plugins are no longer attached to the activity.
+            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+
+            // Release Flutter's control of UI such as system chrome.
+            releasePlatformChannel();
+
+            // Detach rendering pipeline.
             assert (flutterView != null);
             flutterView.detachFromFlutterEngine();
-            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+            isAttached = false;
+            if (DEBUG) Log.d(TAG, "#performDetach: " + this);
+        }
+    }
+
+    private void releasePlatformChannel() {
+        if (platformPlugin != null) {
             platformPlugin.destroy();
             platformPlugin = null;
-            if (DEBUG) Log.d(TAG, "#performDetach: " + this);
         }
     }
 
