@@ -299,10 +299,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ' arguments:$arguments, $containers');
   }
 
-  Future<bool> popWithResult<T extends Object>([T result, String route]) async {
+  Future<bool> popWithResult<T extends Object>([T result]) async {
     final uniqueId = topContainer?.topPage?.pageInfo?.uniqueId;
     _completePendingResultIfNeeded(uniqueId, result: result);
-    return await pop(result: result, route: route);
+    return await pop(result: result);
   }
 
   void removeWithResult([String uniqueId, Map<String, dynamic> result]) {
@@ -310,7 +310,50 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     pop(uniqueId: uniqueId, result: result);
   }
 
-  Future<bool> pop({String uniqueId, Object result,String route}) async {
+  void popUntil({String route,String uniqueId}) async{
+    BoostContainer targetContainer;
+    BoostPage targetPage;
+    if(uniqueId.isNotEmpty){
+      for (BoostContainer container in containers) {
+        for (BoostPage page in container.pages) {
+          if (uniqueId == page.pageInfo.uniqueId) {
+            //uniqueId优先级更高，优先匹配
+            targetContainer = container;
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) break;
+      }
+    }
+
+    if(targetContainer == null && route.isNotEmpty){
+      for (BoostContainer container in containers) {
+        for (BoostPage page in container.pages) {
+          if (route == page.name) {
+            targetContainer = container;
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) break;
+      }
+    }
+
+    if (targetContainer != null && targetContainer != topContainer) {
+      if (targetContainer.topPage != targetPage) {
+        targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+      }
+      final params = CommonParams()
+        ..pageName = targetContainer.pageInfo.pageName
+        ..uniqueId = targetContainer.pageInfo.uniqueId;
+      await nativeRouterApi.popUntilRoute(params);
+    } else {
+      topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+    }
+  }
+
+  Future<bool> pop({String uniqueId, Object result}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -337,43 +380,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // page in container.
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
-      if (route != null) {
-        BoostContainer targetContainer = null;
-        BoostPage targetPage = null;
-
-        for (BoostContainer container in containers) {
-          if (targetPage != null) break;
-          for (BoostPage page in container.pages) {
-            if (page.name == route) {
-              targetContainer = container;
-              targetPage = page;
-              break;
-            }
-          }
-        }
-
-        if (targetPage != null && targetPage != null && targetContainer != topContainer) {
-          if (targetContainer.topPage != targetPage) {
-            targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
-          }
-          final params = CommonParams()
-            ..pageName = targetContainer.pageInfo.pageName
-            ..uniqueId = targetContainer.pageInfo.uniqueId
-            ..arguments = (result is Map<String, dynamic>) ? result : <String, dynamic>{};
-          await nativeRouterApi.popUntilRoute(params);
-        } else {
-          container?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
-        }
-      } else {
-        final handled = await container?.navigator?.maybePop(result);
-        if (handled != null && !handled) {
-          assert(container.pageInfo.withContainer);
-          final params = CommonParams()
-            ..pageName = container.pageInfo.pageName
-            ..uniqueId = container.pageInfo.uniqueId
-            ..arguments = (result is Map<String, dynamic>) ? result : <String, dynamic>{};
-          await nativeRouterApi.popRoute(params);
-        }
+      final handled = await container?.navigator?.maybePop(result);
+      if (handled != null && !handled) {
+        assert(container.pageInfo.withContainer);
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments =
+              (result is Map<String, dynamic>) ? result : <String, dynamic>{};
+        await nativeRouterApi.popRoute(params);
       }
     } else {
       final page = container.pages.singleWhere(
