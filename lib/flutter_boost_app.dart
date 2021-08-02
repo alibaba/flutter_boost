@@ -313,7 +313,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void popUntil({String route,String uniqueId}) async{
     BoostContainer targetContainer;
     BoostPage targetPage;
-    if(uniqueId.isNotEmpty){
+    if(uniqueId != null){
       for (BoostContainer container in containers) {
         for (BoostPage page in container.pages) {
           if (uniqueId == page.pageInfo.uniqueId) {
@@ -327,7 +327,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     }
 
-    if(targetContainer == null && route.isNotEmpty){
+    if(targetContainer == null && route != null){
       for (BoostContainer container in containers) {
         for (BoostPage page in container.pages) {
           if (route == page.name) {
