@@ -57,7 +57,6 @@ class StackInfo {
 abstract class FlutterRouterApi {
   void pushRoute(CommonParams arg);
   void popRoute(CommonParams arg);
-  void popUntilRoute(CommonParams arg);
   void removeRoute(CommonParams arg);
   void onForeground(CommonParams arg);
   void onBackground(CommonParams arg);
@@ -90,20 +89,6 @@ abstract class FlutterRouterApi {
           assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.popRoute was null. Expected CommonParams.');
           final CommonParams input = CommonParams.decode(message);
           api.popRoute(input);
-          return;
-        });
-      }
-    }
-    {
-      const BasicMessageChannel<Object> channel =
-      BasicMessageChannel<Object>('dev.flutter.pigeon.FlutterRouterApi.popUntilRoute', StandardMessageCodec());
-      if (api == null) {
-        channel.setMessageHandler(null);
-      } else {
-        channel.setMessageHandler((Object message) async {
-          assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.popUntilRoute was null. Expected CommonParams.');
-          final CommonParams input = CommonParams.decode(message);
-          api.popUntilRoute(input);
           return;
         });
       }
