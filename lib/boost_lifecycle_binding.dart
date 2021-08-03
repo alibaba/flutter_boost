@@ -38,7 +38,7 @@ class BoostLifecycleBinding {
   void containerDidShow(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
 
-    final id = container.pageInfo.uniqueId;
+    final id = container?.pageInfo.uniqueId;
     assert(id != null);
     if (!hasShownPageIds.contains(id)) {
       hasShownPageIds.add(id);

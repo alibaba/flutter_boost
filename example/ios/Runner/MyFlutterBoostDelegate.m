@@ -49,6 +49,9 @@
     //拿到当前vc
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
+    //是否伴随动画
+    BOOL animated = [options.arguments[@"animated"] boolValue];
+    
     //present的情况，走dismiss逻辑
     if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
         
@@ -68,35 +71,10 @@
         }
     }else{
         //否则走pop逻辑
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
--(void)popUntilRoute:(FlutterBoostRouteOptions *)options {
-    
-    NSInteger index = self.navigationController.viewControllers.count;
-    
-    while (index > -1) {
-        
-        index = index - 1;
-        
-        FBFlutterViewContainer * vc = self.navigationController.viewControllers[index];
-        if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
-            break;
-        }
-        
+        [self.navigationController popViewControllerAnimated:animated];
     }
     
-    if(index != -1){
-        
-        NSArray *vcArr = [self.navigationController.viewControllers subarrayWithRange:NSMakeRange(0, index + 1)];
-        [self.navigationController setViewControllers:vcArr animated:YES];
-        
-    }else{
-        //not found
-        
-    }
-    
+    options.completion(YES);
 }
 
 

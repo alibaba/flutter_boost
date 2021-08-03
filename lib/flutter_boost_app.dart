@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'boost_channel.dart';
 import 'boost_container.dart';
@@ -316,7 +317,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if(uniqueId != null){
       for (BoostContainer container in containers) {
         for (BoostPage page in container.pages) {
-          if (uniqueId == page.pageInfo.uniqueId) {
+          if (uniqueId == page.pageInfo.uniqueId || uniqueId == container.pageInfo.uniqueId) {
             //uniqueId优先级更高，优先匹配
             targetContainer = container;
             targetPage = page;
@@ -341,13 +342,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
 
     if (targetContainer != null && targetContainer != topContainer) {
-      if (targetContainer.topPage != targetPage) {
-        targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+      while(topContainer != targetContainer){
+        await pop(result: {"animated":false});
+        remove(topContainer.pageInfo.uniqueId);
       }
-      final params = CommonParams()
-        ..pageName = targetContainer.pageInfo.pageName
-        ..uniqueId = targetContainer.pageInfo.uniqueId;
-      await nativeRouterApi.popUntilRoute(params);
+
+      if (targetContainer.topPage != targetPage) {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+        });
+      }
     } else {
       topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
     }
