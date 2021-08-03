@@ -264,29 +264,6 @@ class NativeRouterApi {
     }
   }
 
-  Future<void> popUntilRoute(CommonParams arg) async {
-    final Object encoded = arg.encode();
-    const BasicMessageChannel<Object> channel = BasicMessageChannel<Object>(
-        'dev.flutter.pigeon.NativeRouterApi.popUntilRoute', StandardMessageCodec());
-    final Map<Object, Object> replyMap = await channel.send(encoded) as Map<Object, Object>;
-    if (replyMap == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-        details: null,
-      );
-    } else if (replyMap['error'] != null) {
-      final Map<Object, Object> error = (replyMap['error'] as Map<Object, Object>);
-      throw PlatformException(
-        code: (error['code'] as String),
-        message: error['message'] as String,
-        details: error['details'],
-      );
-    } else {
-      // noop
-    }
-  }
-
   Future<StackInfo> getStackFromHost() async {
     const BasicMessageChannel<Object> channel =
         BasicMessageChannel<Object>('dev.flutter.pigeon.NativeRouterApi.getStackFromHost', StandardMessageCodec());
