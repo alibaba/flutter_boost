@@ -98,5 +98,8 @@
 /// @param arguments 事件的参数
 - (void)sendEventToFlutterWith:(NSString*)key arguments:(NSDictionary*)arguments;
 
+/// 卸载引擎
+- (void)unsetFlutterBoost;
+
 @end
 
