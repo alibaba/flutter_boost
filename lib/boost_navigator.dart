@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
 import 'boost_interceptor.dart';
+import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);

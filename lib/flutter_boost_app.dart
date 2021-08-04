@@ -11,9 +11,9 @@ import 'boost_flutter_router_api.dart';
 import 'boost_interceptor.dart';
 import 'boost_lifecycle_binding.dart';
 import 'boost_navigator.dart';
+import 'container_overlay.dart';
 import 'logger.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -168,7 +168,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refresh() {
-    refreshAllOverlayEntries(containers);
+    ContainerOverlay.instance.refreshAllOverlayEntries(containers);
 
     // try to save routes to host.
     assert(() {
@@ -537,7 +537,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
 
   void refreshOnPush(BoostContainer container) {
-    refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.add);
     assert(() {
       _saveStackForHotRestart();
       return true;
@@ -545,7 +546,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnRemove(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.remove);
     assert(() {
       _saveStackForHotRestart();
@@ -554,7 +555,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnMoveToTop(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.moveToTop);
     assert(() {
       _saveStackForHotRestart();

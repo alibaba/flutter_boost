@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 
