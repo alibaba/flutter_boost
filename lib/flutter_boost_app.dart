@@ -314,43 +314,56 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void popUntil({String route,String uniqueId}) async{
     BoostContainer targetContainer;
     BoostPage targetPage;
+    int popUntilIndex = containers.length;
     if(uniqueId != null){
-      for (BoostContainer container in containers) {
-        for (BoostPage page in container.pages) {
-          if (uniqueId == page.pageInfo.uniqueId || uniqueId == container.pageInfo.uniqueId) {
+      for (int index = containers.length - 1; index >= 0; index--) {
+        for (BoostPage page in containers[index].pages) {
+          if (uniqueId == page.pageInfo.uniqueId || uniqueId == containers[index].pageInfo.uniqueId) {
             //uniqueId优先级更高，优先匹配
-            targetContainer = container;
+            targetContainer = containers[index];
             targetPage = page;
             break;
           }
         }
-        if (targetContainer != null) break;
+        if (targetContainer != null){
+          popUntilIndex = index;
+          break;
+        }
       }
     }
 
     if(targetContainer == null && route != null){
-      for (BoostContainer container in containers) {
-        for (BoostPage page in container.pages) {
+      for (int index = containers.length - 1; index>= 0; index --) {
+        for (BoostPage page in containers[index].pages) {
           if (route == page.name) {
-            targetContainer = container;
+            targetContainer = containers[index];
             targetPage = page;
             break;
           }
         }
-        if (targetContainer != null) break;
+        if (targetContainer != null){
+          popUntilIndex = index;
+          break;
+        }
       }
     }
 
     if (targetContainer != null && targetContainer != topContainer) {
-      while(topContainer != targetContainer){
-        await pop(result: {"animated":false});
-        remove(topContainer.pageInfo.uniqueId);
+      for (int index = containers.length - 1; index > popUntilIndex;index--){
+        BoostContainer container = containers[index];
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments = {"animated":false};
+        await nativeRouterApi.popRoute(params);
       }
 
       if (targetContainer.topPage != targetPage) {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
-        });
+        Future<void>.delayed(
+          const Duration(milliseconds: 50),
+              () => targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name))
+        );
+
       }
     } else {
       topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));

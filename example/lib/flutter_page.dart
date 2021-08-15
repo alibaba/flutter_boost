@@ -298,6 +298,21 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       )),
                   onTap: () => BoostNavigator.instance
                       .push("radialExpansion", withContainer: false)),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'popUntil demo',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () {
+                  BoostNavigator.instance.push('popUntilView', withContainer: true);
+                  // await BoostNavigator.instance
+                  //     .push("radialExpansion", withContainer: false);
+                },
+              ),
             ],
           ),
         ),
