@@ -112,6 +112,7 @@ static NSDictionary<NSString*, id>* wrapResult(NSDictionary *result, FlutterErro
     completion(nil);
   }];
 }
+
 - (void)removeRoute:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion {
   FlutterBasicMessageChannel *channel =
     [FlutterBasicMessageChannel
