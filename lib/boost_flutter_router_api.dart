@@ -6,15 +6,15 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   factory BoostFlutterRouterApi(FlutterBoostAppState appState) {
     if (_instance == null) {
       _instance = BoostFlutterRouterApi._(appState);
-      FlutterRouterApi.setup(_instance);
+      FlutterRouterApi.setup(_instance!);
     }
-    return _instance;
+    return _instance!;
   }
 
   BoostFlutterRouterApi._(this.appState);
 
   final FlutterBoostAppState appState;
-  static BoostFlutterRouterApi _instance;
+  static BoostFlutterRouterApi? _instance;
 
   @override
   void pushRoute(CommonParams arg) {
@@ -37,7 +37,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void onBackground(CommonParams arg) => appState.onBackground();
 
   @override
-  void removeRoute(CommonParams arg) => appState.remove(arg.uniqueId);
+  void removeRoute(CommonParams arg) => appState.remove(arg.uniqueId ?? "");
 
   @override
   void onNativeResult(CommonParams arg) => appState.onNativeResult(arg);

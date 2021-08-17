@@ -88,7 +88,7 @@ class PageVisibilityBinding {
     Logger.log('page_visibility, #removeGlobalObserver, $observer');
   }
 
-  void dispatchPagePushEvent(Route<dynamic> route) {
+  void dispatchPagePushEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
@@ -97,7 +97,7 @@ class PageVisibilityBinding {
     dispatchGlobalPagePushEvent(route);
   }
 
-  void dispatchPageShowEvent(Route<dynamic> route) {
+  void dispatchPageShowEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
@@ -120,13 +120,13 @@ class PageVisibilityBinding {
 
   ///When page show first time,we should dispatch event in [FrameCallback]
   ///to avoid the page can't receive the show event
-  void dispatchPageShowEventOnPageShowFirstTime(Route<dynamic> route) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  void dispatchPageShowEventOnPageShowFirstTime(Route<dynamic>? route) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       dispatchPageShowEvent(route);
     });
   }
 
-  void dispatchPageHideEvent(Route<dynamic> route) {
+  void dispatchPageHideEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
@@ -147,7 +147,7 @@ class PageVisibilityBinding {
     dispatchGlobalPageHideEvent(route);
   }
 
-  void dispatchPagePopEvent(Route<dynamic> route) {
+  void dispatchPagePopEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
@@ -156,7 +156,7 @@ class PageVisibilityBinding {
     dispatchGlobalPagePopEvent(route);
   }
 
-  void dispatchPageForgroundEvent(Route<dynamic> route) {
+  void dispatchPageForgroundEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
@@ -178,7 +178,7 @@ class PageVisibilityBinding {
     dispatchGlobalForgroundEvent(route);
   }
 
-  void dispatchPageBackgroundEvent(Route<dynamic> route) {
+  void dispatchPageBackgroundEvent(Route<dynamic>? route) {
     if (route == null) {
       return;
     }
