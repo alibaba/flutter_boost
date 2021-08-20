@@ -31,14 +31,14 @@ class BoostLifecycleBinding {
 
     // When container pop,remove the id from set to avoid
     // this id still remain in the set
-    final id = container.pageInfo.uniqueId;
+    final id = container.pageInfo!.uniqueId;
     hasShownPageIds.remove(id);
   }
 
   void containerDidShow(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
 
-    final id = container?.pageInfo.uniqueId;
+    final id = container.pageInfo!.uniqueId!;
     assert(id != null);
     if (!hasShownPageIds.contains(id)) {
       hasShownPageIds.add(id);
@@ -55,7 +55,7 @@ class BoostLifecycleBinding {
     }
   }
 
-  void containerDidHide(BoostContainer container) {
+  void containerDidHide(BoostContainer? container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
         .dispatchPageHideEvent(container?.topPage?.route);

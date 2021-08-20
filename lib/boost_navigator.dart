@@ -8,13 +8,13 @@ import 'flutter_boost_app.dart';
 import 'messages.dart';
 import 'overlay_entry.dart';
 
-typedef FlutterBoostRouteFactory = Route<dynamic> Function(
-    RouteSettings settings, String uniqueId);
+typedef FlutterBoostRouteFactory = Route<dynamic>? Function(
+    RouteSettings settings, String? uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
-    FlutterBoostRouteFactory routeFactory) {
+    FlutterBoostRouteFactory? routeFactory) {
   return (settings, uniqueId) {
-    var route = routeFactory(settings, uniqueId);
+    var route = routeFactory!(settings, uniqueId);
     if (route == null && settings.name == '/') {
       route = PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
@@ -30,14 +30,14 @@ class BoostNavigator {
 
   static final BoostNavigator _instance = BoostNavigator._();
 
-  FlutterBoostAppState appState;
+  FlutterBoostAppState? appState;
 
-  FlutterBoostRouteFactory _routeFactory;
+  FlutterBoostRouteFactory? _routeFactory;
 
-  set routeFactory(FlutterBoostRouteFactory routeFactory) =>
+  set routeFactory(FlutterBoostRouteFactory? routeFactory) =>
       _routeFactory = routeFactoryWrapper(routeFactory);
 
-  FlutterBoostRouteFactory get routeFactory => _routeFactory;
+  FlutterBoostRouteFactory? get routeFactory => _routeFactory;
 
   @Deprecated('Use `instance` instead.')
 
@@ -55,18 +55,18 @@ class BoostNavigator {
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
   bool isFlutterPage(String name) =>
-      routeFactory(RouteSettings(name: name), null) != null;
+      routeFactory!(RouteSettings(name: name), null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments,
+      {Map<String, dynamic>? arguments,
       bool withContainer = false,
       bool opaque = true}) async {
     var pushOption =
         BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
-    for (var interceptor in appState.interceptors) {
+    for (var interceptor in appState!.interceptors) {
       future = future.then<dynamic>((dynamic _state) {
         final state = _state as InterceptorState<dynamic>;
         if (state.type == InterceptorResultType.next) {
@@ -85,16 +85,19 @@ class BoostNavigator {
         assert(state.type == InterceptorResultType.next);
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
-          return appState.pushWithResult(pushOption.name,
+          return appState!.pushWithResult(pushOption.name,
               arguments: pushOption.arguments,
               withContainer: withContainer,
-              opaque: opaque);
+              opaque: opaque) as FutureOr<T>;
         } else {
+          Map<String, dynamic> data = {};
+          data = Map<String, dynamic>.from(pushOption.arguments);
+
           final params = CommonParams()
             ..pageName = pushOption.name
-            ..arguments = pushOption.arguments;
-          appState.nativeRouterApi.pushNativeRoute(params);
-          return appState.pendNativeResult(pushOption.name);
+            ..arguments = data;
+          appState!.nativeRouterApi!.pushNativeRoute(params);
+          return appState!.pendNativeResult(pushOption.name);
         }
       } else {
         assert(state.type == InterceptorResultType.resolve);
@@ -106,8 +109,8 @@ class BoostNavigator {
   ///1.Push a new page onto pageStack
   ///2.remove(pop) previous page
   Future<T> pushReplacement<T extends Object>(String name,
-      {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    final id = getTopPageInfo().uniqueId;
+      {Map<String, dynamic>? arguments, bool withContainer = false}) async {
+    final id = getTopPageInfo()!.uniqueId;
 
     final result =
         push(name, arguments: arguments, withContainer: withContainer);
@@ -115,43 +118,43 @@ class BoostNavigator {
     Future.delayed(const Duration(milliseconds: 100), () {
       remove(id);
     });
-    return result;
+    return result as FutureOr<T>;
   }
 
   /// Pop the top-most page off the hybrid stack.
-  Future<bool> pop<T extends Object>([T result]) async =>
-      await appState.popWithResult(result);
+  Future<bool> pop<T extends Object>([T? result]) async =>
+      await appState!.popWithResult(result);
 
   /// PopUntil page off the hybrid stack.
-  Future<void> popUntil({String route,String uniqueId}) async => await appState.popUntil(route:route, uniqueId:uniqueId);
+  Future<void> popUntil({String? route,String? uniqueId}) async => appState!.popUntil(route:route, uniqueId:uniqueId);
   
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
   /// Please use [BoostNavigator.pop] instead.
-  void remove(String uniqueId, {Map<String, dynamic> arguments}) =>
-      appState.removeWithResult(uniqueId, arguments);
+  void remove(String? uniqueId, {Map<String, dynamic>? arguments}) =>
+      appState!.removeWithResult(uniqueId, arguments);
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;
   ///
   /// This is a legacy API for backwards compatibility.
-  PageInfo getTopPageInfo() => appState.getTopPageInfo();
+  PageInfo? getTopPageInfo() => appState!.getTopPageInfo();
 
-  PageInfo getTopByContext(BuildContext context) =>
+  PageInfo? getTopByContext(BuildContext context) =>
       BoostContainer.of(context).pageInfo;
 
   /// Return the number of flutter pages
   ///
   /// This is a legacy API for backwards compatibility.
-  int pageSize() => appState.pageSize();
+  int pageSize() => appState!.pageSize();
 }
 
 class PageInfo {
   PageInfo({this.pageName, this.uniqueId, this.arguments, this.withContainer});
 
-  bool withContainer;
-  String pageName;
-  String uniqueId;
-  Map<String, dynamic> arguments;
+  bool? withContainer;
+  String? pageName;
+  String? uniqueId;
+  Map<String, dynamic>? arguments;
 }

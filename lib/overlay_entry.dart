@@ -44,7 +44,7 @@ void refreshSpecificOverlayEntries(
       if (_lastEntries.isNotEmpty) {
         //Find the entry matching the container
         final entryToRemove = _lastEntries.singleWhere((element) {
-          return element.containerUniqueId == container.pageInfo.uniqueId;
+          return element.containerUniqueId == container.pageInfo!.uniqueId;
         });
 
         //remove from the list and overlay
@@ -53,12 +53,12 @@ void refreshSpecificOverlayEntries(
         // https://github.com/alibaba/flutter_boost/issues/1056
         // Ensure this frame is refreshed after schedule frame,
         // otherwise the PageState.dispose may not be called
-        SchedulerBinding.instance.scheduleWarmUpFrame();
+        SchedulerBinding.instance!.scheduleWarmUpFrame();
       }
       break;
     case BoostSpecificEntryRefreshMode.moveToTop:
       final existingEntry = _lastEntries.singleWhere((element) {
-        return element.containerUniqueId == container.pageInfo.uniqueId;
+        return element.containerUniqueId == container.pageInfo!.uniqueId;
       });
       //remove the entry from list and overlay
       //and insert it to list'top and overlay 's top
@@ -93,16 +93,16 @@ void refreshAllOverlayEntries(List<BoostContainer> containers) {
   // https://github.com/alibaba/flutter_boost/issues/1056
   // Ensure this frame is refreshed after schedule frame，
   // otherwise the PageState.dispose may not be called
-  final hasScheduledFrame = SchedulerBinding.instance.hasScheduledFrame;
-  final framesEnabled = SchedulerBinding.instance.framesEnabled;
+  final hasScheduledFrame = SchedulerBinding.instance!.hasScheduledFrame;
+  final framesEnabled = SchedulerBinding.instance!.framesEnabled;
   if (hasScheduledFrame || !framesEnabled) {
-    SchedulerBinding.instance.scheduleWarmUpFrame();
+    SchedulerBinding.instance!.scheduleWarmUpFrame();
   }
 }
 
 class _ContainerOverlayEntry extends OverlayEntry {
   _ContainerOverlayEntry(BoostContainer container)
-      : containerUniqueId = container.pageInfo.uniqueId,
+      : containerUniqueId = container.pageInfo!.uniqueId!,
         super(
             builder: (ctx) => BoostContainerWidget(container: container),
             opaque: true,

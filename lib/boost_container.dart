@@ -7,17 +7,17 @@ import 'flutter_boost_app.dart';
 
 class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
-    _pages.add(BoostPage.create(pageInfo));
+    _pages.add(BoostPage.create(pageInfo!));
   }
 
   static BoostContainer of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>();
-    return state.container;
+    return state!.container;
   }
 
-  final LocalKey key;
+  final LocalKey? key;
 
-  final PageInfo pageInfo;
+  final PageInfo? pageInfo;
 
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
 
@@ -29,19 +29,19 @@ class BoostContainer extends ChangeNotifier {
   /// Number of pages
   int numPages() => pages.length;
 
-  NavigatorState get navigator => _navKey.currentState;
+  NavigatorState get navigator => _navKey.currentState!;
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
-  Future<T> addPage<T extends Object>(BoostPage page) {
+  Future<T>? addPage<T extends Object>(BoostPage page) {
     if (page != null) {
       _pages.add(page);
       notifyListeners();
-      return page.popped;
+      return page.popped.then((value) => value as T);
     }
     return null;
   }
 
-  void removePage(BoostPage page, {dynamic result}) {
+  void removePage(BoostPage? page, {dynamic result}) {
     if (page != null) {
       _pages.remove(page);
       page.didComplete(result);
@@ -51,13 +51,13 @@ class BoostContainer extends ChangeNotifier {
 
   @override
   String toString() =>
-      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo!.pageName},'
       ' pages:$pages)';
 }
 
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey key, this.container})
-      : super(key: container.key);
+  BoostContainerWidget({LocalKey? key, required this.container})
+      : super(key: container.key!);
 
   final BoostContainer container;
 
@@ -69,15 +69,15 @@ class BoostContainerWidget extends StatefulWidget {
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
       var otherWidget = other;
-      return container.pageInfo.uniqueId ==
-          otherWidget.container.pageInfo.uniqueId;
+      return container.pageInfo!.uniqueId ==
+          otherWidget.container.pageInfo!.uniqueId;
     }
     return super == other;
   }
 
   @override
   // ignore: invalid_override_of_non_virtual_member
-  int get hashCode => container.pageInfo.uniqueId.hashCode;
+  int get hashCode => container.pageInfo!.uniqueId.hashCode;
 }
 
 class BoostContainerState extends State<BoostContainerWidget> {
@@ -137,11 +137,11 @@ class BoostContainerState extends State<BoostContainerWidget> {
 }
 
 class NavigatorExt extends Navigator {
-  const NavigatorExt({
-    Key key,
-    List<Page<dynamic>> pages,
-    PopPageCallback onPopPage,
-    List<NavigatorObserver> observers,
+  NavigatorExt({
+    required Key key,
+    required List<Page<dynamic>> pages,
+    required PopPageCallback onPopPage,
+    required List<NavigatorObserver> observers,
   }) : super(
             key: key, pages: pages, onPopPage: onPopPage, observers: observers);
 
@@ -151,10 +151,10 @@ class NavigatorExt extends Navigator {
 
 class NavigatorExtState extends NavigatorState {
   @override
-  void pop<T extends Object>([T result]) {
+  void pop<T extends Object?>([T? result]) {
     // Taking over container page
     if (!canPop()) {
-      BoostNavigator.instance.pop(result);
+      BoostNavigator.instance.pop(result ?? {});
     } else {
       super.pop(result);
     }
