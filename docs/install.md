@@ -13,21 +13,21 @@
 现在可以开始搞事情了
 
 ## Dart部分
-1. 首先，需要添加FlutterBoost依赖到yaml文件
+1. 首先，需要添加`FlutterBoost`依赖到`yaml`文件
 
 ```dart
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
         ref: 'v3.0-preview.9'
-```l
-之后在flutter工程下运行`flutter pub get`
-dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
-```dart
+```
 
-//这里要特别注意，如果你的工程里已经有一个继承自WidgetsFlutterBinding的自定义Binding，则只需要将其with上BoostFlutterBinding
-//如果你的工程没有自定义的Binding，则可以参考这个CustomFlutterBinding的做法
-//BoostFlutterBinding用于接管Flutter App的生命周期，必须得接入的
+之后在flutter工程下运行`flutter pub get` dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
+
+//这里要特别注意，如果你的工程里已经有一个继承自`WidgetsFlutterBinding`的自定义Binding，则只需要将其with上`BoostFlutterBinding`
+//如果你的工程没有自定义的Binding，则可以参考这个`CustomFlutterBinding`的做法
+//`BoostFlutterBinding`用于接管Flutter App的生命周期，必须得接入的
+```dart
 class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {
 
 }
