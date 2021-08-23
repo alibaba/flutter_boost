@@ -24,7 +24,7 @@ flutter_boost:
 
 之后在flutter工程下运行`flutter pub get` dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
 
-//这里要特别注意，如果你的工程里已经有一个继承自`WidgetsFlutterBindin`g的自定义Binding，则只需要将其with上`BoostFlutterBinding`
+//这里要特别注意，如果你的工程里已经有一个继承自`WidgetsFlutterBinding`的自定义Binding，则只需要将其with上`BoostFlutterBinding`
 //如果你的工程没有自定义的Binding，则可以参考这个`CustomFlutterBinding`的做法
 //`BoostFlutterBinding`用于接管Flutter App的生命周期，必须得接入的
 ```dart
