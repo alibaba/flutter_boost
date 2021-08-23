@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the initInstances method from the BoostFlutterBinding class, for the Dart programming language.">
+  <title>initInstances method - BoostFlutterBinding class - boost_flutter_binding library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_boost</a></li>
+    <li><a href="../../boost_flutter_binding/boost_flutter_binding-library.html">boost_flutter_binding</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html">BoostFlutterBinding</a></li>
+    <li class="self-crumb">initInstances method</li>
+  </ol>
+  <div class="self-name">initInstances</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">initInstances</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<div>
+  <ol class="annotation-list">
+    <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+  </ol>
+</div>
+
+<span class="returntype">void</span>
+<span class="name ">initInstances</span>(<wbr>)
+
+      <div class="features">override</div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>The initialization method. Subclasses override this method to hook into
+the platform and otherwise configure their services. Subclasses must call
+"super.initInstances()".</p>
+<p>By convention, if the service is to be provided as a singleton, it should
+be exposed as <code>MixinClassName.instance</code>, a static getter that returns
+<code>MixinClassName._instance</code>, a static field that is set by
+<code>initInstances()</code>.</p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+void initInstances() {
+  super.initInstances();
+  _instance = this;
+  changeAppLifecycleState(AppLifecycleState.resumed);
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">flutter_boost</a></li>
+  <li><a href="../../boost_flutter_binding/boost_flutter_binding-library.html">boost_flutter_binding</a></li>
+  <li><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html">BoostFlutterBinding</a></li>
+  <li class="self-crumb">initInstances method</li>
+</ol>
+
+
+    <h5>BoostFlutterBinding mixin</h5>
+    <ol>
+
+    <li class="section-title"><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html#constructors">Constructors</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding/BoostFlutterBinding.html">BoostFlutterBinding</a></li>
+
+
+    <li class="section-title inherited">
+      <a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html#instance-properties">Properties</a>
+    </li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/semantics/SemanticsBinding/accessibilityFeatures.html">accessibilityFeatures</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/buildOwner.html">buildOwner</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/currentFrameTimeStamp.html">currentFrameTimeStamp</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/currentSystemFrameTimeStamp.html">currentSystemFrameTimeStamp</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/debugBuildingDirtyElements.html">debugBuildingDirtyElements</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/debugDidSendFirstFrameEvent.html">debugDidSendFirstFrameEvent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/debugSamplingClock.html">debugSamplingClock</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/defaultBinaryMessenger.html">defaultBinaryMessenger</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/semantics/SemanticsBinding/disableAnimations.html">disableAnimations</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/endOfFrame.html">endOfFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/firstFrameRasterized.html">firstFrameRasterized</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/focusManager.html">focusManager</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/framesEnabled.html">framesEnabled</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/gestureArena.html">gestureArena</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/hasScheduledFrame.html">hasScheduledFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/imageCache.html">imageCache</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/isRootWidgetAttached.html">isRootWidgetAttached</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/lifecycleState.html">lifecycleState</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/locked.html">locked</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/mouseTracker.html">mouseTracker</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/pipelineOwner.html">pipelineOwner</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/platformDispatcher.html">platformDispatcher</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/pointerRouter.html">pointerRouter</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/pointerSignalResolver.html">pointerSignalResolver</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/renderView.html">renderView</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/renderViewElement.html">renderViewElement</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/resamplingEnabled.html">resamplingEnabled</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/restorationManager.html">restorationManager</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/samplingOffset.html">samplingOffset</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/schedulerPhase.html">schedulerPhase</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/schedulingStrategy.html">schedulingStrategy</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/sendFramesToEngine.html">sendFramesToEngine</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/systemFonts.html">systemFonts</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/transientCallbackCount.html">transientCallbackCount</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/waitUntilFirstFrameRasterized.html">waitUntilFirstFrameRasterized</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/window.html">window</a></li>
+
+    <li class="section-title"><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html#instance-methods">Methods</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/addObserver.html">addObserver</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/addPersistentFrameCallback.html">addPersistentFrameCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/addPostFrameCallback.html">addPostFrameCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/addTimingsCallback.html">addTimingsCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/allowFirstFrame.html">allowFirstFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/attachRootWidget.html">attachRootWidget</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/cancelFrameCallbackWithId.html">cancelFrameCallbackWithId</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/cancelPointer.html">cancelPointer</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding/changeAppLifecycleState.html">changeAppLifecycleState</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/computePlatformResolvedLocale.html">computePlatformResolvedLocale</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/createBinaryMessenger.html">createBinaryMessenger</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/createImageCache.html">createImageCache</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/createRestorationManager.html">createRestorationManager</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/semantics/SemanticsBinding/createSemanticsUpdateBuilder.html">createSemanticsUpdateBuilder</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/createViewConfiguration.html">createViewConfiguration</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/debugAssertNoTransientCallbacks.html">debugAssertNoTransientCallbacks</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/deferFirstFrame.html">deferFirstFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/dispatchAccessibilityFeaturesChanged.html">dispatchAccessibilityFeaturesChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/dispatchEvent.html">dispatchEvent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/dispatchLocalesChanged.html">dispatchLocalesChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/drawFrame.html">drawFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/ensureFrameCallbacksRegistered.html">ensureFrameCallbacksRegistered</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/ensureVisualUpdate.html">ensureVisualUpdate</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/evict.html">evict</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handleAccessibilityFeaturesChanged.html">handleAccessibilityFeaturesChanged</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding/handleAppLifecycleStateChanged.html">handleAppLifecycleStateChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/handleBeginFrame.html">handleBeginFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/handleDrawFrame.html">handleDrawFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/handleEvent.html">handleEvent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/handleEventLoopCallback.html">handleEventLoopCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handleLocaleChanged.html">handleLocaleChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handleMemoryPressure.html">handleMemoryPressure</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handleMetricsChanged.html">handleMetricsChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handlePlatformBrightnessChanged.html">handlePlatformBrightnessChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/handlePointerEvent.html">handlePointerEvent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handlePopRoute.html">handlePopRoute</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handlePushRoute.html">handlePushRoute</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/handleSystemMessage.html">handleSystemMessage</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/handleTextScaleFactorChanged.html">handleTextScaleFactorChanged</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/hitTest.html">hitTest</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding/initInstances.html">initInstances</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/initLicenses.html">initLicenses</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/initMouseTracker.html">initMouseTracker</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/initRenderView.html">initRenderView</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/initServiceExtensions.html">initServiceExtensions</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/painting/PaintingBinding/instantiateImageCodec.html">instantiateImageCodec</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/lockEvents.html">lockEvents</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/performReassemble.html">performReassemble</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/postEvent.html">postEvent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/services/ServicesBinding/readInitialLifecycleStateFromNativeWindow.html">readInitialLifecycleStateFromNativeWindow</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/reassembleApplication.html">reassembleApplication</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/registerBoolServiceExtension.html">registerBoolServiceExtension</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/registerNumericServiceExtension.html">registerNumericServiceExtension</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/registerServiceExtension.html">registerServiceExtension</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/registerSignalServiceExtension.html">registerSignalServiceExtension</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/registerStringServiceExtension.html">registerStringServiceExtension</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/removeObserver.html">removeObserver</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/removeTimingsCallback.html">removeTimingsCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/resetEpoch.html">resetEpoch</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/resetFirstFrameSent.html">resetFirstFrameSent</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/gestures/GestureBinding/resetGestureBinding.html">resetGestureBinding</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/WidgetsBinding/scheduleAttachRootWidget.html">scheduleAttachRootWidget</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleForcedFrame.html">scheduleForcedFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleFrame.html">scheduleFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleFrameCallback.html">scheduleFrameCallback</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleTask.html">scheduleTask</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/scheduleWarmUpFrame.html">scheduleWarmUpFrame</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/rendering/RendererBinding/setSemanticsEnabled.html">setSemanticsEnabled</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/BindingBase/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/scheduler/SchedulerBinding/unlocked.html">unlocked</a></li>
+
+    <li class="section-title inherited"><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+    <li class="section-title"><a href="../../boost_flutter_binding/BoostFlutterBinding-mixin.html#static-properties">Static properties</a></li>
+    <li><a href="../../boost_flutter_binding/BoostFlutterBinding/instance.html">instance</a></li>
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_boost
+      3.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+

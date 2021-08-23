@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the routeFactoryWrapper function from the boost_navigator library, for the Dart programming language.">
+  <title>routeFactoryWrapper function - boost_navigator library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">flutter_boost</a></li>
+    <li><a href="../boost_navigator/boost_navigator-library.html">boost_navigator</a></li>
+    <li class="self-crumb">routeFactoryWrapper function</li>
+  </ol>
+  <div class="self-name">routeFactoryWrapper</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-function">routeFactoryWrapper</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+
+<span class="returntype"><a href="../boost_navigator/FlutterBoostRouteFactory.html">FlutterBoostRouteFactory</a></span>
+<span class="name ">routeFactoryWrapper</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="routeFactoryWrapper-param-routeFactory"><span class="type-annotation"><a href="../boost_navigator/FlutterBoostRouteFactory.html">FlutterBoostRouteFactory</a></span> <span class="parameter-name">routeFactory</span></span></li>
+</ol>)
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">FlutterBoostRouteFactory routeFactoryWrapper(
+    FlutterBoostRouteFactory routeFactory) {
+  return (settings, uniqueId) {
+    var route = routeFactory(settings, uniqueId);
+    if (route == null &amp;&amp; settings.name == &#39;&#47;&#39;) {
+      route = PageRouteBuilder&lt;dynamic&gt;(
+          settings: settings, pageBuilder: (_, __, ___) =&gt; Container());
+    }
+    return route;
+  };
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../index.html">flutter_boost</a></li>
+  <li><a href="../boost_navigator/boost_navigator-library.html">boost_navigator</a></li>
+  <li class="self-crumb">routeFactoryWrapper function</li>
+</ol>
+
+
+    <h5>boost_navigator library</h5>
+    <ol>
+  <li class="section-title"><a href="../boost_navigator/boost_navigator-library.html#classes">Classes</a></li>
+  <li><a href="../boost_navigator/BoostNavigator-class.html">BoostNavigator</a></li>
+  <li><a href="../boost_navigator/PageInfo-class.html">PageInfo</a></li>
+
+
+
+
+
+  <li class="section-title"><a href="../boost_navigator/boost_navigator-library.html#functions">Functions</a></li>
+  <li><a href="../boost_navigator/routeFactoryWrapper.html">routeFactoryWrapper</a></li>
+
+
+  <li class="section-title"><a href="../boost_navigator/boost_navigator-library.html#typedefs">Typedefs</a></li>
+  <li><a href="../boost_navigator/FlutterBoostRouteFactory.html">FlutterBoostRouteFactory</a></li>
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-left-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_boost
+      3.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+

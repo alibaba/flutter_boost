@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the push method from the BoostNavigator class, for the Dart programming language.">
+  <title>push method - BoostNavigator class - boost_navigator library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_boost</a></li>
+    <li><a href="../../boost_navigator/boost_navigator-library.html">boost_navigator</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator-class.html">BoostNavigator</a></li>
+    <li class="self-crumb">push&lt;<wbr><span class="type-parameter">T extends Object</span>&gt; method</li>
+  </ol>
+  <div class="self-name">push</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">push&lt;<wbr><span class="type-parameter">T extends Object</span>&gt;</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/dart-async/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter">T</span>&gt;</span></span>
+<span class="name ">push</span>&lt;<wbr><span class="type-parameter">T extends Object</span>&gt;(<wbr><ol class="parameter-list"><li><span class="parameter" id="push-param-name"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span> <span class="parameter-name">name</span>, </span></li>
+<li><span class="parameter" id="push-param-arguments">{<span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/Map-class.html">Map</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.flutter.dev/flutter/dart-core/String-class.html">String</a></span>, <span class="type-parameter">dynamic</span>&gt;</span></span> <span class="parameter-name">arguments</span>, </span></li>
+<li><span class="parameter" id="push-param-withContainer"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">withContainer</span> = <span class="default-value">false</span>, </span></li>
+<li><span class="parameter" id="push-param-opaque"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/dart-core/bool-class.html">bool</a></span> <span class="parameter-name">opaque</span> = <span class="default-value">true</span>}</span></li>
+</ol>)
+
+      
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Push the page with the given <code>name</code> onto the hybrid stack.
+<code>arguments</code> is the param you want to pass in next page
+if <code>withContainer</code> is true,next route will be with a native container
+(Android Activity / iOS UIViewController)
+if <code>opaque</code> is true,the page is opaque (not transparent)</p>
+<p>And it will return the result popped by page as a Future<t></t></p>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;T&gt; push&lt;T extends Object&gt;(String name,
+    {Map&lt;String, dynamic&gt; arguments,
+    bool withContainer = false,
+    bool opaque = true}) async {
+  var pushOption =
+      BoostInterceptorOption(name, arguments ?? &lt;String, dynamic&gt;{});
+  var future = Future&lt;dynamic&gt;(
+      () =&gt; InterceptorState&lt;BoostInterceptorOption&gt;(pushOption));
+  for (var interceptor in appState.interceptors) {
+    future = future.then&lt;dynamic&gt;((dynamic _state) {
+      final state = _state as InterceptorState&lt;dynamic&gt;;
+      if (state.type == InterceptorResultType.next) {
+        final pushHandler = PushInterceptorHandler();
+        interceptor.onPush(state.data, pushHandler);
+        return pushHandler.future;
+      } else {
+        return state;
+      }
+    });
+  }
+
+  return future.then((dynamic _state) {
+    final state = _state as InterceptorState&lt;dynamic&gt;;
+    if (state.data is BoostInterceptorOption) {
+      assert(state.type == InterceptorResultType.next);
+      pushOption = state.data;
+      if (isFlutterPage(pushOption.name)) {
+        return appState.pushWithResult(pushOption.name,
+            arguments: pushOption.arguments,
+            withContainer: withContainer,
+            opaque: opaque);
+      } else {
+        final params = CommonParams()
+          ..pageName = pushOption.name
+          ..arguments = pushOption.arguments;
+        appState.nativeRouterApi.pushNativeRoute(params);
+        return appState.pendNativeResult(pushOption.name);
+      }
+    } else {
+      assert(state.type == InterceptorResultType.resolve);
+      return Future&lt;T&gt;.value(state.data as T);
+    }
+  });
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">flutter_boost</a></li>
+  <li><a href="../../boost_navigator/boost_navigator-library.html">boost_navigator</a></li>
+  <li><a href="../../boost_navigator/BoostNavigator-class.html">BoostNavigator</a></li>
+  <li class="self-crumb">push&lt;<wbr><span class="type-parameter">T extends Object</span>&gt; method</li>
+</ol>
+
+
+    <h5>BoostNavigator class</h5>
+    <ol>
+
+
+
+    <li class="section-title">
+      <a href="../../boost_navigator/BoostNavigator-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../../boost_navigator/BoostNavigator/appState.html">appState</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/routeFactory.html">routeFactory</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+
+    <li class="section-title"><a href="../../boost_navigator/BoostNavigator-class.html#instance-methods">Methods</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/getTopByContext.html">getTopByContext</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/getTopPageInfo.html">getTopPageInfo</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/isFlutterPage.html">isFlutterPage</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/pageSize.html">pageSize</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/pop.html">pop</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/popUntil.html">popUntil</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/push.html">push</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/pushReplacement.html">pushReplacement</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/remove.html">remove</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/toString.html">toString</a></li>
+
+    <li class="section-title inherited"><a href="../../boost_navigator/BoostNavigator-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+    <li class="section-title"><a href="../../boost_navigator/BoostNavigator-class.html#static-properties">Static properties</a></li>
+    <li><a href="../../boost_navigator/BoostNavigator/instance.html">instance</a></li>
+
+    <li class="section-title"><a href="../../boost_navigator/BoostNavigator-class.html#static-methods">Static methods</a></li>
+    <li><a class="deprecated" href="../../boost_navigator/BoostNavigator/of.html">of</a></li>
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_boost
+      3.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+
