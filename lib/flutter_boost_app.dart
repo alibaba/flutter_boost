@@ -313,29 +313,30 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     pop(uniqueId: uniqueId, result: result);
   }
 
-  void popUntil({String route,String uniqueId}) async{
+  void popUntil({String route, String uniqueId}) async {
     BoostContainer targetContainer;
     BoostPage targetPage;
     int popUntilIndex = containers.length;
-    if(uniqueId != null){
+    if (uniqueId != null) {
       for (int index = containers.length - 1; index >= 0; index--) {
         for (BoostPage page in containers[index].pages) {
-          if (uniqueId == page.pageInfo.uniqueId || uniqueId == containers[index].pageInfo.uniqueId) {
+          if (uniqueId == page.pageInfo.uniqueId ||
+              uniqueId == containers[index].pageInfo.uniqueId) {
             //uniqueId优先级更高，优先匹配
             targetContainer = containers[index];
             targetPage = page;
             break;
           }
         }
-        if (targetContainer != null){
+        if (targetContainer != null) {
           popUntilIndex = index;
           break;
         }
       }
     }
 
-    if(targetContainer == null && route != null){
-      for (int index = containers.length - 1; index>= 0; index --) {
+    if (targetContainer == null && route != null) {
+      for (int index = containers.length - 1; index >= 0; index--) {
         for (BoostPage page in containers[index].pages) {
           if (route == page.name) {
             targetContainer = containers[index];
@@ -343,7 +344,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             break;
           }
         }
-        if (targetContainer != null){
+        if (targetContainer != null) {
           popUntilIndex = index;
           break;
         }
@@ -351,21 +352,20 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
 
     if (targetContainer != null && targetContainer != topContainer) {
-      for (int index = containers.length - 1; index > popUntilIndex;index--){
+      for (int index = containers.length - 1; index > popUntilIndex; index--) {
         BoostContainer container = containers[index];
         final params = CommonParams()
           ..pageName = container.pageInfo.pageName
           ..uniqueId = container.pageInfo.uniqueId
-          ..arguments = {"animated":false};
+          ..arguments = {"animated": false};
         await nativeRouterApi.popRoute(params);
       }
 
       if (targetContainer.topPage != targetPage) {
         Future<void>.delayed(
-          const Duration(milliseconds: 50),
-              () => targetContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name))
-        );
-
+            const Duration(milliseconds: 50),
+            () => targetContainer?.navigator
+                ?.popUntil(ModalRoute.withName(targetPage.name)));
       }
     } else {
       topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
