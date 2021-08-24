@@ -81,7 +81,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'BoostFlutterBinding is not initialized，'
         'please refer to "class CustomFlutterBinding" in example project');
 
-    _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
+    /// create the container matching the initial route
+    final BoostContainer initialContainer =
+        _createContainer(PageInfo(pageName: widget.initialRoute));
+    _containers.add(initialContainer);
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
@@ -90,7 +93,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // initialRoute. Use addPostFrameCallback is because to wait
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refresh();
+      // add this container in route
+      refreshOnPush(initialContainer);
       _addAppLifecycleStateEventListener();
     });
 
@@ -117,11 +121,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final int index = arguments["lifecycleState"];
 
       if (index == AppLifecycleState.resumed.index) {
-        print("resume");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.resumed);
       } else if (index == AppLifecycleState.paused.index) {
-        print("pause");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.paused);
       }
@@ -636,6 +638,7 @@ class BoostPage<T> extends Page<T> {
   }
 
   Route<T> _route;
+
   Route<T> get route => _route;
 
   /// A future that completes when this page is popped.
