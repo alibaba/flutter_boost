@@ -213,11 +213,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Future<void> _restoreStackForHotRestart() async {
     final stack = await nativeRouterApi!.getStackFromHost();
     if (stack != null && stack.containers != null) {
-      for (String uniqueId in stack.containers as Iterable<String>) {
+      for (String uniqueId in stack.containers!.cast<String>()) {
         var withContainer = true;
         final routeList = stack.routes![uniqueId] as List<Object>?;
         if (routeList != null) {
-          for (var route in routeList as Iterable<Map<Object, Object>>) {
+          for (var route in routeList.cast<Map<Object, Object>>()) {
             var pageName = route['pageName'] as String?;
             var uniqueId = route['uniqueId'] as String?;
             var arguments = route['arguments'] as Map?;
