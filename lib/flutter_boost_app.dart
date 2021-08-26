@@ -21,13 +21,13 @@ typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
 class FlutterBoostApp extends StatefulWidget {
   FlutterBoostApp(
-    FlutterBoostRouteFactory routeFactory, {
-    FlutterBoostAppBuilder? appBuilder,
-    String? initialRoute,
+      FlutterBoostRouteFactory routeFactory, {
+        FlutterBoostAppBuilder? appBuilder,
+        String? initialRoute,
 
-    ///interceptors is to intercept push operation now
-    List<BoostInterceptor>? interceptors,
-  })  : appBuilder = appBuilder ?? _materialAppBuilder,
+        ///interceptors is to intercept push operation now
+        List<BoostInterceptor>? interceptors,
+      })  : appBuilder = appBuilder ?? _materialAppBuilder,
         interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
@@ -51,7 +51,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   static const String _appLifecycleChangedKey = "app_lifecycle_changed_key";
 
   final Map<String, Completer<Object>> _pendingResult =
-      <String, Completer<Object>>{};
+  <String, Completer<Object>>{};
 
   List<BoostContainer> get containers => _containers;
   final List<BoostContainer> _containers = <BoostContainer>[];
@@ -71,15 +71,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   ///Things about method channel
   final Map<String, List<EventListener>> _listenersTable =
-      <String, List<EventListener>>{};
+  <String, List<EventListener>>{};
 
   late VoidCallback _lifecycleStateListenerRemover;
 
   @override
   void initState() {
     assert(
-        BoostFlutterBinding.instance != null,
-        'BoostFlutterBinding is not initialized，'
+    BoostFlutterBinding.instance != null,
+    'BoostFlutterBinding is not initialized，'
         'please refer to "class CustomFlutterBinding" in example project');
 
     _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
@@ -215,21 +215,23 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (stack != null && stack.containers != null) {
       for (String uniqueId in stack.containers!.cast<String>()) {
         var withContainer = true;
-        final routeList = stack.routes![uniqueId] as List<Object>?;
-        if (routeList != null) {
-          for (var route in routeList.cast<Map<Object, Object>>()) {
-            var pageName = route['pageName'] as String?;
-            var uniqueId = route['uniqueId'] as String?;
-            var arguments = route['arguments'] as Map?;
-            Map<String, dynamic> data = {};
-            if (arguments != null) {
-              data = Map<String, dynamic>.from(arguments);
+        final routeList = stack.routes![uniqueId];
+        if (routeList is List) {
+          if (routeList != null) {
+            for (var route in routeList) {
+              var pageName = route['pageName'] as String?;
+              var uniqueId = route['uniqueId'] as String?;
+              var arguments = route['arguments'] as Map?;
+              Map<String, dynamic> data = {};
+              if (arguments != null) {
+                data = Map<String, dynamic>.from(arguments);
+              }
+              withContainer
+                  ? pushContainer(pageName,
+                  uniqueId: uniqueId, arguments: data)
+                  : pushPage(pageName, uniqueId: uniqueId, arguments: data);
+              withContainer = false;
             }
-            withContainer
-                ? pushContainer(pageName,
-                uniqueId: uniqueId, arguments: data)
-                : pushPage(pageName, uniqueId: uniqueId, arguments: data);
-            withContainer = false;
           }
         }
       }
@@ -241,8 +243,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Future<T>? pushWithResult<T extends Object>(String pageName,
       {String? uniqueId,
         required Map<String, dynamic> arguments,
-      required bool withContainer,
-      bool opaque = true}) {
+        required bool withContainer,
+        bool opaque = true}) {
     assert(uniqueId == null);
     uniqueId = _createUniqueId(pageName);
     if (withContainer) {
@@ -424,7 +426,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     } else {
       final page = container.pages.singleWhereOrNull(
-          (entry) => entry.pageInfo.uniqueId == uniqueId);
+              (entry) => entry.pageInfo.uniqueId == uniqueId);
       container.removePage(page);
     }
 
@@ -461,14 +463,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     //If we can't find any container or page matching this id,we return null
 
     var result = containers.singleWhereOrNull(
-        (element) => element.pageInfo!.uniqueId == uniqueId);
+            (element) => element.pageInfo!.uniqueId == uniqueId);
 
     if (result != null) {
       return result;
     }
 
     return containers.singleWhereOrNull(
-        (element) => element.pages
+            (element) => element.pages
             .any((element) => element.pageInfo.uniqueId == uniqueId));
   }
 
@@ -487,7 +489,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     } else {
       for (var container in containers) {
         final page = container.pages.singleWhereOrNull(
-            (entry) => entry.pageInfo.uniqueId == uniqueId);
+                (entry) => entry.pageInfo.uniqueId == uniqueId);
         container.removePage(page);
       }
     }
@@ -542,7 +544,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     assert(topPage != null);
     Future<void>.delayed(
       const Duration(seconds: 1),
-      () => _completePendingNativeResultIfNeeded(topPage),
+          () => _completePendingNativeResultIfNeeded(topPage),
     );
   }
 
