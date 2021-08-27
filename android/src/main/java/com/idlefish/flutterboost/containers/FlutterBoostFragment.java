@@ -37,6 +37,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
+    private boolean isAttached = false;
     private boolean isFinishing = false;
 
     // @Override
@@ -275,32 +276,48 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        // We defer |performDetach| call to new Flutter container's |onResume|;
-        // performDetach();
+        // We Release |PlatformChannel| here to avoid that the native page affected
+        // by system chrome message from flutter.
+        releasePlatformChannel();
         if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void performAttach() {
-        if (platformPlugin == null) {
-            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+        if (!isAttached) {
             // Attach plugins to the activity.
             getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+
+            if (platformPlugin == null) {
+                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            }
+
             // Attach rendering pipeline.
             flutterView.attachToFlutterEngine(getFlutterEngine());
+            isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
         }
     }
 
     private void performDetach() {
-        if (platformPlugin != null) {
+        if (isAttached) {
             // Plugins are no longer attached to the activity.
             getFlutterEngine().getActivityControlSurface().detachFromActivity();
+
             // Release Flutter's control of UI such as system chrome.
-            platformPlugin.destroy();
-            platformPlugin = null;
+            releasePlatformChannel();
+
             // Detach rendering pipeline.
             flutterView.detachFromFlutterEngine();
+
+            isAttached = false;
             if (DEBUG) Log.d(TAG, "#performDetach: " + this);
+        }
+    }
+
+    private void releasePlatformChannel() {
+        if (platformPlugin != null) {
+            platformPlugin.destroy();
+            platformPlugin = null;
         }
     }
 

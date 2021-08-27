@@ -13,6 +13,7 @@ typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 class BoostChannel {
   BoostChannel._();
 
+  ///The singleton for [BoostChannel]
   static final BoostChannel _instance = BoostChannel._();
 
   FlutterBoostAppState _appState;

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'boost_channel.dart';
 import 'boost_container.dart';
@@ -80,7 +81,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'BoostFlutterBinding is not initialized，'
         'please refer to "class CustomFlutterBinding" in example project');
 
-    _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
+    /// create the container matching the initial route
+    final BoostContainer initialContainer =
+        _createContainer(PageInfo(pageName: widget.initialRoute));
+    _containers.add(initialContainer);
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
@@ -89,7 +93,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // initialRoute. Use addPostFrameCallback is because to wait
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refresh();
+      // add this container in route
+      refreshOnPush(initialContainer);
       _addAppLifecycleStateEventListener();
     });
 
@@ -116,11 +121,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final int index = arguments["lifecycleState"];
 
       if (index == AppLifecycleState.resumed.index) {
-        print("resume");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.resumed);
       } else if (index == AppLifecycleState.paused.index) {
-        print("pause");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.paused);
       }
@@ -308,6 +311,65 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void removeWithResult([String uniqueId, Map<String, dynamic> result]) {
     _completePendingResultIfNeeded(uniqueId, result: result);
     pop(uniqueId: uniqueId, result: result);
+  }
+
+  void popUntil({String route, String uniqueId}) async {
+    BoostContainer targetContainer;
+    BoostPage targetPage;
+    int popUntilIndex = containers.length;
+    if (uniqueId != null) {
+      for (int index = containers.length - 1; index >= 0; index--) {
+        for (BoostPage page in containers[index].pages) {
+          if (uniqueId == page.pageInfo.uniqueId ||
+              uniqueId == containers[index].pageInfo.uniqueId) {
+            //uniqueId优先级更高，优先匹配
+            targetContainer = containers[index];
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) {
+          popUntilIndex = index;
+          break;
+        }
+      }
+    }
+
+    if (targetContainer == null && route != null) {
+      for (int index = containers.length - 1; index >= 0; index--) {
+        for (BoostPage page in containers[index].pages) {
+          if (route == page.name) {
+            targetContainer = containers[index];
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) {
+          popUntilIndex = index;
+          break;
+        }
+      }
+    }
+
+    if (targetContainer != null && targetContainer != topContainer) {
+      for (int index = containers.length - 1; index > popUntilIndex; index--) {
+        BoostContainer container = containers[index];
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments = {"animated": false};
+        await nativeRouterApi.popRoute(params);
+      }
+
+      if (targetContainer.topPage != targetPage) {
+        Future<void>.delayed(
+            const Duration(milliseconds: 50),
+            () => targetContainer?.navigator
+                ?.popUntil(ModalRoute.withName(targetPage.name)));
+      }
+    } else {
+      topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+    }
   }
 
   Future<bool> pop({String uniqueId, Object result}) async {
@@ -576,6 +638,7 @@ class BoostPage<T> extends Page<T> {
   }
 
   Route<T> _route;
+
   Route<T> get route => _route;
 
   /// A future that completes when this page is popped.

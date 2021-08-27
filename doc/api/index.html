@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="generator" content="made with love by dartdoc 1.0.2">
+  <meta name="description" content="flutter_boost API docs, for the Dart programming language.">
+  <title>flutter_boost - Dart API docs</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="static-assets/github.css?v1">
+  <link rel="stylesheet" href="static-assets/styles.css?v1">
+  <link rel="icon" href="static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href=""
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="https://github.com/alibaba/flutter_boost">flutter_boost package</a></li>
+  </ol>
+  <div class="self-name">flutter_boost</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      
+<section class="desc markdown">
+  <p align="center">
+  <img src="flutter_boost.png">
+   <b></b><br>
+  <a href="README_CN.md">中文文档</a>
+  <a href="https://zhuanlan.zhihu.com/p/362662962">中文介绍</a>
+</p>
+<h1 id="release-note">Release Note</h1>
+<p>v3.0-preview.9</p>
+<p>PS: Before updating the beta version, please read the CHANGELOG to see if there are any BREAKING CHANGE</p>
+<ul>
+<li>
+<ol>
+<li>Flutter SDK upgrades do not require Boost upgrades</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>Simplify the architecture</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>Simplify the interface</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>Unified design of double-end interface</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>Solved the Top Issue</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>Android does not need to distinguish between AndroidX and Support</li>
+</ol>
+</li>
+</ul>
+<h1 id="flutterboost">FlutterBoost</h1>
+<p>A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts.The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL).&nbsp;
+<a name="bf647454"></a></p>
+<h1 id="prerequisites">Prerequisites</h1>
+<ol>
+<li>Before proceeding, you need to integrate Flutter into your existing project.</li>
+<li>The Flutter SDK version supported by Boost 3.0 is &gt;= 1.22</li>
+</ol>
+<h1 id="getting-started">Getting Started</h1>
+<h2 id="add-a-dependency-in-you-flutter-project">Add a dependency in you Flutter project.</h2>
+<p>Open you pubspec.yaml and add the following line to&nbsp;dependencies:</p>
+<pre class="language-json"><code class="language-json">flutter_boost:
+    git:
+        url: 'https://github.com/alibaba/flutter_boost.git'
+        ref: 'v3.0-preview.9'
+</code></pre>
+<h1 id="boost--integration">Boost  Integration</h1>
+<h1 id="">使用文档</h1>
+<ul>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/install.md">集成详细步骤</a></li>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/routeAPI.md">基本的路由API</a></li>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md">页面生命周期监测相关API</a></li>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/event.md">自定义发送跨端事件API</a></li>
+</ul>
+<h1 id="-2">建设文档</h1>
+<ul>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md">如何向我们提issue</a></li>
+<li><a href="https://github.com/alibaba/flutter_boost/blob/master/docs/pr.md">如何向我们提PR</a></li>
+</ul>
+<h1 id="faq">FAQ</h1>
+<p>please read this document:
+<a href="Frequently Asked Question.md">FAQ</a></p>
+<h1 id="license">License</h1>
+<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
+<h2 id="-3">关于我们</h2>
+<p>阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。</p>
+<p>我们在公众号中为你精选了Flutter独家干货，全面而深入。</p>
+<p>内容包括：Flutter的接入、规模化应用、引擎探秘、工程体系、创新技术等教程和开源信息。</p>
+<p><strong>架构／服务端／客户端／前端／算法／质量工程师 在公众号中投递简历，名额不限哦</strong></p>
+<p>欢迎来闲鱼做一个好奇、幸福、有影响力的程序员，简历投递：tino.wjf@alibaba-inc.com</p>
+<p>订阅地址</p><img src="https://img.alicdn.com/tfs/TB17Ki5XubviK0jSZFNXXaApXXa-656-656.png" width="328px" height="328px">
+<p><a href="https://twitter.com/xianyutech" title="For English">For English</a></p>
+</section>
+
+
+      <section class="summary">
+          <h2>Libraries</h2>
+        <dl>
+          <dt id="boost_channel">
+  <span class="name"><a href="boost_channel/boost_channel-library.html">boost_channel</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_container">
+  <span class="name"><a href="boost_container/boost_container-library.html">boost_container</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_flutter_binding">
+  <span class="name"><a href="boost_flutter_binding/boost_flutter_binding-library.html">boost_flutter_binding</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_flutter_router_api">
+  <span class="name"><a href="boost_flutter_router_api/boost_flutter_router_api-library.html">boost_flutter_router_api</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_interceptor">
+  <span class="name"><a href="boost_interceptor/boost_interceptor-library.html">boost_interceptor</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_lifecycle_binding">
+  <span class="name"><a href="boost_lifecycle_binding/boost_lifecycle_binding-library.html">boost_lifecycle_binding</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="boost_navigator">
+  <span class="name"><a href="boost_navigator/boost_navigator-library.html">boost_navigator</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="flutter_boost">
+  <span class="name"><a href="flutter_boost/flutter_boost-library.html">flutter_boost</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="flutter_boost_app">
+  <span class="name"><a href="flutter_boost_app/flutter_boost_app-library.html">flutter_boost_app</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="logger">
+  <span class="name"><a href="logger/logger-library.html">logger</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="messages">
+  <span class="name"><a href="messages/messages-library.html">messages</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="overlay_entry">
+  <span class="name"><a href="overlay_entry/overlay_entry-library.html">overlay_entry</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+          <dt id="page_visibility">
+  <span class="name"><a href="page_visibility/page_visibility-library.html">page_visibility</a></span> 
+
+</dt>
+<dd> 
+</dd>
+
+        </dl>
+      </section>
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="https://github.com/alibaba/flutter_boost">flutter_boost package</a></li>
+</ol>
+
+
+    <h5 class="hidden-xs"><span class="package-name">flutter_boost</span> <span class="package-kind">package</span></h5>
+    <ol>
+      <li class="section-title">Libraries</li>
+      <li><a href="boost_channel/boost_channel-library.html">boost_channel</a></li>
+      <li><a href="boost_container/boost_container-library.html">boost_container</a></li>
+      <li><a href="boost_flutter_binding/boost_flutter_binding-library.html">boost_flutter_binding</a></li>
+      <li><a href="boost_flutter_router_api/boost_flutter_router_api-library.html">boost_flutter_router_api</a></li>
+      <li><a href="boost_interceptor/boost_interceptor-library.html">boost_interceptor</a></li>
+      <li><a href="boost_lifecycle_binding/boost_lifecycle_binding-library.html">boost_lifecycle_binding</a></li>
+      <li><a href="boost_navigator/boost_navigator-library.html">boost_navigator</a></li>
+      <li><a href="flutter_boost/flutter_boost-library.html">flutter_boost</a></li>
+      <li><a href="flutter_boost_app/flutter_boost_app-library.html">flutter_boost_app</a></li>
+      <li><a href="logger/logger-library.html">logger</a></li>
+      <li><a href="messages/messages-library.html">messages</a></li>
+      <li><a href="overlay_entry/overlay_entry-library.html">overlay_entry</a></li>
+      <li><a href="page_visibility/page_visibility-library.html">page_visibility</a></li>
+</ol>
+
+  </div>
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div>
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_boost
+      3.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="static-assets/highlight.pack.js?v1"></script>
+<script src="static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+

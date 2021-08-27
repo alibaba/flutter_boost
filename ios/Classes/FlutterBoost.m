@@ -95,6 +95,25 @@
     
 }
 
+- (void)unsetFlutterBoost{
+    void (^engineDestroy)(void) = ^{
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
+        self.plugin.delegate = nil;
+        self.plugin = nil;
+        
+        [self.engine destroyContext];
+        self.engine = nil;
+    };
+    
+    if ([NSThread isMainThread]){
+        engineDestroy();
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            engineDestroy();
+        });
+    }
+}
 
 + (instancetype)instance{
     static id _instance = nil;
