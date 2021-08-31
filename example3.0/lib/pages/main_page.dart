@@ -10,9 +10,9 @@ class Model {
 }
 
 class MainPage extends StatefulWidget {
-  final String data;
+  final String? data;
 
-  const MainPage({Key key, this.data}) : super(key: key);
+  const MainPage({Key? key, this.data}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
 
   GlobalKey<ScaffoldState> key = GlobalKey();
 
-  VoidCallback removeListener;
+  VoidCallback? removeListener;
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage> {
         ));
       });
 
-      Overlay.of(context).insert(entry);
+      Overlay.of(context)!.insert(entry);
 
       Future.delayed(const Duration(seconds: 2), () {
         entry.remove();
@@ -216,6 +216,6 @@ class _MainPageState extends State<MainPage> {
     final bar = SnackBar(
         content: Text('return value is $value'),
         duration: const Duration(seconds: 1));
-    key.currentState.showSnackBar(bar);
+    key.currentState!.showSnackBar(bar);
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class DialogPage extends StatefulWidget {
-  const DialogPage({Key key}) : super(key: key);
+  const DialogPage({Key? key}) : super(key: key);
 
   @override
   _DialogPageState createState() => _DialogPageState();

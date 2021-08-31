@@ -13,7 +13,7 @@ import 'package:flutter_boost/boost_navigator.dart';
 
 /// This is the main application widget.
 class SystemUiOverlayStyleDemo extends StatelessWidget {
-  const SystemUiOverlayStyleDemo({Key key}) : super(key: key);
+  const SystemUiOverlayStyleDemo({Key? key}) : super(key: key);
 
   static const String _title = 'SystemUiOverlayStyle Demo';
 
@@ -28,7 +28,7 @@ class SystemUiOverlayStyleDemo extends StatelessWidget {
 
 /// This is the stateful widget that the main application instantiates.
 class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key key}) : super(key: key);
+  const MyStatefulWidget({Key? key}) : super(key: key);
 
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState();

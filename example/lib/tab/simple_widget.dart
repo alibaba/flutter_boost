@@ -5,7 +5,7 @@ import 'package:flutter_boost/page_visibility.dart';
 import '../main.dart';
 
 class SimpleWidget extends StatefulWidget {
-  final Map params;
+  final Map? params;
   final String messages;
   final String uniqueId;
 
@@ -20,7 +20,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
   static const String _kTag = 'page_visibility';
   @override
   void didChangeDependencies() {
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
     print('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
     super.didChangeDependencies();
   }

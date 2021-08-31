@@ -13,7 +13,7 @@ class StateRestorationDemo extends StatelessWidget {
 }
 
 class StateRestorationPage extends StatefulWidget {
-  const StateRestorationPage({Key key}) : super(key: key);
+  const StateRestorationPage({Key? key}) : super(key: key);
 
   @override
   _StateRestorationPageState createState() => _StateRestorationPageState();
@@ -60,7 +60,7 @@ class _StateRestorationPageState extends State<StateRestorationPage>
   String get restorationId => 'StateRestorationDemo';
 
   @override
-  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     // Register our property to be saved every time it changes,
     // and to be restored every time our app is killed by the OS!
     registerForRestoration(_index, 'nav_bar_index');

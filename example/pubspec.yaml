@@ -10,7 +10,7 @@ description: Demonstrates how to use the flutter_boost plugin.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -18,10 +18,9 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  image_picker: 0.6.7+17
-  video_player: ^0.10.3
-  webview_flutter: 1.0.7
+  image_picker: 0.8.3+3
+  video_player: 2.1.6
+  webview_flutter: 2.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

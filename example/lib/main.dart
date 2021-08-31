@@ -116,7 +116,7 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterRouteWidget(
-                params: settings.arguments,
+                params: settings.arguments as Map<dynamic, dynamic>?,
                 uniqueId: uniqueId,
               ));
     },
@@ -178,7 +178,7 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => FlutterRouteWidget(
-          params: settings.arguments,
+          params: settings.arguments as Map<dynamic, dynamic>?,
           uniqueId: uniqueId,
         ),
         // transitionsBuilder: (BuildContext context, Animation<double> animation,
@@ -203,25 +203,25 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a flutter fragment"));
+              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
     },
     'tab_message': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a flutter fragment"));
+              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
     },
     'tab_flutter1': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a custom FlutterView"));
+              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
     },
     'tab_flutter2': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a custom FlutterView"));
+              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
     },
 
     'f2f_first': (settings, uniqueId) {
@@ -250,14 +250,14 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
-                params: settings.arguments,
+                params: settings.arguments as Map<dynamic, dynamic>?,
                 uniqueId: uniqueId,
               ));
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
+  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+    FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }
@@ -290,22 +290,22 @@ class _MyAppState extends State<MyApp> {
 
 class BoostNavigatorObserver extends NavigatorObserver {
   @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didPush' + route.settings.name);
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didPush' + route.settings.name!);
   }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didPop' + route.settings.name);
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didPop' + route.settings.name!);
   }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didRemove' + route.settings.name);
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didRemove' + route.settings.name!);
   }
 
   @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didStartUserGesture' + route.settings.name);
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didStartUserGesture' + route.settings.name!);
   }
 }

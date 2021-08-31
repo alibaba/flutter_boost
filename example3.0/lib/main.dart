@@ -33,8 +33,8 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) {
-            Map<String, Object> map = settings.arguments;
-            String data = map['data'];
+            Map<String, Object> map = settings.arguments as Map<String, Object>;
+            String? data = map['data'] as String?;
             return MainPage(
               data: data,
             );
@@ -44,8 +44,8 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) {
-            Map<String, Object> map = settings.arguments;
-            String data = map['data'];
+            Map<String, Object> map = settings.arguments as Map<String, Object>;
+            String? data = map['data'] as String?;
             return SimplePage(
               data: data,
             );
@@ -76,8 +76,8 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
+  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+    FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }

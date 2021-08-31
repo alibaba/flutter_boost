@@ -7,9 +7,9 @@ import 'package:flutter_boost/page_visibility.dart';
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params, this.message, this.uniqueId});
 
-  final Map params;
-  final String message;
-  final String uniqueId;
+  final Map? params;
+  final String? message;
+  final String? uniqueId;
 
   @override
   _FlutterRouteWidgetState createState() => _FlutterRouteWidgetState();
@@ -29,7 +29,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
   @override
   void didChangeDependencies() {
     Logger.log('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
     super.didChangeDependencies();
   }
 
@@ -80,12 +80,12 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
     Logger.log(
         '${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
 
-    final String message = widget.message;
+    final String? message = widget.message;
     return Scaffold(
       appBar: AppBar(
         brightness: Brightness.dark,
         backgroundColor: Colors.black,
-        textTheme: new TextTheme(title: TextStyle(color: Colors.black)),
+        textTheme: new TextTheme(headline6: TextStyle(color: Colors.black)),
         leading: Builder(builder: (BuildContext context) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -113,7 +113,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                           "This is a flutter activity.\nuniqueId:${widget.uniqueId}",
                       style: TextStyle(color: Colors.blue)),
                   TextSpan(
-                      text: "\nparams: ${widget?.params}",
+                      text: "\nparams: ${widget.params}",
                       style: TextStyle(fontStyle: FontStyle.italic)),
                 ])),
                 alignment: AlignmentDirectional.center,
@@ -168,7 +168,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("native")
-                    .then((value) => print("return:${value?.toString()}")),
+                    .then((value) => print("return:${value.toString()}")),
               ),
               InkWell(
                 child: Container(
@@ -327,7 +327,7 @@ class PushWidget extends StatefulWidget {
 }
 
 class _PushWidgetState extends State<PushWidget> {
-  VoidCallback _backPressedListenerUnsub;
+  VoidCallback? _backPressedListenerUnsub;
 
   @override
   void dispose() {

@@ -113,17 +113,17 @@ class RadialExpansionDemo extends StatelessWidget {
     );
   }
 
-  static RectTween _createRectTween(Rect begin, Rect end) {
+  static RectTween _createRectTween(Rect? begin, Rect? end) {
     return MaterialRectCenterArcTween(begin: begin, end: end);
   }
 }
 
 class Photo extends StatelessWidget {
-  Photo({Key key, this.photo, this.color, this.onTap}) : super(key: key);
+  Photo({Key? key, this.photo, this.color, this.onTap}) : super(key: key);
 
-  final String photo;
-  final Color color;
-  final VoidCallback onTap;
+  final String? photo;
+  final Color? color;
+  final VoidCallback? onTap;
 
   Widget build(BuildContext context) {
     return Material(
@@ -133,7 +133,7 @@ class Photo extends StatelessWidget {
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints size) {
-            return Image.asset(photo, fit: BoxFit.contain);
+            return Image.asset(photo!, fit: BoxFit.contain);
           },
         ),
       ),
@@ -143,15 +143,15 @@ class Photo extends StatelessWidget {
 
 class RadialExpansion extends StatelessWidget {
   RadialExpansion({
-    Key key,
-    this.maxRadius,
+    Key? key,
+    required this.maxRadius,
     this.child,
   })  : clipRectSize = 2.0 * (maxRadius / sqrt2),
         super(key: key);
 
   final double maxRadius;
   final clipRectSize;
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
