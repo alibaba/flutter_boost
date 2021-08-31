@@ -33,8 +33,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) {
-            Map<String, Object> map = settings.arguments as Map<String, Object>;
-            String? data = map['data'] as String?;
+            var map = settings.arguments;
+            String data = "";
+            if (map is Map) {
+              data = map['data'] ?? "";
+            }
             return MainPage(
               data: data,
             );
@@ -44,8 +47,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) {
-            Map<String, Object> map = settings.arguments as Map<String, Object>;
-            String? data = map['data'] as String?;
+            var map = settings.arguments;
+            String data = "";
+            if (map is Map) {
+              data = map['data'] ?? "";
+            }
             return SimplePage(
               data: data,
             );

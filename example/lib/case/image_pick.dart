@@ -20,7 +20,7 @@ class ImagePickerPage extends StatefulWidget {
 }
 
 class _ImagePickerPageState extends State<ImagePickerPage> {
-  PickedFile? _imageFile;
+  XFile? _imageFile;
   dynamic _pickImageError;
   bool isVideo = false;
   VideoPlayerController? _controller;
@@ -64,23 +64,17 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
       await _playVideo(file!);
     } else {
       await _displayPickImageDialog(context!,
-          (double? maxWidth, double? maxHeight, int? quality) async {
-        try {
-          final pickedFile = await _picker.getImage(
-            source: source,
-            maxWidth: maxWidth!,
-            maxHeight: maxHeight!,
-            imageQuality: quality!,
-          );
-          setState(() {
-            _imageFile = pickedFile;
+              (double? maxWidth, double? maxHeight, int? quality) async {
+            final pickedFile = await _picker.pickImage(
+              source: source,
+              maxWidth: maxWidth,
+              maxHeight: maxHeight,
+              imageQuality: quality,
+            );
+            setState(() {
+              _imageFile = pickedFile;
+            });
           });
-        } catch (e) {
-          setState(() {
-            _pickImageError = e;
-          });
-        }
-      });
     }
   }
 
