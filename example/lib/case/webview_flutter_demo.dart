@@ -61,38 +61,37 @@ class WebViewExampleState extends State<WebViewExample> {
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    if (visible)
-                      Container(
-                        width: 1080,
-                        height: 50,
-                        margin: const EdgeInsets.all(10.0),
-                        child: MaterialButton(
-                          color: Colors.blue,
-                          child: Text(
-                            'Click me to change something ~~',
-                            style:
-                                TextStyle(fontSize: 20.0, color: Colors.white),
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              visible = !visible;
-                            });
-                          },
+                    Container(
+                      width: 1080,
+                      height: 50,
+                      margin: const EdgeInsets.all(10.0),
+                      child: MaterialButton(
+                        color: Colors.blue,
+                        child: Text(
+                          'Click me to change something ~~',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
                         ),
+                        onPressed: () {
+                          setState(() {
+                            visible = !visible;
+                          });
+                        },
                       ),
+                    ),
                     Stack(
                       children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              border:
-                                  Border.all(color: Colors.blue, width: 5.0)),
-                          width: 400,
-                          height: 300,
-                          margin: const EdgeInsets.all(10.0),
-                          child: WebView(
-                            initialUrl: url,
+                        if (visible)
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.blue, width: 5.0)),
+                            width: 400,
+                            height: 300,
+                            margin: const EdgeInsets.all(10.0),
+                            child: WebView(
+                              initialUrl: url,
+                            ),
                           ),
-                        ),
                         Opacity(
                           opacity: visible ? 1.0 : 0.5,
                           child: Container(
