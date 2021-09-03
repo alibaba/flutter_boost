@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
 import 'boost_interceptor.dart';
+import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
@@ -68,11 +68,12 @@ class BoostNavigator {
   ///
   /// And it will return the result popped by page as a Future<T>
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments,
+      {String uniqueId,
+      Map<String, dynamic> arguments,
       bool withContainer = false,
       bool opaque = true}) async {
-    var pushOption =
-        BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
+    var pushOption = BoostInterceptorOption(
+        name, uniqueId, arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
     for (var interceptor in appState.interceptors) {
@@ -95,6 +96,7 @@ class BoostNavigator {
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
           return appState.pushWithResult(pushOption.name,
+              uniqueId: pushOption.uniqueId,
               arguments: pushOption.arguments,
               withContainer: withContainer,
               opaque: opaque);
