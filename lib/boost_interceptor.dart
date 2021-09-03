@@ -4,7 +4,7 @@ import 'boost_navigator.dart';
 
 /// The request object in Interceptor,which is to passed
 class BoostInterceptorOption {
-  BoostInterceptorOption(this.name, this.uniqueId, this.arguments);
+  BoostInterceptorOption(this.name, {this.uniqueId, this.arguments});
 
   /// Your page name in route table
   String name;

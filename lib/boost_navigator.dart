@@ -68,12 +68,11 @@ class BoostNavigator {
   ///
   /// And it will return the result popped by page as a Future<T>
   Future<T> push<T extends Object>(String name,
-      {String uniqueId,
-      Map<String, dynamic> arguments,
+      {Map<String, dynamic> arguments,
       bool withContainer = false,
       bool opaque = true}) async {
-    var pushOption = BoostInterceptorOption(
-        name, uniqueId, arguments ?? <String, dynamic>{});
+    var pushOption = BoostInterceptorOption(name,
+        arguments: arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
     for (var interceptor in appState.interceptors) {
