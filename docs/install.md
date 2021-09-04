@@ -14,13 +14,11 @@
 
 1. 首先，需要添加`FlutterBoost`依赖到`yaml`文件
 
-```dart
-flutter_boost:git:url: '
-https: //github.com/alibaba/flutter_boost.git
-'
-ref: '
-v3.0-
-preview.9'
+```yaml
+flutter_boost:
+  git:
+    url: 'https://github.com/alibaba/flutter_boost.git'
+    ref: 'v3.0-preview.9'
 ```
 
 之后在flutter工程下运行`flutter pub get` dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
@@ -40,8 +38,7 @@ void main() {
 }
 
 ///创建一个自定义的Binding，继承和with的关系如下，里面什么都不用写
-class CustomFlutterBinding extends WidgetsFlutterBinding
-    with BoostFlutterBinding {}
+class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {}
 
 class MyApp extends StatefulWidget {
   @override
@@ -49,17 +46,20 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  
+  /// 由于很多同学说没有跳转动画，这里是因为之前exmaple里面用的是 [PageRouteBuilder]，
+  /// 其实这里是可以自定义的，和Boost没太多关系，比如我想用类似iOS平台的动画，
+  /// 那么只需要像下面这样写成 [CupertinoPageRoute] 即可
+  /// (这里全写成[MaterialPageRoute]也行，这里只不过用[CupertinoPageRoute]举例子)
+  ///
+  /// 注意，如果需要push的时候，两个页面都需要动的话，
+  /// （就是像iOS native那样，在push的时候，前面一个页面也会向左推一段距离）
+  /// 那么前后两个页面都必须是遵循CupertinoRouteTransitionMixin的路由
+  /// 简单来说，就两个页面都是CupertinoPageRoute就好
+  /// 如果用MaterialPageRoute的话同理
+
   static Map<String, FlutterBoostRouteFactory> routerMap = {
     'mainPage': (settings, uniqueId) {
-      /// 由于很多同学说没有跳转动画，这里是因为之前exmaple里面用的是PageRouteBuilder，
-      /// 而PageRouteBuilder是不自带动画的，所以需要写成其他的Route
-      /// 这里完全是可以自定义的，和Boost没太多关系，比如我想用类似IOS平台的动画，
-      /// 那么只需要像下面这样写成CupertinoPageRoute即可
-      ///
-      /// 注意，如果需要push的时候，两个页面都需要动的话，
-      /// （就是像iOS native那样，在push的时候，前面一个页面也会向左推一段距离）
-      /// 那么前后两个页面都必须是with了CupertinoRouteTransitionMixin的路由
-      /// 简单来说，就两个页面都是CupertinoPageRoute就好
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
@@ -70,6 +70,7 @@ class _MyAppState extends State<MyApp> {
             );
           });
     },
+
     'simplePage': (settings, uniqueId) {
       Map<String, Object> map = settings.arguments ?? {};
       String data = map['data'];
@@ -134,18 +135,19 @@ implementation project(':flutter_boost')
 3. 还需要在清单文件中添加以下内容直接粘贴到`<application>`标签包裹的内部即可，也就是和其他`<activity>`标签同级
 
 ```xml
-
 <activity
         android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
         android:theme="@style/Theme.AppCompat"
         android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
         android:hardwareAccelerated="true"
-        android:windowSoftInputMode="adjustResize">
+        android:windowSoftInputMode="adjustResize" >
 
 </activity>
 <meta-data android:name="flutterEmbedding"
            android:value="2">
 </meta-data>
+
+
 ```
 
 然后点击右上角的sync同步一下，就会开始一些下载和同步的进程，等待完成
