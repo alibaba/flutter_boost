@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
@@ -24,6 +25,8 @@ class _MainPageState extends State<MainPage> {
   GlobalKey<ScaffoldState> key = GlobalKey();
 
   VoidCallback removeListener;
+
+  ValueNotifier<bool> withContainer = ValueNotifier(false);
 
   @override
   void initState() {
@@ -71,7 +74,7 @@ class _MainPageState extends State<MainPage> {
     ///Focus on code below to know the basic API
     ///大家重点关注这个Model里面各个API的调用，其他的都是UI的布局可以不用看
     ///
-    List<Model> models = [
+    final List<Model> models = [
       Model("open native page", () {
         BoostNavigator.instance.push("homePage", arguments: {
           'data': _controller.text
@@ -81,16 +84,9 @@ class _MainPageState extends State<MainPage> {
         Map<String, Object> result = {'data': _controller.text};
         BoostNavigator.instance.pop(result);
       }),
-      Model("open flutter page with container", () {
+      Model("open flutter page", () {
         BoostNavigator.instance.push("simplePage",
-            withContainer: true,
-            arguments: {
-              'data': _controller.text
-            }).then((value) => showTipIfNeeded(value.toString()));
-      }),
-      Model("open flutter page without container", () {
-        BoostNavigator.instance.push("simplePage",
-            withContainer: false,
+            withContainer: withContainer.value,
             arguments: {
               'data': _controller.text
             }).then((value) => showTipIfNeeded(value.toString()));
@@ -98,19 +94,13 @@ class _MainPageState extends State<MainPage> {
       Model("open lifecycle test page", () {
         BoostNavigator.instance.push(
           "lifecyclePage",
-          withContainer: true,
+          withContainer: withContainer.value,
         );
       }),
       Model("push replacement with Container", () {
         BoostNavigator.instance.pushReplacement(
           "replacementPage",
-          withContainer: true,
-        );
-      }),
-      Model("push replacement without container", () {
-        BoostNavigator.instance.pushReplacement(
-          "replacementPage",
-          withContainer: false,
+          withContainer: withContainer.value,
         );
       }),
       Model("open dialog with container", () {
@@ -146,6 +136,7 @@ class _MainPageState extends State<MainPage> {
           ),
           middle: Text('FlutterBoost Example'),
         ),
+        bottomNavigationBar: _buildBottomBar(),
         body: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -216,6 +207,33 @@ class _MainPageState extends State<MainPage> {
     final bar = SnackBar(
         content: Text('return value is $value'),
         duration: const Duration(seconds: 1));
-    key.currentState.showSnackBar(bar);
+    ScaffoldMessenger.of(context).showSnackBar(bar);
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      color: Colors.grey[200],
+      padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 10, top: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'with container',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          ValueListenableBuilder(
+            valueListenable: withContainer,
+            builder: (BuildContext context, value, Widget child) {
+              return CupertinoSwitch(
+                  value: value,
+                  onChanged: (newValue) {
+                    withContainer.value = newValue;
+                  });
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
