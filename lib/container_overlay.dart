@@ -22,10 +22,7 @@ enum BoostSpecificEntryRefreshMode {
 class ContainerOverlayEntry extends OverlayEntry {
   ContainerOverlayEntry(BoostContainer container)
       : containerUniqueId = container.pageInfo.uniqueId,
-        super(
-            builder: (ctx) => BoostContainerWidget(container: container),
-            opaque: true,
-            maintainState: true);
+        super(builder: (ctx) => BoostContainerWidget(container: container), opaque: true, maintainState: true);
 
   /// This overlay's id, which is the same as the it's related container
   final String containerUniqueId;
@@ -37,14 +34,15 @@ class ContainerOverlayEntry extends OverlayEntry {
 }
 
 /// Creates a [ContainerOverlayEntry] for the given [BoostContainer].
-typedef ContainerOverlayEntryFactory = ContainerOverlayEntry Function(
-    BoostContainer container);
+typedef ContainerOverlayEntryFactory = ContainerOverlayEntry Function(BoostContainer container);
 
 class ContainerOverlay {
   ContainerOverlay._();
+
   static final ContainerOverlay instance = ContainerOverlay._();
 
-  List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
+  final List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
+
   static ContainerOverlayEntryFactory _overlayEntryFactory;
 
   /// Sets a custom [ContainerOverlayEntryFactory].
@@ -53,8 +51,7 @@ class ContainerOverlay {
   }
 
   static ContainerOverlayEntryFactory get overlayEntryFactory {
-    return _overlayEntryFactory ??=
-        ((container) => ContainerOverlayEntry(container));
+    return _overlayEntryFactory ??= ((container) => ContainerOverlayEntry(container));
   }
 
   ///Refresh an specific entry instead of all of entries to enhance the performace
@@ -62,8 +59,7 @@ class ContainerOverlay {
   ///[container] : The container you want to operate, it is related with
   ///              internal [OverlayEntry]
   ///[mode] : The [BoostSpecificEntryRefreshMode] you want to choose
-  void refreshSpecificOverlayEntries(
-      BoostContainer container, BoostSpecificEntryRefreshMode mode) {
+  void refreshSpecificOverlayEntries(BoostContainer container, BoostSpecificEntryRefreshMode mode) {
     //Get OverlayState from global key
     final overlayState = overlayKey.currentState;
     if (overlayState == null) {

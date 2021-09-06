@@ -659,6 +659,13 @@ class BoostNavigatorObserver extends NavigatorObserver {
     //handle internal route but ignore dialog or abnormal route.
     //otherwise, the normal page will be affected.
     if (previousRoute != null && route?.settings?.name != null) {
+      final navigatorObserverList =
+          BoostLifecycleBinding.instance.navigatorObserverList;
+      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+        for (var observer in navigatorObserverList) {
+          observer.didPush(route, previousRoute);
+        }
+      }
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
     }
     super.didPush(route, previousRoute);
@@ -667,16 +674,66 @@ class BoostNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (previousRoute != null && route?.settings?.name != null) {
+      final navigatorObserverList =
+          BoostLifecycleBinding.instance.navigatorObserverList;
+      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+        for (var observer in navigatorObserverList) {
+          observer.didPop(route, previousRoute);
+        }
+      }
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
     super.didPop(route, previousRoute);
   }
 
   @override
-  void didRemove(Route route, Route previousRoute) {
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didRemove(route, previousRoute);
+      }
+    }
     super.didRemove(route, previousRoute);
     if (route != null) {
       BoostLifecycleBinding.instance.routeDidRemove(route);
     }
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+      }
+    }
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didStartUserGesture(route, previousRoute);
+      }
+    }
+    super.didStartUserGesture(route, previousRoute);
+  }
+
+  @override
+  void didStopUserGesture() {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didStopUserGesture();
+      }
+    }
+    super.didStopUserGesture();
   }
 }
