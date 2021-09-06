@@ -32,8 +32,21 @@
 #define ENGINE [[FlutterBoost instance] engine]
 #define FB_PLUGIN  [FlutterBoostPlugin getPlugin: [[FlutterBoost instance] engine]]
 
-//#define FLUTTER_VIEW ENGINE.flutterViewController.view
-//#define FLUTTER_VC ENGINE.flutterViewController
+
+
+#define weakify(var) ext_keywordify __weak typeof(var) O2OWeak_##var = var;
+#define strongify(var) ext_keywordify \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+__strong typeof(var) var = O2OWeak_##var; \
+_Pragma("clang diagnostic pop")
+#if DEBUG
+#   define ext_keywordify autoreleasepool {}
+#else
+#   define ext_keywordify try {} @catch (...) {}
+#endif
+
+
 
 @interface FlutterViewController (bridgeToviewDidDisappear)
 - (void)flushOngoingTouches;
@@ -62,6 +75,7 @@
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @property(nonatomic, assign) BOOL opaque;
+@property (nonatomic, strong) FBVoidCallback removePopGesEventCallback;
 @end
 
 @implementation FBFlutterViewContainer
@@ -176,6 +190,7 @@
 
 - (void)dealloc
 {
+    self.removePopGesEventCallback();
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -193,6 +208,17 @@
     if(self.opaque){
         self.view.backgroundColor = UIColor.whiteColor;
     }
+    
+    @weakify(self)
+    // 注册侧滑手势改变的监听，当容器内部的page大于1的时候，将不允许原生容器的侧滑手势
+    // 当内部Page等于1的时候，会允许原生容器的侧滑
+    self.removePopGesEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
+        @strongify(self)
+        NSNumber *enablePopGesNum = arguments[@"enablePopGes"];
+        BOOL enable = [enablePopGesNum boolValue];
+        self.navigationController.interactivePopGestureRecognizer.enabled = enable;
+    } forName:@"disable_ios_pop_gesture_key"];
+    
 }
 
 #pragma mark - ScreenShots
