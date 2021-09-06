@@ -42,6 +42,7 @@ class ContainerOverlay {
   static final ContainerOverlay instance = ContainerOverlay._();
 
   final List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
+
   static ContainerOverlayEntryFactory _overlayEntryFactory;
 
   /// Sets a custom [ContainerOverlayEntryFactory].
