@@ -1,12 +1,7 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/container.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_boost/boost_navigator.dart';
 import 'package:flutter_boost/logger.dart';
 
 class MediaQueryRouteWidget extends StatefulWidget {
@@ -61,19 +56,48 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
         '${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('media query demo'),
-        ),
-        body: Container(
-            height: 500,
-            margin: const EdgeInsets.all(24.0),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('top: ${MediaQuery.of(context).padding.top}'),
-                  Text('bottom: ${MediaQuery.of(context).padding.bottom}'),
-                  Text('width: ${MediaQuery.of(context).size.width}'),
-                  Text('height: ${MediaQuery.of(context).size.height}')
-                ])));
+      appBar: AppBar(
+        title: Text('media query demo'),
+      ),
+      body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                height: 500,
+                margin: const EdgeInsets.all(24.0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text('top: ${MediaQuery.of(context).padding.top}'),
+                      Text('bottom: ${MediaQuery.of(context).padding.bottom}'),
+                      Text('width: ${MediaQuery.of(context).size.width}'),
+                      Text('height: ${MediaQuery.of(context).size.height}')
+                    ])),
+            InkWell(
+              child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.yellow,
+                  child: Text(
+                    'Pop with BoostNavigator',
+                    style: TextStyle(fontSize: 22.0, color: Colors.black),
+                  )),
+              onTap: () => BoostNavigator.instance
+                  .pop('I am BoostNavigator from MediaQueryRouteWidget!'),
+            ),
+            InkWell(
+              child: Container(
+                  padding: const EdgeInsets.all(8.0),
+                  margin: const EdgeInsets.all(8.0),
+                  color: Colors.yellow,
+                  child: Text(
+                    'Pop with Navigator',
+                    style: TextStyle(fontSize: 22.0, color: Colors.black),
+                  )),
+              onTap: () => Navigator.of(context)
+                  .pop('I am Navigator from MediaQueryRouteWidget too!'),
+            ),
+          ]),
+    );
   }
 }

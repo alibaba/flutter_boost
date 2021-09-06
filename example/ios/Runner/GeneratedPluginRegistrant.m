@@ -4,6 +4,12 @@
 
 #import "GeneratedPluginRegistrant.h"
 
+#if __has_include(<flutter_boost/FlutterBoostPlugin.h>)
+#import <flutter_boost/FlutterBoostPlugin.h>
+#else
+@import flutter_boost;
+#endif
+
 #if __has_include(<image_picker/FLTImagePickerPlugin.h>)
 #import <image_picker/FLTImagePickerPlugin.h>
 #else
@@ -16,18 +22,19 @@
 @import video_player;
 #endif
 
-#if __has_include(<flutter_boost/FlutterBoostPlugin.h>)
-#import <flutter_boost/FlutterBoostPlugin.h>
+#if __has_include(<webview_flutter/FLTWebViewFlutterPlugin.h>)
+#import <webview_flutter/FLTWebViewFlutterPlugin.h>
 #else
-@import flutter_boost;
+@import webview_flutter;
 #endif
 
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
+  [FlutterBoostPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterBoostPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [FLTVideoPlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTVideoPlayerPlugin"]];
-  [FlutterBoostPlugin registerWithRegistrar:[registry registrarForPlugin:@"FlutterBoostPlugin"]];
+  [FLTWebViewFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTWebViewFlutterPlugin"]];
 }
 
 @end

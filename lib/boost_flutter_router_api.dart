@@ -18,17 +18,17 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   @override
   void pushRoute(CommonParams arg) {
-    appState.push(
-      arg.pageName,
-      uniqueId: arg.uniqueId,
-      arguments:
-          Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}),
-      withContainer: true,
-    );
+    appState.pushContainer(arg.pageName,
+        uniqueId: arg.uniqueId,
+        arguments:
+            Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
   }
 
   @override
   void popRoute(CommonParams arg) => appState.pop(uniqueId: arg.uniqueId);
+
+  @override
+  void popUntilRoute(CommonParams arg) => appState.popUntil(route: arg.pageName,uniqueId: arg.uniqueId);
 
   @override
   void onForeground(CommonParams arg) => appState.onForeground();
@@ -47,4 +47,11 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   @override
   void onContainerShow(CommonParams arg) => appState.onContainerShow(arg);
+
+  ///When native send msg to flutter,this method will be called
+  @override
+  void sendEventToFlutter(CommonParams arg) =>
+      appState.onReceiveEventFromNative(arg);
+
+
 }

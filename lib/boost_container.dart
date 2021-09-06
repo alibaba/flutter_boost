@@ -5,9 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
-class BoostContainer {
+/// This class is an abstraction of native containers
+/// Each of which has a bunch of pages in the [NavigatorExt]
+class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
-    pages.add(BoostPage.create(pageInfo));
+    _pages.add(BoostPage.create(pageInfo));
   }
 
   static BoostContainer of(BuildContext context) {
@@ -15,34 +17,64 @@ class BoostContainer {
     return state.container;
   }
 
+  /// The local key
   final LocalKey key;
 
+  /// The pageInfo for this container
   final PageInfo pageInfo;
 
+  /// A list of page in this container
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
 
-  List<BoostPage<dynamic>> get pages => _pages;
+  /// Getter for a list that cannot be changed
+  List<BoostPage<dynamic>> get pages => List.unmodifiable(_pages);
 
+  /// To get the top page in this container
   BoostPage<dynamic> get topPage => pages.last;
 
-  int get size => pages.length;
+  /// Number of pages
+  int numPages() => pages.length;
 
+  /// The navigator used in this container
   NavigatorState get navigator => _navKey.currentState;
+
+  /// The [GlobalKey] to get the [NavigatorExt] in this container
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
-  void refresh() {
-    if (_refreshListener != null) {
-      _refreshListener();
+  /// add a [BoostPage] in this container and return its future result
+  Future<T> addPage<T extends Object>(BoostPage page) {
+    if (page != null) {
+      _pages.add(page);
+      notifyListeners();
+      return page.popped;
+    }
+    return null;
+  }
+
+  /// remove a specific [BoostPage]
+  void removePage(BoostPage page, {dynamic result}) {
+    if (page != null) {
+      _pages.remove(page);
+      page.didComplete(result);
+      notifyListeners();
     }
   }
 
-  VoidCallback _refreshListener;
+  @override
+  String toString() =>
+      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+      ' pages:$pages)';
 }
 
+/// The Widget build for a [BoostContainer]
+///
+/// It overrides the "==" and "hashCode",
+/// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
   BoostContainerWidget({LocalKey key, this.container})
       : super(key: container.key);
 
+  /// The container this widget belong
   final BoostContainer container;
 
   @override
@@ -52,8 +84,8 @@ class BoostContainerWidget extends StatefulWidget {
   // ignore: invalid_override_of_non_virtual_member
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
-      BoostContainerWidget otherWidget = other;
-      return this.container.pageInfo.uniqueId ==
+      var otherWidget = other;
+      return container.pageInfo.uniqueId ==
           otherWidget.container.pageInfo.uniqueId;
     }
     return super == other;
@@ -67,50 +99,83 @@ class BoostContainerWidget extends StatefulWidget {
 class BoostContainerState extends State<BoostContainerWidget> {
   BoostContainer get container => widget.container;
 
-  void _updatePagesList() {
-    container.pages.removeLast();
+  void _updatePagesList(BoostPage page, dynamic result) {
+    assert(container.topPage == page);
+    container.removePage(page, result: result);
   }
 
   @override
   void initState() {
+    assert(container != null);
+    container.addListener(refreshContainer);
     super.initState();
-    container._refreshListener = refreshContainer;
   }
 
   @override
   void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
-    super.didUpdateWidget(oldWidget);
     if (oldWidget != widget) {
-      oldWidget.container._refreshListener = null;
-      container._refreshListener = refreshContainer;
+      oldWidget.container.removeListener(refreshContainer);
+      container.addListener(refreshContainer);
     }
+    super.didUpdateWidget(oldWidget);
   }
 
+  ///just refresh
   void refreshContainer() {
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: widget.container._navKey,
-      pages: List<Page<dynamic>>.of(widget.container.pages),
-      onPopPage: (route, result) {
-        if (route.didPop(result)) {
-          _updatePagesList();
-          return true;
-        }
-        return false;
-      },
-      observers: <NavigatorObserver>[
-        BoostNavigatorObserver(),
-      ],
-    );
+    return HeroControllerScope(
+        controller: HeroController(),
+        child: NavigatorExt(
+          key: container._navKey,
+          pages: List<Page<dynamic>>.of(container.pages),
+          onPopPage: (route, result) {
+            if (route.didPop(result)) {
+              assert(route.settings is BoostPage);
+              _updatePagesList(route.settings as BoostPage, result);
+              return true;
+            }
+            return false;
+          },
+          observers: <NavigatorObserver>[
+            BoostNavigatorObserver(),
+          ],
+        ));
   }
 
   @override
   void dispose() {
-    container._refreshListener = null;
+    container.removeListener(refreshContainer);
     super.dispose();
+  }
+}
+
+/// This class is make user call
+/// "Navigator.pop()" is equal to BoostNavigator.instance.pop()
+class NavigatorExt extends Navigator {
+  const NavigatorExt({
+    Key key,
+    List<Page<dynamic>> pages,
+    PopPageCallback onPopPage,
+    List<NavigatorObserver> observers,
+  }) : super(
+            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+
+  @override
+  NavigatorState createState() => NavigatorExtState();
+}
+
+class NavigatorExtState extends NavigatorState {
+  @override
+  void pop<T extends Object>([T result]) {
+    // Taking over container page
+    if (!canPop()) {
+      BoostNavigator.instance.pop(result);
+    } else {
+      super.pop(result);
+    }
   }
 }
