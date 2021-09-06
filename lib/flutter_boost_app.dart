@@ -12,9 +12,9 @@ import 'boost_flutter_router_api.dart';
 import 'boost_interceptor.dart';
 import 'boost_lifecycle_binding.dart';
 import 'boost_navigator.dart';
+import 'container_overlay.dart';
 import 'logger.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -170,16 +170,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
   }
 
-  void refresh() {
-    refreshAllOverlayEntries(containers);
-
-    // try to save routes to host.
-    assert(() {
-      _saveStackForHotRestart();
-      return true;
-    }());
-  }
-
   String _createUniqueId(String pageName) {
     return '${DateTime.now().millisecondsSinceEpoch}_$pageName';
   }
@@ -241,8 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       Map<String, dynamic> arguments,
       bool withContainer,
       bool opaque = true}) {
-    assert(uniqueId == null);
-    uniqueId = _createUniqueId(pageName);
+    uniqueId ??= _createUniqueId(pageName);
     if (withContainer) {
       final completer = Completer<T>();
       final params = CommonParams()
@@ -599,7 +588,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
 
   void refreshOnPush(BoostContainer container) {
-    refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.add);
     assert(() {
       _saveStackForHotRestart();
       return true;
@@ -607,7 +597,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnRemove(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.remove);
     assert(() {
       _saveStackForHotRestart();
@@ -616,7 +606,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnMoveToTop(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.moveToTop);
     assert(() {
       _saveStackForHotRestart();

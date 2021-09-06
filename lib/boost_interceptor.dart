@@ -2,19 +2,22 @@ import 'dart:async';
 
 import 'boost_navigator.dart';
 
-///The request object in Interceptor,which is to passed
+/// The request object in Interceptor,which is to passed
 class BoostInterceptorOption {
-  BoostInterceptorOption(this.name, this.arguments);
+  BoostInterceptorOption(this.name, {this.uniqueId, this.arguments});
 
-  ///your page name in route table
+  /// Your page name in route table
   String name;
 
-  ///the arguments you want to pass in next page
+  /// Unique identifier for the route
+  String uniqueId;
+
+  /// The arguments you want to pass in next page
   Map<String, dynamic> arguments;
 
   @override
   String toString() =>
-      "Instance of 'BoostInterceptorOption'(name:$name, arguments:$arguments)";
+      "Instance of 'BoostInterceptorOption'(name:$name, uniqueId:$uniqueId, arguments:$arguments)";
 }
 
 enum InterceptorResultType {
