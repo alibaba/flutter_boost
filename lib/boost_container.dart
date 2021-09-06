@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'boost_channel.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
@@ -11,6 +12,8 @@ class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
     _pages.add(BoostPage.create(pageInfo));
   }
+
+  static const String _disableIOSPopGestureKey = "disable_ios_pop_gesture_key";
 
   static BoostContainer of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>();
@@ -43,6 +46,11 @@ class BoostContainer extends ChangeNotifier {
 
   /// add a [BoostPage] in this container and return its future result
   Future<T> addPage<T extends Object>(BoostPage page) {
+    if (numPages() == 1) {
+      /// disable the native slide pop gesture
+      /// only iOS will receive this event ,Android will do nothing
+      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': false});
+    }
     if (page != null) {
       _pages.add(page);
       notifyListeners();
@@ -53,6 +61,11 @@ class BoostContainer extends ChangeNotifier {
 
   /// remove a specific [BoostPage]
   void removePage(BoostPage page, {dynamic result}) {
+    if (numPages() == 2) {
+      /// enable the native slide pop gesture
+      /// only iOS will receive this event ,Android will do nothing
+      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': true});
+    }
     if (page != null) {
       _pages.remove(page);
       page.didComplete(result);
@@ -61,8 +74,7 @@ class BoostContainer extends ChangeNotifier {
   }
 
   @override
-  String toString() =>
-      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+  String toString() => '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
       ' pages:$pages)';
 }
 
@@ -71,8 +83,7 @@ class BoostContainer extends ChangeNotifier {
 /// It overrides the "==" and "hashCode",
 /// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey key, this.container})
-      : super(key: container.key);
+  BoostContainerWidget({LocalKey key, this.container}) : super(key: container.key);
 
   /// The container this widget belong
   final BoostContainer container;
@@ -85,8 +96,7 @@ class BoostContainerWidget extends StatefulWidget {
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
       var otherWidget = other;
-      return container.pageInfo.uniqueId ==
-          otherWidget.container.pageInfo.uniqueId;
+      return container.pageInfo.uniqueId == otherWidget.container.pageInfo.uniqueId;
     }
     return super == other;
   }
@@ -161,8 +171,7 @@ class NavigatorExt extends Navigator {
     List<Page<dynamic>> pages,
     PopPageCallback onPopPage,
     List<NavigatorObserver> observers,
-  }) : super(
-            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+  }) : super(key: key, pages: pages, onPopPage: onPopPage, observers: observers);
 
   @override
   NavigatorState createState() => NavigatorExtState();
