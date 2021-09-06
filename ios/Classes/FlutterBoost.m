@@ -123,9 +123,9 @@
 - (void)warmUpEngine{
     FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.engine
                                                                       nibName:nil bundle:nil];
-    [vc beginAppearanceTransition:true animated:false];
+    [vc beginAppearanceTransition:YES animated:NO];
     [vc endAppearanceTransition];
-    [vc beginAppearanceTransition:false animated:false];
+    [vc beginAppearanceTransition:NO animated:NO];
     [vc endAppearanceTransition];
 }
 
