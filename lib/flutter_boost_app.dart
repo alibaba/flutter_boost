@@ -673,10 +673,6 @@ class BoostNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-
-
-
-
     if (previousRoute != null && route?.settings?.name != null) {
       final navigatorObserverList =
           BoostLifecycleBinding.instance.navigatorObserverList;
