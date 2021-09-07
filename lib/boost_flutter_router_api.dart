@@ -21,7 +21,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
     appState.pushContainer(arg.pageName,
         uniqueId: arg.uniqueId,
         arguments:
-            Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
+        Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
   }
 
   @override

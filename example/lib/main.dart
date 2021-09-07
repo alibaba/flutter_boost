@@ -116,9 +116,9 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterRouteWidget(
-                params: settings.arguments as Map<dynamic, dynamic>?,
-                uniqueId: uniqueId,
-              ));
+            params: settings.arguments as Map<dynamic, dynamic>?,
+            uniqueId: uniqueId,
+          ));
     },
     'imagepick': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -203,25 +203,25 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
+              uniqueId, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
     },
     'tab_message': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
+              uniqueId, settings.arguments as Map<dynamic, dynamic>?, "This is a flutter fragment"));
     },
     'tab_flutter1': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
+              uniqueId, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
     },
     'tab_flutter2': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId!, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
+              uniqueId, settings.arguments as Map<dynamic, dynamic>?, "This is a custom FlutterView"));
     },
 
     'f2f_first': (settings, uniqueId) {
@@ -250,9 +250,9 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
-                params: settings.arguments as Map<dynamic, dynamic>?,
-                uniqueId: uniqueId,
-              ));
+            params: settings.arguments as Map<dynamic, dynamic>?,
+            uniqueId: uniqueId,
+          ));
     },
   };
 

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
 import 'logger.dart';
 
+/// This class is to hook the Binding，to handle lifecycle events
 mixin BoostFlutterBinding on WidgetsFlutterBinding {
   bool _appLifecycleStateLocked = true;
 

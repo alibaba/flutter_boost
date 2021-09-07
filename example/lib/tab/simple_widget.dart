@@ -7,7 +7,7 @@ import '../main.dart';
 class SimpleWidget extends StatefulWidget {
   final Map? params;
   final String messages;
-  final String uniqueId;
+  final String? uniqueId;
 
   const SimpleWidget(this.uniqueId, this.params, this.messages);
 
@@ -68,106 +68,106 @@ class _SimpleWidgetState extends State<SimpleWidget>
           physics: BouncingScrollPhysics(),
           child: Container(
               child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.only(top: 80.0),
-                child: Text(
-                  widget.messages,
-                  style: TextStyle(fontSize: 28.0, color: Colors.blue),
-                ),
-                alignment: AlignmentDirectional.center,
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                margin: const EdgeInsets.only(top: 32.0),
-                child: Text(
-                  widget.uniqueId,
-                  style: TextStyle(fontSize: 16.0, color: Colors.red),
-                ),
-                alignment: AlignmentDirectional.center,
-              ),
-              const CupertinoTextField(
-                prefix: Icon(
-                  CupertinoIcons.person_solid,
-                  color: CupertinoColors.lightBackgroundGray,
-                  size: 28.0,
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
-                clearButtonMode: OverlayVisibilityMode.editing,
-                textCapitalization: TextCapitalization.words,
-              ),
-              InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(30.0),
-                    color: Colors.yellow,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(top: 80.0),
                     child: Text(
-                      'open native page',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
-                    )),
-                onTap: () => BoostNavigator.instance.push("native"),
-              ),
-              InkWell(
-                child: Container(
+                      widget.messages,
+                      style: TextStyle(fontSize: 28.0, color: Colors.blue),
+                    ),
+                    alignment: AlignmentDirectional.center,
+                  ),
+                  Container(
                     padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(30.0),
-                    color: Colors.yellow,
+                    margin: const EdgeInsets.only(top: 32.0),
                     child: Text(
-                      'open flutter page',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      widget.uniqueId!,
+                      style: TextStyle(fontSize: 16.0, color: Colors.red),
+                    ),
+                    alignment: AlignmentDirectional.center,
+                  ),
+                  const CupertinoTextField(
+                    prefix: Icon(
+                      CupertinoIcons.person_solid,
+                      color: CupertinoColors.lightBackgroundGray,
+                      size: 28.0,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 12.0),
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(30.0),
+                        color: Colors.yellow,
+                        child: Text(
+                          'open native page',
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
+                        )),
+                    onTap: () => BoostNavigator.instance.push("native"),
+                  ),
+                  InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(30.0),
+                        color: Colors.yellow,
+                        child: Text(
+                          'open flutter page',
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
+                        )),
+                    onTap: () => BoostNavigator.instance.push("flutterPage",
+                        arguments: <String, String?>{'from': widget.uniqueId}),
+                  ),
+                  InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(30.0),
+                        color: Colors.yellow,
+                        child: Text(
+                          'open flutter page with FlutterView',
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
+                        )),
+                    onTap: () => BoostNavigator.instance.push("flutterPage",
+                        withContainer: true,
+                        arguments: <String, String?>{'from': widget.uniqueId}),
+                  ),
+                  InkWell(
+                    child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.all(30.0),
+                        color: Colors.yellow,
+                        child: Text(
+                          'Navigator.push',
+                          style: TextStyle(fontSize: 22.0, color: Colors.black),
+                        )),
+                    onTap: () => Navigator.push(context, MaterialPageRoute<void>(
+                      builder: (BuildContext context) {
+                        return Scaffold(
+                          appBar: AppBar(title: Text('Navigator.push')),
+                          body: Center(
+                            child: TextButton(
+                              child: Text('POP'),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     )),
-                onTap: () => BoostNavigator.instance.push("flutterPage",
-                    arguments: <String, String>{'from': widget.uniqueId}),
-              ),
-              InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(30.0),
-                    color: Colors.yellow,
+                  ),
+                  Container(
+                    height: 300,
+                    width: 200,
                     child: Text(
-                      'open flutter page with FlutterView',
+                      '',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
-                    )),
-                onTap: () => BoostNavigator.instance.push("flutterPage",
-                    withContainer: true,
-                    arguments: <String, String>{'from': widget.uniqueId}),
-              ),
-              InkWell(
-                child: Container(
-                    padding: const EdgeInsets.all(8.0),
-                    margin: const EdgeInsets.all(30.0),
-                    color: Colors.yellow,
-                    child: Text(
-                      'Navigator.push',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
-                    )),
-                onTap: () => Navigator.push(context, MaterialPageRoute<void>(
-                  builder: (BuildContext context) {
-                    return Scaffold(
-                      appBar: AppBar(title: Text('Navigator.push')),
-                      body: Center(
-                        child: TextButton(
-                          child: Text('POP'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                )),
-              ),
-              Container(
-                height: 300,
-                width: 200,
-                child: Text(
-                  '',
-                  style: TextStyle(fontSize: 22.0, color: Colors.black),
-                ),
-              )
-            ],
-          ))),
+                    ),
+                  )
+                ],
+              ))),
     );
   }
 }

@@ -21,11 +21,11 @@ enum BoostSpecificEntryRefreshMode {
 
 class ContainerOverlayEntry extends OverlayEntry {
   ContainerOverlayEntry(BoostContainer container)
-      : containerUniqueId = container.pageInfo.uniqueId,
+      : containerUniqueId = container.pageInfo!.uniqueId,
         super(builder: (ctx) => BoostContainerWidget(container: container), opaque: true, maintainState: true);
 
   /// This overlay's id, which is the same as the it's related container
-  final String containerUniqueId;
+  final String? containerUniqueId;
 
   @override
   String toString() {
@@ -43,7 +43,7 @@ class ContainerOverlay {
 
   final List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
 
-  static ContainerOverlayEntryFactory _overlayEntryFactory;
+  static ContainerOverlayEntryFactory? _overlayEntryFactory;
 
   /// Sets a custom [ContainerOverlayEntryFactory].
   static set overlayEntryFactory(ContainerOverlayEntryFactory entryFactory) {
@@ -77,7 +77,7 @@ class ContainerOverlay {
         if (_lastEntries.isNotEmpty) {
           //Find the entry matching the container
           final entryToRemove = _lastEntries.singleWhere((element) {
-            return element.containerUniqueId == container.pageInfo.uniqueId;
+            return element.containerUniqueId == container.pageInfo!.uniqueId;
           });
 
           //remove from the list and overlay
@@ -86,12 +86,12 @@ class ContainerOverlay {
           // https://github.com/alibaba/flutter_boost/issues/1056
           // Ensure this frame is refreshed after schedule frame,
           // otherwise the PageState.dispose may not be called
-          SchedulerBinding.instance.scheduleWarmUpFrame();
+          SchedulerBinding.instance!.scheduleWarmUpFrame();
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
         final existingEntry = _lastEntries.singleWhere((element) {
-          return element.containerUniqueId == container.pageInfo.uniqueId;
+          return element.containerUniqueId == container.pageInfo!.uniqueId;
         });
         //remove the entry from list and overlay
         //and insert it to list'top and overlay 's top

@@ -4,13 +4,13 @@ import 'boost_navigator.dart';
 
 /// The request object in Interceptor,which is to passed
 class BoostInterceptorOption {
-  BoostInterceptorOption(this.name, {this.uniqueId, this.arguments});
+  BoostInterceptorOption(this.name, {this.uniqueId, required this.arguments});
 
   /// Your page name in route table
   String name;
 
   /// Unique identifier for the route
-  String uniqueId;
+  String? uniqueId;
 
   /// The arguments you want to pass in next page
   Map<String, dynamic> arguments;

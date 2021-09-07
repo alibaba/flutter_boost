@@ -6,14 +6,16 @@ import 'boost_channel.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
+/// This class is an abstraction of native containers
+/// Each of which has a bunch of pages in the [NavigatorExt]
 class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, this.pageInfo}) {
     _pages.add(BoostPage.create(pageInfo!));
   }
 
   static BoostContainer of(BuildContext context) {
-    final state = context.findAncestorStateOfType<BoostContainerState>();
-    return state!.container;
+    final state = context.findAncestorStateOfType<BoostContainerState>()!;
+    return state.container;
   }
 
   /// The local key
@@ -35,7 +37,7 @@ class BoostContainer extends ChangeNotifier {
   int numPages() => pages.length;
 
   /// The navigator used in this container
-  NavigatorState get navigator => _navKey.currentState!;
+  NavigatorState? get navigator => _navKey.currentState;
 
   /// The [GlobalKey] to get the [NavigatorExt] in this container
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
@@ -45,7 +47,7 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
+      BoostChannel.instance.sendEventToNative(pageInfo!.uniqueId!, {
         'event': 'enablePopGesture',
         "args": {'enable': false}
       });
@@ -63,7 +65,7 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 2) {
       /// enable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
+      BoostChannel.instance.sendEventToNative(pageInfo!.uniqueId!, {
         'event': 'enablePopGesture',
         "args": {'enable': true}
       });
@@ -85,8 +87,7 @@ class BoostContainer extends ChangeNotifier {
 /// It overrides the "==" and "hashCode",
 /// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey? key, required this.container})
-      : super(key: container.key!);
+  BoostContainerWidget({LocalKey? key, required this.container}) : super(key: container.key);
 
   /// The container this widget belong
   final BoostContainer container;
@@ -99,8 +100,7 @@ class BoostContainerWidget extends StatefulWidget {
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
       var otherWidget = other;
-      return container.pageInfo!.uniqueId ==
-          otherWidget.container.pageInfo!.uniqueId;
+      return container.pageInfo!.uniqueId == otherWidget.container.pageInfo!.uniqueId;
     }
     return super == other;
   }
@@ -170,13 +170,12 @@ class BoostContainerState extends State<BoostContainerWidget> {
 /// This class is make user call
 /// "Navigator.pop()" is equal to BoostNavigator.instance.pop()
 class NavigatorExt extends Navigator {
-  NavigatorExt({
-    required Key key,
+  const NavigatorExt({
+    Key? key,
     required List<Page<dynamic>> pages,
-    required PopPageCallback onPopPage,
+    PopPageCallback? onPopPage,
     required List<NavigatorObserver> observers,
-  }) : super(
-            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+  }) : super(key: key, pages: pages, onPopPage: onPopPage, observers: observers);
 
   @override
   NavigatorState createState() => NavigatorExtState();
