@@ -1,3 +1,8 @@
+## v3.0-preview.10
+1. [iOS] 提供引擎预热功能，避免第一次进入flutter页面短暂的白屏/黑屏，以及字体大小跳动的情况
+2. [iOS] 单VC，多flutterPage下，动态控制容器手势侧滑，内部有多page的时候，侧滑将走flutter内部侧滑逻辑，避免多page下侧滑直接带走整个容器的情况
+3. [dart] 更新example代码，表明如何在单容器内跳转拥有跳转动画（比如iOS的push效果）
+
 ## v3.0-preview.9
 1.  [Android] 解决切后台场景下Android Q生命周期回调异常导致透明弹窗背景不正确问题 (#1288)
 2.  [Android] 增加引擎释放接口 (#1291)
