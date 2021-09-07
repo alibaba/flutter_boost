@@ -213,7 +213,6 @@ _Pragma("clang diagnostic pop")
     // 注册侧滑手势改变的监听，当容器内部的page大于1的时候，将不允许原生容器的侧滑手势
     // 当内部Page等于1的时候，会允许原生容器的侧滑
     self.removePopGesEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
-        NSLog(@"Debug::jinlai");
         @strongify(self)
         NSNumber *enablePopGesNum = arguments[@"enablePopGes"];
         BOOL enable = [enablePopGesNum boolValue];
