@@ -13,8 +13,6 @@ class BoostContainer extends ChangeNotifier {
     _pages.add(BoostPage.create(pageInfo));
   }
 
-  static const String _disableIOSPopGestureKey = "disable_ios_pop_gesture_key";
-
   static BoostContainer of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>();
     return state.container;
@@ -49,7 +47,10 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': false});
+      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
+        'event': 'enablePopGesture',
+        "args": {'enable': false}
+      });
     }
     if (page != null) {
       _pages.add(page);
@@ -64,7 +65,10 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 2) {
       /// enable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': true});
+      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
+        'event': 'enablePopGesture',
+        "args": {'enable': true}
+      });
     }
     if (page != null) {
       _pages.remove(page);
