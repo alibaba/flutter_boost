@@ -75,7 +75,7 @@ _Pragma("clang diagnostic pop")
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @property(nonatomic, assign) BOOL opaque;
-@property (nonatomic, strong) FBVoidCallback removePopGesEventCallback;
+@property (nonatomic, strong) FBVoidCallback removeEventCallback;
 @end
 
 @implementation FBFlutterViewContainer
@@ -190,7 +190,7 @@ _Pragma("clang diagnostic pop")
 
 - (void)dealloc
 {
-    self.removePopGesEventCallback();
+    self.removeEventCallback();
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -210,14 +210,21 @@ _Pragma("clang diagnostic pop")
     }
     
     @weakify(self)
-    // 注册侧滑手势改变的监听，当容器内部的page大于1的时候，将不允许原生容器的侧滑手势
-    // 当内部Page等于1的时候，会允许原生容器的侧滑
-    self.removePopGesEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
+    // 为这个容器注册监听，监听内部的flutterPage往这个容器发的事件
+    self.removeEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
         @strongify(self)
-        NSNumber *enablePopGesNum = arguments[@"enablePopGes"];
-        BOOL enable = [enablePopGesNum boolValue];
-        self.navigationController.interactivePopGestureRecognizer.enabled = enable;
-    } forName:@"disable_ios_pop_gesture_key"];
+        //事件名
+        NSString *event = arguments[@"event"];
+        //事件参数
+        NSDictionary *args = arguments[@"args"];
+        
+        if ([event isEqualToString:@"enablePopGesture"]) {
+            // 多page情况下的侧滑动态禁用和启用事件
+            NSNumber *enableNum = args[@"enable"];
+            BOOL enable = [enableNum boolValue];
+            self.navigationController.interactivePopGestureRecognizer.enabled = enable;
+        }
+    } forName:self.uniqueId];
     
 }
 
