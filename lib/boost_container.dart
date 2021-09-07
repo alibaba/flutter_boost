@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import 'boost_channel.dart';
 import 'boost_navigator.dart';
 import 'flutter_boost_app.dart';
 
@@ -10,29 +11,44 @@ class BoostContainer extends ChangeNotifier {
     _pages.add(BoostPage.create(pageInfo!));
   }
 
+  static const String _disableIOSPopGestureKey = "disable_ios_pop_gesture_key";
+
   static BoostContainer of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>();
     return state!.container;
   }
 
+  /// The local key
   final LocalKey? key;
 
+  /// The pageInfo for this container
   final PageInfo? pageInfo;
 
+  /// A list of page in this container
   final List<BoostPage<dynamic>> _pages = <BoostPage<dynamic>>[];
 
   /// Getter for a list that cannot be changed
   List<BoostPage<dynamic>> get pages => List.unmodifiable(_pages);
 
+  /// To get the top page in this container
   BoostPage<dynamic> get topPage => pages.last;
 
   /// Number of pages
   int numPages() => pages.length;
 
+  /// The navigator used in this container
   NavigatorState get navigator => _navKey.currentState!;
+
+  /// The [GlobalKey] to get the [NavigatorExt] in this container
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
+  /// add a [BoostPage] in this container and return its future result
   Future<T>? addPage<T extends Object>(BoostPage page) {
+    if (numPages() == 1) {
+      /// disable the native slide pop gesture
+      /// only iOS will receive this event ,Android will do nothing
+      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': false});
+    }
     if (page != null) {
       _pages.add(page);
       notifyListeners();
@@ -41,7 +57,13 @@ class BoostContainer extends ChangeNotifier {
     return null;
   }
 
+  /// remove a specific [BoostPage]
   void removePage(BoostPage? page, {dynamic result}) {
+    if (numPages() == 2) {
+      /// enable the native slide pop gesture
+      /// only iOS will receive this event ,Android will do nothing
+      BoostChannel.instance.sendEventToNative(_disableIOSPopGestureKey, {'enablePopGes': true});
+    }
     if (page != null) {
       _pages.remove(page);
       page.didComplete(result);
@@ -50,15 +72,19 @@ class BoostContainer extends ChangeNotifier {
   }
 
   @override
-  String toString() =>
-      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo!.pageName},'
+  String toString() => '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo!.pageName},'
       ' pages:$pages)';
 }
 
+/// The Widget build for a [BoostContainer]
+///
+/// It overrides the "==" and "hashCode",
+/// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
   BoostContainerWidget({LocalKey? key, required this.container})
       : super(key: container.key!);
 
+  /// The container this widget belong
   final BoostContainer container;
 
   @override
@@ -104,6 +130,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
     super.didUpdateWidget(oldWidget);
   }
 
+  ///just refresh
   void refreshContainer() {
     setState(() {});
   }
@@ -136,6 +163,8 @@ class BoostContainerState extends State<BoostContainerWidget> {
   }
 }
 
+/// This class is make user call
+/// "Navigator.pop()" is equal to BoostNavigator.instance.pop()
 class NavigatorExt extends Navigator {
   NavigatorExt({
     required Key key,
