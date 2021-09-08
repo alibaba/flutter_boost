@@ -9,6 +9,10 @@ BoostNavigator.instance.push(
     arguments: {"key","value"}, //optional
     opaque: true, //optional,default value is true
 );
+
+///or
+
+Navigator.of(context).pushNamed('simplePage', arguments: {'data': _controller.text});
 ```
 
 参数名 | 意义 | 是否可选
