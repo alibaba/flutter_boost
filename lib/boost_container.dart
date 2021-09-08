@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -182,6 +183,25 @@ class NavigatorExt extends Navigator {
 }
 
 class NavigatorExtState extends NavigatorState {
+
+  @override
+  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
+    if (arguments == null) {
+      return BoostNavigator.instance.push(routeName);
+    }
+
+    if (arguments is Map<String, dynamic>) {
+      return BoostNavigator.instance.push(routeName, arguments: arguments);
+    }
+
+    if (arguments is Map) {
+      return BoostNavigator.instance.push(routeName, arguments: Map<String, dynamic>.from(arguments));
+    } else {
+      assert(false, "arguments should be Map<String,dynamic> or Map");
+      return BoostNavigator.instance.push(routeName);
+    }
+  }
+
   @override
   void pop<T extends Object>([T result]) {
     // Taking over container page
