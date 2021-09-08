@@ -91,6 +91,9 @@ class _MainPageState extends State<MainPage> {
               'data': _controller.text
             }).then((value) => showTipIfNeeded(value.toString()));
       }),
+      Model("push with flutter Navigator", () {
+        Navigator.of(context).pushNamed('simplePage', arguments: {'data': _controller.text});
+      }),
       Model("open lifecycle test page", () {
         BoostNavigator.instance.push(
           "lifecyclePage",
