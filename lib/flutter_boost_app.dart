@@ -75,10 +75,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   @override
   void initState() {
-    // assert(
-    //     BoostFlutterBinding.instance != null,
-    //     'BoostFlutterBinding is not initialized，'
-    //     'please refer to "class CustomFlutterBinding" in example project');
+    assert(
+        BoostFlutterBinding.instance != null,
+        'BoostFlutterBinding is not initialized，'
+        'please refer to "class CustomFlutterBinding" in example project');
 
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
@@ -277,8 +277,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final previousContainer = topContainer;
       BoostLifecycleBinding.instance
           .containerDidPush(container, previousContainer);
-
       // Add a new overlay entry with this container
+
+
+
       refreshOnPush(container);
     }
     Logger.log('pushContainer, uniqueId=$uniqueId, existed=$existed,'
