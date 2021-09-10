@@ -42,8 +42,8 @@ class _MyAppState extends State<MyApp> {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments;
-            String data = map['data'];
+            Map<String, Object> map = settings.arguments ?? {};
+            String data = map['data'] ?? '';
             return MainPage(
               data: data,
             );
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
 
     'simplePage': (settings, uniqueId) {
       Map<String, Object> map = settings.arguments ?? {};
-      String data = map['data'];
+      String data = map['data'] ?? '';
       return CupertinoPageRoute(
         settings: settings,
         builder: (_) => SimplePage(
@@ -60,7 +60,24 @@ class _MyAppState extends State<MyApp> {
         ),
       );
     },
-
+    'tab1': (settings, uniqueId) {
+      return CupertinoPageRoute(
+        settings: settings,
+        builder: (_) => TabPage(color: Colors.blue,title: 'Tab1',),
+      );
+    },
+    'tab2': (settings, uniqueId) {
+      return CupertinoPageRoute(
+        settings: settings,
+        builder: (_) => TabPage(color: Colors.red,title: 'Tab2',),
+      );
+    },
+    'tab3': (settings, uniqueId) {
+      return CupertinoPageRoute(
+        settings: settings,
+        builder: (_) => TabPage(color: Colors.orange,title: 'Tab3',),
+      );
+    },
     ///生命周期例子页面
     'lifecyclePage': (settings, uniqueId) {
       return CupertinoPageRoute(
@@ -102,7 +119,7 @@ class _MyAppState extends State<MyApp> {
   Widget appBuilder(Widget home) {
     return MaterialApp(
       home: home,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: true,
     );
   }
 
@@ -111,6 +128,21 @@ class _MyAppState extends State<MyApp> {
     return FlutterBoostApp(
       routeFactory,
       appBuilder: appBuilder,
+    );
+  }
+}
+
+
+class TabPage extends StatelessWidget {
+  final String title;
+  final Color color;
+  const TabPage({Key key, this.title, this.color}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor:color,
+      body: Center(child: Text(title ?? '',style:TextStyle(fontSize: 25)),),
     );
   }
 }

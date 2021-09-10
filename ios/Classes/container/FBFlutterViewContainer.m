@@ -152,21 +152,6 @@ _Pragma("clang diagnostic pop")
     self.uniqueId = [[NSUUID UUID] UUIDString];
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    if (parent && _name) {
-        //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
-        FBCommonParams* params = [[FBCommonParams alloc] init];
-        params.pageName = _name;
-        params.arguments = _params;
-        params.uniqueId = self.uniqueId;
-        params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
-        
-        [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-        }];
-    }
-    [super willMoveToParentViewController:parent];
-}
-
 - (void)didMoveToParentViewController:(UIViewController *)parent {
     if (!parent) {
         //当VC被移出parent时，就通知flutter层销毁page
