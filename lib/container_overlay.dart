@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -20,12 +22,14 @@ enum BoostSpecificEntryRefreshMode {
 }
 
 class ContainerOverlayEntry extends OverlayEntry {
-  ContainerOverlayEntry(BoostContainer container)
-      : containerUniqueId = container.pageInfo.uniqueId,
-        super(builder: (ctx) => BoostContainerWidget(container: container), opaque: true, maintainState: true);
+  ///This container for this [ContainerOverlayEntry]
+  final BoostContainer container;
+
+  ContainerOverlayEntry(this.container)
+      : super(builder: (ctx) => BoostContainerWidget(container: container), opaque: true, maintainState: true);
 
   /// This overlay's id, which is the same as the it's related container
-  final String containerUniqueId;
+  String get containerUniqueId => container.pageInfo.uniqueId;
 
   @override
   String toString() {
@@ -41,7 +45,24 @@ class ContainerOverlay {
 
   static final ContainerOverlay instance = ContainerOverlay._();
 
+  /// All of the container entries in flutter boost app
   final List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
+
+  /// get top container in this [ContainerOverlay],if [_lastEntries] is empty,return null
+  /// else will return the last container
+  BoostContainer get topContainer {
+    if (_lastEntries.isEmpty) {
+      return null;
+    }
+    return _lastEntries.last.container;
+  }
+
+  /// Containers in [ContainerOverlay] it is unmodifiable
+  /// we can only modify containers
+  /// using refresh method using [ContainerOverlay.refreshSpecificOverlayEntries]
+  UnmodifiableListView<BoostContainer> get containers => UnmodifiableListView(_lastEntries.map((entry) {
+        return entry.container;
+  }).toList(growable: false));
 
   static ContainerOverlayEntryFactory _overlayEntryFactory;
 

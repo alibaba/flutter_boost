@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -52,13 +53,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   final Map<String, Completer<Object>> _pendingResult =
       <String, Completer<Object>>{};
 
-  List<BoostContainer> get containers => _containers;
-  final List<BoostContainer> _containers = <BoostContainer>[];
+  UnmodifiableListView<BoostContainer> get containers => ContainerOverlay.instance.containers;
+  BoostContainer get topContainer => ContainerOverlay.instance.topContainer;
 
   /// All interceptors from widget
   List<BoostInterceptor> get interceptors => widget.interceptors;
-
-  BoostContainer get topContainer => containers.last;
 
   NativeRouterApi get nativeRouterApi => _nativeRouterApi;
   NativeRouterApi _nativeRouterApi;
@@ -76,15 +75,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   @override
   void initState() {
-    assert(
-        BoostFlutterBinding.instance != null,
-        'BoostFlutterBinding is not initialized，'
-        'please refer to "class CustomFlutterBinding" in example project');
+    // assert(
+    //     BoostFlutterBinding.instance != null,
+    //     'BoostFlutterBinding is not initialized，'
+    //     'please refer to "class CustomFlutterBinding" in example project');
 
-    /// create the container matching the initial route
-    final BoostContainer initialContainer =
-        _createContainer(PageInfo(pageName: widget.initialRoute));
-    _containers.add(initialContainer);
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
@@ -94,6 +89,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // add this container in route
+      /// create the container matching the initial route
+      final BoostContainer initialContainer =
+      _createContainer(PageInfo(pageName: widget.initialRoute));
       refreshOnPush(initialContainer);
       _addAppLifecycleStateEventListener();
     });
@@ -266,9 +264,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
       if (topContainer?.pageInfo?.uniqueId != uniqueId) {
-        containers.remove(existed);
-        containers.add(existed);
-
         //move the overlayEntry which matches this existing container to the top
         refreshOnMoveToTop(existed);
       }
@@ -280,7 +275,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           withContainer: true);
       final container = _createContainer(pageInfo);
       final previousContainer = topContainer;
-      containers.add(container);
       BoostLifecycleBinding.instance
           .containerDidPush(container, previousContainer);
 
@@ -458,7 +452,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     final container = _findContainerByUniqueId(uniqueId);
     if (container != null) {
-      containers.remove(container);
       BoostLifecycleBinding.instance.containerDidPop(container, topContainer);
 
       //remove the overlayEntry matching this container
