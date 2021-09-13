@@ -1,3 +1,8 @@
+## v3.0-preview.11
+1. [flutter] 让NavigatorExt接管pushNamed方法
+2. [flutter] 增加tab模式的example，删除iOS端无用的生命周期，避免初始化阶段进行push，造成初始化情况下tab白屏问题
+3. [iOS] 提前事件监听的注册时机，以及在删除的时候对block进行判空，避免crash
+
 ## v3.0-preview.10
 1. [iOS] 提供引擎预热功能，避免第一次进入flutter页面短暂的白屏/黑屏，以及字体大小跳动的情况
 2. [iOS] 单VC，多flutterPage下，动态控制容器手势侧滑，内部有多page的时候，侧滑将走flutter内部侧滑逻辑，避免多page下侧滑直接带走整个容器的情况
