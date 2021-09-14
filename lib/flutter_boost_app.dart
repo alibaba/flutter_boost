@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,7 +27,7 @@ class FlutterBoostApp extends StatefulWidget {
 
     ///interceptors is to intercept push operation now
     List<BoostInterceptor> interceptors,
-  })  : appBuilder = appBuilder ?? _materialAppBuilder,
+  })  : appBuilder = appBuilder ?? _defaultAppBuilder,
         interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
@@ -38,8 +39,10 @@ class FlutterBoostApp extends StatefulWidget {
   ///A list of [BoostInterceptor],to intercept operations when push
   final List<BoostInterceptor> interceptors;
 
-  static Widget _materialAppBuilder(Widget home) {
-    return MaterialApp(home: home);
+  /// default builder for app
+  static Widget _defaultAppBuilder(Widget home) {
+    /// use builder param instead of home,to avoid Navigator.pop
+    return MaterialApp(home:home,builder: (_,__) => home);
   }
 
   @override

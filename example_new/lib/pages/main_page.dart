@@ -94,6 +94,26 @@ class _MainPageState extends State<MainPage> {
       Model("push with flutter Navigator", () {
         Navigator.of(context).pushNamed('simplePage', arguments: {'data': _controller.text});
       }),
+      Model("show dialog", () {
+        showDialog(
+            context: context,
+            builder: (_) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Center(
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 100,
+                    width: 100,
+                    child: Material(child: Text('this is a dialog',style:TextStyle(fontSize: 25)),),
+                    color: Colors.redAccent,
+                  ),
+                ),
+              );
+            });
+      }),
       Model("open lifecycle test page", () {
         BoostNavigator.instance.push(
           "lifecyclePage",
