@@ -42,8 +42,11 @@ class _MyAppState extends State<MyApp> {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments ?? {};
-            String data = map['data'] ?? '';
+            var map = settings.arguments;
+            String data = "";
+            if (map is Map) {
+              data = map['data'] ?? "";
+            }
             return MainPage(
               data: data,
             );
@@ -51,8 +54,11 @@ class _MyAppState extends State<MyApp> {
     },
 
     'simplePage': (settings, uniqueId) {
-      Map<String, Object> map = settings.arguments ?? {};
-      String data = map['data'] ?? '';
+      var map = settings.arguments;
+      String data = "";
+      if (map is Map) {
+        data = map['data'] ?? "";
+      }
       return CupertinoPageRoute(
         settings: settings,
         builder: (_) => SimplePage(
@@ -108,8 +114,8 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
+  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+    FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }
@@ -136,13 +142,13 @@ class _MyAppState extends State<MyApp> {
 class TabPage extends StatelessWidget {
   final String title;
   final Color color;
-  const TabPage({Key key, this.title, this.color}) : super(key: key);
+  const TabPage({required this.title, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:color,
-      body: Center(child: Text(title ?? '',style:TextStyle(fontSize: 25)),),
+      body: Center(child: Text(title, style:TextStyle(fontSize: 25)),),
     );
   }
 }

@@ -232,7 +232,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         '_restoreStackForHotRestart, ${stack.containers}, ${stack.routes}');
   }
 
-  Future<T>? pushWithResult<T extends Object>(String pageName,
+  Future<T?>? pushWithResult<T extends Object>(String pageName,
       {String? uniqueId,
         Map<String, dynamic>? arguments,
         required bool withContainer,
@@ -257,7 +257,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<T>? pushPage<T extends Object>(String? pageName,
+  Future<T?>? pushPage<T extends Object?>(String? pageName,
       {String? uniqueId, Map<String, dynamic>? arguments}) {
     Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
@@ -427,7 +427,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final params = CommonParams()
         ..pageName = container.pageInfo!.pageName!
         ..uniqueId = container.pageInfo!.uniqueId!
-        ..arguments = container.pageInfo!.arguments as Map<Object, Object>;
+        ..arguments = container.pageInfo!.arguments;
       return await _nativeRouterApi!.popRoute(params);
     }
   }
@@ -483,11 +483,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
-  Future<T> pendNativeResult<T extends Object>(String pageName) {
+  Future<T> pendNativeResult<T extends Object?>(String pageName) {
     final completer = Completer<T>();
     final initiatorPage = topContainer.topPage.pageInfo.uniqueId;
     final key = '$initiatorPage#$pageName';
-    _pendingResult[key] = completer;
+    _pendingResult[key] = completer as Completer<Object>;
     Logger.log('pendNativeResult, key:$key, size:${_pendingResult.length}');
     return completer.future;
   }
@@ -641,7 +641,7 @@ class BoostPage<T> extends Page<T> {
   Route<T>? get route => _route;
 
   /// A future that completes when this page is popped.
-  Future<T> get popped => _popCompleter.future;
+  Future<T?> get popped => _popCompleter.future;
   final Completer<T> _popCompleter = Completer<T>();
 
   void didComplete(T result) {

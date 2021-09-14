@@ -67,7 +67,7 @@ class BoostNavigator {
   /// if [opaque] is true,the page is opaque (not transparent)
   ///
   /// And it will return the result popped by page as a Future<T>
-  Future<T> push<T extends Object>(String name,
+  Future<T> push<T extends Object?>(String name,
       {Map<String, dynamic>? arguments,
         bool withContainer = false,
         bool opaque = true}) async {

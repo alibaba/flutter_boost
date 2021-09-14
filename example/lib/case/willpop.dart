@@ -11,8 +11,8 @@ class WillPopRoute extends StatefulWidget {
 }
 
 class _WillPopRouteState extends State<WillPopRoute> {
-  Future<bool> _onWillPop() {
-    return showDialog(
+  Future<bool> _onWillPop() async {
+    var value = await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
             title: new Text('Are you sure?'),
@@ -28,8 +28,8 @@ class _WillPopRouteState extends State<WillPopRoute> {
               ),
             ],
           ),
-        ) as Future<bool>? ??
-        false as Future<bool>;
+        );
+    return value;
   }
 
   @override

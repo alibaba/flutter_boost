@@ -44,7 +44,7 @@ class BoostContainer extends ChangeNotifier {
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   /// add a [BoostPage] in this container and return its future result
-  Future<T>? addPage<T extends Object>(BoostPage page) {
+  Future<T?>? addPage<T extends Object?>(BoostPage page) {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
@@ -56,7 +56,7 @@ class BoostContainer extends ChangeNotifier {
     if (page != null) {
       _pages.add(page);
       notifyListeners();
-      return page.popped.then((value) => value as T);
+      return page.popped.then((value) => value);
     }
     return null;
   }
@@ -185,7 +185,7 @@ class NavigatorExt extends Navigator {
 class NavigatorExtState extends NavigatorState {
 
   @override
-  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
+  Future<T> pushNamed<T extends Object?>(String routeName, {Object? arguments}) {
     if (arguments == null) {
       return BoostNavigator.instance.push(routeName);
     }
