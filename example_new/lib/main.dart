@@ -120,6 +120,10 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: home,
       debugShowCheckedModeBanner: true,
+      ///必须加上builder参数，否则showDialog等会出问题
+      builder: (_, __) {
+        return home;
+      },
     );
   }
 
