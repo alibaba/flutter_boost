@@ -142,6 +142,29 @@ _Pragma("clang diagnostic pop")
         }
     }
     [FB_PLUGIN containerCreated:self];
+    
+    /// 设置这个container对应的从flutter过来的事件监听
+    [self setupEventListeningFromFlutter];
+}
+
+/// 设置这个container对应的从flutter过来的事件监听
+-(void)setupEventListeningFromFlutter{
+    @weakify(self)
+    // 为这个容器注册监听，监听内部的flutterPage往这个容器发的事件
+    self.removeEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
+        @strongify(self)
+        //事件名
+        NSString *event = arguments[@"event"];
+        //事件参数
+        NSDictionary *args = arguments[@"args"];
+        
+        if ([event isEqualToString:@"enablePopGesture"]) {
+            // 多page情况下的侧滑动态禁用和启用事件
+            NSNumber *enableNum = args[@"enable"];
+            BOOL enable = [enableNum boolValue];
+            self.navigationController.interactivePopGestureRecognizer.enabled = enable;
+        }
+    } forName:self.uniqueId];
 }
 
 - (NSString *)uniqueIDString {
@@ -150,21 +173,6 @@ _Pragma("clang diagnostic pop")
 
 - (void)_setup {
     self.uniqueId = [[NSUUID UUID] UUIDString];
-}
-
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    if (parent && _name) {
-        //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
-        FBCommonParams* params = [[FBCommonParams alloc] init];
-        params.pageName = _name;
-        params.arguments = _params;
-        params.uniqueId = self.uniqueId;
-        params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
-        
-        [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-        }];
-    }
-    [super willMoveToParentViewController:parent];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
@@ -190,7 +198,9 @@ _Pragma("clang diagnostic pop")
 
 - (void)dealloc
 {
-    self.removeEventCallback();
+    if(self.removeEventCallback != nil){
+        self.removeEventCallback();
+    }
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 
@@ -208,24 +218,6 @@ _Pragma("clang diagnostic pop")
     if(self.opaque){
         self.view.backgroundColor = UIColor.whiteColor;
     }
-    
-    @weakify(self)
-    // 为这个容器注册监听，监听内部的flutterPage往这个容器发的事件
-    self.removeEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
-        @strongify(self)
-        //事件名
-        NSString *event = arguments[@"event"];
-        //事件参数
-        NSDictionary *args = arguments[@"args"];
-        
-        if ([event isEqualToString:@"enablePopGesture"]) {
-            // 多page情况下的侧滑动态禁用和启用事件
-            NSNumber *enableNum = args[@"enable"];
-            BOOL enable = [enableNum boolValue];
-            self.navigationController.interactivePopGestureRecognizer.enabled = enable;
-        }
-    } forName:self.uniqueId];
-    
 }
 
 #pragma mark - ScreenShots
