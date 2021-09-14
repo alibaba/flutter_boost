@@ -662,14 +662,15 @@ class BoostNavigatorObserver extends NavigatorObserver {
     //handle internal route but ignore dialog or abnormal route.
     //otherwise, the normal page will be affected.
     if (previousRoute != null && route?.settings?.name != null) {
-      final navigatorObserverList =
-          BoostLifecycleBinding.instance.navigatorObserverList;
-      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
-        for (var observer in navigatorObserverList) {
-          observer.didPush(route, previousRoute);
-        }
-      }
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
+    }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPush(route, previousRoute);
+      }
     }
     super.didPush(route, previousRoute);
   }
@@ -677,15 +678,17 @@ class BoostNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (previousRoute != null && route?.settings?.name != null) {
-      final navigatorObserverList =
-          BoostLifecycleBinding.instance.navigatorObserverList;
-      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
-        for (var observer in navigatorObserverList) {
-          observer.didPop(route, previousRoute);
-        }
-      }
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPop(route, previousRoute);
+      }
+    }
+
     super.didPop(route, previousRoute);
   }
 
