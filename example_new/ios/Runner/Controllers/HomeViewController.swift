@@ -36,6 +36,13 @@ class HomeViewController: UIViewController {
         FlutterBoost.instance().open(options)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        //如果你想要native的controller拥有侧滑返回，那么做好加上这句
+        //因为内部Boost可能会处理你的导航器侧滑手势
+        self.navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+    
     ///例子：present flutter 透明dialog页面
     @objc func onTapPresentDialogButton(){
 
