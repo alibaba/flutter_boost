@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'boost_channel.dart';
 import 'boost_container.dart';
 import 'logger.dart';
 import 'page_visibility.dart';
@@ -86,6 +87,16 @@ class BoostLifecycleBinding {
   }
 
   void containerDidShow(BoostContainer container) {
+    assert(container != null);
+
+    ///When this container show,we check the nums of page in this container,
+    ///And change the pop gesture in this container
+    if(container.pages.length >= 2){
+      BoostChannel.instance.disablePopGesture(containerId: container.pageInfo.uniqueId);
+    }else{
+      BoostChannel.instance.enablePopGesture(containerId: container.pageInfo.uniqueId);
+    }
+
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
