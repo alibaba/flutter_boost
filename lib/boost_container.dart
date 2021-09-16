@@ -48,10 +48,7 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
-        'event': 'enablePopGesture',
-        "args": {'enable': false}
-      });
+      BoostChannel.instance.disablePopGesture(containerId: pageInfo.uniqueId);
     }
     if (page != null) {
       _pages.add(page);
@@ -66,10 +63,7 @@ class BoostContainer extends ChangeNotifier {
     if (numPages() == 2) {
       /// enable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.sendEventToNative(pageInfo.uniqueId, {
-        'event': 'enablePopGesture',
-        "args": {'enable': true}
-      });
+      BoostChannel.instance.enablePopGesture(containerId: pageInfo.uniqueId);
     }
     if (page != null) {
       _pages.remove(page);

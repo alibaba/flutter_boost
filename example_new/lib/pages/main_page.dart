@@ -84,7 +84,14 @@ class _MainPageState extends State<MainPage> {
         Map<String, Object> result = {'data': _controller.text};
         BoostNavigator.instance.pop(result);
       }),
-      Model("open flutter page", () {
+      Model("open flutter main page", () {
+        BoostNavigator.instance.push("mainPage",
+            withContainer: withContainer.value,
+            arguments: {
+              'data': _controller.text
+            }).then((value) => showTipIfNeeded(value.toString()));
+      }),
+      Model("open flutter simple page", () {
         BoostNavigator.instance.push("simplePage",
             withContainer: withContainer.value,
             arguments: {
