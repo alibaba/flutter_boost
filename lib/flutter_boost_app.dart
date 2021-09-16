@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart' show IterableExtension;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -27,7 +28,7 @@ class FlutterBoostApp extends StatefulWidget {
 
         ///interceptors is to intercept push operation now
         List<BoostInterceptor>? interceptors,
-      })  : appBuilder = appBuilder ?? _materialAppBuilder,
+      })  : appBuilder = appBuilder ?? _defaultAppBuilder,
         interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
@@ -39,8 +40,10 @@ class FlutterBoostApp extends StatefulWidget {
   ///A list of [BoostInterceptor],to intercept operations when push
   final List<BoostInterceptor> interceptors;
 
-  static Widget _materialAppBuilder(Widget home) {
-    return MaterialApp(home: home);
+  /// default builder for app
+  static Widget _defaultAppBuilder(Widget home) {
+    /// use builder param instead of home,to avoid Navigator.pop
+    return MaterialApp(home:home,builder: (_,__) => home);
   }
 
   @override
@@ -524,7 +527,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void onContainerShow(CommonParams params) {
     final container = _findContainerByUniqueId(params.uniqueId);
-    BoostLifecycleBinding.instance.containerDidShow(container);
+    BoostLifecycleBinding.instance.containerDidShow(container!);
 
     // Try to complete pending native result when container closed.
     final topPage = topContainer.topPage.pageInfo.uniqueId!;
@@ -667,15 +670,17 @@ class BoostNavigatorObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     //handle internal route but ignore dialog or abnormal route.
     //otherwise, the normal page will be affected.
+
     if (previousRoute != null && route.settings.name != null) {
-      final navigatorObserverList =
-          BoostLifecycleBinding.instance.navigatorObserverList;
-      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
-        for (var observer in navigatorObserverList) {
-          observer.didPush(route, previousRoute);
-        }
-      }
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
+    }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPush(route, previousRoute);
+      }
     }
     super.didPush(route, previousRoute);
   }
@@ -683,15 +688,17 @@ class BoostNavigatorObserver extends NavigatorObserver {
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     if (previousRoute != null && route.settings.name != null) {
-      final navigatorObserverList =
-          BoostLifecycleBinding.instance.navigatorObserverList;
-      if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
-        for (var observer in navigatorObserverList) {
-          observer.didPop(route, previousRoute);
-        }
-      }
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPop(route, previousRoute);
+      }
+    }
+
     super.didPop(route, previousRoute);
   }
 

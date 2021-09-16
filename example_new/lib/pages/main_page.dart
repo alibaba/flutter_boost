@@ -26,6 +26,8 @@ class _MainPageState extends State<MainPage> {
 
   VoidCallback? removeListener;
 
+  ValueNotifier<bool> withContainer = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -252,9 +254,9 @@ class _MainPageState extends State<MainPage> {
           ),
           ValueListenableBuilder(
             valueListenable: withContainer,
-            builder: (BuildContext context, value, Widget child) {
+            builder: (context, value, child) {
               return CupertinoSwitch(
-                  value: value,
+                  value: value as bool,
                   onChanged: (newValue) {
                     withContainer.value = newValue;
                   });

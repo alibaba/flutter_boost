@@ -92,9 +92,9 @@ class BoostLifecycleBinding {
     ///When this container show,we check the nums of page in this container,
     ///And change the pop gesture in this container
     if(container.pages.length >= 2){
-      BoostChannel.instance.disablePopGesture(containerId: container.pageInfo.uniqueId);
+      BoostChannel.instance.disablePopGesture(containerId: container.pageInfo?.uniqueId ?? "");
     }else{
-      BoostChannel.instance.enablePopGesture(containerId: container.pageInfo.uniqueId);
+      BoostChannel.instance.enablePopGesture(containerId: container.pageInfo?.uniqueId ?? "");
     }
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
@@ -104,7 +104,7 @@ class BoostLifecycleBinding {
       }
     }
 
-    final id = container!.pageInfo!.uniqueId!;
+    final id = container.pageInfo!.uniqueId!;
     assert(id != null);
     if (!hasShownPageIds.contains(id)) {
       hasShownPageIds.add(id);

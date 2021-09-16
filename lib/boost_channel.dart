@@ -44,7 +44,7 @@ class BoostChannel {
   }
 
   /// enable iOS native pop gesture for container matching [containerId]
-  void enablePopGesture({@required String containerId}){
+  void enablePopGesture({required String containerId}){
     assert(containerId != null && containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',
@@ -52,7 +52,7 @@ class BoostChannel {
     });
   }
   /// disable iOS native pop gesture for container matching [containerId]
-  void disablePopGesture({@required String containerId}){
+  void disablePopGesture({required String containerId}){
     assert(containerId != null && containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',
