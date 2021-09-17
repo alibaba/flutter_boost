@@ -53,8 +53,8 @@ class FlutterBoostApp extends StatefulWidget {
 class FlutterBoostAppState extends State<FlutterBoostApp> {
   static const String _appLifecycleChangedKey = "app_lifecycle_changed_key";
 
-  final Map<String, Completer<Object>> _pendingResult =
-  <String, Completer<Object>>{};
+  final Map<String, Completer<Object?>> _pendingResult =
+  <String, Completer<Object?>>{};
 
   List<BoostContainer> get containers => _containers;
   final List<BoostContainer> _containers = <BoostContainer>[];
@@ -490,7 +490,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final completer = Completer<T>();
     final initiatorPage = topContainer.topPage.pageInfo.uniqueId;
     final key = '$initiatorPage#$pageName';
-    _pendingResult[key] = completer as Completer<Object>;
+    _pendingResult[key] = completer;
     Logger.log('pendNativeResult, key:$key, size:${_pendingResult.length}');
     return completer.future;
   }
