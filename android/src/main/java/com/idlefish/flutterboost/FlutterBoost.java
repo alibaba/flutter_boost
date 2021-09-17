@@ -64,10 +64,12 @@ public class FlutterBoost {
         FlutterEngine engine = getEngine();
         if (engine == null) {
             engine = new FlutterEngine(application, options.shellArgs());
+            // Cache the created FlutterEngine in the FlutterEngineCache.
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }
 
         if (!engine.getDartExecutor().isExecutingDart()) {
+            // Pre-warm the cached FlutterEngine.
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
                     FlutterMain.findAppBundlePath(), options.dartEntrypoint()));
@@ -79,6 +81,21 @@ public class FlutterBoost {
 
         //3. register ActivityLifecycleCallbacks
         setupActivityLifecycleCallback(application, isBackForegroundEventOverridden);
+    }
+
+    /**
+     *  Releases the engine resource.
+     */
+    public void tearDown() {
+        FlutterEngine engine = getEngine();
+        if (engine != null) {
+            engine.destroy();
+            FlutterEngineCache.getInstance().remove(ENGINE_ID);
+        }
+        topActivity = null;
+        plugin = null;
+        isBackForegroundEventOverridden = false;
+        isAppInBackground = false;
     }
 
     /**

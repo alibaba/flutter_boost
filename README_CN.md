@@ -5,7 +5,7 @@
 
 # Release Note
 
-v3.0-preview.7
+v3.0-preview.11
 
 PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新的接入文档与使用文档。
 
@@ -34,7 +34,7 @@ PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新�
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.7'
+        ref: 'v3.0-preview.11'
 ```
 
 # 使用文档

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the build method from the FlutterBoostAppState class, for the Dart programming language.">
+  <title>build method - FlutterBoostAppState class - flutter_boost_app library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../../static-assets/styles.css?v1">
+  <link rel="icon" href="../../static-assets/favicon.png?v1">
+
+  
+</head>
+
+
+<body data-base-href="../../"
+      data-using-base-href="false">
+
+<div id="overlay-under-drawer"></div>
+
+<header id="title">
+  <button id="sidenav-left-toggle" type="button">&nbsp;</button>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../../index.html">flutter_boost</a></li>
+    <li><a href="../../flutter_boost_app/flutter_boost_app-library.html">flutter_boost_app</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState-class.html">FlutterBoostAppState</a></li>
+    <li class="self-crumb">build method</li>
+  </ol>
+  <div class="self-name">build</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<main>
+
+
+  <div id="dartdoc-main-content" class="main-content">
+      <div>
+<h1><span class="kind-method">build</span> method 
+</h1></div>
+
+    <section class="multi-line-signature">
+      
+<div>
+  <ol class="annotation-list">
+    <li>@<a href="https://api.flutter.dev/flutter/dart-core/override-constant.html">override</a></li>
+  </ol>
+</div>
+
+<span class="returntype"><a href="https://api.flutter.dev/flutter/widgets/Widget-class.html">Widget</a></span>
+<span class="name ">build</span>(<wbr><ol class="parameter-list"><li><span class="parameter" id="build-param-context"><span class="type-annotation"><a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a></span> <span class="parameter-name">context</span></span></li>
+</ol>)
+
+      <div class="features">override</div>
+
+    </section>
+    
+<section class="desc markdown">
+  <p>Describes the part of the user interface represented by this widget.</p>
+<p>The framework calls this method in a number of different situations. For
+example:</p>
+<ul>
+<li>After calling <a href="../../flutter_boost_app/FlutterBoostAppState/initState.html">initState</a>.</li>
+<li>After calling <a href="https://api.flutter.dev/flutter/widgets/State/didUpdateWidget.html">didUpdateWidget</a>.</li>
+<li>After receiving a call to <a href="https://api.flutter.dev/flutter/widgets/State/setState.html">setState</a>.</li>
+<li>After a dependency of this <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object changes (e.g., an
+<a href="https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html">InheritedWidget</a> referenced by the previous <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> changes).</li>
+<li>After calling <a href="https://api.flutter.dev/flutter/widgets/State/deactivate.html">deactivate</a> and then reinserting the <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object into
+the tree at another location.</li>
+</ul>
+<p>This method can potentially be called in every frame and should not have
+any side effects beyond building a widget.</p>
+<p>The framework replaces the subtree below this widget with the widget
+returned by this method, either by updating the existing subtree or by
+removing the subtree and inflating a new subtree, depending on whether the
+widget returned by this method can update the root of the existing
+subtree, as determined by calling <a href="https://api.flutter.dev/flutter/widgets/Widget/canUpdate.html">Widget.canUpdate</a>.</p>
+<p>Typically implementations return a newly created constellation of widgets
+that are configured with information from this widget's constructor, the
+given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a>, and the internal state of this <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object.</p>
+<p>The given <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> contains information about the location in the
+tree at which this widget is being built. For example, the context
+provides the set of inherited widgets for this location in the tree. The
+<a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> argument is always the same as the <code>context</code> property of
+this <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object and will remain the same for the lifetime of this
+object. The <a href="https://api.flutter.dev/flutter/widgets/BuildContext-class.html">BuildContext</a> argument is provided redundantly here so that
+this method matches the signature for a <a href="https://api.flutter.dev/flutter/widgets/WidgetBuilder.html">WidgetBuilder</a>.</p>
+<h2 id="design-discussion">Design discussion</h2>
+<h3 id="why-is-the-build-method-on-state-and-not-statefulwidget">Why is the <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> method on <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a>, and not <a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a>?</h3>
+<p>Putting a <code>Widget build(BuildContext context)</code> method on <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> rather
+than putting a <code>Widget build(BuildContext context, State state)</code> method
+on <a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> gives developers more flexibility when subclassing
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a>.</p>
+<p>For example, <a href="https://api.flutter.dev/flutter/widgets/AnimatedWidget-class.html">AnimatedWidget</a> is a subclass of <a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> that
+introduces an abstract <code>Widget build(BuildContext context)</code> method for its
+subclasses to implement. If <a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> already had a <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> method
+that took a <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> argument, <a href="https://api.flutter.dev/flutter/widgets/AnimatedWidget-class.html">AnimatedWidget</a> would be forced to provide
+its <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object to subclasses even though its <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object is an
+internal implementation detail of <a href="https://api.flutter.dev/flutter/widgets/AnimatedWidget-class.html">AnimatedWidget</a>.</p>
+<p>Conceptually, <a href="https://api.flutter.dev/flutter/widgets/StatelessWidget-class.html">StatelessWidget</a> could also be implemented as a subclass of
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> in a similar manner. If the <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> method were on
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> rather than <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a>, that would not be possible anymore.</p>
+<p>Putting the <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> function on <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> rather than <a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a> also
+helps avoid a category of bugs related to closures implicitly capturing
+<code>this</code>. If you defined a closure in a <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> function on a
+<a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a>, that closure would implicitly capture <code>this</code>, which is
+the current widget instance, and would have the (immutable) fields of that
+instance in scope:</p>
+<pre class="language-dart"><code class="language-dart">class MyButton extends StatefulWidget {
+  ...
+  final Color color;
+
+  @override
+  Widget build(BuildContext context, MyButtonState state) {
+    ... () { print("color: $color"); } ...
+  }
+}
+</code></pre>
+<p>For example, suppose the parent builds <code>MyButton</code> with <code>color</code> being blue,
+the <code>$color</code> in the print function refers to blue, as expected. Now,
+suppose the parent rebuilds <code>MyButton</code> with green. The closure created by
+the first build still implicitly refers to the original widget and the
+<code>$color</code> still prints blue even through the widget has been updated to
+green.</p>
+<p>In contrast, with the <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> function on the <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object, closures
+created during <a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a> implicitly capture the <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> instance instead of
+the widget instance:</p>
+<pre class="language-dart"><code class="language-dart">class MyButtonState extends State&lt;MyButton&gt; {
+  ...
+  @override
+  Widget build(BuildContext context) {
+    ... () { print("color: ${widget.color}"); } ...
+  }
+}
+</code></pre>
+<p>Now when the parent rebuilds <code>MyButton</code> with green, the closure created by
+the first build still refers to <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object, which is preserved across
+rebuilds, but the framework has updated that <a href="https://api.flutter.dev/flutter/widgets/State-class.html">State</a> object's <a href="https://api.flutter.dev/flutter/widgets/State/widget.html">widget</a>
+property to refer to the new <code>MyButton</code> instance and <code>${widget.color}</code>
+prints green, as expected.</p>
+<p>See also:</p>
+<ul>
+<li><a href="https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html">StatefulWidget</a>, which contains the discussion on performance considerations.</li>
+</ul>
+</section>
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">@override
+Widget build(BuildContext context) {
+  return widget.appBuilder(WillPopScope(
+      onWillPop: () async {
+        final canPop = topContainer.navigator.canPop();
+        if (canPop) {
+          topContainer.navigator.pop();
+          return true;
+        }
+        return false;
+      },
+      child: Listener(
+          onPointerDown: _handlePointerDown,
+          onPointerUp: _handlePointerUpOrCancel,
+          onPointerCancel: _handlePointerUpOrCancel,
+          child: Overlay(
+            key: overlayKey,
+            initialEntries: const &lt;OverlayEntry&gt;[],
+          ))));
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+  <li><a href="../../index.html">flutter_boost</a></li>
+  <li><a href="../../flutter_boost_app/flutter_boost_app-library.html">flutter_boost_app</a></li>
+  <li><a href="../../flutter_boost_app/FlutterBoostAppState-class.html">FlutterBoostAppState</a></li>
+  <li class="self-crumb">build method</li>
+</ol>
+
+
+    <h5>FlutterBoostAppState class</h5>
+    <ol>
+
+    <li class="section-title"><a href="../../flutter_boost_app/FlutterBoostAppState-class.html#constructors">Constructors</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/FlutterBoostAppState.html">FlutterBoostAppState</a></li>
+
+
+    <li class="section-title">
+      <a href="../../flutter_boost_app/FlutterBoostAppState-class.html#instance-properties">Properties</a>
+    </li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/boostFlutterRouterApi.html">boostFlutterRouterApi</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/containers.html">containers</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/context.html">context</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/hashCode.html">hashCode</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/interceptors.html">interceptors</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/mounted.html">mounted</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/nativeRouterApi.html">nativeRouterApi</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/runtimeType.html">runtimeType</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/topContainer.html">topContainer</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/widget.html">widget</a></li>
+
+    <li class="section-title"><a href="../../flutter_boost_app/FlutterBoostAppState-class.html#instance-methods">Methods</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/addEventListener.html">addEventListener</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/build.html">build</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/deactivate.html">deactivate</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/debugFillProperties.html">debugFillProperties</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/didChangeDependencies.html">didChangeDependencies</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/didUpdateWidget.html">didUpdateWidget</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/dispose.html">dispose</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/getTopPageInfo.html">getTopPageInfo</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/initState.html">initState</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/noSuchMethod.html">noSuchMethod</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onBackground.html">onBackground</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onContainerHide.html">onContainerHide</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onContainerShow.html">onContainerShow</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onForeground.html">onForeground</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onNativeResult.html">onNativeResult</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/onReceiveEventFromNative.html">onReceiveEventFromNative</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pageSize.html">pageSize</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pendNativeResult.html">pendNativeResult</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pop.html">pop</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/popUntil.html">popUntil</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/popWithResult.html">popWithResult</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pushContainer.html">pushContainer</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pushPage.html">pushPage</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/pushWithResult.html">pushWithResult</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/reassemble.html">reassemble</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/refresh.html">refresh</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/refreshOnMoveToTop.html">refreshOnMoveToTop</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/refreshOnPush.html">refreshOnPush</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/refreshOnRemove.html">refreshOnRemove</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/remove.html">remove</a></li>
+    <li><a href="../../flutter_boost_app/FlutterBoostAppState/removeWithResult.html">removeWithResult</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/widgets/State/setState.html">setState</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toDiagnosticsNode.html">toDiagnosticsNode</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toString.html">toString</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/foundation/Diagnosticable/toStringShort.html">toStringShort</a></li>
+
+    <li class="section-title inherited"><a href="../../flutter_boost_app/FlutterBoostAppState-class.html#operators">Operators</a></li>
+    <li class="inherited"><a href="https://api.flutter.dev/flutter/dart-core/Object/operator_equals.html">operator ==</a></li>
+
+
+
+
+</ol>
+
+  </div><!--/.sidebar-offcanvas-->
+
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+
+</main>
+
+<footer>
+  <span class="no-break">
+    flutter_boost
+      3.0.0
+  </span>
+
+  
+</footer>
+
+
+
+<script src="../../static-assets/highlight.pack.js?v1"></script>
+<script src="../../static-assets/script.js?v1"></script>
+
+
+
+</body>
+
+</html>
+

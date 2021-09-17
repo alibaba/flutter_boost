@@ -6,11 +6,10 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.idlefish.flutterboost.FlutterBoost;
-import com.idlefish.flutterboost.FlutterBoostPlugin;
 import com.idlefish.flutterboost.FlutterBoostUtils;
+import com.idlefish.flutterboost.Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -177,7 +176,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     public void onBackPressed() {
-        FlutterBoost.instance().getPlugin().popRoute(null, null);
+        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private final String who = UUID.randomUUID().toString();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
-    private boolean isAttachedToActivity = false;
+    private LifecycleStage stage;
+    private boolean isAttached = false;
+    private boolean isFinishing = false;
 
     // @Override
     public void detachFromFlutterEngine() {
@@ -45,12 +48,33 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
          * The idea here is to avoid releasing delegate when
          * a new FlutterFragment is attached in Flutter2.0.
          */
+        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        stage = LifecycleStage.ON_CREATE;
+        if (DEBUG) Log.d(TAG, "#onCreate: " + this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (DEBUG) Log.d(TAG, "#onStart: " + this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stage = LifecycleStage.ON_DESTROY;
+        if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (DEBUG) Log.e(TAG, "#onAttach: " + this);
+        if (DEBUG) Log.d(TAG, "#onAttach: " + this);
     }
 
     @Override
@@ -61,7 +85,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         assert(flutterView != null);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
-        if (DEBUG) Log.e(TAG, "#onCreateView: " + this);
+        if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
         return view;
     }
 
@@ -74,7 +98,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentShow();
         }
         super.onHiddenChanged(hidden);
-        if (DEBUG) Log.e(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
+        if (DEBUG) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
 
     @Override
@@ -86,17 +110,27 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentHide();
         }
         super.setUserVisibleHint(isVisibleToUser);
-        if (DEBUG) Log.e(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
+        if (DEBUG) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
+
+        stage = LifecycleStage.ON_RESUME;
         if (!isHidden()) {
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
-        if (DEBUG) Log.e(TAG, "#onResume: " + this);
+        if (DEBUG) Log.d(TAG, "#onResume: " + this);
     }
 
     @Override
@@ -108,24 +142,35 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+                Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
+                        "See https://issuetracker.google.com/issues/185693011 for more details.");
+                return;
+            }
+        }
+
+        stage = LifecycleStage.ON_PAUSE;
         didFragmentHide();
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onPause: " + this);
+        if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        stage = LifecycleStage.ON_STOP;
         assert(getFlutterEngine() != null);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onStop: " + this);
+        if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
-        if (DEBUG) Log.e(TAG, "#onDestroyView: " + this);
+        if (DEBUG) Log.d(TAG, "#onDestroyView: " + this);
     }
 
     @Override
@@ -134,13 +179,21 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onDetach();
         assert(engine != null);
         engine.getLifecycleChannel().appIsResumed();
-        if (DEBUG) Log.e(TAG, "#onDetach: " + this);
+        if (DEBUG) Log.d(TAG, "#onDetach: " + this);
+    }
+
+    @Override
+    // This method is called right before the activity's onPause() callback.
+    public void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (DEBUG) Log.d(TAG, "#onUserLeaveHint: " + this);
     }
 
     @Override
     public void onBackPressed() {
         // Intercept the user's press of the back key.
         FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
+        if (DEBUG) Log.d(TAG, "#onBackPressed: " + this);
     }
 
     @Override
@@ -170,12 +223,14 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
+        isFinishing = true;
         if (result != null) {
             Intent intent = new Intent();
             intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
             getActivity().setResult(Activity.RESULT_OK, intent);
         }
         getActivity().finish();
+        if (DEBUG) Log.d(TAG, "#finishContainer: " + this);
     }
 
     @Override
@@ -202,71 +257,94 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
       return FlutterBoost.ENGINE_ID;
     }
 
-    private void didFragmentShow() {
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+    @Override
+    public boolean isPausing() {
+        return (stage == LifecycleStage.ON_PAUSE || stage == LifecycleStage.ON_STOP) && !isFinishing;
+    }
 
-        // Create the platform plugin.
-        if (platformPlugin == null) {
-            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+    private void didFragmentShow() {
+        // try to detach prevous container from the engine.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && top != this) {
+            top.detachFromEngineIfNeeded();
         }
 
-        // Attach plugins to the activity.
-        attachToActivity();
-        // Attach rendering pipeline.
-        flutterView.attachToFlutterEngine(getFlutterEngine());
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        performAttach();
+        if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
+        // We Release |PlatformChannel| here to avoid that the native page affected
+        // by system chrome message from flutter.
+        releasePlatformChannel();
+        if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
+    }
 
-        // Plugins are no longer attached to the activity.
-        detachFromActivity();
-        // Release Flutter's control of UI such as system chrome.
+    private void performAttach() {
+        if (!isAttached) {
+            // Attach plugins to the activity.
+            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+
+            if (platformPlugin == null) {
+                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            }
+
+            // Attach rendering pipeline.
+            flutterView.attachToFlutterEngine(getFlutterEngine());
+            isAttached = true;
+            if (DEBUG) Log.d(TAG, "#performAttach: " + this);
+        }
+    }
+
+    private void performDetach() {
+        if (isAttached) {
+            // Plugins are no longer attached to the activity.
+            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+
+            // Release Flutter's control of UI such as system chrome.
+            releasePlatformChannel();
+
+            // Detach rendering pipeline.
+            flutterView.detachFromFlutterEngine();
+
+            isAttached = false;
+            if (DEBUG) Log.d(TAG, "#performDetach: " + this);
+        }
+    }
+
+    private void releasePlatformChannel() {
         if (platformPlugin != null) {
             platformPlugin.destroy();
             platformPlugin = null;
         }
-
-        // Detach rendering pipeline.
-        flutterView.detachFromFlutterEngine();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        // lifecycle is onRequestPermissionsResult->onResume
-        attachToActivity();
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    public void detachFromEngineIfNeeded() {
+        performDetach();
+    }
+
+    // Defaults to {@link TransparencyMode#opaque}.
+    @Override
+    public TransparencyMode getTransparencyMode() {
+        String transparencyModeName =
+            getArguments()
+                .getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, TransparencyMode.opaque.name());
+        return TransparencyMode.valueOf(transparencyModeName);
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // lifecycle is onActivityResult->onResume
-        attachToActivity();
-        super.onActivityResult(requestCode, resultCode, data);
-        if (DEBUG) Log.e(TAG, "#onActivityResult: " + this);
-    }
-
-    private void attachToActivity() {
-        if (isAttachedToActivity) {
-            return;
-        }
-        isAttachedToActivity = true;
-        getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
-    }
-
-    private void detachFromActivity() {
-        if (!isAttachedToActivity) {
-            return;
-        }
-        isAttachedToActivity = false;
-        getFlutterEngine().getActivityControlSurface().detachFromActivity();
+    public boolean isOpaque() {
+        return getTransparencyMode() == TransparencyMode.opaque;
     }
 
     public static class CachedEngineFragmentBuilder {
         private final Class<? extends FlutterBoostFragment> fragmentClass;
         private boolean destroyEngineWithFragment = false;
         private RenderMode renderMode = RenderMode.surface;
-        private TransparencyMode transparencyMode = TransparencyMode.transparent;
+        private TransparencyMode transparencyMode = TransparencyMode.opaque;
         private boolean shouldAttachEngineToActivity = true;
         private String url = "/";
         private HashMap<String, Object> params;

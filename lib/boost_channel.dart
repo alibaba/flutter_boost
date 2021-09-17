@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
+import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 
@@ -13,6 +13,7 @@ typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 class BoostChannel {
   BoostChannel._();
 
+  ///The singleton for [BoostChannel]
   static final BoostChannel _instance = BoostChannel._();
 
   FlutterBoostAppState _appState;
@@ -42,5 +43,22 @@ class BoostChannel {
       ..key = key
       ..arguments = args;
     _appState.nativeRouterApi.sendEventToNative(params);
+  }
+
+  /// enable iOS native pop gesture for container matching [containerId]
+  void enablePopGesture({@required String containerId}){
+    assert(containerId != null && containerId.isNotEmpty);
+    BoostChannel.instance.sendEventToNative(containerId, {
+      'event': 'enablePopGesture',
+      "args": {'enable': true}
+    });
+  }
+  /// disable iOS native pop gesture for container matching [containerId]
+  void disablePopGesture({@required String containerId}){
+    assert(containerId != null && containerId.isNotEmpty);
+    BoostChannel.instance.sendEventToNative(containerId, {
+      'event': 'enablePopGesture',
+      "args": {'enable': false}
+    });
   }
 }

@@ -4,9 +4,9 @@ import 'package:flutter/widgets.dart';
 
 import 'boost_container.dart';
 import 'boost_interceptor.dart';
+import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic> Function(
     RouteSettings settings, String uniqueId);
@@ -28,10 +28,13 @@ FlutterBoostRouteFactory routeFactoryWrapper(
 class BoostNavigator {
   BoostNavigator._();
 
+  /// The singleton for [BoostNavigator]
   static final BoostNavigator _instance = BoostNavigator._();
 
+  /// The boost data center
   FlutterBoostAppState appState;
 
+  /// The route table in flutter_boost
   FlutterBoostRouteFactory _routeFactory;
 
   set routeFactory(FlutterBoostRouteFactory routeFactory) =>
@@ -58,12 +61,18 @@ class BoostNavigator {
       routeFactory(RouteSettings(name: name), null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
+  /// [arguments] is the param you want to pass in next page
+  /// if [withContainer] is true,next route will be with a native container
+  /// (Android Activity / iOS UIViewController)
+  /// if [opaque] is true,the page is opaque (not transparent)
+  ///
+  /// And it will return the result popped by page as a Future<T>
   Future<T> push<T extends Object>(String name,
       {Map<String, dynamic> arguments,
       bool withContainer = false,
       bool opaque = true}) async {
-    var pushOption =
-        BoostInterceptorOption(name, arguments ?? <String, dynamic>{});
+    var pushOption = BoostInterceptorOption(name,
+        arguments: arguments ?? <String, dynamic>{});
     var future = Future<dynamic>(
         () => InterceptorState<BoostInterceptorOption>(pushOption));
     for (var interceptor in appState.interceptors) {
@@ -86,6 +95,7 @@ class BoostNavigator {
         pushOption = state.data;
         if (isFlutterPage(pushOption.name)) {
           return appState.pushWithResult(pushOption.name,
+              uniqueId: pushOption.uniqueId,
               arguments: pushOption.arguments,
               withContainer: withContainer,
               opaque: opaque);
@@ -103,8 +113,9 @@ class BoostNavigator {
     });
   }
 
-  ///1.Push a new page onto pageStack
-  ///2.remove(pop) previous page
+  /// This api do two things
+  /// 1.Push a new page onto pageStack
+  /// 2.remove(pop) previous page
   Future<T> pushReplacement<T extends Object>(String name,
       {Map<String, dynamic> arguments, bool withContainer = false}) async {
     final id = getTopPageInfo().uniqueId;
@@ -122,6 +133,10 @@ class BoostNavigator {
   Future<bool> pop<T extends Object>([T result]) async =>
       await appState.popWithResult(result);
 
+  /// PopUntil page off the hybrid stack.
+  Future<void> popUntil({String route, String uniqueId}) async =>
+      await appState.popUntil(route: route, uniqueId: uniqueId);
+
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
@@ -135,6 +150,7 @@ class BoostNavigator {
   /// This is a legacy API for backwards compatibility.
   PageInfo getTopPageInfo() => appState.getTopPageInfo();
 
+  /// Get the top page 's [PageInfo] with [BuildContext]
   PageInfo getTopByContext(BuildContext context) =>
       BoostContainer.of(context).pageInfo;
 
@@ -144,6 +160,7 @@ class BoostNavigator {
   int pageSize() => appState.pageSize();
 }
 
+/// The PageInfo use in FlutterBoost ,it is not a public api
 class PageInfo {
   PageInfo({this.pageName, this.uniqueId, this.arguments, this.withContainer});
 

@@ -24,11 +24,13 @@ public class FlutterContainerManager {
     private final Map<String, FlutterViewContainer> allContainers = new HashMap<>();
     private final LinkedList<FlutterViewContainer> activeContainers = new LinkedList<>();
 
+    // onContainerCreated
     public void addContainer(String uniqueId, FlutterViewContainer container) {
         allContainers.put(uniqueId, container);
-        if (DEBUG) Log.e(TAG, "#addContainer:" + toString());
+        if (DEBUG) Log.d(TAG, "#addContainer:" + toString());
     }
 
+    // onContainerAppeared
     public void activateContainer(String uniqueId, FlutterViewContainer container) {
         if (uniqueId == null || container == null) return;
         assert (allContainers.containsKey(uniqueId));
@@ -37,14 +39,15 @@ public class FlutterContainerManager {
             activeContainers.remove(container);
         }
         activeContainers.add(container);
-        if (DEBUG) Log.e(TAG, "#activateContainer:" + toString());
+        if (DEBUG) Log.d(TAG, "#activateContainer:" + toString());
     }
 
+    // onContainerDestroyed
     public void removeContainer(String uniqueId) {
         if (uniqueId == null) return;
         FlutterViewContainer container = allContainers.remove(uniqueId);
         activeContainers.remove(container);
-        if (DEBUG) Log.e(TAG, "#removeContainer:" + toString());
+        if (DEBUG) Log.d(TAG, "#removeContainer:" + toString());
     }
 
 

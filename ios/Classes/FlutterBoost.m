@@ -27,7 +27,6 @@
 #import "FlutterBoost.h"
 #import "FlutterBoostPlugin.h"
 #import "Options.h"
-
 @interface FlutterBoost ()
 
 @property (nonatomic, strong) FlutterEngine*  engine;
@@ -58,6 +57,11 @@
     void(^engineRun)(void) = ^(void) {
         
         [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
+        
+        //根据配置提前预热引擎,配置默认预热引擎
+        if(options.warmUpEngine){
+            [self warmUpEngine];
+        }
         
         Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
         SEL selector = NSSelectorFromString(@"registerWithRegistry:");
@@ -95,6 +99,35 @@
     
 }
 
+- (void)unsetFlutterBoost{
+    void (^engineDestroy)(void) = ^{
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
+        self.plugin.delegate = nil;
+        self.plugin = nil;
+        
+        [self.engine destroyContext];
+        self.engine = nil;
+    };
+    
+    if ([NSThread isMainThread]){
+        engineDestroy();
+    }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            engineDestroy();
+        });
+    }
+}
+
+///提前预热引擎
+- (void)warmUpEngine{
+    FlutterViewController* vc = [[FlutterViewController alloc] initWithEngine:self.engine
+                                                                      nibName:nil bundle:nil];
+    [vc beginAppearanceTransition:YES animated:NO];
+    [vc endAppearanceTransition];
+    [vc beginAppearanceTransition:NO animated:NO];
+    [vc endAppearanceTransition];
+}
 
 + (instancetype)instance{
     static id _instance = nil;

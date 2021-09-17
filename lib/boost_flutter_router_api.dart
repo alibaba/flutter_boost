@@ -28,6 +28,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void popRoute(CommonParams arg) => appState.pop(uniqueId: arg.uniqueId);
 
   @override
+  void popUntilRoute(CommonParams arg) => appState.popUntil(route: arg.pageName,uniqueId: arg.uniqueId);
+
+  @override
   void onForeground(CommonParams arg) => appState.onForeground();
 
   @override
@@ -49,4 +52,6 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   @override
   void sendEventToFlutter(CommonParams arg) =>
       appState.onReceiveEventFromNative(arg);
+
+
 }

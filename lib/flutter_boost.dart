@@ -8,3 +8,4 @@ export 'boost_navigator.dart';
 export 'flutter_boost_app.dart';
 export 'logger.dart';
 export 'page_visibility.dart';
+export 'util.dart';

@@ -1,3 +1,24 @@
+## v3.0-preview.11
+1. [flutter] 让NavigatorExt接管pushNamed方法
+2. [flutter] 增加tab模式的example，删除iOS端无用的生命周期，避免初始化阶段进行push，造成初始化情况下tab白屏问题
+3. [iOS] 提前事件监听的注册时机，以及在删除的时候对block进行判空，避免crash
+
+## v3.0-preview.10
+1. [iOS] 提供引擎预热功能，避免第一次进入flutter页面短暂的白屏/黑屏，以及字体大小跳动的情况
+2. [iOS] 单VC，多flutterPage下，动态控制容器手势侧滑，内部有多page的时候，侧滑将走flutter内部侧滑逻辑，避免多page下侧滑直接带走整个容器的情况
+3. [dart] 更新example代码，表明如何在单容器内跳转拥有跳转动画（比如iOS的push效果）
+
+## v3.0-preview.9
+1.  [Android] 解决切后台场景下Android Q生命周期回调异常导致透明弹窗背景不正确问题 (#1288)
+2.  [Android] 增加引擎释放接口 (#1291)
+
+## v3.0-preview.8
+1. [Android] 解决特定场景下半透明弹窗背景黑/白屏、传参丢失、请求权限失败，以及image_picker插件不可用等问题
+2. [Android] 修复FlutterBoostActivity和FlutterBoostFragment接收不到请求权限结果的bug
+3. 解决 iOS dismissViewController completion 异步回调事件不完整的问题
+4. [Android] 适配页面透明参数，增加测试案例 (#1265)
+5. [Android] fix #1264 修复由于这条提交 #1250 导致FlutterboosrActivity 接收不到onActivityResult 回调结果 的bug
+
 ## v3.0-preview.7
 1. [Android] 解决前一个页面destroy时导致当前页面的PlatformViewsChannel断开的问题 (#1250)
 2. Hfix #1229 修复example中从Flutter页面推后台再回前天，栈顶页面是Native的页面的问题

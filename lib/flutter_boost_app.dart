@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'boost_channel.dart';
 import 'boost_container.dart';
@@ -11,9 +13,9 @@ import 'boost_flutter_router_api.dart';
 import 'boost_interceptor.dart';
 import 'boost_lifecycle_binding.dart';
 import 'boost_navigator.dart';
+import 'container_overlay.dart';
 import 'logger.dart';
 import 'messages.dart';
-import 'overlay_entry.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -25,7 +27,7 @@ class FlutterBoostApp extends StatefulWidget {
 
     ///interceptors is to intercept push operation now
     List<BoostInterceptor> interceptors,
-  })  : appBuilder = appBuilder ?? _materialAppBuilder,
+  })  : appBuilder = appBuilder ?? _defaultAppBuilder,
         interceptors = interceptors ?? <BoostInterceptor>[],
         initialRoute = initialRoute ?? '/' {
     BoostNavigator.instance.routeFactory = routeFactory;
@@ -37,8 +39,10 @@ class FlutterBoostApp extends StatefulWidget {
   ///A list of [BoostInterceptor],to intercept operations when push
   final List<BoostInterceptor> interceptors;
 
-  static Widget _materialAppBuilder(Widget home) {
-    return MaterialApp(home: home);
+  /// default builder for app
+  static Widget _defaultAppBuilder(Widget home) {
+    /// use builder param instead of home,to avoid Navigator.pop
+    return MaterialApp(home:home,builder: (_,__) => home);
   }
 
   @override
@@ -80,7 +84,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'BoostFlutterBinding is not initialized，'
         'please refer to "class CustomFlutterBinding" in example project');
 
-    _containers.add(_createContainer(PageInfo(pageName: widget.initialRoute)));
+    /// create the container matching the initial route
+    final BoostContainer initialContainer =
+        _createContainer(PageInfo(pageName: widget.initialRoute));
+    _containers.add(initialContainer);
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
@@ -89,7 +96,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // initialRoute. Use addPostFrameCallback is because to wait
     // overlayKey.currentState to load complete....
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refresh();
+      // add this container in route
+      refreshOnPush(initialContainer);
       _addAppLifecycleStateEventListener();
     });
 
@@ -116,11 +124,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final int index = arguments["lifecycleState"];
 
       if (index == AppLifecycleState.resumed.index) {
-        print("resume");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.resumed);
       } else if (index == AppLifecycleState.paused.index) {
-        print("pause");
         BoostFlutterBinding.instance
             .changeAppLifecycleState(AppLifecycleState.paused);
       }
@@ -165,16 +171,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   void _cancelActivePointers() {
     _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
-  }
-
-  void refresh() {
-    refreshAllOverlayEntries(containers);
-
-    // try to save routes to host.
-    assert(() {
-      _saveStackForHotRestart();
-      return true;
-    }());
   }
 
   String _createUniqueId(String pageName) {
@@ -238,8 +234,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       Map<String, dynamic> arguments,
       bool withContainer,
       bool opaque = true}) {
-    assert(uniqueId == null);
-    uniqueId = _createUniqueId(pageName);
+    uniqueId ??= _createUniqueId(pageName);
     if (withContainer) {
       final completer = Completer<T>();
       final params = CommonParams()
@@ -308,6 +303,65 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void removeWithResult([String uniqueId, Map<String, dynamic> result]) {
     _completePendingResultIfNeeded(uniqueId, result: result);
     pop(uniqueId: uniqueId, result: result);
+  }
+
+  void popUntil({String route, String uniqueId}) async {
+    BoostContainer targetContainer;
+    BoostPage targetPage;
+    int popUntilIndex = containers.length;
+    if (uniqueId != null) {
+      for (int index = containers.length - 1; index >= 0; index--) {
+        for (BoostPage page in containers[index].pages) {
+          if (uniqueId == page.pageInfo.uniqueId ||
+              uniqueId == containers[index].pageInfo.uniqueId) {
+            //uniqueId优先级更高，优先匹配
+            targetContainer = containers[index];
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) {
+          popUntilIndex = index;
+          break;
+        }
+      }
+    }
+
+    if (targetContainer == null && route != null) {
+      for (int index = containers.length - 1; index >= 0; index--) {
+        for (BoostPage page in containers[index].pages) {
+          if (route == page.name) {
+            targetContainer = containers[index];
+            targetPage = page;
+            break;
+          }
+        }
+        if (targetContainer != null) {
+          popUntilIndex = index;
+          break;
+        }
+      }
+    }
+
+    if (targetContainer != null && targetContainer != topContainer) {
+      for (int index = containers.length - 1; index > popUntilIndex; index--) {
+        BoostContainer container = containers[index];
+        final params = CommonParams()
+          ..pageName = container.pageInfo.pageName
+          ..uniqueId = container.pageInfo.uniqueId
+          ..arguments = {"animated": false};
+        await nativeRouterApi.popRoute(params);
+      }
+
+      if (targetContainer.topPage != targetPage) {
+        Future<void>.delayed(
+            const Duration(milliseconds: 50),
+            () => targetContainer?.navigator
+                ?.popUntil(ModalRoute.withName(targetPage.name)));
+      }
+    } else {
+      topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage.name));
+    }
   }
 
   Future<bool> pop({String uniqueId, Object result}) async {
@@ -537,7 +591,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   ///
 
   void refreshOnPush(BoostContainer container) {
-    refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
+        container, BoostSpecificEntryRefreshMode.add);
     assert(() {
       _saveStackForHotRestart();
       return true;
@@ -545,7 +600,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnRemove(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.remove);
     assert(() {
       _saveStackForHotRestart();
@@ -554,7 +609,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void refreshOnMoveToTop(BoostContainer container) {
-    refreshSpecificOverlayEntries(
+    ContainerOverlay.instance.refreshSpecificOverlayEntries(
         container, BoostSpecificEntryRefreshMode.moveToTop);
     assert(() {
       _saveStackForHotRestart();
@@ -576,6 +631,7 @@ class BoostPage<T> extends Page<T> {
   }
 
   Route<T> _route;
+
   Route<T> get route => _route;
 
   /// A future that completes when this page is popped.
@@ -608,6 +664,14 @@ class BoostNavigatorObserver extends NavigatorObserver {
     if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPush(route, previousRoute);
     }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPush(route, previousRoute);
+      }
+    }
     super.didPush(route, previousRoute);
   }
 
@@ -616,14 +680,66 @@ class BoostNavigatorObserver extends NavigatorObserver {
     if (previousRoute != null && route?.settings?.name != null) {
       BoostLifecycleBinding.instance.routeDidPop(route, previousRoute);
     }
+
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didPop(route, previousRoute);
+      }
+    }
+
     super.didPop(route, previousRoute);
   }
 
   @override
-  void didRemove(Route route, Route previousRoute) {
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didRemove(route, previousRoute);
+      }
+    }
     super.didRemove(route, previousRoute);
     if (route != null) {
       BoostLifecycleBinding.instance.routeDidRemove(route);
     }
+  }
+
+  @override
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+      }
+    }
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  @override
+  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didStartUserGesture(route, previousRoute);
+      }
+    }
+    super.didStartUserGesture(route, previousRoute);
+  }
+
+  @override
+  void didStopUserGesture() {
+    final navigatorObserverList =
+        BoostLifecycleBinding.instance.navigatorObserverList;
+    if (navigatorObserverList != null && navigatorObserverList.isNotEmpty) {
+      for (var observer in navigatorObserverList) {
+        observer.didStopUserGesture();
+      }
+    }
+    super.didStopUserGesture();
   }
 }
