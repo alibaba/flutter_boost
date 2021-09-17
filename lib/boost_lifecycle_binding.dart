@@ -73,17 +73,18 @@ class BoostLifecycleBinding {
   void containerDidPop(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
+
+    // When container pop,remove the id from set to avoid
+    // this id still remain in the set
+    final id = container.pageInfo.uniqueId;
+    hasShownPageIds.remove(id);
+
     PageVisibilityBinding.instance.dispatchPagePopEvent(container.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidPop(container, previousContainer);
       }
     }
-
-    // When container pop,remove the id from set to avoid
-    // this id still remain in the set
-    final id = container.pageInfo.uniqueId;
-    hasShownPageIds.remove(id);
   }
 
   void containerDidShow(BoostContainer container) {
@@ -98,11 +99,6 @@ class BoostLifecycleBinding {
     }
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
-    if (_observerList != null && _observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
-        observer.onContainerDidShow(container);
-      }
-    }
 
     final id = container?.pageInfo?.uniqueId;
     assert(id != null);
@@ -118,6 +114,11 @@ class BoostLifecycleBinding {
     } else {
       PageVisibilityBinding.instance
           .dispatchPageShowEvent(container.topPage.route);
+    }
+    if (_observerList != null && _observerList.isNotEmpty) {
+      for (BoostLifecycleObserver observer in _observerList) {
+        observer.onContainerDidShow(container);
+      }
     }
   }
 
