@@ -13,6 +13,9 @@ BoostNavigator.instance.push(
 ///or
 
 Navigator.of(context).pushNamed('simplePage', arguments: {'data': _controller.text});
+
+///不能使用匿名路由，boost目前无法捕捉匿名路由，匿名路由就是直接使用类似
+///类似CupertinoPageRoute的形式来进行push，暂不支持！！！
 ```
 
 参数名 | 意义 | 是否可选
