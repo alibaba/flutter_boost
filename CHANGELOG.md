@@ -1,3 +1,8 @@
+## v3.0-preview.12
+1. [iOS] 将控制iOS手势的方法收口到BoostChannel作为通用方法，以及在container的show的监听中做手势的动态禁用和启用
+2. [flutter] 更新example以及默认的appBuilder实现，传入builder参数，避免showDialog无法关闭dialog而是关闭页面的操作
+3. [flutter] 修复路由在极端情况下顺序错误的问题
+
 ## v3.0-preview.11
 1. [flutter] 让NavigatorExt接管pushNamed方法
 2. [flutter] 增加tab模式的example，删除iOS端无用的生命周期，避免初始化阶段进行push，造成初始化情况下tab白屏问题
