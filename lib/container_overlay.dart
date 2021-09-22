@@ -69,6 +69,13 @@ class ContainerOverlay {
     //deal with different situation
     switch (mode) {
       case BoostSpecificEntryRefreshMode.add:
+        // If there is an existing ContainerOverlayEntry in the list,we do nothing
+        final ContainerOverlayEntry existingEntry = _findExistingEntry(container: container);
+        if (existingEntry != null) {
+          return;
+        }
+
+        // There is no existing entry in List.We can add an new Entry to list
         final entry = overlayEntryFactory(container);
         _lastEntries.add(entry);
         overlayState.insert(entry);
@@ -90,16 +97,29 @@ class ContainerOverlay {
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
-        final existingEntry = _lastEntries.singleWhere((element) {
-          return element.containerUniqueId == container.pageInfo.uniqueId;
-        });
-        //remove the entry from list and overlay
-        //and insert it to list'top and overlay 's top
-        _lastEntries.remove(existingEntry);
-        _lastEntries.add(existingEntry);
-        existingEntry.remove();
-        overlayState.insert(existingEntry);
+        final ContainerOverlayEntry existingEntry = _findExistingEntry(container: container);
+
+        if (existingEntry == null) {
+          /// If there is no entry in the list,we add it in list
+          refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+        } else {
+          /// we take the existingEntry out and move it to top
+          //remove the entry from list and overlay
+          //and insert it to list'top and overlay 's top
+          _lastEntries.remove(existingEntry);
+          _lastEntries.add(existingEntry);
+          existingEntry.remove();
+          overlayState.insert(existingEntry);
+        }
         break;
     }
+  }
+
+  /// Return the result whether we can find a [ContainerOverlayEntry] matching this [container]
+  /// If no entry matches this id,return null
+  ContainerOverlayEntry _findExistingEntry({@required BoostContainer container}) {
+    assert(container != null);
+    return _lastEntries.singleWhere((element) => element.containerUniqueId == container.pageInfo.uniqueId,
+        orElse: () => null);
   }
 }
