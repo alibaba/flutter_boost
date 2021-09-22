@@ -115,7 +115,7 @@ class ContainerOverlay {
     }
   }
 
-  /// Return the result whether we can find a [ContainerOverlayEntry] matching this [uniqueId]
+  /// Return the result whether we can find a [ContainerOverlayEntry] matching this [container]
   /// If no entry matches this id,return null
   ContainerOverlayEntry _findExistingEntry({@required BoostContainer container}) {
     assert(container != null);
