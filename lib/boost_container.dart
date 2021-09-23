@@ -73,7 +73,8 @@ class BoostContainer extends ChangeNotifier {
   }
 
   @override
-  String toString() => '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
+  String toString() =>
+      '${objectRuntimeType(this, 'BoostContainer')}(name:${pageInfo.pageName},'
       ' pages:$pages)';
 }
 
@@ -82,7 +83,8 @@ class BoostContainer extends ChangeNotifier {
 /// It overrides the "==" and "hashCode",
 /// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey key, this.container}) : super(key: container.key);
+  BoostContainerWidget({LocalKey key, this.container})
+      : super(key: container.key);
 
   /// The container this widget belong
   final BoostContainer container;
@@ -95,7 +97,8 @@ class BoostContainerWidget extends StatefulWidget {
   bool operator ==(Object other) {
     if (other is BoostContainerWidget) {
       var otherWidget = other;
-      return container.pageInfo.uniqueId == otherWidget.container.pageInfo.uniqueId;
+      return container.pageInfo.uniqueId ==
+          otherWidget.container.pageInfo.uniqueId;
     }
     return super == other;
   }
@@ -170,14 +173,14 @@ class NavigatorExt extends Navigator {
     List<Page<dynamic>> pages,
     PopPageCallback onPopPage,
     List<NavigatorObserver> observers,
-  }) : super(key: key, pages: pages, onPopPage: onPopPage, observers: observers);
+  }) : super(
+            key: key, pages: pages, onPopPage: onPopPage, observers: observers);
 
   @override
   NavigatorState createState() => NavigatorExtState();
 }
 
 class NavigatorExtState extends NavigatorState {
-
   @override
   Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
     if (arguments == null) {
@@ -189,7 +192,8 @@ class NavigatorExtState extends NavigatorState {
     }
 
     if (arguments is Map) {
-      return BoostNavigator.instance.push(routeName, arguments: Map<String, dynamic>.from(arguments));
+      return BoostNavigator.instance
+          .push(routeName, arguments: Map<String, dynamic>.from(arguments));
     } else {
       assert(false, "arguments should be Map<String,dynamic> or Map");
       return BoostNavigator.instance.push(routeName);

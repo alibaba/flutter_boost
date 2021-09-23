@@ -364,7 +364,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<bool> pop({String uniqueId, Object result, bool onBackPressed=false}) async {
+  Future<bool> pop(
+      {String uniqueId, Object result, bool onBackPressed = false}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -391,7 +392,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // page in container.
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
-      final handled = onBackPressed ? await container?.navigator?.maybePop(result) : container?.navigator?.canPop();
+      final handled = onBackPressed
+          ? await container?.navigator?.maybePop(result)
+          : container?.navigator?.canPop();
       if (handled != null) {
         if (!handled) {
           assert(container.pageInfo.withContainer);

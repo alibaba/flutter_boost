@@ -9,7 +9,7 @@ class BoostUtil {
   /// Else return null.
   static BoostPage<dynamic> tryGetRouteInfo(Route<dynamic> route) {
     final RouteSettings routeSettings = route.settings;
-    if (routeSettings is BoostPage<dynamic>){
+    if (routeSettings is BoostPage<dynamic>) {
       return routeSettings;
     }
     return null;

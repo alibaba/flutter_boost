@@ -42,7 +42,6 @@ class BoostLifecycleBinding {
   /// dispatching [containerDidShow] event
   Set<String> hasShownPageIds = <String>{};
 
-
   void addNavigatorObserver(NavigatorObserver observer) {
     navigatorObserverList.add(observer);
   }
@@ -62,7 +61,8 @@ class BoostLifecycleBinding {
   void containerDidPush(
       BoostContainer container, BoostContainer previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
-    PageVisibilityBinding.instance.dispatchPagePushEvent(container.topPage.route);
+    PageVisibilityBinding.instance
+        .dispatchPagePushEvent(container.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidPush(container, previousContainer);
@@ -79,7 +79,8 @@ class BoostLifecycleBinding {
     final id = container.pageInfo.uniqueId;
     hasShownPageIds.remove(id);
 
-    PageVisibilityBinding.instance.dispatchPagePopEvent(container.topPage.route);
+    PageVisibilityBinding.instance
+        .dispatchPagePopEvent(container.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidPop(container, previousContainer);
@@ -92,10 +93,12 @@ class BoostLifecycleBinding {
 
     ///When this container show,we check the nums of page in this container,
     ///And change the pop gesture in this container
-    if(container.pages.length >= 2){
-      BoostChannel.instance.disablePopGesture(containerId: container.pageInfo.uniqueId);
-    }else{
-      BoostChannel.instance.enablePopGesture(containerId: container.pageInfo.uniqueId);
+    if (container.pages.length >= 2) {
+      BoostChannel.instance
+          .disablePopGesture(containerId: container.pageInfo.uniqueId);
+    } else {
+      BoostChannel.instance
+          .enablePopGesture(containerId: container.pageInfo.uniqueId);
     }
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
@@ -124,7 +127,8 @@ class BoostLifecycleBinding {
 
   void containerDidHide(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
-    PageVisibilityBinding.instance.dispatchPageHideEvent(container?.topPage?.route);
+    PageVisibilityBinding.instance
+        .dispatchPageHideEvent(container?.topPage?.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidHide(container);
