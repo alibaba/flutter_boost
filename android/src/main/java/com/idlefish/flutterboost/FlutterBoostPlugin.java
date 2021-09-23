@@ -196,6 +196,15 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         }
     }
 
+    public void onBackPressed() {
+        if (channel != null) {
+            checkEngineState();
+            channel.onBackPressed(reply -> {});
+        } else {
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+        }
+    }
+
     public void removeRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
         if (channel != null) {
             checkEngineState();
