@@ -40,7 +40,11 @@ class BoostLifecycleBinding {
   /// callback event when showing on screen first time.
   /// Because it is not be added to [PageVisibilityBinding] before
   /// dispatching [containerDidShow] event
-  Set<String> hasShownPageIds = <String>{};
+  Set<String> _hasShownPageIds = <String>{};
+
+  int getShownPageSize() {
+    return _hasShownPageIds.length;
+  }
 
   void addNavigatorObserver(NavigatorObserver observer) {
     navigatorObserverList.add(observer);
@@ -77,7 +81,7 @@ class BoostLifecycleBinding {
     // When container pop,remove the id from set to avoid
     // this id still remain in the set
     final id = container.pageInfo.uniqueId;
-    hasShownPageIds.remove(id);
+    _hasShownPageIds.remove(id);
 
     PageVisibilityBinding.instance
         .dispatchPagePopEvent(container.topPage.route);
@@ -105,8 +109,8 @@ class BoostLifecycleBinding {
 
     final id = container?.pageInfo?.uniqueId;
     assert(id != null);
-    if (!hasShownPageIds.contains(id)) {
-      hasShownPageIds.add(id);
+    if (!_hasShownPageIds.contains(id)) {
+      _hasShownPageIds.add(id);
 
       // This case indicates it is the first time that this container show
       // So we should dispatch event using
