@@ -16,6 +16,7 @@ import 'boost_navigator.dart';
 import 'container_overlay.dart';
 import 'logger.dart';
 import 'messages.dart';
+import 'boost_operation_queue.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
@@ -83,25 +84,23 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         BoostFlutterBinding.instance != null,
         'BoostFlutterBinding is not initialized，'
         'please refer to "class CustomFlutterBinding" in example project');
-
-    /// create the container matching the initial route
-    final BoostContainer initialContainer =
-        _createContainer(PageInfo(pageName: widget.initialRoute));
-    _containers.add(initialContainer);
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
 
-    // Refresh the containers data to overlayKey to show the page matching
-    // initialRoute. Use addPostFrameCallback is because to wait
-    // overlayKey.currentState to load complete....
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // add this container in route
+    /// create the container matching the initial route,and add it in queue
+    /// with high priorty,because the initial route must be added in route stack first
+    /// and initial will not impact the lifecycle,so we can add it at the front of the queue.
+    BoostOperationQueue.instance.add(() {
+      final BoostContainer initialContainer = _createContainer(PageInfo(pageName: widget.initialRoute));
+      _containers.add(initialContainer);
       refreshOnPush(initialContainer);
-      _addAppLifecycleStateEventListener();
-    });
+    }, priority: BoostOperationPriority.high);
 
-    //setup the AppLifecycleState change event launched from native
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _addAppLifecycleStateEventListener();
+      BoostOperationQueue.instance.runTask();
+    });
 
     // try to restore routes from host when hot restart.
     assert(() {
