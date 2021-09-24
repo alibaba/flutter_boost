@@ -90,7 +90,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
       return;
     }
     if (overlayKey.currentState == null) {
-      BoostOperationQueue.instance.add(operation);
+      BoostOperationQueue.instance.addPendingOperation(operation);
     } else {
       operation.call();
     }

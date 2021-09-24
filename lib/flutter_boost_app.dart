@@ -88,18 +88,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
     super.initState();
 
-    /// create the container matching the initial route,and add it in queue
-    /// with high priorty,because the initial route must be added in route stack first
-    /// and initial will not impact the lifecycle,so we can add it at the front of the queue.
-    BoostOperationQueue.instance.add(() {
+    /// create the container matching the initial route
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final BoostContainer initialContainer = _createContainer(PageInfo(pageName: widget.initialRoute));
       _containers.add(initialContainer);
       refreshOnPush(initialContainer);
-    }, priority: BoostOperationPriority.high);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
       _addAppLifecycleStateEventListener();
-      BoostOperationQueue.instance.runTask();
+      BoostOperationQueue.instance.runPendingTask();
     });
 
     // try to restore routes from host when hot restart.
