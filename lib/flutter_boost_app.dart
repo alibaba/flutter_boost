@@ -42,7 +42,7 @@ class FlutterBoostApp extends StatefulWidget {
   /// default builder for app
   static Widget _defaultAppBuilder(Widget home) {
     /// use builder param instead of home,to avoid Navigator.pop
-    return MaterialApp(home:home,builder: (_,__) => home);
+    return MaterialApp(home: home, builder: (_, __) => home);
   }
 
   @override
@@ -364,7 +364,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<bool> pop({String uniqueId, Object result}) async {
+  Future<bool> pop(
+      {String uniqueId, Object result, bool onBackPressed = false}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -391,15 +392,23 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // page in container.
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
-      final handled = await container?.navigator?.maybePop(result);
-      if (handled != null && !handled) {
-        assert(container.pageInfo.withContainer);
-        final params = CommonParams()
-          ..pageName = container.pageInfo.pageName
-          ..uniqueId = container.pageInfo.uniqueId
-          ..arguments =
-              (result is Map<String, dynamic>) ? result : <String, dynamic>{};
-        await nativeRouterApi.popRoute(params);
+      final handled = onBackPressed
+          ? await container?.navigator?.maybePop(result)
+          : container?.navigator?.canPop();
+      if (handled != null) {
+        if (!handled) {
+          assert(container.pageInfo.withContainer);
+          final params = CommonParams()
+            ..pageName = container.pageInfo.pageName
+            ..uniqueId = container.pageInfo.uniqueId
+            ..arguments =
+                (result is Map<String, dynamic>) ? result : <String, dynamic>{};
+          await nativeRouterApi.popRoute(params);
+        } else {
+          if (!onBackPressed) {
+            container.navigator.pop(result);
+          }
+        }
       }
     } else {
       final page = container.pages.singleWhere(

@@ -64,6 +64,7 @@ abstract class FlutterRouterApi {
   void onContainerShow(CommonParams arg);
   void onContainerHide(CommonParams arg);
   void sendEventToFlutter(CommonParams arg);
+  void onBackPressed();
   static void setup(FlutterRouterApi api) {
     {
       const BasicMessageChannel<Object> channel = BasicMessageChannel<Object>(
@@ -187,6 +188,19 @@ abstract class FlutterRouterApi {
           assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.sendEventToFlutter was null. Expected CommonParams.');
           final CommonParams input = CommonParams.decode(message);
           api.sendEventToFlutter(input);
+          return;
+        });
+      }
+    }
+    {
+      const BasicMessageChannel<Object> channel = BasicMessageChannel<Object>(
+          'dev.flutter.pigeon.FlutterRouterApi.onBackPressed', StandardMessageCodec());
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object message) async {
+          // ignore message
+          api.onBackPressed();
           return;
         });
       }

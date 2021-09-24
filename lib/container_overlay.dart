@@ -22,7 +22,10 @@ enum BoostSpecificEntryRefreshMode {
 class ContainerOverlayEntry extends OverlayEntry {
   ContainerOverlayEntry(BoostContainer container)
       : containerUniqueId = container.pageInfo.uniqueId,
-        super(builder: (ctx) => BoostContainerWidget(container: container), opaque: true, maintainState: true);
+        super(
+            builder: (ctx) => BoostContainerWidget(container: container),
+            opaque: true,
+            maintainState: true);
 
   /// This overlay's id, which is the same as the it's related container
   final String containerUniqueId;
@@ -34,7 +37,8 @@ class ContainerOverlayEntry extends OverlayEntry {
 }
 
 /// Creates a [ContainerOverlayEntry] for the given [BoostContainer].
-typedef ContainerOverlayEntryFactory = ContainerOverlayEntry Function(BoostContainer container);
+typedef ContainerOverlayEntryFactory = ContainerOverlayEntry Function(
+    BoostContainer container);
 
 class ContainerOverlay {
   ContainerOverlay._();
@@ -51,7 +55,8 @@ class ContainerOverlay {
   }
 
   static ContainerOverlayEntryFactory get overlayEntryFactory {
-    return _overlayEntryFactory ??= ((container) => ContainerOverlayEntry(container));
+    return _overlayEntryFactory ??=
+        ((container) => ContainerOverlayEntry(container));
   }
 
   ///Refresh an specific entry instead of all of entries to enhance the performace
@@ -59,7 +64,8 @@ class ContainerOverlay {
   ///[container] : The container you want to operate, it is related with
   ///              internal [OverlayEntry]
   ///[mode] : The [BoostSpecificEntryRefreshMode] you want to choose
-  void refreshSpecificOverlayEntries(BoostContainer container, BoostSpecificEntryRefreshMode mode) {
+  void refreshSpecificOverlayEntries(
+      BoostContainer container, BoostSpecificEntryRefreshMode mode) {
     //Get OverlayState from global key
     final overlayState = overlayKey.currentState;
     if (overlayState == null) {
@@ -70,7 +76,8 @@ class ContainerOverlay {
     switch (mode) {
       case BoostSpecificEntryRefreshMode.add:
         // If there is an existing ContainerOverlayEntry in the list,we do nothing
-        final ContainerOverlayEntry existingEntry = _findExistingEntry(container: container);
+        final ContainerOverlayEntry existingEntry =
+            _findExistingEntry(container: container);
         if (existingEntry != null) {
           return;
         }
@@ -97,11 +104,13 @@ class ContainerOverlay {
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
-        final ContainerOverlayEntry existingEntry = _findExistingEntry(container: container);
+        final ContainerOverlayEntry existingEntry =
+            _findExistingEntry(container: container);
 
         if (existingEntry == null) {
           /// If there is no entry in the list,we add it in list
-          refreshSpecificOverlayEntries(container, BoostSpecificEntryRefreshMode.add);
+          refreshSpecificOverlayEntries(
+              container, BoostSpecificEntryRefreshMode.add);
         } else {
           /// we take the existingEntry out and move it to top
           //remove the entry from list and overlay
@@ -117,9 +126,11 @@ class ContainerOverlay {
 
   /// Return the result whether we can find a [ContainerOverlayEntry] matching this [container]
   /// If no entry matches this id,return null
-  ContainerOverlayEntry _findExistingEntry({@required BoostContainer container}) {
+  ContainerOverlayEntry _findExistingEntry(
+      {@required BoostContainer container}) {
     assert(container != null);
-    return _lastEntries.singleWhere((element) => element.containerUniqueId == container.pageInfo.uniqueId,
+    return _lastEntries.singleWhere(
+        (element) => element.containerUniqueId == container.pageInfo.uniqueId,
         orElse: () => null);
   }
 }

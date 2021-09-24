@@ -192,7 +192,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onBackPressed() {
         // Intercept the user's press of the back key.
-        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
+        FlutterBoost.instance().getPlugin().onBackPressed();
         if (DEBUG) Log.d(TAG, "#onBackPressed: " + this);
     }
 

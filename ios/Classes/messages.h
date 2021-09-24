@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)onContainerShow:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)onContainerHide:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
 - (void)sendEventToFlutter:(FBCommonParams*)input completion:(void(^)(NSError* _Nullable))completion;
+- (void)onBackPressed:(void(^)(NSError* _Nullable))completion;
 @end
 @protocol FBNativeRouterApi
 -(void)pushNativeRoute:(FBCommonParams*)input error:(FlutterError *_Nullable *_Nonnull)error;
