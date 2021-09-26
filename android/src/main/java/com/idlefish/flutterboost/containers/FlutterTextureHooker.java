@@ -9,7 +9,6 @@ import com.idlefish.flutterboost.FlutterBoost;
 
 import java.lang.reflect.Field;
 
-import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
@@ -77,46 +76,48 @@ class FlutterTextureHooker {
     /**
      * Hook FlutterTextureView for os version below Android.M.
      */
-    public void hookFlutterTextureView(@NonNull FlutterTextureView flutterTextureView) {
+    public void hookFlutterTextureView(FlutterTextureView flutterTextureView) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
-            TextureView.SurfaceTextureListener surfaceTextureListener = flutterTextureView.getSurfaceTextureListener();
-            this.flutterTextureView = flutterTextureView;
-            this.flutterTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                    surfaceTextureListener.onSurfaceTextureAvailable(surface, width, height);
+            if(flutterTextureView!=null){
+                TextureView.SurfaceTextureListener surfaceTextureListener = flutterTextureView.getSurfaceTextureListener();
+                this.flutterTextureView = flutterTextureView;
+                this.flutterTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                    @Override
+                    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+                        surfaceTextureListener.onSurfaceTextureAvailable(surface, width, height);
 
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-                    surfaceTextureListener.onSurfaceTextureSizeChanged(surface, width, height);
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                    try {
-                        Class<? extends FlutterTextureView> aClass                         = flutterTextureView.getClass();
-                        Field                               isSurfaceAvailableForRendering = aClass.getDeclaredField("isSurfaceAvailableForRendering");
-                        isSurfaceAvailableForRendering.setAccessible(true);
-                        isSurfaceAvailableForRendering.set(flutterTextureView, false);
-
-                        Field isAttachedToFlutterRenderer = aClass.getDeclaredField("isAttachedToFlutterRenderer");
-                        isAttachedToFlutterRenderer.setAccessible(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                    isNeedRestoreState = true;
-                    //return false, handle the last frame of surfaceTexture ourselves;
-                    return false;
-                }
 
-                @Override
-                public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-                    surfaceTextureListener.onSurfaceTextureUpdated(surface);
-                    restoreSurface = surface;
-                }
-            });
+                    @Override
+                    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+                        surfaceTextureListener.onSurfaceTextureSizeChanged(surface, width, height);
+                    }
+
+                    @Override
+                    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
+                        try {
+                            Class<? extends FlutterTextureView> aClass                         = flutterTextureView.getClass();
+                            Field                               isSurfaceAvailableForRendering = aClass.getDeclaredField("isSurfaceAvailableForRendering");
+                            isSurfaceAvailableForRendering.setAccessible(true);
+                            isSurfaceAvailableForRendering.set(flutterTextureView, false);
+
+                            Field isAttachedToFlutterRenderer = aClass.getDeclaredField("isAttachedToFlutterRenderer");
+                            isAttachedToFlutterRenderer.setAccessible(true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        isNeedRestoreState = true;
+                        //return false, handle the last frame of surfaceTexture ourselves;
+                        return false;
+                    }
+
+                    @Override
+                    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+                        surfaceTextureListener.onSurfaceTextureUpdated(surface);
+                        restoreSurface = surface;
+                    }
+                });
+            }
         }
     }
 }
