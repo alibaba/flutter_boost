@@ -94,7 +94,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _containers.add(initialContainer);
       refreshOnPush(initialContainer);
       _addAppLifecycleStateEventListener();
-      BoostOperationQueue.instance.runPendingTask();
+      BoostOperationQueue.instance.runPendingOperations();
     });
 
     // try to restore routes from host when hot restart.

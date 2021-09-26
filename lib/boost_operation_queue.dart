@@ -17,7 +17,7 @@ class BoostOperationQueue {
   }
 
   /// Run all operation in queue
-  void runPendingTask() {
+  void runPendingOperations() {
     while (_queue.isNotEmpty) {
       final Function operation = _queue.removeFirst();
       operation.call();
