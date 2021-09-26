@@ -1,3 +1,7 @@
+## v3.0-preview.13
+1. [flutter] 修复在引擎启动完毕但是flutter侧还没有加载完毕的时候进行操作的函数调用的时序问题 (#1415)
+2. [Android] 修复实现了onWillPop回调的Widget不能后退的问题 (#1411)
+
 ## v3.0-preview.12
 1. [iOS] 将控制iOS手势的方法收口到BoostChannel作为通用方法，以及在container的show的监听中做手势的动态禁用和启用
 2. [flutter] 更新example以及默认的appBuilder实现，传入builder参数，避免showDialog无法关闭dialog而是关闭页面的操作
