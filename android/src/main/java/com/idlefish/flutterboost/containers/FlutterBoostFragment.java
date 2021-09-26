@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterTextureView;
@@ -221,7 +220,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
-    public void onFlutterTextureViewCreated(@NonNull FlutterTextureView flutterTextureView) {
+    public void onFlutterTextureViewCreated(FlutterTextureView flutterTextureView) {
         super.onFlutterTextureViewCreated(flutterTextureView);
         textureHooker.hookFlutterTextureView(flutterTextureView);
     }
