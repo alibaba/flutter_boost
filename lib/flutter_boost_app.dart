@@ -62,7 +62,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// All interceptors from widget
   List<BoostInterceptor> get interceptors => widget.interceptors;
 
-  BoostContainer get topContainer => containers.last;
+  BoostContainer get topContainer =>
+      containers.isNotEmpty ? containers.last : null;
 
   NativeRouterApi get nativeRouterApi => _nativeRouterApi;
   NativeRouterApi _nativeRouterApi;
@@ -86,7 +87,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'please refer to "class CustomFlutterBinding" in example project');
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
-    final BoostContainer initialContainer = _createContainer(PageInfo(pageName: widget.initialRoute));
+    final BoostContainer initialContainer =
+        _createContainer(PageInfo(pageName: widget.initialRoute));
     _containers.add(initialContainer);
     super.initState();
 
@@ -427,11 +429,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    BoostLifecycleBinding.instance.appDidEnterForeground(topContainer);
+    if (topContainer != null) {
+      BoostLifecycleBinding.instance.appDidEnterForeground(topContainer);
+    }
   }
 
   void onBackground() {
-    BoostLifecycleBinding.instance.appDidEnterBackground(topContainer);
+    if (topContainer != null) {
+      BoostLifecycleBinding.instance.appDidEnterBackground(topContainer);
+    }
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {

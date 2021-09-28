@@ -23,7 +23,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void pushRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
       appState.pushContainer(arg.pageName,
-          uniqueId: arg.uniqueId, arguments: Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
+          uniqueId: arg.uniqueId,
+          arguments:
+              Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
     });
   }
 

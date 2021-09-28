@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 import com.idlefish.flutterboost.Messages;
@@ -82,7 +83,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
-        assert(flutterView != null);
+        Assert.assertNotNull(flutterView);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
@@ -91,7 +92,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        assert(flutterView != null);
+        Assert.assertNotNull(flutterView);
         if (hidden) {
             didFragmentHide();
         } else {
@@ -103,7 +104,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        assert(flutterView != null);
+        Assert.assertNotNull(flutterView);
         if (isVisibleToUser) {
             didFragmentShow();
         } else {
@@ -161,7 +162,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        assert(getFlutterEngine() != null);
+        Assert.assertNotNull(getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
@@ -177,7 +178,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        assert(engine != null);
+        Assert.assertNotNull(engine);
         engine.getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }
