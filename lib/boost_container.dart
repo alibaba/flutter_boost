@@ -52,7 +52,7 @@ class BoostContainer extends ChangeNotifier {
     }
     if (page != null) {
       _pages.add(page);
-      notifyListeners();
+      navigator.push(page.route);
       return page.popped;
     }
     return null;
@@ -68,7 +68,6 @@ class BoostContainer extends ChangeNotifier {
     if (page != null) {
       _pages.remove(page);
       page.didComplete(result);
-      notifyListeners();
     }
   }
 
@@ -119,22 +118,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
   @override
   void initState() {
     assert(container != null);
-    container.addListener(refreshContainer);
     super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
-    if (oldWidget != widget) {
-      oldWidget.container.removeListener(refreshContainer);
-      container.addListener(refreshContainer);
-    }
-    super.didUpdateWidget(oldWidget);
-  }
-
-  ///just refresh
-  void refreshContainer() {
-    setState(() {});
   }
 
   @override
@@ -160,7 +144,6 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void dispose() {
-    container.removeListener(refreshContainer);
     super.dispose();
   }
 }
