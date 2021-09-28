@@ -24,6 +24,7 @@
 
 #import <Foundation/Foundation.h>
 #import "FBFlutterViewContainer.h"
+#import "FBFlutterContainerManager.h"
 #import "FlutterBoost.h"
 #import "FBLifecycle.h"
 #import <objc/message.h>
@@ -241,7 +242,16 @@ _Pragma("clang diagnostic pop")
         //detail:https://github.com/flutter/engine/blob/07e2520d5d8f837da439317adab4ecd7bff2f72d/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L529
         [self surfaceUpdated:NO];
         
-        if(ENGINE.viewController != nil) {
+        __block BOOL release = true;
+        [FB_PLUGIN enumerateContainers:^(id key, id<FBFlutterContainer> obj, BOOL *stop) {
+            //排除自己并且keepalive属性为true
+            //set nil to engine's controller only has no container or container is not keepalive
+            if(obj != self && obj.keepAlive){
+                release = false;
+            }
+        }];
+        
+        if(ENGINE.viewController != nil && release) {
             ENGINE.viewController = nil;
         }
     }

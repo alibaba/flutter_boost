@@ -31,6 +31,8 @@
 typedef void (^FBEventListener) (NSString *name ,
                                  NSDictionary *arguments);
 typedef void (^FBVoidCallback)(void);
+typedef void (^FBContainersEnumeration)(id key, id<FBFlutterContainer> obj, BOOL *stop);
+
 
 @interface FlutterBoostPlugin : NSObject <FlutterPlugin>
 @property (nonatomic, strong) id<FlutterBoostDelegate> delegate;
@@ -41,6 +43,7 @@ typedef void (^FBVoidCallback)(void);
 - (void)containerAppeared:(id<FBFlutterContainer>)container;
 - (void)containerDisappeared:(id<FBFlutterContainer>)container;
 - (void)containerDestroyed:(id<FBFlutterContainer>)container;
+- (void)enumerateContainers:(FBContainersEnumeration)enumeration;
 
 - (FBVoidCallback)addEventListener:(FBEventListener)listener forName:(NSString *)key;
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine ;

@@ -87,5 +87,9 @@
     return self.allContainers.count;
 }
 
+-(void)enumerateContainers:(FBContainersEnumeration)enumeration{
+    [self.allContainers enumerateKeysAndObjectsUsingBlock:enumeration];
+}
+
 @end
 

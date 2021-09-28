@@ -25,6 +25,8 @@
 #import <Foundation/Foundation.h>
 #import "FBFlutterContainer.h"
 
+typedef void (^FBContainersEnumeration)(id key, id<FBFlutterContainer> obj, BOOL *stop);
+
 @interface FBFlutterContainerManager : NSObject
 
 - (void)addContainer:(id<FBFlutterContainer>)container forUniqueId:(NSString *)uniqueId;
@@ -40,6 +42,8 @@
 - (BOOL)isTopContainer:(NSString *)uniqueId;
 
 - (NSInteger)containerSize;
+
+- (void)enumerateContainers:(FBContainersEnumeration)enumeration;
 
 
 @end

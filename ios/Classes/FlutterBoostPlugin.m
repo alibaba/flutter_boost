@@ -88,6 +88,11 @@
     }
 }
 
+- (void)enumerateContainers:(FBContainersEnumeration)enumeration{
+    [self.containerManager enumerateContainers:enumeration];
+}
+
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>  *)registrar {
     FlutterBoostPlugin* plugin = [[FlutterBoostPlugin alloc] initWithMessenger:(registrar.messenger)];
     [registrar publish:plugin];

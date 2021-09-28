@@ -70,6 +70,14 @@ class _SimpleWidgetState extends State<SimpleWidget>
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              FadeInImage.assetNetwork(
+                placeholder: "images/flutter.png",
+                image: "https://gw.alicdn.com/tfs/TB1aUlEYLb2gK0jSZK9XXaEgFXa-252-252.png",
+                width: 300,
+                height: 300,
+                fadeOutDuration: const Duration(milliseconds: 300),
+                fadeInDuration: const Duration(milliseconds: 700),
+              ),
               Container(
                 margin: const EdgeInsets.only(top: 80.0),
                 child: Text(

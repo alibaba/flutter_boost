@@ -29,5 +29,6 @@
 - (NSString *)uniqueId;
 - (NSString *)uniqueIDString;
 - (BOOL)opaque;
+- (BOOL)keepAlive;
 - (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque;
 @end
