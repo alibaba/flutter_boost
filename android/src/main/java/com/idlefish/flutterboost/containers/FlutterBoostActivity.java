@@ -42,7 +42,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
-    private       boolean              isAttached    = false;
+    private boolean isAttached = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
