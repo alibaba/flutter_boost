@@ -23,7 +23,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   void pushRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
       appState.pushContainer(arg.pageName,
-          uniqueId: arg.uniqueId, arguments: Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
+          uniqueId: arg.uniqueId,
+          arguments:
+              Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
     });
   }
 
@@ -72,7 +74,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   }
 
   @override
-  void onBackPressed() => appState.pop(onBackPressed: true);
+  void onBackPressed() => appState.pop(shouldCheckWillPop: true);
 
   ///When native send msg to flutter,this method will be called
   @override

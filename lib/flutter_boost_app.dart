@@ -62,7 +62,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   /// All interceptors from widget
   List<BoostInterceptor> get interceptors => widget.interceptors;
 
-  BoostContainer get topContainer => containers.last;
+  BoostContainer get topContainer =>
+      containers.isNotEmpty ? containers.last : null;
 
   NativeRouterApi get nativeRouterApi => _nativeRouterApi;
   NativeRouterApi _nativeRouterApi;
@@ -86,7 +87,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'please refer to "class CustomFlutterBinding" in example project');
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
-    final BoostContainer initialContainer = _createContainer(PageInfo(pageName: widget.initialRoute));
+    final BoostContainer initialContainer =
+        _createContainer(PageInfo(pageName: widget.initialRoute));
     _containers.add(initialContainer);
     super.initState();
 
@@ -359,7 +361,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<bool> pop(
-      {String uniqueId, Object result, bool onBackPressed = false}) async {
+      {String uniqueId, Object result, bool shouldCheckWillPop = false}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -386,7 +388,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // page in container.
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
-      final handled = onBackPressed
+      final handled = shouldCheckWillPop
           ? await container?.navigator?.maybePop(result)
           : container?.navigator?.canPop();
       if (handled != null) {
@@ -399,7 +401,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
                 (result is Map<String, dynamic>) ? result : <String, dynamic>{};
           await nativeRouterApi.popRoute(params);
         } else {
-          if (!onBackPressed) {
+          if (!shouldCheckWillPop) {
             container.navigator.pop(result);
           }
         }
