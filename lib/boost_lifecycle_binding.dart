@@ -173,7 +173,7 @@ class BoostLifecycleBinding {
   void appDidEnterForeground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
     PageVisibilityBinding.instance
-        .dispatchPageForgroundEvent(container?.topPage?.route);
+        .dispatchPageForgroundEvent(container.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onAppDidEnterForeground(container);
@@ -184,7 +184,7 @@ class BoostLifecycleBinding {
   void appDidEnterBackground(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
     PageVisibilityBinding.instance
-        .dispatchPageBackgroundEvent(container?.topPage?.route);
+        .dispatchPageBackgroundEvent(container.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onAppDidEnterBackground(container);

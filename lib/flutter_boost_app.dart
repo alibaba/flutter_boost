@@ -361,7 +361,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<bool> pop(
-      {String uniqueId, Object result, bool shouldCheckWillPop = false}) async {
+      {String uniqueId, Object result, bool onBackPressed = false}) async {
     BoostContainer container;
     if (uniqueId != null) {
       container = _findContainerByUniqueId(uniqueId);
@@ -388,7 +388,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // page in container.
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
-      final handled = shouldCheckWillPop
+      final handled = onBackPressed
           ? await container?.navigator?.maybePop(result)
           : container?.navigator?.canPop();
       if (handled != null) {
@@ -401,7 +401,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
                 (result is Map<String, dynamic>) ? result : <String, dynamic>{};
           await nativeRouterApi.popRoute(params);
         } else {
-          if (!shouldCheckWillPop) {
+          if (!onBackPressed) {
             container.navigator.pop(result);
           }
         }
@@ -429,11 +429,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onForeground() {
-    BoostLifecycleBinding.instance.appDidEnterForeground(topContainer);
+    if (topContainer != null) {
+      BoostLifecycleBinding.instance.appDidEnterForeground(topContainer);
+    }
   }
 
   void onBackground() {
-    BoostLifecycleBinding.instance.appDidEnterBackground(topContainer);
+    if (topContainer != null) {
+      BoostLifecycleBinding.instance.appDidEnterBackground(topContainer);
+    }
   }
 
   BoostContainer _findContainerByUniqueId(String uniqueId) {

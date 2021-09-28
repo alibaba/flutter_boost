@@ -74,7 +74,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   }
 
   @override
-  void onBackPressed() => appState.pop(shouldCheckWillPop: true);
+  void onBackPressed() => appState.pop(onBackPressed: true);
 
   ///When native send msg to flutter,this method will be called
   @override
