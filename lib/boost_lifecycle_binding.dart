@@ -107,7 +107,7 @@ class BoostLifecycleBinding {
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
 
-    final id = container?.pageInfo?.uniqueId;
+    final id = container.pageInfo?.uniqueId ?? "";
     assert(id != null);
     if (!_hasShownPageIds.contains(id)) {
       _hasShownPageIds.add(id);
@@ -132,7 +132,7 @@ class BoostLifecycleBinding {
   void containerDidHide(BoostContainer? container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
-        .dispatchPageHideEvent(container?.topPage?.route);
+        .dispatchPageHideEvent(container?.topPage.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidHide(container);

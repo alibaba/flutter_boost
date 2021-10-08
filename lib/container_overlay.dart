@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -76,8 +77,8 @@ class ContainerOverlay {
     switch (mode) {
       case BoostSpecificEntryRefreshMode.add:
         // If there is an existing ContainerOverlayEntry in the list,we do nothing
-        final ContainerOverlayEntry existingEntry =
-            _findExistingEntry(container: container);
+        final ContainerOverlayEntry? existingEntry =
+          _findExistingEntry(container: container);
         if (existingEntry != null) {
           return;
         }
@@ -104,8 +105,8 @@ class ContainerOverlay {
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
-        final ContainerOverlayEntry existingEntry =
-            _findExistingEntry(container: container);
+        final ContainerOverlayEntry? existingEntry =
+          _findExistingEntry(container: container);
 
         if (existingEntry == null) {
           /// If there is no entry in the list,we add it in list
@@ -126,11 +127,10 @@ class ContainerOverlay {
 
   /// Return the result whether we can find a [ContainerOverlayEntry] matching this [container]
   /// If no entry matches this id,return null
-  ContainerOverlayEntry _findExistingEntry(
-      {@required BoostContainer container}) {
+  ContainerOverlayEntry? _findExistingEntry(
+      {required BoostContainer container}) {
     assert(container != null);
-    return _lastEntries.singleWhere(
-        (element) => element.containerUniqueId == container.pageInfo.uniqueId,
-        orElse: () => null);
+    return _lastEntries.singleWhereOrNull(
+            (element) => element.containerUniqueId == container.pageInfo!.uniqueId);
   }
 }
