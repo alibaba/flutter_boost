@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
 import com.idlefish.flutterboost.Messages;
@@ -144,7 +145,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
 
             // Attach rendering pipeline.
-            assert (flutterView != null);
+            Assert.assertNotNull(flutterView);
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
@@ -160,7 +161,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             releasePlatformChannel();
 
             // Detach rendering pipeline.
-            assert (flutterView != null);
+            Assert.assertNotNull(flutterView);
             flutterView.detachFromFlutterEngine();
             isAttached = false;
             if (DEBUG) Log.d(TAG, "#performDetach: " + this);
@@ -233,7 +234,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onBackPressed() {
         // Intercept the user's press of the back key.
-        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
+        FlutterBoost.instance().getPlugin().onBackPressed();
         if (DEBUG) Log.d(TAG, "#onBackPressed: " + this);
     }
 

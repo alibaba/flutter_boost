@@ -51,6 +51,7 @@ class BoostChannel {
       "args": {'enable': true}
     });
   }
+
   /// disable iOS native pop gesture for container matching [containerId]
   void disablePopGesture({required String containerId}){
     assert(containerId != null && containerId.isNotEmpty);

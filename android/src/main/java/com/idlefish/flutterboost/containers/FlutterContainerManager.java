@@ -33,7 +33,7 @@ public class FlutterContainerManager {
     // onContainerAppeared
     public void activateContainer(String uniqueId, FlutterViewContainer container) {
         if (uniqueId == null || container == null) return;
-        assert (allContainers.containsKey(uniqueId));
+        assert(allContainers.containsKey(uniqueId));
 
         if (activeContainers.contains(container)) {
             activeContainers.remove(container);

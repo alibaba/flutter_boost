@@ -172,6 +172,13 @@ public class Messages {
         callback.reply(null);
       });
     }
+    public void onBackPressed(Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(binaryMessenger, "dev.flutter.pigeon.FlutterRouterApi.onBackPressed", new StandardMessageCodec());
+      channel.send(null, channelReply -> {
+        callback.reply(null);
+      });
+    }
   }
 
   /** Generated interface from Pigeon that represents a handler of messages from Flutter.*/

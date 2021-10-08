@@ -35,6 +35,7 @@ abstract class FlutterRouterApi {
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
   void sendEventToFlutter(CommonParams params);
+  void onBackPressed();
 }
 
 void configurePigeon(PigeonOptions opts) {

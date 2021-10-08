@@ -176,7 +176,7 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
     }
 
     public void onBackPressed() {
-        FlutterBoost.instance().getPlugin().popRoute(null, (Messages.FlutterRouterApi.Reply<Void>) null);
+        FlutterBoost.instance().getPlugin().onBackPressed();
     }
 
     @Override
