@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
 
 class TransparentWidget extends StatelessWidget {
   const TransparentWidget();

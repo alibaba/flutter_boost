@@ -1,28 +1,32 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
-import 'package:flutter_boost/logger.dart';
-import 'package:flutter_boost/boost_navigator.dart';
 
 class ImagePickerPage extends StatefulWidget {
-  ImagePickerPage({Key key, this.title, this.uniqueId}) : super(key: key);
+  ImagePickerPage({Key key, this.title}) : super(key: key);
 
   final String title;
-  final String uniqueId;
+
   @override
   _ImagePickerPageState createState() => _ImagePickerPageState();
 }
 
 class _ImagePickerPageState extends State<ImagePickerPage> {
-  PickedFile _imageFile;
+  List<XFile> _imageFileList;
+
+  set _imageFile(XFile value) {
+    _imageFileList = value == null ? null : [value];
+  }
+
   dynamic _pickImageError;
   bool isVideo = false;
+
   VideoPlayerController _controller;
   VideoPlayerController _toBeDisposed;
   String _retrieveDataError;
@@ -32,41 +36,62 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
   final TextEditingController maxHeightController = TextEditingController();
   final TextEditingController qualityController = TextEditingController();
 
-  Future<void> _playVideo(PickedFile file) async {
+  Future<void> _playVideo(XFile file) async {
     if (file != null && mounted) {
       await _disposeVideoController();
+      VideoPlayerController controller;
       if (kIsWeb) {
-        _controller = VideoPlayerController.network(file.path);
-        // In web, most browsers won't honor a programmatic call to .play
-        // if the video has a sound track (and is not muted).
-        // Mute the video so it auto-plays in web!
-        // This is not needed if the call to .play is the result of user
-        // interaction (clicking on a "play" button, for example).
-        await _controller.setVolume(0.0);
+        controller = VideoPlayerController.network(file.path);
       } else {
-        _controller = VideoPlayerController.file(File(file.path));
-        await _controller.setVolume(1.0);
+        controller = VideoPlayerController.file(File(file.path));
       }
-      await _controller.initialize();
-      await _controller.setLooping(true);
-      await _controller.play();
+      _controller = controller;
+      // In web, most browsers won't honor a programmatic call to .play
+      // if the video has a sound track (and is not muted).
+      // Mute the video so it auto-plays in web!
+      // This is not needed if the call to .play is the result of user
+      // interaction (clicking on a "play" button, for example).
+      final double volume = kIsWeb ? 0.0 : 1.0;
+      await controller.setVolume(volume);
+      await controller.initialize();
+      await controller.setLooping(true);
+      await controller.play();
       setState(() {});
     }
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext context, bool isMultiImage = false}) async {
     if (_controller != null) {
       await _controller.setVolume(0.0);
     }
     if (isVideo) {
-      final PickedFile file = await _picker.getVideo(
+      final XFile file = await _picker.pickVideo(
           source: source, maxDuration: const Duration(seconds: 10));
       await _playVideo(file);
+    } else if (isMultiImage) {
+      await _displayPickImageDialog(context,
+          (double maxWidth, double maxHeight, int quality) async {
+        try {
+          final pickedFileList = await _picker.pickMultiImage(
+            maxWidth: maxWidth,
+            maxHeight: maxHeight,
+            imageQuality: quality,
+          );
+          setState(() {
+            _imageFileList = pickedFileList;
+          });
+        } catch (e) {
+          setState(() {
+            _pickImageError = e;
+          });
+        }
+      });
     } else {
       await _displayPickImageDialog(context,
           (double maxWidth, double maxHeight, int quality) async {
         try {
-          final pickedFile = await _picker.getImage(
+          final pickedFile = await _picker.pickImage(
             source: source,
             maxWidth: maxWidth,
             maxHeight: maxHeight,
@@ -127,21 +152,28 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     );
   }
 
-  Widget _previewImage() {
+  Widget _previewImages() {
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
-    if (_imageFile != null) {
-      if (kIsWeb) {
-        // Why network?
-        // See https://pub.dev/packages/image_picker#getting-ready-for-the-web-platform
-        return Image.network(_imageFile.path);
-      } else {
-        return Semantics(
-            child: Image.file(File(_imageFile.path)),
-            label: 'image_picker_example_picked_image');
-      }
+    if (_imageFileList != null) {
+      return Semantics(
+          child: ListView.builder(
+            key: UniqueKey(),
+            itemBuilder: (context, index) {
+              // Why network for web?
+              // See https://pub.dev/packages/image_picker#getting-ready-for-the-web-platform
+              return Semantics(
+                label: 'image_picker_example_picked_image',
+                child: kIsWeb
+                    ? Image.network(_imageFileList[index].path)
+                    : Image.file(File(_imageFileList[index].path)),
+              );
+            },
+            itemCount: _imageFileList.length,
+          ),
+          label: 'image_picker_example_picked_images');
     } else if (_pickImageError != null) {
       return Text(
         'Pick image error: $_pickImageError',
@@ -155,8 +187,16 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
     }
   }
 
+  Widget _handlePreview() {
+    if (isVideo) {
+      return _previewVideo();
+    } else {
+      return _previewImages();
+    }
+  }
+
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }
@@ -168,6 +208,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
         isVideo = false;
         setState(() {
           _imageFile = response.file;
+          _imageFileList = response.files;
         });
       }
     } else {
@@ -177,33 +218,9 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
 
   @override
   Widget build(BuildContext context) {
-    Logger.log(
-        '${MediaQuery.of(context).padding.top} uniqueId=${widget.uniqueId}');
-    Logger.log(
-        '${MediaQuery.of(context).padding.bottom} uniqueId=${widget.uniqueId}');
-    Logger.log(
-        '${MediaQuery.of(context).size.width} uniqueId=${widget.uniqueId}');
-    Logger.log(
-        '${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
-
     return Scaffold(
       appBar: AppBar(
-        brightness:Brightness.light,
-        backgroundColor: Colors.white,
-        textTheme:new TextTheme(title: TextStyle(color: Colors.black)) ,
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            // 如果有抽屉的话的就打开
-            onPressed: () {
-              BoostNavigator.instance.pop();
-            },
-            // 显示描述信息
-            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          );
-        }),
         title: Text(widget.title),
-
       ),
       body: Center(
         child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
@@ -218,7 +235,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                         textAlign: TextAlign.center,
                       );
                     case ConnectionState.done:
-                      return isVideo ? _previewVideo() : _previewImage();
+                      return _handlePreview();
                     default:
                       if (snapshot.hasError) {
                         return Text(
@@ -234,7 +251,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                   }
                 },
               )
-            : (isVideo ? _previewVideo() : _previewImage()),
+            : _handlePreview(),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -248,6 +265,22 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
               },
               heroTag: 'image0',
               tooltip: 'Pick Image from gallery',
+              child: const Icon(Icons.photo),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 16.0),
+            child: FloatingActionButton(
+              onPressed: () {
+                isVideo = false;
+                _onImageButtonPressed(
+                  ImageSource.gallery,
+                  context: context,
+                  isMultiImage: true,
+                );
+              },
+              heroTag: 'image1',
+              tooltip: 'Pick Multiple Image from gallery',
               child: const Icon(Icons.photo_library),
             ),
           ),
@@ -258,7 +291,7 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
                 isVideo = false;
                 _onImageButtonPressed(ImageSource.camera, context: context);
               },
-              heroTag: 'image1',
+              heroTag: 'image2',
               tooltip: 'Take a Photo',
               child: const Icon(Icons.camera_alt),
             ),
@@ -334,13 +367,13 @@ class _ImagePickerPageState extends State<ImagePickerPage> {
               ],
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 child: const Text('CANCEL'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                   child: const Text('PICK'),
                   onPressed: () {
                     double width = maxWidthController.text.isNotEmpty
@@ -381,8 +414,8 @@ class AspectRatioVideoState extends State<AspectRatioVideo> {
     if (!mounted) {
       return;
     }
-    if (initialized != controller.value.initialized) {
-      initialized = controller.value.initialized;
+    if (initialized != controller.value.isInitialized) {
+      initialized = controller.value.isInitialized;
       setState(() {});
     }
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class PopUntilRoute extends StatefulWidget {
   static int count = 0;
@@ -41,13 +41,13 @@ class PopUntilRouteState extends State<PopUntilRoute> {
               child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     BoostNavigator.instance
                         .push("popUntilView", withContainer: true);
                   },
                   child: Text('push with container')),
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     BoostNavigator.instance
                         .push("popUntilView", withContainer: false);
