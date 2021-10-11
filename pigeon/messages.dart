@@ -39,7 +39,7 @@ abstract class FlutterRouterApi {
 }
 
 void configurePigeon(PigeonOptions opts) {
-  opts.dartOut = 'lib/messages.dart';
+  opts.dartOut = 'lib/src/messages.dart';
   opts.objcHeaderOut = 'ios/Classes/messages.h';
   opts.objcSourceOut = 'ios/Classes/messages.m';
   opts.objcOptions.prefix = 'FB';
