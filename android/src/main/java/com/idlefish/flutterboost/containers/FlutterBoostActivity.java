@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
+import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -38,6 +39,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private static final String TAG = "FlutterBoostActivity";
     private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
+    private final FlutterTextureHooker textureHooker =new FlutterTextureHooker();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
@@ -104,6 +106,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
         performAttach();
+        textureHooker.onFlutterTextureViewRestoreState();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
@@ -133,6 +136,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
         if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
+    }
+
+    @Override
+    public void onFlutterTextureViewCreated(FlutterTextureView flutterTextureView) {
+        super.onFlutterTextureViewCreated(flutterTextureView);
+        textureHooker.hookFlutterTextureView(flutterTextureView);
     }
 
     private void performAttach() {
@@ -200,6 +209,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
         stage = LifecycleStage.ON_DESTROY;
+        textureHooker.onFlutterTextureViewRelease();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);

@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterFragment;
+import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
@@ -35,6 +36,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private static final String TAG = "FlutterBoostFragment";
     private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
+    private final FlutterTextureHooker textureHooker=new FlutterTextureHooker();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
@@ -69,6 +71,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDestroy() {
         super.onDestroy();
         stage = LifecycleStage.ON_DESTROY;
+        textureHooker.onFlutterTextureViewRelease();
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
@@ -218,6 +221,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
+    public void onFlutterTextureViewCreated(FlutterTextureView flutterTextureView) {
+        super.onFlutterTextureViewCreated(flutterTextureView);
+        textureHooker.hookFlutterTextureView(flutterTextureView);
+    }
+
+    @Override
     public Activity getContextActivity() {
         return getActivity();
     }
@@ -272,6 +281,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         performAttach();
+        textureHooker.onFlutterTextureViewRestoreState();
         if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
