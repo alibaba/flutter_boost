@@ -121,8 +121,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            final FlutterContainerManager containerManager = FlutterContainerManager.instance();
+            FlutterViewContainer top = containerManager.getTopActivityContainer();
+            boolean isActiveContainer = containerManager.isActiveContainer(this);
+            if (isActiveContainer && top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -147,8 +149,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onPause() {
         super.onPause();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
+            if (top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;

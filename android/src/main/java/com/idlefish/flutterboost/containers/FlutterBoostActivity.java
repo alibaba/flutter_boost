@@ -91,9 +91,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        FlutterViewContainer top;
+        final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            top = containerManager.getTopActivityContainer();
+            boolean isActiveContainer = containerManager.isActiveContainer(this);
+            if (isActiveContainer && top != null && top != this && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -103,6 +106,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_RESUME;
 
         // try to detach prevous container from the engine.
+        top = containerManager.getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
         performAttach();
@@ -115,7 +119,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onPause() {
         super.onPause();
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
