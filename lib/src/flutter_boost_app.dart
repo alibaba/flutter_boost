@@ -13,10 +13,10 @@ import 'boost_flutter_router_api.dart';
 import 'boost_interceptor.dart';
 import 'boost_lifecycle_binding.dart';
 import 'boost_navigator.dart';
+import 'boost_operation_queue.dart';
 import 'container_overlay.dart';
 import 'logger.dart';
 import 'messages.dart';
-import 'boost_operation_queue.dart';
 
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
