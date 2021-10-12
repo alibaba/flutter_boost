@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost_example/case/platform_view.dart';
-import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/logger.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class FirstRouteWidget extends StatefulWidget {
   @override
@@ -54,53 +53,34 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
               child: Text('Open native page'),
               onPressed: () {
                 print("open native page!");
                 BoostNavigator.instance.push("native");
-
-                // FlutterBoost.singleton.open("native").then((Map<dynamic,dynamic> value) {
-                //   print(
-                //       "call me when page is finished. did receive native route result $value");
-                // });
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Open FF route'),
               onPressed: () {
                 print("open FF page!");
-//
-//                  FlutterBoost.singleton.open("firstFirst").then((Map value) {
-//                    print(
-//                        "call me when page is finished. did receive FF route result $value");
-//                  });
                 BoostNavigator.instance.push("firstFirst");
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Open second route1'),
               onPressed: () {
                 print("open willPop page!22");
-//                  FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
-//                    print(
-//                        "call me when page is finished. did receive second route result $value");
-//                  });
-
                 BoostNavigator.instance.push("willPop", withContainer: true);
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Present second stateful route'),
               onPressed: () {
                 print("Present second stateful page!");
-                // FlutterBoost.singleton.open("secondStateful",urlParams:<String,dynamic>{"present":true}).then((Map value) {
-                //   print(
-                //       "call me when page is finished. did receive second stateful route result $value");
-                // });
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Present second route'),
               onPressed: () {
                 print("Present second page!");
@@ -110,7 +90,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
                 // });
               },
             ),
-            RaisedButton(
+            ElevatedButton(
                 child: Text('Flutter to Flutter with Animation'),
                 onPressed: () {
                   // FlutterBoost.singleton.open("f2f_first").then((Map<dynamic,dynamic> value) {
@@ -172,7 +152,7 @@ class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget> {
         title: Text('First Route'),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text('Open first route'),
           onPressed: () {
             print("open first page again!");
@@ -201,7 +181,7 @@ class _EmbeddedFirstRouteWidgetState extends State<EmbeddedFirstRouteWidget> {
     print('_EmbeddedFirstRouteWidgetState build called!');
     return Scaffold(
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text('Open second route2'),
           onPressed: () {
             print("open second page!");
@@ -238,7 +218,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
         title: Text("SecondStateful Route"),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           onPressed: () {
             // Navigate back to first route when tapped.
 
@@ -247,7 +227,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             // FlutterBoost.singleton.close(settings.uniqueId,
             //     result: <String,dynamic>{"result": "data from second"});
 
-            PageInfo pageInfo = BoostNavigator.instance.getTopPageInfo();
+            // PageInfo pageInfo = BoostNavigator.instance.getTopPageInfo();
             BoostNavigator.instance.pop();
           },
           child: Text('Go back with result!'),
@@ -271,7 +251,7 @@ class TabRouteWidget extends StatelessWidget {
         title: Text("Tab Route"),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           onPressed: () {
             // FlutterBoost.singleton.open("second");
           },
@@ -290,7 +270,7 @@ class PlatformRouteWidget extends StatelessWidget {
         title: Text("Platform Route"),
       ),
       body: Center(
-        child: RaisedButton(
+        child: ElevatedButton(
           child: TextView(),
           onPressed: () {
             print("open second page!");

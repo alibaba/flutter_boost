@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewExample extends StatefulWidget {
@@ -9,6 +8,7 @@ class WebViewExample extends StatefulWidget {
 }
 
 class WebViewExampleState extends State<WebViewExample> {
+  bool withContainer = true;
   bool visible = true;
   final url = 'https://github.com/alibaba/flutter_boost';
 
@@ -25,6 +25,18 @@ class WebViewExampleState extends State<WebViewExample> {
         home: Scaffold(
             appBar: AppBar(
               title: const Text('WebView Example'),
+              actions: <Widget>[
+                Switch(
+                  value: withContainer,
+                  onChanged: (value) {
+                    setState(() {
+                      withContainer = value;
+                    });
+                  },
+                  activeTrackColor: Colors.yellow,
+                  activeColor: Colors.orangeAccent,
+                ),
+              ],
             ),
             body: Container(
                 child: Column(children: <Widget>[
@@ -45,7 +57,7 @@ class WebViewExampleState extends State<WebViewExample> {
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("flutterPage", withContainer: true),
+                    .push("flutterPage", withContainer: withContainer),
               ),
               InkWell(
                 child: Container(
@@ -56,7 +68,7 @@ class WebViewExampleState extends State<WebViewExample> {
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("webview", withContainer: true),
+                    .push("webview", withContainer: withContainer),
               ),
               Expanded(
                 child: Column(

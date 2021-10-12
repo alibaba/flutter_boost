@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/logger.dart';
-import 'package:flutter_boost/page_visibility.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
   FlutterRouteWidget({this.params, this.message, this.uniqueId});
@@ -17,8 +15,8 @@ class FlutterRouteWidget extends StatefulWidget {
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
     with PageVisibilityObserver {
-  final TextEditingController _usernameController = TextEditingController();
   static const String _kTag = 'page_visibility';
+  bool withContainer = true;
 
   @override
   void initState() {
@@ -38,16 +36,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
     PageVisibilityBinding.instance.removeObserver(this);
     Logger.log('$_kTag#dispose~, ${widget.uniqueId}, $this');
     super.dispose();
-  }
-
-  @override
-  void onPageCreate() {
-    Logger.log('$_kTag#onPageCreate, ${widget.uniqueId}, $this');
-  }
-
-  @override
-  void onPageDestroy() {
-    Logger.log('$_kTag#onPageDestroy, ${widget.uniqueId}, $this');
   }
 
   @override
@@ -80,24 +68,21 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
     Logger.log(
         '${MediaQuery.of(context).size.height} uniqueId=${widget.uniqueId}');
 
-    final String message = widget.message;
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        backgroundColor: Colors.black,
-        textTheme: new TextTheme(title: TextStyle(color: Colors.black)),
-        leading: Builder(builder: (BuildContext context) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back),
-            // 如果有抽屉的话的就打开
-            onPressed: () {
-              BoostNavigator.instance.pop();
+        title: Text('FlutterBoost Example'),
+        actions: <Widget>[
+          Switch(
+            value: withContainer,
+            onChanged: (value) {
+              setState(() {
+                withContainer = value;
+              });
             },
-            // 显示描述信息
-            tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-          );
-        }),
-        title: Text('flutter_boost_example'),
+            activeTrackColor: Colors.yellow,
+            activeColor: Colors.orangeAccent,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -106,17 +91,20 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(top: 10.0, bottom: 20.0),
-                child: Text.rich(TextSpan(text: '', children: <TextSpan>[
+                margin:
+                    const EdgeInsets.only(left: 8.0, top: 10.0, bottom: 20.0),
+                child: RichText(
+                    text: TextSpan(children: <TextSpan>[
                   TextSpan(
-                      text: message ??
-                          "This is a flutter activity.\nuniqueId:${widget.uniqueId}",
-                      style: TextStyle(color: Colors.blue)),
+                      text: "withContainer: ",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue)),
                   TextSpan(
-                      text: "\nparams: ${widget?.params}",
-                      style: TextStyle(fontStyle: FontStyle.italic)),
+                      text: "$withContainer",
+                      style: TextStyle(fontSize: 16.0, color: Colors.red)),
                 ])),
-                alignment: AlignmentDirectional.center,
               ),
               const CupertinoTextField(
                 prefix: Icon(
@@ -131,16 +119,6 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
               new TextField(
                 enabled: true,
                 autocorrect: true,
-                style: const TextStyle(
-                    fontSize: 20.0,
-                    color: const Color(0xFF222222),
-                    fontWeight: FontWeight.w500),
-              ),
-              new TextField(
-                controller: new TextEditingController(),
-                focusNode: FocusNode(),
-                enabled: true,
-                autocorrect: false,
                 style: const TextStyle(
                     fontSize: 20.0,
                     color: const Color(0xFF222222),
@@ -163,8 +141,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
-                      'open native page',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      'Open native page',
+                      style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("native")
@@ -176,11 +154,11 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
-                      'open imagepick demo',
+                      'image_picker demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("imagepick", withContainer: true),
+                    .push("imagepick", withContainer: withContainer),
               ),
               InkWell(
                   child: Container(
@@ -188,22 +166,22 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: Text(
-                        'open WillPopScope demo',
+                        'WillPopScope demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () => BoostNavigator.instance
-                      .push("willPop", withContainer: false)),
+                      .push("willPop", withContainer: withContainer)),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
-                      'mediaquery demo(withContainer=false)',
+                      'MediaQuery demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("mediaquery", withContainer: false)
+                    .push("mediaquery", withContainer: withContainer)
                     .then((value) =>
                         print('xlog, mediaquery, Return Value:$value')),
               ),
@@ -217,7 +195,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("webview", withContainer: true)
+                    .push("webview", withContainer: withContainer)
                     .then(
                         (value) => print('xlog, webview, Return Value:$value')),
               ),
@@ -231,7 +209,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("state_restoration", withContainer: true),
+                    .push("state_restoration", withContainer: withContainer),
               ),
               InkWell(
                 child: Container(
@@ -242,8 +220,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'SystemUiOverlayStyle Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.instance
-                    .push("system_ui_overlay_style", withContainer: true),
+                onTap: () => BoostNavigator.instance.push(
+                    "system_ui_overlay_style",
+                    withContainer: withContainer),
               ),
               InkWell(
                 child: Container(
@@ -272,19 +251,19 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () => BoostNavigator.instance
-                      .push("returnData", withContainer: true)),
+                      .push("returnData", withContainer: withContainer)),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
-                      'open transparent widget',
+                      'translucent dialog demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
                   BoostNavigator.instance.push("transparentWidget",
-                      withContainer: true, opaque: false);
+                      withContainer: withContainer, opaque: false);
                 },
               ),
               InkWell(
@@ -297,7 +276,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () => BoostNavigator.instance
-                      .push("radialExpansion", withContainer: false)),
+                      .push("radialExpansion", withContainer: withContainer)),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
@@ -308,9 +287,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () {
-                  BoostNavigator.instance.push('popUntilView', withContainer: true);
-                  // await BoostNavigator.instance
-                  //     .push("radialExpansion", withContainer: false);
+                  BoostNavigator.instance
+                      .push('popUntilView', withContainer: withContainer);
                 },
               ),
             ],

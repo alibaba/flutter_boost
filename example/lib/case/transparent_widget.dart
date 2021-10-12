@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
 
 /// For translucent dialog demo
 class TransparentWidget extends StatefulWidget {

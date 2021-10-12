@@ -7,9 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_boost/boost_navigator.dart';
-
-// void main() => runApp(const SystemUiOverlayStyleDemo());
+import 'package:flutter_boost/flutter_boost.dart';
 
 /// This is the main application widget.
 class SystemUiOverlayStyleDemo extends StatelessWidget {
