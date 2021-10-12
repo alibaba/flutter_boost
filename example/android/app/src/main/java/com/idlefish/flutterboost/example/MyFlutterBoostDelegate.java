@@ -7,6 +7,8 @@ import com.idlefish.flutterboost.FlutterBoostDelegate;
 import com.idlefish.flutterboost.FlutterBoostRouteOptions;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
+
 public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
 
     @Override
@@ -21,6 +23,7 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
         Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(activityClass)
                 .destroyEngineWithActivity(false)
                 .uniqueId(options.uniqueId())
+                .backgroundMode(options.opaque() ? BackgroundMode.opaque : BackgroundMode.transparent)
                 .url(options.pageName())
                 .urlParams(options.arguments())
                 .build(FlutterBoost.instance().currentActivity());

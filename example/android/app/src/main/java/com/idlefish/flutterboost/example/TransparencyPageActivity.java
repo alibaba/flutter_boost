@@ -7,6 +7,9 @@ import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
 public class TransparencyPageActivity  extends FlutterBoostActivity {
     @Override
     protected BackgroundMode getBackgroundMode() {
-         return BackgroundMode.transparent;
+        if (super.getBackgroundMode() != BackgroundMode.transparent) {
+            throw new AssertionError("You *MUST* set FlutterActivity#backgroundMode correctly.");
+        }
+        return super.getBackgroundMode();
     }
 }
