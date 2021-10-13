@@ -289,9 +289,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        // We Release |PlatformChannel| here to avoid that the native page affected
-        // by system chrome message from flutter.
-        releasePlatformChannel();
+        // We defer |performDetach| call to new Flutter container's |onResume|;
+        // performDetach();
         if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
     }
 
