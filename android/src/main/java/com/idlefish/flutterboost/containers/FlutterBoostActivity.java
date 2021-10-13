@@ -91,10 +91,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        FlutterViewContainer top;
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            top = containerManager.getTopActivityContainer();
+            FlutterViewContainer top = containerManager.getTopActivityContainer();
             boolean isActiveContainer = containerManager.isActiveContainer(this);
             if (isActiveContainer && top != null && top != this && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
@@ -106,7 +105,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_RESUME;
 
         // try to detach prevous container from the engine.
-        top = containerManager.getTopContainer();
+        FlutterViewContainer top = containerManager.getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
         performAttach();
@@ -132,10 +131,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-
-        // We Release |PlatformChannel| here to avoid that the native page affected
-        // by system chrome message from flutter.
-        releasePlatformChannel();
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
