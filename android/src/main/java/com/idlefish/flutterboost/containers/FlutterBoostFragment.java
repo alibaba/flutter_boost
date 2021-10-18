@@ -136,6 +136,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
+
+        // Update system UI overlays to match Flutter's desired system chrome style
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
         if (DEBUG) Log.d(TAG, "#onResume: " + this);
     }
 
