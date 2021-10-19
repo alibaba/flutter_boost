@@ -37,9 +37,7 @@
     }
 }
 + (void)resume{
-    if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
-        [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@0}];
-    }
+    [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@0}];
 }
 
 @end
