@@ -1,3 +1,6 @@
+## v3.0-preview.14
+1. [ios] 修复应用置后台后，通过外链接起应用进入Flutter页面,applicationState还处于inActive状态,渲染错误的问题 (#1442)
+
 ## v3.0-preview.13
 1. [flutter] 修复在引擎启动完毕但是flutter侧还没有加载完毕的时候进行操作的函数调用的时序问题 (#1415)
 2. [Android] 修复实现了onWillPop回调的Widget不能后退的问题 (#1411)
