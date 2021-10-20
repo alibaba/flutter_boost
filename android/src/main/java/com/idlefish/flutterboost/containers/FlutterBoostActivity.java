@@ -112,6 +112,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         textureHooker.onFlutterTextureViewRestoreState();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+
+        // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
+        // the system UI overlays can't be updated in |onPostResume| callback. So we
+        // update system UI overlays to match Flutter's desired system chrome style here.
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
         if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
     }
 
@@ -225,6 +231,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        // We takeover |PlatformPlugin| here.
         return null;
     }
 
