@@ -231,6 +231,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        // We takeover |PlatformPlugin| here.
         return null;
     }
 
