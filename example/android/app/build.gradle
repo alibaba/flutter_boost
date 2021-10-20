@@ -78,4 +78,5 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.alibaba:fastjson:1.2.41'
     implementation 'androidx.webkit:webkit:1.2.0'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 }
