@@ -1,3 +1,7 @@
+## v3.0-preview.15
+1. [ios]对外暴露flutter页面资源释放API(#1443)
+2. [Android] 从Native页面切换回FlutterFragment时，恢复Dart视角的system chrome style，解决沉浸式状态栏显示问题
+
 ## v3.0-preview.14
 1. [ios] 修复应用置后台后，通过外链接起应用进入Flutter页面,applicationState还处于inActive状态,渲染错误的问题 (#1442)
 
