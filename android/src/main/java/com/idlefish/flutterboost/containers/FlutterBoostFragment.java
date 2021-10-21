@@ -72,6 +72,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onDestroy();
         stage = LifecycleStage.ON_DESTROY;
         textureHooker.onFlutterTextureViewRelease();
+        detachFromEngineIfNeeded();
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
