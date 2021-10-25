@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_interceptor.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
@@ -123,8 +122,7 @@ class _MyAppState extends State<MyApp> {
     'imagepick': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
-          pageBuilder: (_, __, ___) =>
-              ImagePickerPage(title: "xxx", uniqueId: uniqueId));
+          pageBuilder: (_, __, ___) => ImagePickerPage(title: "xxx"));
     },
     'firstFirst': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -169,9 +167,9 @@ class _MyAppState extends State<MyApp> {
     },
     'popUntilView': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings,
-          pageBuilder: (_, __, ___) => PopUntilRoute());
+          settings: settings, pageBuilder: (_, __, ___) => PopUntilRoute());
     },
+
     ///可以在native层通过 getContainerParams 来传递参数
     'flutterPage': (settings, uniqueId) {
       print('flutterPage settings:$settings, uniqueId:$uniqueId');
@@ -277,15 +275,6 @@ class _MyAppState extends State<MyApp> {
       CustomInterceptor3()
     ]);
   }
-
-  static Widget appBuilder(Widget home) {
-    return MaterialApp(
-      home: home,
-    );
-  }
-
-  void _onRoutePushed(
-      String pageName, String uniqueId, Map params, Route route, Future _) {}
 }
 
 class BoostNavigatorObserver extends NavigatorObserver {

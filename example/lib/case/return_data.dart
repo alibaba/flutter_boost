@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
-import 'selection_screen.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class ReturnDataWidget extends StatelessWidget {
   @override
@@ -20,9 +19,9 @@ class ReturnDataWidget extends StatelessWidget {
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
-    final result =
-        await BoostNavigator.instance.push('selectionScreen', withContainer: true);
-    Scaffold.of(context)
+    final result = await BoostNavigator.instance
+        .push('selectionScreen', withContainer: true);
+    ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
       ..showSnackBar(SnackBar(content: Text("$result")));
   }

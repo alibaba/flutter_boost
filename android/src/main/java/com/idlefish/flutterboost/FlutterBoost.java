@@ -322,6 +322,9 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
+            if (topActivity == activity) {
+                topActivity = null;
+            }
         }
     }
 }

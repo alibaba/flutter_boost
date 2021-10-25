@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
+import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -38,6 +39,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private static final String TAG = "FlutterBoostActivity";
     private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
+    private final FlutterTextureHooker textureHooker =new FlutterTextureHooker();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
@@ -89,9 +91,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            FlutterViewContainer top = containerManager.getTopActivityContainer();
+            boolean isActiveContainer = containerManager.isActiveContainer(this);
+            if (isActiveContainer && top != null && top != this && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -101,18 +105,26 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_RESUME;
 
         // try to detach prevous container from the engine.
+        FlutterViewContainer top = containerManager.getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
         performAttach();
+        textureHooker.onFlutterTextureViewRestoreState();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
+
+        // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
+        // the system UI overlays can't be updated in |onPostResume| callback. So we
+        // update system UI overlays to match Flutter's desired system chrome style here.
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
         if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
@@ -126,13 +138,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         getFlutterEngine().getLifecycleChannel().appIsResumed();
 
-        // We Release |PlatformChannel| here to avoid that the native page affected
-        // by system chrome message from flutter.
-        releasePlatformChannel();
-
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
         if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
+    }
+
+    @Override
+    public void onFlutterTextureViewCreated(FlutterTextureView flutterTextureView) {
+        super.onFlutterTextureViewCreated(flutterTextureView);
+        textureHooker.hookFlutterTextureView(flutterTextureView);
     }
 
     private void performAttach() {
@@ -200,6 +214,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
         stage = LifecycleStage.ON_DESTROY;
+        textureHooker.onFlutterTextureViewRelease();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
@@ -216,6 +231,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        // We takeover |PlatformPlugin| here.
         return null;
     }
 

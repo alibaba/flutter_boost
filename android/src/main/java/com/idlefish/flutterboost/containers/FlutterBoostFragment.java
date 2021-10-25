@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterFragment;
+import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
@@ -35,6 +36,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private static final String TAG = "FlutterBoostFragment";
     private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
+    private final FlutterTextureHooker textureHooker=new FlutterTextureHooker();
     private FlutterView flutterView;
     private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
@@ -69,6 +71,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDestroy() {
         super.onDestroy();
         stage = LifecycleStage.ON_DESTROY;
+        textureHooker.onFlutterTextureViewRelease();
+        detachFromEngineIfNeeded();
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
@@ -118,8 +122,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            final FlutterContainerManager containerManager = FlutterContainerManager.instance();
+            FlutterViewContainer top = containerManager.getTopActivityContainer();
+            boolean isActiveContainer = containerManager.isActiveContainer(this);
+            if (isActiveContainer && top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -131,6 +137,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
         }
+
+        // Update system UI overlays to match Flutter's desired system chrome style
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
         if (DEBUG) Log.d(TAG, "#onResume: " + this);
     }
 
@@ -144,8 +154,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onPause() {
         super.onPause();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
-            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-            if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
+            if (top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
                 Log.w(TAG, "Skip the unexpected activity lifecycle event on Android Q. " +
                         "See https://issuetracker.google.com/issues/185693011 for more details.");
                 return;
@@ -218,6 +228,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     @Override
+    public void onFlutterTextureViewCreated(FlutterTextureView flutterTextureView) {
+        super.onFlutterTextureViewCreated(flutterTextureView);
+        textureHooker.hookFlutterTextureView(flutterTextureView);
+    }
+
+    @Override
     public Activity getContextActivity() {
         return getActivity();
     }
@@ -272,14 +288,14 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
         performAttach();
+        textureHooker.onFlutterTextureViewRestoreState();
         if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        // We Release |PlatformChannel| here to avoid that the native page affected
-        // by system chrome message from flutter.
-        releasePlatformChannel();
+        // We defer |performDetach| call to new Flutter container's |onResume|;
+        // performDetach();
         if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
     }
 
