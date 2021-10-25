@@ -115,8 +115,9 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterRouteWidget(
-            params: settings.arguments as Map<dynamic, dynamic>?,
-            uniqueId: uniqueId,
+            params: (settings.arguments ?? {}) as Map<dynamic, dynamic>,
+            message: "",
+            uniqueId: uniqueId ?? "",
           ));
     },
     'imagepick': (settings, uniqueId) {
@@ -176,8 +177,9 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => FlutterRouteWidget(
-          params: settings.arguments as Map<dynamic, dynamic>?,
-          uniqueId: uniqueId,
+          params: (settings.arguments ?? {}) as Map<dynamic, dynamic>,
+          message: "",
+          uniqueId: uniqueId ?? "",
         ),
         // transitionsBuilder: (BuildContext context, Animation<double> animation,
         //     Animation<double> secondaryAnimation, Widget child) {

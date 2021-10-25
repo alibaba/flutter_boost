@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
-  FlutterRouteWidget({this.params, this.message, this.uniqueId});
+  FlutterRouteWidget({required this.params, required this.message, required this.uniqueId});
 
   final Map params;
   final String message;
@@ -27,7 +27,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
   @override
   void didChangeDependencies() {
     Logger.log('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
     super.didChangeDependencies();
   }
 
@@ -305,7 +305,7 @@ class PushWidget extends StatefulWidget {
 }
 
 class _PushWidgetState extends State<PushWidget> {
-  VoidCallback _backPressedListenerUnsub;
+  VoidCallback? _backPressedListenerUnsub;
 
   @override
   void dispose() {

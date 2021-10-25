@@ -57,7 +57,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE);
     mDelegate = new FlutterActivityAndFragmentDelegate(this);
     mDelegate.onAttach(getContext());
-    mView = mDelegate.onCreateView(null, null, null, 0, false);
+    mView = mDelegate.onCreateView(null, null, null);
     addView(mView);
     mFlutterView = FlutterBoostUtils.findFlutterView(mView);
   }
@@ -123,7 +123,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   public FlutterShellArgs getFlutterShellArgs() {
     String[] flutterShellArgsArray = getArguments().getStringArray(ARG_FLUTTER_INITIALIZATION_ARGS);
     return new FlutterShellArgs(
-        flutterShellArgsArray != null ? flutterShellArgsArray : new String[] {});
+            flutterShellArgsArray != null ? flutterShellArgsArray : new String[] {});
   }
 
   @Nullable
@@ -153,15 +153,15 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   @NonNull
   public RenderMode getRenderMode() {
     String renderModeName =
-    getArguments().getString(ARG_FLUTTERVIEW_RENDER_MODE, RenderMode.surface.name());
+            getArguments().getString(ARG_FLUTTERVIEW_RENDER_MODE, RenderMode.surface.name());
     return RenderMode.valueOf(renderModeName);
   }
 
   @NonNull
   public TransparencyMode getTransparencyMode() {
     String transparencyModeName =
-        getArguments()
-            .getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, TransparencyMode.transparent.name());
+            getArguments()
+                    .getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, TransparencyMode.transparent.name());
     return TransparencyMode.valueOf(transparencyModeName);
   }
 
@@ -177,7 +177,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @Nullable
   public PlatformPlugin providePlatformPlugin(
-      @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+          @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
     return null;
   }
 
