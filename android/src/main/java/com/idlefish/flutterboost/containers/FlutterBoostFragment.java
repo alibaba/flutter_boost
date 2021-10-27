@@ -136,12 +136,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (!isHidden()) {
             didFragmentShow();
             getFlutterEngine().getLifecycleChannel().appIsResumed();
-        }
 
-        // Update system UI overlays to match Flutter's desired system chrome style
-        Assert.assertNotNull(platformPlugin);
-        platformPlugin.updateSystemUiOverlays();
-        if (DEBUG) Log.d(TAG, "#onResume: " + this);
+            // Update system UI overlays to match Flutter's desired system chrome style
+            Assert.assertNotNull(platformPlugin);
+            platformPlugin.updateSystemUiOverlays();
+        }
+       if (DEBUG) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
     }
 
     @Override
@@ -218,6 +218,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
+        // We takeover |PlatformPlugin| here.
         return null;
     }
 
@@ -271,7 +272,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public String getCachedEngineId() {
-      return FlutterBoost.ENGINE_ID;
+        return FlutterBoost.ENGINE_ID;
     }
 
     @Override
