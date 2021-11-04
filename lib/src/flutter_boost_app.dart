@@ -340,8 +340,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
 
     if (targetContainer != null && targetContainer != topContainer) {
-      for (int index = containers.length - 1; index > popUntilIndex; index--) {
-        BoostContainer container = containers[index];
+      /// containers item index would change when call 'nativeRouterApi.popRoute' method with sync.
+      /// clone containers keep original item index.
+      List<BoostContainer> _containersTemp = [...containers];
+      for (int index = _containersTemp.length - 1; index > popUntilIndex; index--) {
+        BoostContainer container = _containersTemp[index];
         final params = CommonParams()
           ..pageName = container.pageInfo.pageName
           ..uniqueId = container.pageInfo.uniqueId
