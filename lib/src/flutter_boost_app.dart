@@ -94,7 +94,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     /// create the container matching the initial route
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      refreshOnPush(initialContainer);
+      // TODO(rulong.crl): To reuse the initial Container
+      if (topContainer == initialContainer) {
+        refreshOnPush(initialContainer);
+      }
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
     });
