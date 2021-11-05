@@ -87,17 +87,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'please refer to "class CustomFlutterBinding" in example project');
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
+
+    /// create the container matching the initial route
     final BoostContainer initialContainer =
         _createContainer(PageInfo(pageName: widget.initialRoute));
     _containers.add(initialContainer);
     super.initState();
 
-    /// create the container matching the initial route
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // TODO(rulong.crl): To reuse the initial Container
-      if (topContainer == initialContainer) {
-        refreshOnPush(initialContainer);
-      }
+      refreshOnPush(initialContainer);
+      _boostFlutterRouterApi.isEnvReady = true;
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
     });
