@@ -67,9 +67,8 @@ class ContainerOverlay {
   ///[mode] : The [BoostSpecificEntryRefreshMode] you want to choose
   void refreshSpecificOverlayEntries(
       BoostContainer container, BoostSpecificEntryRefreshMode mode) {
-    //Get OverlayState from global key
-    // The |overlayState| is null if there is no widget in the tree that matches
-    // this global key.
+    // The |overlayState| is null if there is no widget in the tree
+    // that matches this global key.
     final overlayState = overlayKey.currentState;
     if (overlayState == null) {
       Logger.error('Oops, Failed to update overlay. mode=$mode, $container');
