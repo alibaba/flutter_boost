@@ -18,6 +18,11 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   final FlutterBoostAppState appState;
   static BoostFlutterRouterApi _instance;
 
+  /// Whether the dart env is ready to receive messages from host.
+  bool _isEnvReady = false;
+  bool get isEnvReady => _isEnvReady;
+  set isEnvReady(bool ready) => _isEnvReady = ready;
+
   @override
   void pushRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
@@ -83,14 +88,13 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
     });
   }
 
-  /// Add an [operation] in [BoostOperationQueue] if the [overlayKey.currentState] == null
-  /// [operation] will execute if the [overlayKey.currentState] != null
-  /// return the [operation] is added in queue or not
+  /// If [isEnvReady] is false, add [operation] into pending queue,
+  /// or [operation] will execute immediately.
   void _addInOperationQueueOrExcute(Function operation) {
     if (operation == null) {
       return;
     }
-    if (overlayKey.currentState == null) {
+    if (!isEnvReady) {
       BoostOperationQueue.instance.addPendingOperation(operation);
     } else {
       operation.call();

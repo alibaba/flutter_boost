@@ -87,14 +87,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         'please refer to "class CustomFlutterBinding" in example project');
     _nativeRouterApi = NativeRouterApi();
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
+
+    /// create the container matching the initial route
     final BoostContainer initialContainer =
         _createContainer(PageInfo(pageName: widget.initialRoute));
     _containers.add(initialContainer);
     super.initState();
 
-    /// create the container matching the initial route
+    // Make sure that the widget in the tree that matches [overlayKey]
+    // is already mounted, or [refreshOnPush] will fail.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       refreshOnPush(initialContainer);
+      _boostFlutterRouterApi.isEnvReady = true;
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
     });
