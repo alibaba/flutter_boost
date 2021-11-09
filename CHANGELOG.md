@@ -1,3 +1,9 @@
+## v3.0-preview.16
+1. [Android] 修复特定场景下activity泄漏的问题 (#1444)
+2. [Android] 修复Fragment特定使用场景下的崩溃问题 (#1450)
+3. popUntil使用containers列表不能保证顺序性，在同步popRoute过程会导致出现containers的乱序。需要通过提前clone队列进行保证 (#1462)
+4. [dart] 修复应用启动首次访问flutter页面白屏问题
+
 ## v3.0-preview.15
 1. [ios]对外暴露flutter页面资源释放API(#1443)
 2. [Android] 从Native页面切换回FlutterFragment时，恢复Dart视角的system chrome style，解决沉浸式状态栏显示问题
