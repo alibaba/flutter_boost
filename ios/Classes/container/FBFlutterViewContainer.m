@@ -75,6 +75,7 @@ _Pragma("clang diagnostic pop")
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @property(nonatomic, assign) BOOL opaque;
+@property(nonatomic, assign) BOOL enablePopGes;
 @property (nonatomic, strong) FBVoidCallback removeEventCallback;
 @end
 
@@ -162,9 +163,19 @@ _Pragma("clang diagnostic pop")
             // 多page情况下的侧滑动态禁用和启用事件
             NSNumber *enableNum = args[@"enable"];
             BOOL enable = [enableNum boolValue];
-            self.navigationController.interactivePopGestureRecognizer.enabled = enable;
+            self.enablePopGes = enable;
         }
     } forName:self.uniqueId];
+}
+
+
+// 这里用代理来控制侧滑与否
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([self.navigationController respondsToSelector:@selector(interactivePopGestureRecognizer)] &&
+            gestureRecognizer == self.navigationController.interactivePopGestureRecognizer) {
+        return self.enablePopGes;
+    }
+    return YES;
 }
 
 - (NSString *)uniqueIDString {
@@ -296,9 +307,11 @@ _Pragma("clang diagnostic pop")
     
     // Enable or disable pop gesture
     // note: if disablePopGesture is nil, do nothing
-    if (self.disablePopGesture) {
-        self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
-    }
+    
+    
+    /// 这里我尝试更换代理，在每个VC完成显示的时候设置代理为当前VC
+    NSLog(@"Debug::%@",self.navigationController.interactivePopGestureRecognizer.delegate);
+    self.navigationController.interactivePopGestureRecognizer.delegate = self;
     [FB_PLUGIN containerAppeared:self];
 }
 

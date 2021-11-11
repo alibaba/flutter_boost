@@ -144,9 +144,15 @@ class TabPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor:color,
-      body: Center(child: Text(title ?? '',style:TextStyle(fontSize: 25)),),
+    return GestureDetector(
+      onTap: (){
+        BoostNavigator.instance.push('mainPage',withContainer: true);
+      },
+      child
+          : Scaffold(
+        backgroundColor:color,
+        body: Center(child: Text(title ?? '',style:TextStyle(fontSize: 25)),),
+      ),
     );
   }
 }
