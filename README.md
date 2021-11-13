@@ -33,7 +33,7 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-```json
+``` yaml
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
