@@ -217,6 +217,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         textureHooker.onFlutterTextureViewRelease();
         engine.getLifecycleChannel().appIsResumed();
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+        detachFromEngineIfNeeded();
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
 
