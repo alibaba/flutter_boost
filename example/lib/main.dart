@@ -3,6 +3,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
+import 'package:flutter_boost_example/case/native_view.dart';
 import 'package:flutter_boost_example/case/popUntil.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
@@ -233,6 +234,10 @@ class _MyAppState extends State<MyApp> {
     'webview': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
+    },
+    'nativeview': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
     },
     'state_restoration': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
