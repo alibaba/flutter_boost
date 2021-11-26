@@ -16,6 +16,8 @@ import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_boost_example/case/flutter_rebuild_demo.dart';
 
 void main() {
   PageVisibilityBinding.instance
@@ -256,6 +258,37 @@ class _MyAppState extends State<MyApp> {
                 params: settings.arguments,
                 uniqueId: uniqueId,
               ));
+    },
+    ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
+    'flutterRebuildDemo': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildDemo(),
+            );
+          });
+    },
+    'flutterRebuildPageA': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildPageA(),
+            );
+          });
+    },
+    'flutterRebuildPageB': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildPageB(),
+            );
+          });
     },
   };
 
