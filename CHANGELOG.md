@@ -1,3 +1,9 @@
+## v3.0-preview.17
+1. [Android]修复特定场景下activity泄漏的问题
+2. [Android] 修复FlutterEngine空指针异常 (#1471)
+3. [flutter] 提供带有缓存的widget组件 BoostCacheWidget,可以解决在push过程中导致页面rebuild的问题 (#1486)
+4. [iOS] 修改 podspec xcconfig 为 pod_target_xcconfig ，避免修改宿主工程编译配置 (#1507)
+
 ## v3.0-preview.16
 1. [Android] 修复特定场景下activity泄漏的问题 (#1444)
 2. [Android] 修复Fragment特定使用场景下的崩溃问题 (#1450)
