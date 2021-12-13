@@ -18,7 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
 import io.flutter.Log;
+import io.flutter.embedding.android.ExclusiveAppComponent;
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
@@ -32,7 +34,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
-public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
+public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer, ExclusiveAppComponent<Activity> {
     private static final String TAG = "FlutterBoostFragment";
     private static final boolean DEBUG = false;
     private final String who = UUID.randomUUID().toString();
@@ -52,6 +54,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
          * a new FlutterFragment is attached in Flutter2.0.
          */
         if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    }
+
+    @NonNull
+    @Override
+    public Activity getAppComponent() {
+        return getActivity();
     }
 
     @Override
@@ -303,7 +311,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private void performAttach() {
         if (!isAttached) {
             // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+            getFlutterEngine().getActivityControlSurface().attachToActivity(this, getLifecycle());
 
             if (platformPlugin == null) {
                 platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
