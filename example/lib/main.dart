@@ -267,7 +267,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId ?? "",
               builder: (_) => FlutterRebuildDemo(),
             );
           });
@@ -277,7 +277,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId ?? "",
               builder: (_) => FlutterRebuildPageA(),
             );
           });
@@ -287,7 +287,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId ?? "",
               builder: (_) => FlutterRebuildPageB(),
             );
           });

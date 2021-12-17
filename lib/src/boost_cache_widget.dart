@@ -7,7 +7,7 @@ class BoostCacheWidget extends StatefulWidget {
   final String uniqueId;
   final WidgetBuilder builder;
 
-  const BoostCacheWidget({@required this.uniqueId, @required this.builder, Key key})
+  const BoostCacheWidget({required this.uniqueId, required this.builder, Key? key})
       : assert(builder != null),
         assert(uniqueId != null),
         super(key: key);
@@ -17,8 +17,8 @@ class BoostCacheWidget extends StatefulWidget {
 }
 
 class _BoostCacheWidgetState extends State<BoostCacheWidget> {
-  Widget _cacheWidget;
-  String _oldUniqueId;
+  Widget? _cacheWidget;
+  String? _oldUniqueId;
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +27,6 @@ class _BoostCacheWidgetState extends State<BoostCacheWidget> {
       _oldUniqueId = widget.uniqueId;
       _cacheWidget = widget.builder(context);
     }
-    return _cacheWidget;
+    return _cacheWidget ?? Container();
   }
 }
