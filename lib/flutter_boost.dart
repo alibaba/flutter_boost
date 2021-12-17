@@ -11,3 +11,4 @@ export 'src/flutter_boost_app.dart';
 export 'src/logger.dart';
 export 'src/page_visibility.dart';
 export 'src/util.dart';
+export 'src/boost_cache_widget.dart';

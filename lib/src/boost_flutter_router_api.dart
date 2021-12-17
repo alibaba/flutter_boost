@@ -23,6 +23,11 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   bool get isEnvReady => _isEnvReady;
   set isEnvReady(bool ready) => _isEnvReady = ready;
 
+  /// Whether the dart env is ready to receive messages from host.
+  bool _isEnvReady = false;
+  bool get isEnvReady => _isEnvReady;
+  set isEnvReady(bool ready) => _isEnvReady = ready;
+
   @override
   void pushRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {

@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-null-safety-preview.16
+v3.0-preview.17
 
 PS: Before updating the beta version, please read the CHANGELOG to see if there are any BREAKING CHANGE
 
@@ -33,11 +33,11 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 
 Open you pubspec.yaml and add the following line to dependencies:
 
-```json
+``` yaml
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-null-safety-preview.16'
+        ref: 'v3.0-preview.17'
 ```
 
 

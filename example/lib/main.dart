@@ -3,6 +3,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
+import 'package:flutter_boost_example/case/native_view.dart';
 import 'package:flutter_boost_example/case/popUntil.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
@@ -15,6 +16,8 @@ import 'package:flutter_boost_example/case/willpop.dart';
 import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_boost_example/case/flutter_rebuild_demo.dart';
 
 void main() {
   PageVisibilityBinding.instance
@@ -236,6 +239,10 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
     },
+    'nativeview': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
+    },
     'state_restoration': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
@@ -253,6 +260,37 @@ class _MyAppState extends State<MyApp> {
             params: settings.arguments as Map<dynamic, dynamic>?,
             uniqueId: uniqueId,
           ));
+    },
+    ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
+    'flutterRebuildDemo': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildDemo(),
+            );
+          });
+    },
+    'flutterRebuildPageA': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildPageA(),
+            );
+          });
+    },
+    'flutterRebuildPageB': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings,
+          builder: (ctx) {
+            return BoostCacheWidget(
+              uniqueId: uniqueId,
+              builder: (_) => FlutterRebuildPageB(),
+            );
+          });
     },
   };
 
