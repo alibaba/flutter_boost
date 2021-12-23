@@ -93,15 +93,28 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void popRoute(CommonParams params, Messages.Result<Void> result) {
-        String uniqueId = params.getUniqueId();
-        if (uniqueId != null) {
-            FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
-            if (container != null) {
-                container.finishContainer((Map<String, Object>) (Object) params.getArguments());
+        if (delegate != null) {
+            FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
+                    .pageName(params.getPageName())
+                    .uniqueId(params.getUniqueId())
+                    .arguments((Map<String, Object>) (Object) params.getArguments())
+                    .build();
+            boolean isHandle = delegate.popRoute(options);
+            //isHandle代表是否已经自定义处理，如果未自定义处理走默认逻辑
+            if (!isHandle) {
+                String uniqueId = params.getUniqueId();
+                if (uniqueId != null) {
+                    FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
+                    if (container != null) {
+                        container.finishContainer((Map<String, Object>) (Object) params.getArguments());
+                    }
+                    result.success(null);
+                } else {
+                    throw new RuntimeException("Oops!! The unique id is null!");
+                }
             }
-            result.success(null);
         } else {
-            throw new RuntimeException("Oops!! The unique id is null!");
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
     }
 
