@@ -3,7 +3,6 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.idlefish.flutterboost.Messages.Result;
 import com.idlefish.flutterboost.Messages.CommonParams;
 import com.idlefish.flutterboost.Messages.FlutterRouterApi;
 import com.idlefish.flutterboost.Messages.NativeRouterApi;
@@ -93,15 +92,28 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void popRoute(CommonParams params, Messages.Result<Void> result) {
-        String uniqueId = params.getUniqueId();
-        if (uniqueId != null) {
-            FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
-            if (container != null) {
-                container.finishContainer((Map<String, Object>) (Object) params.getArguments());
+        if (delegate != null) {
+            FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
+                    .pageName(params.getPageName())
+                    .uniqueId(params.getUniqueId())
+                    .arguments((Map<String, Object>) (Object) params.getArguments())
+                    .build();
+            boolean isHandle = delegate.popRoute(options);
+            //isHandle代表是否已经自定义处理，如果未自定义处理走默认逻辑
+            if (!isHandle) {
+                String uniqueId = params.getUniqueId();
+                if (uniqueId != null) {
+                    FlutterViewContainer container = FlutterContainerManager.instance().findContainerById(uniqueId);
+                    if (container != null) {
+                        container.finishContainer((Map<String, Object>) (Object) params.getArguments());
+                    }
+                    result.success(null);
+                } else {
+                    throw new RuntimeException("Oops!! The unique id is null!");
+                }
             }
-            result.success(null);
         } else {
-            throw new RuntimeException("Oops!! The unique id is null!");
+            throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
         }
     }
 
@@ -199,7 +211,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     public void onBackPressed() {
         if (channel != null) {
             checkEngineState();
-            channel.onBackPressed(reply -> {});
+            channel.onBackPressed(reply -> {
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -274,14 +287,15 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
         FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
         if (FlutterContainerManager.instance().getContainerSize() == 1) {
-           FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
+            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
         }
     }
 
     public void onContainerAppeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
+        });
         onContainerShow(uniqueId);
     }
 
@@ -292,7 +306,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        removeRoute(uniqueId, reply -> {});
+        removeRoute(uniqueId, reply -> {
+        });
         FlutterContainerManager.instance().removeContainer(uniqueId);
         if (FlutterContainerManager.instance().getContainerSize() == 0) {
             FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_PAUSED);
