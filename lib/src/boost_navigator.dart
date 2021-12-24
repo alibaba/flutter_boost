@@ -141,7 +141,7 @@ class BoostNavigator {
   ///
   /// This API is for backwards compatibility.
   /// Please use [BoostNavigator.pop] instead.
-  void remove(String uniqueId, {Map<String, dynamic> arguments}) =>
+  Future<bool> remove(String uniqueId, {Map<String, dynamic> arguments}) async =>
       appState.removeWithResult(uniqueId, arguments);
 
   /// Retrieves the infomation of the top-most flutter page
@@ -150,9 +150,16 @@ class BoostNavigator {
   /// This is a legacy API for backwards compatibility.
   PageInfo getTopPageInfo() => appState.getTopPageInfo();
 
-  /// Get the top page 's [PageInfo] with [BuildContext]
+  @Deprecated('use getPageInfoByContext(BuildContext context) instead')
   PageInfo getTopByContext(BuildContext context) =>
-      BoostContainer.of(context).pageInfo;
+      BoostContainer.of(context)?.pageInfo;
+
+  PageInfo getPageInfoByContext(BuildContext context) =>
+      BoostContainer.of(context)?.pageInfo;
+
+  bool isTopPage(BuildContext context) {
+    return getPageInfoByContext(context) == getTopPageInfo();
+  }
 
   /// Return the number of flutter pages
   ///

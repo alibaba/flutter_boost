@@ -87,7 +87,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
-        Assert.assertNotNull(flutterView);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
@@ -96,7 +95,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        Assert.assertNotNull(flutterView);
         if (hidden) {
             didFragmentHide();
         } else {
@@ -108,7 +106,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        Assert.assertNotNull(flutterView);
         if (isVisibleToUser) {
             didFragmentShow();
         } else {
@@ -172,7 +169,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        Assert.assertNotNull(getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
@@ -188,7 +184,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        Assert.assertNotNull(engine);
         engine.getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }
@@ -305,14 +300,15 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             // Attach plugins to the activity.
             getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
 
-            if (platformPlugin == null) {
-                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-            }
-
             // Attach rendering pipeline.
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
+        }
+
+        // Fixed issue https://github.com/alibaba/flutter_boost/issues/1408
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         }
     }
 

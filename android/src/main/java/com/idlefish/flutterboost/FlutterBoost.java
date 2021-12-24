@@ -10,6 +10,7 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.dart.DartExecutor;
@@ -63,7 +64,18 @@ public class FlutterBoost {
         // 1. initialize default engine
         FlutterEngine engine = getEngine();
         if (engine == null) {
-            engine = new FlutterEngine(application, options.shellArgs());
+            // First, get engine from option.flutterEngineProvider
+            if (options.flutterEngineProvider() != null) {
+                FlutterEngineProvider provider = options.flutterEngineProvider();
+                engine = provider.provideFlutterEngine(application);
+            }
+
+            if (engine == null) {
+                // Second, when the engine from option.flutterEngineProvider is null,
+                // we should create a new engine
+                engine = new FlutterEngine(application, options.shellArgs());
+            }
+
             // Cache the created FlutterEngine in the FlutterEngineCache.
             FlutterEngineCache.getInstance().put(ENGINE_ID, engine);
         }

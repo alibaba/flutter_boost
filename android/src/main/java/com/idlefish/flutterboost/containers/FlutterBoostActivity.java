@@ -154,15 +154,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             // Attach plugins to the activity.
             getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
 
-            if (platformPlugin == null) {
-                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-            }
-
             // Attach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
+        }
+
+        // Fixed issue https://github.com/alibaba/flutter_boost/issues/1408
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         }
     }
 
@@ -175,7 +175,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             releasePlatformChannel();
 
             // Detach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.detachFromFlutterEngine();
             isAttached = false;
             if (DEBUG) Log.d(TAG, "#performDetach: " + this);
