@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
 import io.flutter.embedding.android.ExclusiveAppComponent;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
@@ -68,7 +67,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
     }
 
-    @NonNull
     @Override
     public Activity getAppComponent() {
         return getActivity();
