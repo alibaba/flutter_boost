@@ -397,7 +397,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         uniqueId == container.pages.last.pageInfo.uniqueId) {
       final handled = onBackPressed
           ? await _performBackPressed(container, result)
-          : false;
+          : container?.navigator?.canPop();
       if (handled != null) {
         if (!handled) {
           assert(container.pageInfo.withContainer);
