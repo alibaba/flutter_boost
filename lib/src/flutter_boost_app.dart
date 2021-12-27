@@ -97,17 +97,17 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     // Make sure that the widget in the tree that matches [overlayKey]
     // is already mounted, or [refreshOnPush] will fail.
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // try to restore routes from host when hot restart.
+      assert(() {
+        _restoreStackForHotRestart();
+        return true;
+      }());
+
       refreshOnPush(initialContainer);
       _boostFlutterRouterApi.isEnvReady = true;
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
     });
-
-    // try to restore routes from host when hot restart.
-    assert(() {
-      _restoreStackForHotRestart();
-      return true;
-    }());
   }
 
   ///Setup the AppLifecycleState change event launched from native
@@ -347,7 +347,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       /// containers item index would change when call 'nativeRouterApi.popRoute' method with sync.
       /// clone containers keep original item index.
       List<BoostContainer> _containersTemp = [...containers];
-      for (int index = _containersTemp.length - 1; index > popUntilIndex; index--) {
+      for (int index = _containersTemp.length - 1;
+          index > popUntilIndex;
+          index--) {
         BoostContainer container = _containersTemp[index];
         final params = CommonParams()
           ..pageName = container.pageInfo.pageName
