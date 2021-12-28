@@ -23,6 +23,8 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
         Class<? extends FlutterBoostActivity> activityClass = options.opaque() ? FlutterBoostActivity.class : TransparencyPageActivity.class;
         Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(activityClass)
                 .destroyEngineWithActivity(false)
+                // 注意：这里需要回传dart带过来的uniqueId，否则页面退出时传参可能失败。
+                // 但，如果是从Native打开Flutter页面，请不要给uniqueId赋*任何值*！！！
                 .uniqueId(options.uniqueId())
                 .backgroundMode(options.opaque() ? BackgroundMode.opaque : BackgroundMode.transparent)
                 .url(options.pageName())
