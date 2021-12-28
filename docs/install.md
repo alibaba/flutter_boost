@@ -27,15 +27,16 @@ flutter_boost:
 //如果你的工程没有自定义的Binding，则可以参考这个`CustomFlutterBinding`的做法 //`BoostFlutterBinding`用于接管Flutter App的生命周期，必须得接入的
 
 ```dart
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 void main() {
-  ///添加全局生命周期监听类
-  PageVisibilityBinding.instance.addGlobalObserver(AppLifecycleObserver());
-
   ///这里的CustomFlutterBinding调用务必不可缺少，用于控制Boost状态的resume和pause
   CustomFlutterBinding();
   runApp(MyApp());
 }
+
 
 ///创建一个自定义的Binding，继承和with的关系如下，里面什么都不用写
 class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {}
@@ -46,7 +47,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   /// 由于很多同学说没有跳转动画，这里是因为之前exmaple里面用的是 [PageRouteBuilder]，
   /// 其实这里是可以自定义的，和Boost没太多关系，比如我想用类似iOS平台的动画，
   /// 那么只需要像下面这样写成 [CupertinoPageRoute] 即可
@@ -58,37 +58,32 @@ class _MyAppState extends State<MyApp> {
   /// 简单来说，就两个页面都是CupertinoPageRoute就好
   /// 如果用MaterialPageRoute的话同理
 
-  static Map<String, FlutterBoostRouteFactory> routerMap = {
-    'mainPage': (settings, uniqueId) {
+  Map<String, FlutterBoostRouteFactory> routerMap = {
+    'mainPage': (RouteSettings settings, String uniqueId) {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments;
-            String data = map['data'];
+            Map<String, Object> map = settings.arguments as Map<String, Object> ;
+            String data = map['data'] as String;
             return MainPage(
               data: data,
             );
           });
     },
-
     'simplePage': (settings, uniqueId) {
-      Map<String, Object> map = settings.arguments ?? {};
-      String data = map['data'];
+      Map<String, Object> map = settings.arguments as Map<String, Object> ;
+      String data =  map['data'] as String;
       return CupertinoPageRoute(
         settings: settings,
-        builder: (_) =>
-            SimplePage(
-              data: data,
-            ),
+        builder: (_) => SimplePage(
+          data: data,
+        ),
       );
     },
   };
 
   Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
-    if (func == null) {
-      return null;
-    }
+    FlutterBoostRouteFactory func = routerMap[settings.name] as FlutterBoostRouteFactory;
     return func(settings, uniqueId);
   }
 
@@ -96,6 +91,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: home,
       debugShowCheckedModeBanner: true,
+
       ///必须加上builder参数，否则showDialog等会出问题
       builder: (_, __) {
         return home;
@@ -108,6 +104,26 @@ class _MyAppState extends State<MyApp> {
     return FlutterBoostApp(
       routeFactory,
       appBuilder: appBuilder,
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({Object data});
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('Main Page')),
+    );
+  }
+}
+
+class SimplePage extends StatelessWidget {
+  const SimplePage({Object data});
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body:  Center(child: Text('SimplePage')),
     );
   }
 }
