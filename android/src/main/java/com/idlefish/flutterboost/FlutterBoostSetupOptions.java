@@ -1,16 +1,20 @@
 package com.idlefish.flutterboost;
 
+import io.flutter.embedding.android.FlutterEngineProvider;
+
 public class FlutterBoostSetupOptions {
     private final String initialRoute;
     private final String dartEntrypoint;
     private final String[] shellArgs;
     private final boolean shouldOverrideBackForegroundEvent;
+    private FlutterEngineProvider flutterEngineProvider;
 
     private FlutterBoostSetupOptions(Builder builder) {
         this.initialRoute = builder.initialRoute;
         this.dartEntrypoint = builder.dartEntrypoint;
         this.shellArgs = builder.shellArgs;
         this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
+        this.flutterEngineProvider = builder.flutterEngineProvider;
     }
 
     public static FlutterBoostSetupOptions createDefault() {
@@ -27,6 +31,10 @@ public class FlutterBoostSetupOptions {
 
     public String[] shellArgs() {
         return shellArgs;
+    }
+
+    public FlutterEngineProvider flutterEngineProvider() {
+        return flutterEngineProvider;
     }
 
     public boolean shouldOverrideBackForegroundEvent() {
@@ -60,6 +68,7 @@ public class FlutterBoostSetupOptions {
         private String dartEntrypoint = "main";
         private boolean shouldOverrideBackForegroundEvent = false;
         private String[] shellArgs;
+        private FlutterEngineProvider flutterEngineProvider;
 
         public Builder() {
         }
@@ -76,6 +85,11 @@ public class FlutterBoostSetupOptions {
 
         public Builder shellArgs(String[] shellArgs){
             this.shellArgs = shellArgs;
+            return this;
+        }
+
+        public Builder flutterEngineProvider(FlutterEngineProvider flutterEngineProvider) {
+            this.flutterEngineProvider = flutterEngineProvider;
             return this;
         }
 

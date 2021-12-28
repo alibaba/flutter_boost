@@ -159,7 +159,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
 
             // Attach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
@@ -175,7 +174,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             releasePlatformChannel();
 
             // Detach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.detachFromFlutterEngine();
             isAttached = false;
             if (DEBUG) Log.d(TAG, "#performDetach: " + this);

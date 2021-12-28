@@ -300,9 +300,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return await pop(result: result);
   }
 
-  void removeWithResult([String uniqueId, Map<String, dynamic> result]) {
+  Future<bool> removeWithResult([String uniqueId, Map<String, dynamic> result]) async {
     _completePendingResultIfNeeded(uniqueId, result: result);
-    pop(uniqueId: uniqueId, result: result);
+    return await pop(uniqueId: uniqueId, result: result);
   }
 
   void popUntil({String route, String uniqueId}) async {
@@ -398,7 +398,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     if (uniqueId == null ||
         uniqueId == container.pages.last.pageInfo.uniqueId) {
       final handled = onBackPressed
-          ? await container?.navigator?.maybePop(result)
+          ? await _performBackPressed(container, result)
           : container?.navigator?.canPop();
       if (handled != null) {
         if (!handled) {
@@ -424,6 +424,15 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     Logger.log('pop container, uniqueId=$uniqueId, result:$result, $container');
     return true;
+  }
+
+  Future<bool> _performBackPressed(BoostContainer container, Object result) async {
+    if (container?.backPressedHandler != null) {
+      container.backPressedHandler.call();
+      return true;
+    } else {
+      return await container?.navigator?.maybePop(result);
+    }
   }
 
   Future<void> _removeContainer(BoostContainer container) async {
