@@ -6,7 +6,7 @@
 BoostNavigator.instance.push(
     "yourPage", //required
     withContainer: false, //optional
-    arguments: {"key","value"}, //optional
+    arguments: {"key":"value"}, //optional
     opaque: true, //optional,default value is true
 );
 
