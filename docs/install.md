@@ -71,14 +71,15 @@ class _MyAppState extends State<MyApp> {
           });
     },
     'simplePage': (settings, uniqueId) {
-      Map<String, Object> map = settings.arguments as Map<String, Object> ;
-      String data =  map['data'] as String;
       return CupertinoPageRoute(
-        settings: settings,
-        builder: (_) => SimplePage(
-          data: data,
-        ),
-      );
+          settings: settings,
+          builder: (_) {
+            Map<String, Object> map = settings.arguments as Map<String, Object>;
+            String data = map['data'] as String;
+            return SimplePage(
+              data: data,
+            );
+          });
     },
   };
 
