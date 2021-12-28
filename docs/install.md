@@ -27,16 +27,11 @@ flutter_boost:
 //如果你的工程没有自定义的Binding，则可以参考这个`CustomFlutterBinding`的做法 //`BoostFlutterBinding`用于接管Flutter App的生命周期，必须得接入的
 
 ```dart
-// ignore_for_file: import_of_legacy_library_into_null_safe
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 void main() {
-  ///添加全局生命周期监听类
-  PageVisibilityBinding.instance.addGlobalObserver(AppLifecycleObserver());
-
   ///这里的CustomFlutterBinding调用务必不可缺少，用于控制Boost状态的resume和pause
   CustomFlutterBinding();
   runApp(MyApp());
@@ -131,21 +126,6 @@ class SimplePage extends StatelessWidget {
       body:  Center(child: Text('SimplePage')),
     );
   }
-}
-
-
-class AppLifecycleObserver extends GlobalPageVisibilityObserver { 
-  void onPagePush(Route<dynamic> route) {}
-
-  void onPageShow(Route<dynamic> route) {}
-
-  void onPageHide(Route<dynamic> route) {}
-
-  void onPagePop(Route<dynamic> route) {}
-
-  void onForeground(Route<dynamic> route) {}
-
-  void onBackground(Route<dynamic> route) {}
 }
 ```
 
