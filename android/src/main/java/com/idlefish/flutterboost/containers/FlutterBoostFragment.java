@@ -95,23 +95,29 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        // If |onHiddenChanged| method is called before the |onCreateView|,
+        // we just return here.
+        if (flutterView == null) return;
         if (hidden) {
             didFragmentHide();
         } else {
             didFragmentShow();
         }
-        super.onHiddenChanged(hidden);
         if (DEBUG) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        // If |setUserVisibleHint| method is called before the |onCreateView|,
+        // we just return here.
+        if (flutterView == null) return;
         if (isVisibleToUser) {
             didFragmentShow();
         } else {
             didFragmentHide();
         }
-        super.setUserVisibleHint(isVisibleToUser);
         if (DEBUG) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
     }
 
