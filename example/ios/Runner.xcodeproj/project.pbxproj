@@ -17,6 +17,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		DA3F18F0277C5F1B0001F84D /* FLNativeView.m in Sources */ = {isa = PBXBuildFile; fileRef = DA3F18EF277C5F1B0001F84D /* FLNativeView.m */; };
 		DF544AA62177253600931378 /* UIViewControllerDemo.m in Sources */ = {isa = PBXBuildFile; fileRef = DF544AA42177253600931378 /* UIViewControllerDemo.m */; };
 		DF544AA72177253600931378 /* UIViewControllerDemo.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF544AA52177253600931378 /* UIViewControllerDemo.xib */; };
 		DF544AD4217838EF00931378 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = DF544AD3217838EF00931378 /* libc++.tbd */; };
@@ -73,6 +74,8 @@
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1222E2FC45BEDD8C125BB85 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		A61BB8DA66765B0A27F90733 /* libPods-Runner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Runner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA3F18EE277C5F1A0001F84D /* FLNativeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FLNativeView.h; sourceTree = "<group>"; };
+		DA3F18EF277C5F1B0001F84D /* FLNativeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FLNativeView.m; sourceTree = "<group>"; };
 		DF544AA32177253600931378 /* UIViewControllerDemo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIViewControllerDemo.h; sourceTree = "<group>"; };
 		DF544AA42177253600931378 /* UIViewControllerDemo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIViewControllerDemo.m; sourceTree = "<group>"; };
 		DF544AA52177253600931378 /* UIViewControllerDemo.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UIViewControllerDemo.xib; sourceTree = "<group>"; };
@@ -149,6 +152,8 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
+				DA3F18EE277C5F1A0001F84D /* FLNativeView.h */,
+				DA3F18EF277C5F1B0001F84D /* FLNativeView.m */,
 				DF544AA32177253600931378 /* UIViewControllerDemo.h */,
 				DF544AA42177253600931378 /* UIViewControllerDemo.m */,
 				DF544AA52177253600931378 /* UIViewControllerDemo.xib */,
@@ -199,7 +204,6 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				3FC74F80EA9D039C70D1F681 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -217,12 +221,12 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0910;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "The Chromium Authors";
 				TargetAttributes = {
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = 5GU52NSL5G;
+						DevelopmentTeam = 4683CT84HT;
 					};
 				};
 			};
@@ -292,24 +296,6 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		3FC74F80EA9D039C70D1F681 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh",
-				"${PODS_ROOT}/../Flutter/Flutter.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Flutter.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9740EEB61CF901F6004384FC /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -349,6 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA3F18F0277C5F1B0001F84D /* FLNativeView.m in Sources */,
 				8E9D8AD025B982C60080BBA7 /* MyFlutterBoostDelegate.m in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				97C146F31CF9000F007C117D /* main.m in Sources */,
@@ -433,7 +420,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -480,7 +467,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -494,7 +481,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 5GU52NSL5G;
+				DEVELOPMENT_TEAM = 4683CT84HT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -507,7 +494,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample4;
+				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REEXPORTED_LIBRARY_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -521,7 +508,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 5GU52NSL5G;
+				DEVELOPMENT_TEAM = 4683CT84HT;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -534,7 +521,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample4;
+				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REEXPORTED_LIBRARY_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";

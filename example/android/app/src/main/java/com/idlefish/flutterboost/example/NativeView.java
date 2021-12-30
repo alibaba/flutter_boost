@@ -2,6 +2,7 @@ package com.idlefish.flutterboost.example;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ class NativeView implements PlatformView {
             sb.append(entry.getKey() + ": " + entry.getValue().toString()).append("\n");
         }
         textView.setText(sb.toString());
+        Log.e("xlog", "#NativeView: <ctor> " + sb.toString());
     }
 
     @NonNull
@@ -38,5 +40,17 @@ class NativeView implements PlatformView {
     }
 
     @Override
-    public void dispose() {}
+    public void onFlutterViewAttached(@NonNull View flutterView) {
+        Log.e("xlog", "#NativeView#onFlutterViewAttached, " + flutterView);
+    }
+
+    @Override
+    public void onFlutterViewDetached() {
+        Log.e("xlog", "#NativeView#onFlutterViewDetached");
+    }
+
+    @Override
+    public void dispose() {
+        Log.e("xlog", "#NativeView#dispose~~");
+    }
 }

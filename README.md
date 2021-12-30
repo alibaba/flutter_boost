@@ -6,9 +6,9 @@
 </p>
 
 # Release Note
-v3.0-preview.17
+v3.0-preview.18
 
-PS: Before updating the beta version, please read the CHANGELOG to see if there are any BREAKING CHANGE
+PS：Here for null-safety https://github.com/alibaba/flutter_boost/tree/null-safety
 
 - 1. Flutter SDK upgrades do not require Boost upgrades
 - 2. Simplify the architecture
@@ -37,7 +37,7 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.17'
+        ref: 'v3.0-preview.18'
 ```
 
 

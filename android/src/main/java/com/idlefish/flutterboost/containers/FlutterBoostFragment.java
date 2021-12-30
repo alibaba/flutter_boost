@@ -87,7 +87,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
-        Assert.assertNotNull(flutterView);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
@@ -176,7 +175,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        Assert.assertNotNull(getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
@@ -192,7 +190,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        Assert.assertNotNull(engine);
         engine.getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }

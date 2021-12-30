@@ -5,9 +5,10 @@
 
 # Release Note
 
-v3.0-preview.17
+v3.0-preview.18
 
-PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新的接入文档与使用文档。
+PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter_boost/tree/null-safety
+
 
 - 1.flutter sdk升级不需要升级boost
 - 2.简化架构
@@ -34,7 +35,7 @@ PS：preview版本相比beta版本，有较大的改动，建议仔细阅读新�
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.17'
+        ref: 'v3.0-preview.18'
 ```
 
 # 使用文档
