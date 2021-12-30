@@ -12,7 +12,7 @@ class NativeViewExample extends StatefulWidget {
 }
 
 class NativeViewExampleState extends State<NativeViewExample> {
-  bool hybridCompositionMode = false;
+  bool hybridCompositionMode = true;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,8 @@ class NativeViewExampleState extends State<NativeViewExample> {
                     .push("nativeview", withContainer: true),
               ),
               Expanded(child: NativeView(hybridCompositionMode)),
-              Expanded(child: NativeView(!hybridCompositionMode)),
+              Expanded(child: NativeView(hybridCompositionMode)),
+              Expanded(child: NativeView(hybridCompositionMode)),
             ]))));
   }
 }
