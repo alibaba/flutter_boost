@@ -157,7 +157,7 @@ class BoostNavigator {
   PageInfo? getTopByContext(BuildContext context) =>
       BoostContainer.of(context)?.pageInfo;
 
-  PageInfo getPageInfoByContext(BuildContext context) =>
+  PageInfo? getPageInfoByContext(BuildContext context) =>
       BoostContainer.of(context)?.pageInfo;
 
   bool isTopPage(BuildContext context) {

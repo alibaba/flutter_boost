@@ -438,12 +438,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return true;
   }
 
-  Future<bool> _performBackPressed(BoostContainer container, Object result) async {
+  Future<bool> _performBackPressed(BoostContainer? container, Object? result) async {
     if (container?.backPressedHandler != null) {
-      container.backPressedHandler.call();
+      container?.backPressedHandler?.call();
       return true;
     } else {
-      return await container?.navigator?.maybePop(result);
+      return await container?.navigator?.maybePop(result) ?? false;
     }
   }
 

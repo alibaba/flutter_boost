@@ -14,9 +14,9 @@ class BoostContainer extends ChangeNotifier {
     _pages.add(BoostPage.create(pageInfo!));
   }
 
-  static BoostContainer of(BuildContext context) {
+  static BoostContainer? of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>()!;
-    return state?.container;
+    return state.container;
   }
 
   /// The local key
@@ -44,7 +44,7 @@ class BoostContainer extends ChangeNotifier {
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   /// intercept page's backPressed event
-  VoidCallback backPressedHandler;
+  VoidCallback? backPressedHandler;
 
   /// add a [BoostPage] in this container and return its future result
   Future<T?>? addPage<T extends Object?>(BoostPage page) {
