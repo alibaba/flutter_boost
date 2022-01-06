@@ -87,7 +87,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
-        Assert.assertNotNull(flutterView);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
@@ -96,25 +95,29 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onHiddenChanged(boolean hidden) {
-        Assert.assertNotNull(flutterView);
+        super.onHiddenChanged(hidden);
+        // If |onHiddenChanged| method is called before the |onCreateView|,
+        // we just return here.
+        if (flutterView == null) return;
         if (hidden) {
             didFragmentHide();
         } else {
             didFragmentShow();
         }
-        super.onHiddenChanged(hidden);
         if (DEBUG) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        Assert.assertNotNull(flutterView);
+        super.setUserVisibleHint(isVisibleToUser);
+        // If |setUserVisibleHint| method is called before the |onCreateView|,
+        // we just return here.
+        if (flutterView == null) return;
         if (isVisibleToUser) {
             didFragmentShow();
         } else {
             didFragmentHide();
         }
-        super.setUserVisibleHint(isVisibleToUser);
         if (DEBUG) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
     }
 
@@ -172,7 +175,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        Assert.assertNotNull(getFlutterEngine());
         getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
@@ -188,7 +190,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        Assert.assertNotNull(engine);
         engine.getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }

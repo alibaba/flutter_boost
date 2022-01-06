@@ -1,5 +1,4 @@
 import 'boost_operation_queue.dart';
-import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
 

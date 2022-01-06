@@ -1,3 +1,11 @@
+## v3.0-preview.18
+1. 修复hot restart导致的黑屏问题 (#1537)
+2. feat: Android抛出popRoute代理回调 (#1531)
+3. 将运行时异常修改为日志输出 (#1541)
+4. BoostContainer增加backPressedHandler用于自定义返回键功能
+5. 支持通过FlutterEngineProvider创建引擎
+6. 优化example
+
 ## v3.0-preview.17
 1. [Android]修复特定场景下activity泄漏的问题
 2. [Android] 修复FlutterEngine空指针异常 (#1471)

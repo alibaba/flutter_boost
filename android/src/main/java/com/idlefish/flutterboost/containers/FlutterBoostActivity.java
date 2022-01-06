@@ -159,7 +159,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             }
 
             // Attach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
             if (DEBUG) Log.d(TAG, "#performAttach: " + this);
@@ -175,7 +174,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             releasePlatformChannel();
 
             // Detach rendering pipeline.
-            Assert.assertNotNull(flutterView);
             flutterView.detachFromFlutterEngine();
             isAttached = false;
             if (DEBUG) Log.d(TAG, "#performDetach: " + this);
@@ -281,8 +279,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public String getUrl() {
         if (!getIntent().hasExtra(EXTRA_URL)) {
-            throw new RuntimeException("Oops! The activity url are *MISSED*! You should "
-                    + "override the |getUrl|, or set url via CachedEngineIntentBuilder.");
+            Log.e(TAG, "Oops! The activity url are *MISSED*! You should override"
+                    + " the |getUrl|, or set url via |CachedEngineIntentBuilder.url|.");
+            return null;
         }
         return getIntent().getStringExtra(EXTRA_URL);
     }
