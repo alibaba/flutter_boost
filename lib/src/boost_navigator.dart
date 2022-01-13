@@ -57,8 +57,8 @@ class BoostNavigator {
   ///
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
-  bool isFlutterPage(String name) =>
-      routeFactory(RouteSettings(name: name), null) != null;
+  bool isFlutterPage(String name, Object arguments) =>
+      routeFactory(RouteSettings(name: name, arguments: arguments), null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
   /// [arguments] is the param you want to pass in next page
@@ -93,7 +93,7 @@ class BoostNavigator {
       if (state.data is BoostInterceptorOption) {
         assert(state.type == InterceptorResultType.next);
         pushOption = state.data;
-        if (isFlutterPage(pushOption.name)) {
+        if (isFlutterPage(pushOption.name, pushOption.arguments)) {
           return appState.pushWithResult(pushOption.name,
               uniqueId: pushOption.uniqueId,
               arguments: pushOption.arguments,
