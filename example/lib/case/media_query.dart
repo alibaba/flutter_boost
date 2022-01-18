@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter_boost/boost_navigator.dart';
-import 'package:flutter_boost/logger.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class MediaQueryRouteWidget extends StatefulWidget {
   MediaQueryRouteWidget({this.params, this.message, this.uniqueId});
@@ -59,11 +58,11 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
       appBar: AppBar(
         title: Text('media query demo'),
       ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-                height: 500,
+      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+          Widget>[
+        Expanded(
+            flex: 2,
+            child: Container(
                 margin: const EdgeInsets.all(24.0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,32 +71,40 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
                       Text('bottom: ${MediaQuery.of(context).padding.bottom}'),
                       Text('width: ${MediaQuery.of(context).size.width}'),
                       Text('height: ${MediaQuery.of(context).size.height}')
-                    ])),
-            InkWell(
-              child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.yellow,
-                  child: Text(
-                    'Pop with BoostNavigator',
-                    style: TextStyle(fontSize: 22.0, color: Colors.black),
-                  )),
-              onTap: () => BoostNavigator.instance
-                  .pop('I am BoostNavigator from MediaQueryRouteWidget!'),
-            ),
-            InkWell(
-              child: Container(
-                  padding: const EdgeInsets.all(8.0),
-                  margin: const EdgeInsets.all(8.0),
-                  color: Colors.yellow,
-                  child: Text(
-                    'Pop with Navigator',
-                    style: TextStyle(fontSize: 22.0, color: Colors.black),
-                  )),
-              onTap: () => Navigator.of(context)
-                  .pop('I am Navigator from MediaQueryRouteWidget too!'),
-            ),
-          ]),
+                    ]))),
+        Expanded(
+          flex: 1,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'Pop with Navigator',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => Navigator.of(context)
+                      .pop('I am Navigator from MediaQueryRouteWidget too!'),
+                ),
+                InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: Text(
+                        'Pop with BoostNavigator',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.instance
+                      .pop('I am BoostNavigator from MediaQueryRouteWidget!'),
+                ),
+              ]),
+        ),
+      ]),
     );
   }
 }

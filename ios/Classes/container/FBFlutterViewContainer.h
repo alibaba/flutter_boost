@@ -32,6 +32,10 @@
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
 - (void)updateViewportMetrics;
+
+- (void)detachFlutterEngineIfNeeded;
+- (void)notifyWillDealloc;
+
 @end
 
 

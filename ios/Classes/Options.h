@@ -39,6 +39,10 @@
 ///FlutterDartProject数据
 @property (nonatomic, strong) FlutterDartProject* dartObject;
 
+///是否提前预热引擎，如果提前预热引擎，可以减少第一次打开flutter页面的短暂白屏，以及字体大小跳动的现象
+///默认值为YES
+@property (nonatomic, assign) BOOL warmUpEngine;
+
 ///创建一个默认的Options对象
 + (FlutterBoostSetupOptions*)createDefault;
 

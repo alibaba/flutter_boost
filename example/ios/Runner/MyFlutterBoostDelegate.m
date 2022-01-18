@@ -49,9 +49,13 @@
     //拿到当前vc
     FBFlutterViewContainer *vc = (id)self.navigationController.presentedViewController;
     
-    //是否伴随动画
-    BOOL animated = [options.arguments[@"animated"] boolValue];
-    
+    //是否伴随动画,默认是true
+    BOOL animated = true;
+    NSNumber * animatedValue = options.arguments[@"animated"];
+    if(animatedValue){
+        animated = [animatedValue boolValue];
+    }
+
     //present的情况，走dismiss逻辑
     if([vc isKindOfClass:FBFlutterViewContainer.class] && [vc.uniqueIDString isEqual: options.uniqueId]){
         

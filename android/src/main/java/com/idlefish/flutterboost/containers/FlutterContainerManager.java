@@ -1,5 +1,7 @@
 package com.idlefish.flutterboost.containers;
 
+import android.app.Activity;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -33,7 +35,7 @@ public class FlutterContainerManager {
     // onContainerAppeared
     public void activateContainer(String uniqueId, FlutterViewContainer container) {
         if (uniqueId == null || container == null) return;
-        assert (allContainers.containsKey(uniqueId));
+        assert(allContainers.containsKey(uniqueId));
 
         if (activeContainers.contains(container)) {
             activeContainers.remove(container);
@@ -58,9 +60,27 @@ public class FlutterContainerManager {
         return null;
     }
 
+    public boolean isActiveContainer(FlutterViewContainer container) {
+        return activeContainers.contains(container);
+    }
+
     public FlutterViewContainer getTopContainer() {
         if (activeContainers.size() > 0) {
             return activeContainers.getLast();
+        }
+        return null;
+    }
+
+    public FlutterViewContainer getTopActivityContainer() {
+        final int size = activeContainers.size();
+        if (size == 0) {
+            return null;
+        }
+        for (int i = size - 1; i >= 0; i--) {
+            final FlutterViewContainer container = activeContainers.get(i);
+            if (container instanceof Activity) {
+                return container;
+            }
         }
         return null;
     }

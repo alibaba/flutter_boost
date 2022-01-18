@@ -32,8 +32,21 @@
 #define ENGINE [[FlutterBoost instance] engine]
 #define FB_PLUGIN  [FlutterBoostPlugin getPlugin: [[FlutterBoost instance] engine]]
 
-//#define FLUTTER_VIEW ENGINE.flutterViewController.view
-//#define FLUTTER_VC ENGINE.flutterViewController
+
+
+#define weakify(var) ext_keywordify __weak typeof(var) O2OWeak_##var = var;
+#define strongify(var) ext_keywordify \
+_Pragma("clang diagnostic push") \
+_Pragma("clang diagnostic ignored \"-Wshadow\"") \
+__strong typeof(var) var = O2OWeak_##var; \
+_Pragma("clang diagnostic pop")
+#if DEBUG
+#   define ext_keywordify autoreleasepool {}
+#else
+#   define ext_keywordify try {} @catch (...) {}
+#endif
+
+
 
 @interface FlutterViewController (bridgeToviewDidDisappear)
 - (void)flushOngoingTouches;
@@ -62,6 +75,7 @@
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
 @property(nonatomic, assign) BOOL opaque;
+@property (nonatomic, strong) FBVoidCallback removeEventCallback;
 @end
 
 @implementation FBFlutterViewContainer
@@ -128,6 +142,29 @@
         }
     }
     [FB_PLUGIN containerCreated:self];
+    
+    /// 设置这个container对应的从flutter过来的事件监听
+    [self setupEventListeningFromFlutter];
+}
+
+/// 设置这个container对应的从flutter过来的事件监听
+-(void)setupEventListeningFromFlutter{
+    @weakify(self)
+    // 为这个容器注册监听，监听内部的flutterPage往这个容器发的事件
+    self.removeEventCallback = [FlutterBoost.instance addEventListener:^(NSString *name, NSDictionary *arguments) {
+        @strongify(self)
+        //事件名
+        NSString *event = arguments[@"event"];
+        //事件参数
+        NSDictionary *args = arguments[@"args"];
+        
+        if ([event isEqualToString:@"enablePopGesture"]) {
+            // 多page情况下的侧滑动态禁用和启用事件
+            NSNumber *enableNum = args[@"enable"];
+            BOOL enable = [enableNum boolValue];
+            self.navigationController.interactivePopGestureRecognizer.enabled = enable;
+        }
+    } forName:self.uniqueId];
 }
 
 - (NSString *)uniqueIDString {
@@ -136,21 +173,6 @@
 
 - (void)_setup {
     self.uniqueId = [[NSUUID UUID] UUIDString];
-}
-
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    if (parent && _name) {
-        //当VC将要被移动到Parent中的时候，才出发flutter层面的page init
-        FBCommonParams* params = [[FBCommonParams alloc] init];
-        params.pageName = _name;
-        params.arguments = _params;
-        params.uniqueId = self.uniqueId;
-        params.opaque = [[NSNumber alloc]initWithBool:self.opaque];
-        
-        [FB_PLUGIN.flutterApi pushRoute: params completion:^(NSError * e) {
-        }];
-    }
-    [super willMoveToParentViewController:parent];
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
@@ -176,6 +198,9 @@
 
 - (void)dealloc
 {
+    if(self.removeEventCallback != nil){
+        self.removeEventCallback();
+    }
     [NSNotificationCenter.defaultCenter removeObserver:self];
 }
 

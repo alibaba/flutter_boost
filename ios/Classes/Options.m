@@ -33,6 +33,7 @@
     if (self) {
         self.dartEntryPoint = @"main";
         self.initalRoute = @"/";
+        self.warmUpEngine = YES;
     }
     return self;
 }

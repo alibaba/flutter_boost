@@ -1,6 +1,5 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost/boost_navigator.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewExample extends StatefulWidget {
@@ -9,6 +8,10 @@ class WebViewExample extends StatefulWidget {
 }
 
 class WebViewExampleState extends State<WebViewExample> {
+  bool withContainer = true;
+  bool visible = true;
+  final url = 'https://github.com/alibaba/flutter_boost';
+
   @override
   void initState() {
     super.initState();
@@ -22,6 +25,18 @@ class WebViewExampleState extends State<WebViewExample> {
         home: Scaffold(
             appBar: AppBar(
               title: const Text('WebView Example'),
+              actions: <Widget>[
+                Switch(
+                  value: withContainer,
+                  onChanged: (value) {
+                    setState(() {
+                      withContainer = value;
+                    });
+                  },
+                  activeTrackColor: Colors.yellow,
+                  activeColor: Colors.orangeAccent,
+                ),
+              ],
             ),
             body: Container(
                 child: Column(children: <Widget>[
@@ -38,21 +53,87 @@ class WebViewExampleState extends State<WebViewExample> {
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
                     child: Text(
-                      'open flutter page',
-                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      'Open flutter page',
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("flutterPage", withContainer: true),
+                    .push("flutterPage", withContainer: withContainer),
+              ),
+              InkWell(
+                child: Container(
+                    margin: const EdgeInsets.all(10.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'Open another webview',
+                      style: TextStyle(fontSize: 20.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("webview", withContainer: withContainer),
               ),
               Expanded(
-                  child: Container(
-                margin: const EdgeInsets.all(10.0),
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                child: WebView(
-                  initialUrl: 'https://github.com/alibaba/flutter_boost',
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      width: 1080,
+                      height: 50,
+                      margin: const EdgeInsets.all(10.0),
+                      child: MaterialButton(
+                        color: Colors.blue,
+                        child: Text(
+                          'Click me to change something ~~',
+                          style: TextStyle(fontSize: 20.0, color: Colors.white),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            visible = !visible;
+                          });
+                        },
+                      ),
+                    ),
+                    Stack(
+                      children: <Widget>[
+                        if (visible)
+                          Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.blue, width: 5.0)),
+                            width: 400,
+                            height: 300,
+                            margin: const EdgeInsets.all(10.0),
+                            child: WebView(
+                              initialUrl: url,
+                            ),
+                          ),
+                        Opacity(
+                          opacity: visible ? 1.0 : 0.5,
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.red, width: 5.0)),
+                            width: 200,
+                            height: 200,
+                            margin: const EdgeInsets.all(10.0),
+                            child: WebView(
+                              initialUrl: url,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: Colors.blue, width: 5.0)),
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(10.0),
+                          child: WebView(
+                            initialUrl: url,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              )),
+              ),
             ]))));
   }
 }

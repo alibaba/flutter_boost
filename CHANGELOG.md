@@ -1,3 +1,49 @@
+## v3.0-preview.18
+1. 修复hot restart导致的黑屏问题 (#1537)
+2. feat: Android抛出popRoute代理回调 (#1531)
+3. 将运行时异常修改为日志输出 (#1541)
+4. BoostContainer增加backPressedHandler用于自定义返回键功能
+5. 支持通过FlutterEngineProvider创建引擎
+6. 优化example
+
+## v3.0-preview.17
+1. [Android]修复特定场景下activity泄漏的问题
+2. [Android] 修复FlutterEngine空指针异常 (#1471)
+3. [flutter] 提供带有缓存的widget组件 BoostCacheWidget,可以解决在push过程中导致页面rebuild的问题 (#1486)
+4. [iOS] 修改 podspec xcconfig 为 pod_target_xcconfig ，避免修改宿主工程编译配置 (#1507)
+
+## v3.0-preview.16
+1. [Android] 修复特定场景下activity泄漏的问题 (#1444)
+2. [Android] 修复Fragment特定使用场景下的崩溃问题 (#1450)
+3. popUntil使用containers列表不能保证顺序性，在同步popRoute过程会导致出现containers的乱序。需要通过提前clone队列进行保证 (#1462)
+4. [dart] 修复应用启动首次访问flutter页面白屏问题
+
+## v3.0-preview.15
+1. [ios]对外暴露flutter页面资源释放API(#1443)
+2. [Android] 从Native页面切换回FlutterFragment时，恢复Dart视角的system chrome style，解决沉浸式状态栏显示问题
+
+## v3.0-preview.14
+1. [ios] 修复应用置后台后，通过外链接起应用进入Flutter页面,applicationState还处于inActive状态,渲染错误的问题 (#1442)
+
+## v3.0-preview.13
+1. [flutter] 修复在引擎启动完毕但是flutter侧还没有加载完毕的时候进行操作的函数调用的时序问题 (#1415)
+2. [Android] 修复实现了onWillPop回调的Widget不能后退的问题 (#1411)
+
+## v3.0-preview.12
+1. [iOS] 将控制iOS手势的方法收口到BoostChannel作为通用方法，以及在container的show的监听中做手势的动态禁用和启用
+2. [flutter] 更新example以及默认的appBuilder实现，传入builder参数，避免showDialog无法关闭dialog而是关闭页面的操作
+3. [flutter] 修复路由在极端情况下顺序错误的问题
+
+## v3.0-preview.11
+1. [flutter] 让NavigatorExt接管pushNamed方法
+2. [flutter] 增加tab模式的example，删除iOS端无用的生命周期，避免初始化阶段进行push，造成初始化情况下tab白屏问题
+3. [iOS] 提前事件监听的注册时机，以及在删除的时候对block进行判空，避免crash
+
+## v3.0-preview.10
+1. [iOS] 提供引擎预热功能，避免第一次进入flutter页面短暂的白屏/黑屏，以及字体大小跳动的情况
+2. [iOS] 单VC，多flutterPage下，动态控制容器手势侧滑，内部有多page的时候，侧滑将走flutter内部侧滑逻辑，避免多page下侧滑直接带走整个容器的情况
+3. [dart] 更新example代码，表明如何在单容器内跳转拥有跳转动画（比如iOS的push效果）
+
 ## v3.0-preview.9
 1.  [Android] 解决切后台场景下Android Q生命周期回调异常导致透明弹窗背景不正确问题 (#1288)
 2.  [Android] 增加引擎释放接口 (#1291)

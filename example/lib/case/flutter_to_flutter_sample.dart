@@ -18,13 +18,13 @@ class F2FFirstPageState extends State<F2FFirstPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
               child: Text('Open second with native container'),
               onPressed: () {
                 // FlutterBoost.singleton.open("f2f_second");
               },
             ),
-            RaisedButton(
+            ElevatedButton(
               child: Text('Open second without native container'),
               onPressed: () {
                 // FlutterBoost.singleton.openInCurrentContainer("f2f_second");
@@ -55,7 +55,7 @@ class F2FSecondPageState extends State<F2FSecondPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
               child: Text('close'),
               onPressed: () {
                 // FlutterBoostAPI.singleton.close();

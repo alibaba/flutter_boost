@@ -35,10 +35,11 @@ abstract class FlutterRouterApi {
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
   void sendEventToFlutter(CommonParams params);
+  void onBackPressed();
 }
 
 void configurePigeon(PigeonOptions opts) {
-  opts.dartOut = 'lib/messages.dart';
+  opts.dartOut = 'lib/src/messages.dart';
   opts.objcHeaderOut = 'ios/Classes/messages.h';
   opts.objcSourceOut = 'ios/Classes/messages.m';
   opts.objcOptions.prefix = 'FB';
