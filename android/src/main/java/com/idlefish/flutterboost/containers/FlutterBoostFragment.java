@@ -248,8 +248,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
             getActivity().setResult(Activity.RESULT_OK, intent);
         }
-        getActivity().finish();
+        onFinishContainer();
         if (DEBUG) Log.d(TAG, "#finishContainer: " + this);
+    }
+
+    // finish activity container
+    protected void onFinishContainer() {
+        getActivity().finish();
     }
 
     @Override
