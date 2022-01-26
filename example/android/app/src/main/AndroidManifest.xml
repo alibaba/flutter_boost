@@ -18,11 +18,11 @@
          additional functionality it is fine to subclass or reimplement
          FlutterApplication and put your custom class here. -->
     <application
-        android:name="com.idlefish.flutterboost.example.MyApplication"
+        android:name=".MyApplication"
         android:label="flutter_boost_example"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name="com.idlefish.flutterboost.example.MainActivity"
+            android:name=".MainActivity"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
@@ -54,7 +54,7 @@
         </activity>
 
         <activity
-            android:name="com.idlefish.flutterboost.example.tab.TabMainActivity"
+            android:name=".tab.TabMainActivity"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -64,7 +64,7 @@
         </activity>
 
         <activity
-            android:name="com.idlefish.flutterboost.example.tab.TabCustomViewActivity"
+            android:name=".tab.TabCustomViewActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -73,7 +73,7 @@
         </activity>
 
         <activity
-            android:name="com.idlefish.flutterboost.example.FlutterFragmentPageActivity"
+            android:name=".FlutterFragmentPageActivity"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -83,16 +83,30 @@
         </activity>
 
         <activity
-            android:name="com.idlefish.flutterboost.example.NativePageActivity"
+            android:name=".NativePageActivity"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
-            android:name="com.idlefish.flutterboost.example.TransparencyPageActivity"
+            android:name=".TransparencyPageActivity"
             android:theme="@style/TranTheme.Translucente"
             android:configChanges="screenSize|smallestScreenSize|orientation|keyboardHidden"
             android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity
+            android:name=".PerfTestActivity"
+            android:theme="@style/Theme.AppCompat"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http"/>
+            </intent-filter>
         </activity>
 
         <meta-data android:name="flutterEmbedding"

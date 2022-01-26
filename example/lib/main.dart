@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/case/bottom_navigation_bar_demo.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
-import 'package:flutter_boost_example/case/native_view.dart';
+import 'package:flutter_boost_example/case/native_view_demo.dart';
+import 'package:flutter_boost_example/case/platform_view_perf.dart';
 import 'package:flutter_boost_example/case/popUntil.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
@@ -269,7 +271,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
     },
-    'nativeview': (settings, uniqueId) {
+    'platformview/listview': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => PlatformViewPerf());
+    },
+    'platformview/animation': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
     },
@@ -277,6 +283,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => StateRestorationDemo());
+    },
+    'bottom_navigation': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => BottomNavigationPage());
     },
     'system_ui_overlay_style': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

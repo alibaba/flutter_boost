@@ -17,7 +17,9 @@ public class MyApplication extends FlutterApplication {
         FlutterBoostSetupOptions options = new FlutterBoostSetupOptions.Builder().shellArgs(args.toArray(new String[0])).build();
         FlutterBoost.instance().setup(this, new MyFlutterBoostDelegate(), engine->{
             // Register the platform view
-            engine.getPlatformViewsController().getRegistry().registerViewFactory("<platform-view-type>", new NativeViewFactory());
+            engine.getPlatformViewsController().getRegistry().registerViewFactory("<simple-text-view>", new TextViewFactory());
+            engine.getPlatformViewsController().getRegistry().registerViewFactory("<runball-surface>", new RunBallViewFactory());
+            engine.getPlatformViewsController().getRegistry().registerViewFactory("<color-rectangle>", new GlSurfaceFactory());
             engine.getPlugins();
         }, options);
     }
