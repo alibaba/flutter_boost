@@ -29,7 +29,7 @@
     [[FlutterBoost instance] setup:application delegate:delegate callback:^(FlutterEngine *engine) {
         NSObject<FlutterPluginRegistrar>* registrar = [engine registrarForPlugin:@"plugin-name"];
         FLNativeViewFactory* factory = [[FLNativeViewFactory alloc] initWithMessenger:registrar.messenger];
-        [[engine registrarForPlugin:@"<plugin-name>"] registerViewFactory:factory withId:@"<platform-view-type>"];
+        [[engine registrarForPlugin:@"<plugin-name>"] registerViewFactory:factory withId:@"<simple-text-view>"];
     } ];
 
     //下面是自定义option参数的方法
