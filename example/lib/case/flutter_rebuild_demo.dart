@@ -23,7 +23,8 @@ class _FlutterRebuildDemoState extends State<FlutterRebuildDemo> {
               padding: EdgeInsets.all(10),
               child: Text("push with container"),
               onPressed: () {
-                BoostNavigator.instance.push("flutterRebuildPageA", withContainer: true);
+                BoostNavigator.instance
+                    .push("flutterRebuildPageA", withContainer: true);
               },
             ),
             MaterialButton(
@@ -71,7 +72,8 @@ class _FlutterRebuildPageAState extends State<FlutterRebuildPageA> {
               padding: EdgeInsets.all(10),
               child: Text("push with container"),
               onPressed: () {
-                BoostNavigator.instance.push("flutterRebuildPageB", withContainer: true);
+                BoostNavigator.instance
+                    .push("flutterRebuildPageB", withContainer: true);
               },
             ),
             MaterialButton(
@@ -128,7 +130,3 @@ class _FlutterRebuildPageBState extends State<FlutterRebuildPageB> {
     );
   }
 }
-
-
-
-

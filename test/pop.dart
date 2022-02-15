@@ -29,11 +29,11 @@ class _MyAppState extends State<MyApp> {
             return Scaffold(
               body: Center(
                   child: Column(
-                    children: [
-                      Text('mainPage text'),
-                      Text(dataString ?? ''),
-                    ],
-                  )),
+                children: [
+                  Text('mainPage text'),
+                  Text(dataString ?? ''),
+                ],
+              )),
             );
           });
     },
@@ -46,11 +46,11 @@ class _MyAppState extends State<MyApp> {
             return Scaffold(
               body: Center(
                   child: Column(
-                    children: [
-                      Text('secondPage text'),
-                      Text(dataString ?? ''),
-                    ],
-                  )),
+                children: [
+                  Text('secondPage text'),
+                  Text(dataString ?? ''),
+                ],
+              )),
             );
           });
     },
@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-void main(){
+void main() {
   /// push and pop with result test
   testWidgets('push and pop with result test', (tester) async {
     await tester.pumpWidget(

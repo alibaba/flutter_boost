@@ -7,7 +7,8 @@ class BoostCacheWidget extends StatefulWidget {
   final String uniqueId;
   final WidgetBuilder builder;
 
-  const BoostCacheWidget({@required this.uniqueId, @required this.builder, Key key})
+  const BoostCacheWidget(
+      {@required this.uniqueId, @required this.builder, Key key})
       : assert(builder != null),
         assert(uniqueId != null),
         super(key: key);
