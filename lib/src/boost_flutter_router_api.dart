@@ -18,14 +18,14 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   static BoostFlutterRouterApi _instance;
 
   /// Whether the dart env is ready to receive messages from host.
-  bool _isEnvReady = false;
-  bool get isEnvReady => _isEnvReady;
-  set isEnvReady(bool ready) => _isEnvReady = ready;
+  bool isEnvReady = false;
 
   @override
   void pushRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
-      appState.pushContainer(arg.pageName,
+      appState.pushWithInterceptor(
+          arg.pageName, true /* isFromHost */, true /* isFlutterPage */,
+          withContainer: true,
           uniqueId: arg.uniqueId,
           arguments:
               Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
@@ -39,7 +39,6 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
     });
   }
 
-  @override
   void popUntilRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
       appState.popUntil(route: arg.pageName, uniqueId: arg.uniqueId);

@@ -69,31 +69,59 @@ class CustomFlutterBinding extends WidgetsFlutterBinding
 
 class CustomInterceptor1 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor1~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPrePush1~~~, $option');
     // Add extra arguments
     option.arguments['CustomInterceptor1'] = "1";
-    super.onPush(option, handler);
+    super.onPrePush(option, handler);
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush1~~~, $option');
+    handler.next(option);
   }
 }
 
 class CustomInterceptor2 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor2~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPrePush2~~~, $option');
     // Add extra arguments
     option.arguments['CustomInterceptor2'] = "2";
-    // handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    if (option.isFromHost) {
+      handler.next(option);
+    } else {
+      handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    }
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush2~~~, $option');
     handler.next(option);
   }
 }
 
 class CustomInterceptor3 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor3~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    assert(option.isFromHost);
+    Logger.log('CustomInterceptor#onPrePush3~~~, $option');
     // Replace arguments
     option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
+    handler.next(option);
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush3~~~, $option');
     handler.next(option);
   }
 }
@@ -259,6 +287,7 @@ class _MyAppState extends State<MyApp> {
                 uniqueId: uniqueId,
               ));
     },
+
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
     'flutterRebuildDemo': (settings, uniqueId) {
       return MaterialPageRoute(
