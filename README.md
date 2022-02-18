@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-preview.18
+v3.0-release.1
 
 PS：Here for null-safety https://github.com/alibaba/flutter_boost/tree/null-safety
 
@@ -37,7 +37,7 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.18'
+        ref: 'v3.0-release.1'
 ```
 
 

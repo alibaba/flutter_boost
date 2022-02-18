@@ -1,3 +1,14 @@
+## v3.0-release.1
+1.  [ios]增加platform view测试案例 (#1546)
+2. [Android] 在Fragment的使用场景中，onHiddenChanged/setUserVisibleHint可能比onCreateView先调用 (#1456)
+3. [featurePR]使FlutterBoost的FlutterBoostFragment#finishContainer方法在子类可以定制容器关闭逻辑 (#1565)
+4. fix(Android):FlutterBoost开启FlutterBoostFragment页面导致状态栏颜色异常 (#1570)
+5.  拦截器重构： (#1583)
+6. 重命名example_new为example_new_for_ios
+
+Breaking Change
+1. 拦截器重构，具体见 https://github.com/alibaba/flutter_boost/pull/1583
+
 ## v3.0-preview.18
 1. 修复hot restart导致的黑屏问题 (#1537)
 2. feat: Android抛出popRoute代理回调 (#1531)

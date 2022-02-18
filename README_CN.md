@@ -5,7 +5,7 @@
 
 # Release Note
 
-v3.0-preview.18
+v3.0-release.1
 
 PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter_boost/tree/null-safety
 
@@ -35,7 +35,7 @@ PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-preview.18'
+        ref: 'v3.0-release.1'
 ```
 
 # 使用文档
