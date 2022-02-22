@@ -92,10 +92,10 @@ class CustomInterceptor2 extends BoostInterceptor {
     Logger.log('CustomInterceptor#onPrePush2~~~, $option');
     // Add extra arguments
     option.arguments['CustomInterceptor2'] = "2";
-    if (option.isFromHost) {
-      handler.next(option);
-    } else {
+    if (!option.isFromHost && option.name == "interceptor") {
       handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    } else {
+      handler.next(option);
     }
   }
 
@@ -111,7 +111,6 @@ class CustomInterceptor3 extends BoostInterceptor {
   @override
   void onPrePush(
       BoostInterceptorOption option, PushInterceptorHandler handler) {
-    assert(option.isFromHost);
     Logger.log('CustomInterceptor#onPrePush3~~~, $option');
     // Replace arguments
     option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
@@ -154,6 +153,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => ImagePickerPage(title: "xxx"));
+    },
+    'interceptor': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => ImagePickerPage(title: "interceptor"));
     },
     'firstFirst': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

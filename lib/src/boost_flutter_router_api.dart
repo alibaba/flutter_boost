@@ -21,9 +21,9 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   bool isEnvReady = false;
 
   @override
-  void pushRoute(CommonParams arg) {
-    _addInOperationQueueOrExcute(() {
-      appState.pushWithInterceptor(
+  Future<void> pushRoute(CommonParams arg) async {
+    _addInOperationQueueOrExcute(() async {
+      await appState.pushWithInterceptor(
           arg.pageName, true /* isFromHost */, true /* isFlutterPage */,
           withContainer: true,
           uniqueId: arg.uniqueId,
