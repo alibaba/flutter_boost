@@ -294,8 +294,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     public void onContainerAppeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
-        onContainerShow(uniqueId);
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
+            onContainerShow(uniqueId);
+        });
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {

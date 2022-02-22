@@ -161,6 +161,18 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     .push("imagepick", withContainer: withContainer),
               ),
               InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'You can not open this page',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("interceptor", withContainer: withContainer),
+              ),
+              InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
