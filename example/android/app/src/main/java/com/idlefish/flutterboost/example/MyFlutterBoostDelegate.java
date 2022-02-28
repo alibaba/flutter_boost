@@ -36,7 +36,7 @@ public class MyFlutterBoostDelegate implements FlutterBoostDelegate {
     @Override
     public boolean popRoute(FlutterBoostRouteOptions options) {
         //自定义popRoute处理逻辑,如果不想走默认处理逻辑返回true进行拦截
-        Toast.makeText(FlutterBoost.instance().currentActivity(), "自定义popRoute处理逻辑", Toast.LENGTH_SHORT).show();
+        Toast.makeText(FlutterBoost.instance().currentActivity().getApplicationContext(), "自定义popRoute处理逻辑", Toast.LENGTH_SHORT).show();
         return false;
     }
 }
