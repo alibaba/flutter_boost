@@ -13,7 +13,7 @@ class AnimationDemo extends StatefulWidget {
 
 class _AnimationDemoState extends State<AnimationDemo>
     with TickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   //Here we configure the animation controller
   void initState() {

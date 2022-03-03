@@ -75,7 +75,7 @@ class CustomInterceptor1 extends BoostInterceptor {
       BoostInterceptorOption option, PushInterceptorHandler handler) {
     Logger.log('CustomInterceptor#onPrePush1~~~, $option');
     // Add extra arguments
-    option.arguments['CustomInterceptor1'] = "1";
+    option.arguments?['CustomInterceptor1'] = "1";
     super.onPrePush(option, handler);
   }
 
@@ -93,8 +93,8 @@ class CustomInterceptor2 extends BoostInterceptor {
       BoostInterceptorOption option, PushInterceptorHandler handler) {
     Logger.log('CustomInterceptor#onPrePush2~~~, $option');
     // Add extra arguments
-    option.arguments['CustomInterceptor2'] = "2";
-    if (!option.isFromHost && option.name == "interceptor") {
+    option.arguments?['CustomInterceptor2'] = "2";
+    if (!(option.isFromHost ?? false) && option.name == "interceptor") {
       handler.resolve(<String, dynamic>{'result': 'xxxx'});
     } else {
       handler.next(option);

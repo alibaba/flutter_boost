@@ -51,7 +51,6 @@ class NativeView extends StatelessWidget {
         }
         // Virtual Display
         return AndroidView(
-          renderType: PlatformViewRenderType.penetratedDisplay,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,
           creationParams: creationParams,

@@ -7,7 +7,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   factory BoostFlutterRouterApi(FlutterBoostAppState appState) {
     if (_instance == null) {
       _instance = BoostFlutterRouterApi._(appState);
-      FlutterRouterApi.setup(_instance!);
+      FlutterRouterApi.setup(_instance);
     }
     return _instance!;
   }
@@ -28,7 +28,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
           withContainer: true,
           uniqueId: arg.uniqueId,
           arguments:
-          Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
+              Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
     });
   }
 
@@ -54,7 +54,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   @override
   void removeRoute(CommonParams arg) {
     _addInOperationQueueOrExcute(() {
-      appState.remove(arg.uniqueId ?? "");
+      appState.remove(arg.uniqueId);
     });
   }
 

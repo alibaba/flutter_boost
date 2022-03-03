@@ -77,7 +77,7 @@ class _MainPageState extends State<MainPage> {
       Model("open native page", () {
         BoostNavigator.instance.push("homePage", arguments: {
           'data': _controller.text
-        }).then((value) => showTipIfNeeded(value.toString()));
+        }).then((value) => showTipIfNeeded(value?.toString() ?? ""));
       }),
       Model("return to native page with data", () {
         Map<String, Object> result = {'data': _controller.text};
@@ -88,18 +88,18 @@ class _MainPageState extends State<MainPage> {
             withContainer: withContainer.value,
             arguments: {
               'data': _controller.text
-            }).then((value) => showTipIfNeeded(value.toString()));
+            }).then(((value) => showTipIfNeeded(value?.toString() ?? "")));
       }),
       Model("open flutter simple page", () {
         BoostNavigator.instance.push("simplePage",
             withContainer: withContainer.value,
             arguments: {
               'data': _controller.text
-            }).then((value) => showTipIfNeeded(value.toString()));
+            }).then(((value) => showTipIfNeeded(value?.toString() ?? "")));
       }),
       Model("push with flutter Navigator", () {
         Navigator.of(context)
-            .pushNamed('simplePage', arguments: {'data': _controller.text});
+            .pushNamed('simplePage', arguments: {'data': _controller.text}).then(((value) => showTipIfNeeded(value?.toString() ?? "")));
       }),
       Model("show dialog", () {
         showDialog(
@@ -257,9 +257,9 @@ class _MainPageState extends State<MainPage> {
           ),
           ValueListenableBuilder(
             valueListenable: withContainer,
-            builder: (context, value, child) {
+            builder: (BuildContext context, dynamic value, Widget? child) {
               return CupertinoSwitch(
-                  value: value as bool,
+                  value: value,
                   onChanged: (newValue) {
                     withContainer.value = newValue;
                   });

@@ -3,7 +3,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io' show Platform;
 
 class BottomNavigationPage extends StatefulWidget {
-  const BottomNavigationPage({Key key}) : super(key: key);
+  const BottomNavigationPage({Key? key}) : super(key: key);
 
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
@@ -72,7 +72,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 }
 
 class Test1 extends StatelessWidget {
-  const Test1({Key key}) : super(key: key);
+  const Test1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class Test1 extends StatelessWidget {
 }
 
 class Test2 extends StatelessWidget {
-  const Test2({Key key}) : super(key: key);
+  const Test2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +96,7 @@ class Test2 extends StatelessWidget {
 }
 
 class Test3 extends StatelessWidget {
-  const Test3({Key key}) : super(key: key);
+  const Test3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -23,7 +23,7 @@ enum BoostSpecificEntryRefreshMode {
 
 class ContainerOverlayEntry extends OverlayEntry {
   ContainerOverlayEntry(BoostContainer container)
-      : containerUniqueId =  container.pageInfo!.uniqueId,
+      : containerUniqueId = container.pageInfo.uniqueId,
         super(
             builder: (ctx) => BoostContainerWidget(container: container),
             opaque: true,
@@ -81,7 +81,7 @@ class ContainerOverlay {
       case BoostSpecificEntryRefreshMode.add:
         // If there is an existing ContainerOverlayEntry in the list,we do nothing
         final ContainerOverlayEntry? existingEntry =
-          _findExistingEntry(container: container);
+            _findExistingEntry(container: container);
         if (existingEntry != null) {
           return;
         }
@@ -95,7 +95,7 @@ class ContainerOverlay {
         if (_lastEntries.isNotEmpty) {
           //Find the entry matching the container
           final entryToRemove = _lastEntries.singleWhere((element) {
-            return element.containerUniqueId == container.pageInfo!.uniqueId;
+            return element.containerUniqueId == container.pageInfo.uniqueId;
           });
 
           //remove from the list and overlay
@@ -109,7 +109,7 @@ class ContainerOverlay {
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
         final ContainerOverlayEntry? existingEntry =
-          _findExistingEntry(container: container);
+            _findExistingEntry(container: container);
 
         if (existingEntry == null) {
           /// If there is no entry in the list,we add it in list
@@ -134,6 +134,6 @@ class ContainerOverlay {
       {required BoostContainer container}) {
     assert(container != null);
     return _lastEntries.singleWhereOrNull(
-            (element) => element.containerUniqueId == container.pageInfo!.uniqueId);
+        (element) => element.containerUniqueId == container.pageInfo.uniqueId);
   }
 }

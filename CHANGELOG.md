@@ -1,4 +1,4 @@
-## v3.0-release.1
+## v3.0-null-safety-release.1
 1.  [ios]增加platform view测试案例 (#1546)
 2. [Android] 在Fragment的使用场景中，onHiddenChanged/setUserVisibleHint可能比onCreateView先调用 (#1456)
 3. [featurePR]使FlutterBoost的FlutterBoostFragment#finishContainer方法在子类可以定制容器关闭逻辑 (#1565)

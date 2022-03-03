@@ -8,14 +8,14 @@ import 'page_visibility.dart';
 /// Observer for Container
 mixin BoostLifecycleObserver {
   void onContainerDidPush(
-      BoostContainer container, BoostContainer previousContainer) {}
+      BoostContainer container, BoostContainer? previousContainer) {}
 
-  void onContainerDidShow(BoostContainer? container) {}
+  void onContainerDidShow(BoostContainer container) {}
 
   void onContainerDidHide(BoostContainer? container) {}
 
   void onContainerDidPop(
-      BoostContainer container, BoostContainer previousContainer) {}
+      BoostContainer container, BoostContainer? previousContainer) {}
 
   void onRouteDidPush(Route<dynamic> route, Route<dynamic> previousRoute) {}
 
@@ -63,7 +63,7 @@ class BoostLifecycleBinding {
   }
 
   void containerDidPush(
-      BoostContainer container, BoostContainer previousContainer) {
+      BoostContainer container, BoostContainer? previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
     PageVisibilityBinding.instance
         .dispatchPagePushEvent(container.topPage.route);
@@ -75,12 +75,12 @@ class BoostLifecycleBinding {
   }
 
   void containerDidPop(
-      BoostContainer container, BoostContainer previousContainer) {
+      BoostContainer container, BoostContainer? previousContainer) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPop');
 
     // When container pop,remove the id from set to avoid
     // this id still remain in the set
-    final id = container.pageInfo!.uniqueId;
+    final id = container.pageInfo.uniqueId;
     _hasShownPageIds.remove(id);
 
     PageVisibilityBinding.instance
@@ -99,18 +99,18 @@ class BoostLifecycleBinding {
     ///And change the pop gesture in this container
     if (container.pages.length >= 2) {
       BoostChannel.instance
-          .disablePopGesture(containerId: container.pageInfo?.uniqueId ?? "");
+          .disablePopGesture(containerId: container.pageInfo.uniqueId!);
     } else {
       BoostChannel.instance
-          .enablePopGesture(containerId: container.pageInfo?.uniqueId ?? "");
+          .enablePopGesture(containerId: container.pageInfo.uniqueId!);
     }
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
 
-    final id = container.pageInfo?.uniqueId ?? "";
+    final id = container.pageInfo.uniqueId;
     assert(id != null);
     if (!_hasShownPageIds.contains(id)) {
-      _hasShownPageIds.add(id);
+      _hasShownPageIds.add(id!);
 
       // This case indicates it is the first time that this container show
       // So we should dispatch event using
@@ -132,7 +132,7 @@ class BoostLifecycleBinding {
   void containerDidHide(BoostContainer? container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
-        .dispatchPageHideEvent(container?.topPage.route);
+        .dispatchPageHideEvent(container?.topPage?.route);
     if (_observerList != null && _observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidHide(container);

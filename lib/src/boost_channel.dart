@@ -37,14 +37,15 @@ class BoostChannel {
   void sendEventToNative(String key, Map args) {
     assert(key != null);
 
+
     var params = CommonParams()
       ..key = key
-      ..arguments = Map<String, dynamic>.from(args);
+      ..arguments = args;
     _appState!.nativeRouterApi!.sendEventToNative(params);
   }
 
   /// enable iOS native pop gesture for container matching [containerId]
-  void enablePopGesture({required String containerId}){
+  void enablePopGesture({required String containerId}) {
     assert(containerId != null && containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',
@@ -53,7 +54,7 @@ class BoostChannel {
   }
 
   /// disable iOS native pop gesture for container matching [containerId]
-  void disablePopGesture({required String containerId}){
+  void disablePopGesture({required String containerId}) {
     assert(containerId != null && containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',

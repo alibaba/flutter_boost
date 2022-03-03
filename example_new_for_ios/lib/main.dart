@@ -22,7 +22,7 @@ class CustomFlutterBinding extends WidgetsFlutterBinding
     with BoostFlutterBinding {}
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -45,8 +45,8 @@ class _MyAppState extends State<MyApp> {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments ?? {};
-            String data = map['data'] ?? '';
+            Map<String, dynamic> map = settings.arguments as Map<String, dynamic>;
+            String data = map['data'] as String? ?? '';
             return MainPage(
               data: data,
             );
@@ -54,13 +54,15 @@ class _MyAppState extends State<MyApp> {
     },
 
     'simplePage': (settings, uniqueId) {
-      Map<String, Object> map = settings.arguments ?? {};
-      String data = map['data'] ?? '';
       return CupertinoPageRoute(
         settings: settings,
-        builder: (_) => SimplePage(
-          data: data,
-        ),
+        builder: (_) {
+          Map<String, dynamic> map = settings.arguments as Map<String, dynamic>;
+          String data = map['data'] as String? ?? '';
+          return SimplePage(
+            data: data,
+          );
+        },
       );
     },
     'tab1': (settings, uniqueId) {
@@ -121,8 +123,8 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
+  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+    FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }
@@ -151,9 +153,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class TabPage extends StatelessWidget {
-  final String title;
-  final Color color;
-  const TabPage({Key key, this.title, this.color}) : super(key: key);
+  final String? title;
+  final Color? color;
+  const TabPage({Key? key, this.title, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
