@@ -7,37 +7,37 @@ class AppLifecycleObserver with GlobalPageVisibilityObserver {
   @override
   void onBackground(Route route) {
     super.onBackground(route);
-    print("AppLifecycleObserver - ${route.settings.name} - onBackground");
+    Logger.log("AppLifecycleObserver - ${route.settings.name} - onBackground");
   }
 
   @override
   void onForeground(Route route) {
     super.onForeground(route);
-    print("AppLifecycleObserver ${route.settings.name} - onForground");
+    Logger.log("AppLifecycleObserver ${route.settings.name} - onForground");
   }
 
   @override
   void onPagePush(Route route) {
     super.onPagePush(route);
-    print("AppLifecycleObserver - ${route.settings.name}- onPagePush");
+    Logger.log("AppLifecycleObserver - ${route.settings.name}- onPagePush");
   }
 
   @override
   void onPagePop(Route route) {
     super.onPagePop(route);
-    print("AppLifecycleObserver - ${route.settings.name}- onPagePop");
+    Logger.log("AppLifecycleObserver - ${route.settings.name}- onPagePop");
   }
 
   @override
   void onPageHide(Route route) {
     super.onPageHide(route);
-    print("AppLifecycleObserver - ${route.settings.name}- onPageHide");
+    Logger.log("AppLifecycleObserver - ${route.settings.name}- onPageHide");
   }
 
   @override
   void onPageShow(Route route) {
     super.onPageShow(route);
-    print("AppLifecycleObserver - ${route.settings.name}- onPageShow");
+    Logger.log("AppLifecycleObserver - ${route.settings.name}- onPageShow");
   }
 }
 
@@ -54,25 +54,25 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
   @override
   void onBackground() {
     super.onBackground();
-    print("LifecycleTestPage - onBackground");
+    Logger.log("LifecycleTestPage - onBackground");
   }
 
   @override
   void onForeground() {
     super.onForeground();
-    print("LifecycleTestPage - onForeground");
+    Logger.log("LifecycleTestPage - onForeground");
   }
 
   @override
   void onPageHide() {
     super.onPageHide();
-    print("LifecycleTestPage - onPageHide");
+    Logger.log("LifecycleTestPage - onPageHide");
   }
 
   @override
   void onPageShow() {
     super.onPageShow();
-    print("LifecycleTestPage - onPageShow");
+    Logger.log("LifecycleTestPage - onPageShow");
   }
 
   @override
@@ -101,7 +101,7 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CupertinoNavigationBar(
-        middle: Text('Lifecycle page'),
+        middle: const Text('Lifecycle page'),
         leading: CupertinoNavigationBarBackButton(
           onPressed: () {
             BoostNavigator.instance.pop();
@@ -112,10 +112,11 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('simple lifecycle test page', style: TextStyle(fontSize: 24)),
+            const Text('simple lifecycle test page',
+                style: TextStyle(fontSize: 24)),
             const SizedBox(height: 40),
             CupertinoButton.filled(
-                child: Text('push simple page'),
+                child: const Text('push simple page'),
                 onPressed: () {
                   BoostNavigator.instance
                       .push("simplePage", withContainer: true);

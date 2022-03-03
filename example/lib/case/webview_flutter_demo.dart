@@ -10,7 +10,7 @@ class WebViewExample extends StatefulWidget {
 class WebViewExampleState extends State<WebViewExample> {
   bool withContainer = true;
   bool visible = true;
-  final url = 'https://github.com/alibaba/flutter_boost';
+  final url = 'https://flutter.dev';
 
   @override
   void initState() {

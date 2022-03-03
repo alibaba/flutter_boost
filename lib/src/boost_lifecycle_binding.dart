@@ -40,7 +40,7 @@ class BoostLifecycleBinding {
   /// callback event when showing on screen first time.
   /// Because it is not be added to [PageVisibilityBinding] before
   /// dispatching [containerDidShow] event
-  Set<String> _hasShownPageIds = <String>{};
+  final Set<String> _hasShownPageIds = <String>{};
 
   int getShownPageSize() {
     return _hasShownPageIds.length;

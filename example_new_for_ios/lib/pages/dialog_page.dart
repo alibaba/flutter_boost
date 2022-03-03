@@ -21,12 +21,11 @@ class _DialogPageState extends State<DialogPage> {
         decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: const Radius.circular(30))),
+                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
         child: Material(
           child: CupertinoButton(
               color: Colors.deepPurpleAccent,
-              child: Text('点击退出弹窗'),
+              child: const Text('点击退出弹窗'),
               onPressed: () {
                 //这里退出依然要用Boost的导航器，而不是官方的Navigator
                 BoostNavigator.instance.pop();

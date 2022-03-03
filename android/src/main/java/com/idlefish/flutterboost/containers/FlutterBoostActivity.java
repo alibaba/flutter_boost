@@ -47,6 +47,10 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        final FlutterContainerManager containerManager = FlutterContainerManager.instance();
+        // try to detach prevous container from the engine.
+        FlutterViewContainer top = containerManager.getTopContainer();
+        if (top != null && top != this) top.detachFromEngineIfNeeded();
         super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());

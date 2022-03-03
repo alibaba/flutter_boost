@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/case/bottom_navigation_bar_demo.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
-import 'package:flutter_boost_example/case/native_view.dart';
+import 'package:flutter_boost_example/case/native_view_demo.dart';
+import 'package:flutter_boost_example/case/platform_view_perf.dart';
 import 'package:flutter_boost_example/case/popUntil.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
@@ -69,31 +71,58 @@ class CustomFlutterBinding extends WidgetsFlutterBinding
 
 class CustomInterceptor1 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor1~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPrePush1~~~, $option');
     // Add extra arguments
     option.arguments['CustomInterceptor1'] = "1";
-    super.onPush(option, handler);
+    super.onPrePush(option, handler);
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush1~~~, $option');
+    handler.next(option);
   }
 }
 
 class CustomInterceptor2 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor2~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPrePush2~~~, $option');
     // Add extra arguments
     option.arguments['CustomInterceptor2'] = "2";
-    // handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    if (!option.isFromHost && option.name == "interceptor") {
+      handler.resolve(<String, dynamic>{'result': 'xxxx'});
+    } else {
+      handler.next(option);
+    }
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush2~~~, $option');
     handler.next(option);
   }
 }
 
 class CustomInterceptor3 extends BoostInterceptor {
   @override
-  void onPush(BoostInterceptorOption option, PushInterceptorHandler handler) {
-    Logger.log('CustomInterceptor3~~~, $option');
+  void onPrePush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPrePush3~~~, $option');
     // Replace arguments
     option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
+    handler.next(option);
+  }
+
+  @override
+  void onPostPush(
+      BoostInterceptorOption option, PushInterceptorHandler handler) {
+    Logger.log('CustomInterceptor#onPostPush3~~~, $option');
     handler.next(option);
   }
 }
@@ -127,6 +156,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => ImagePickerPage(title: "xxx"));
+    },
+    'interceptor': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => ImagePickerPage(title: "interceptor"));
     },
     'firstFirst': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -239,7 +273,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
     },
-    'nativeview': (settings, uniqueId) {
+    'platformview/listview': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => PlatformViewPerf());
+    },
+    'platformview/animation': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
     },
@@ -247,6 +285,11 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => StateRestorationDemo());
+    },
+    'bottom_navigation': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => BottomNavigationPage());
     },
     'system_ui_overlay_style': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -261,6 +304,7 @@ class _MyAppState extends State<MyApp> {
             uniqueId: uniqueId,
           ));
     },
+
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
     'flutterRebuildDemo': (settings, uniqueId) {
       return MaterialPageRoute(

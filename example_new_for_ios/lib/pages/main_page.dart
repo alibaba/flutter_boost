@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
@@ -20,7 +19,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
 
   GlobalKey<ScaffoldState> key = GlobalKey();
 
@@ -47,7 +46,7 @@ class _MainPageState extends State<MainPage> {
             decoration: BoxDecoration(
                 color: Colors.red, borderRadius: BorderRadius.circular(4)),
             child: Text('这是native传来的参数：${arguments.toString()}',
-                style: TextStyle(color: Colors.white)),
+                style: const TextStyle(color: Colors.white)),
           ),
         ));
       });
@@ -99,7 +98,8 @@ class _MainPageState extends State<MainPage> {
             }).then((value) => showTipIfNeeded(value.toString()));
       }),
       Model("push with flutter Navigator", () {
-        Navigator.of(context).pushNamed('simplePage', arguments: {'data': _controller.text});
+        Navigator.of(context)
+            .pushNamed('simplePage', arguments: {'data': _controller.text});
       }),
       Model("show dialog", () {
         showDialog(
@@ -114,7 +114,10 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.center,
                     height: 100,
                     width: 100,
-                    child: Material(child: Text('this is a dialog',style:TextStyle(fontSize: 25)),),
+                    child: const Material(
+                      child: Text('this is a dialog',
+                          style: TextStyle(fontSize: 25)),
+                    ),
                     color: Colors.redAccent,
                   ),
                 ),
@@ -164,7 +167,7 @@ class _MainPageState extends State<MainPage> {
               BoostNavigator.instance.pop();
             },
           ),
-          middle: Text('FlutterBoost Example'),
+          middle: const Text('FlutterBoost Example'),
         ),
         bottomNavigationBar: _buildBottomBar(),
         body: CustomScrollView(
@@ -176,7 +179,7 @@ class _MainPageState extends State<MainPage> {
             SliverToBoxAdapter(
                 child: Center(
               child: Text('Data String is: ${widget.data}',
-                  style: TextStyle(fontSize: 30)),
+                  style: const TextStyle(fontSize: 30)),
             )),
             emptyBox(0, 30),
             SliverList(
@@ -204,12 +207,12 @@ class _MainPageState extends State<MainPage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: CupertinoTextField(
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           controller: _controller,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5), color: Colors.amber),
           placeholder: 'input data ',
-          placeholderStyle: TextStyle(color: Colors.black38),
+          placeholderStyle: const TextStyle(color: Colors.black38),
         ),
       ),
     );
@@ -222,7 +225,7 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.symmetric(vertical: 15),
         onPressed: model.onTap,
         child: Text(model.title,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 20,
                 color: Colors.white,
                 fontWeight: FontWeight.w500)),
@@ -248,7 +251,7 @@ class _MainPageState extends State<MainPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'with container',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),

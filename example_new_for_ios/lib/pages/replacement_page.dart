@@ -15,7 +15,7 @@ class _ReplacementPageState extends State<ReplacementPage> {
     return Scaffold(
       body: Center(
         child: CupertinoButton.filled(
-            child: Text('back'),
+            child: const Text('back'),
             onPressed: () {
               BoostNavigator.instance.pop();
             }),

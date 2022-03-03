@@ -12,10 +12,12 @@ import io.flutter.plugin.platform.PlatformView;
 import java.util.Map;
 import java.util.Random;
 
-class NativeView implements PlatformView {
+class SimpleTextView implements PlatformView {
    @NonNull private final TextView textView;
+   private int id;
 
-    NativeView(@NonNull Context context, int id, @Nullable Map<String, Object> creationParams) {
+   SimpleTextView(@NonNull Context context, int id, @Nullable Map<String, Object> creationParams) {
+        this.id = id;
         textView = new TextView(context);
         textView.setTextSize(12);
 
@@ -29,8 +31,9 @@ class NativeView implements PlatformView {
         for (Map.Entry<String, Object> entry : creationParams.entrySet()) {
             sb.append(entry.getKey() + ": " + entry.getValue().toString()).append("\n");
         }
+        textView.setTextColor(color ^ 0x00ffffff);
         textView.setText(sb.toString());
-        Log.e("xlog", "#NativeView: <ctor> " + sb.toString());
+        Log.e("xlog", "#SimpleTextView: <ctor> " + sb.toString());
     }
 
     @NonNull
@@ -41,16 +44,16 @@ class NativeView implements PlatformView {
 
     @Override
     public void onFlutterViewAttached(@NonNull View flutterView) {
-        Log.e("xlog", "#NativeView#onFlutterViewAttached, " + flutterView);
+        Log.e("xlog", "#SimpleTextView#onFlutterViewAttached, " + flutterView);
     }
 
     @Override
     public void onFlutterViewDetached() {
-        Log.e("xlog", "#NativeView#onFlutterViewDetached");
+        Log.e("xlog", "#SimpleTextView#onFlutterViewDetached");
     }
 
     @Override
     public void dispose() {
-        Log.e("xlog", "#NativeView#dispose~~");
+        Log.e("xlog", "#SimpleTextView#dispose~~ id=" + id);
     }
 }

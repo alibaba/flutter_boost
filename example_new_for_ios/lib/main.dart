@@ -14,13 +14,16 @@ void main() {
 
   ///这里的CustomFlutterBinding调用务必不可缺少，用于控制Boost状态的resume和pause
   CustomFlutterBinding();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 ///创建一个自定义的Binding，继承和with的关系如下，里面什么都不用写
-class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {}
+class CustomFlutterBinding extends WidgetsFlutterBinding
+    with BoostFlutterBinding {}
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -42,11 +45,8 @@ class _MyAppState extends State<MyApp> {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            var map = settings.arguments;
-            String data = "";
-            if (map is Map) {
-              data = map['data'] ?? "";
-            }
+            Map<String, Object> map = settings.arguments ?? {};
+            String data = map['data'] ?? '';
             return MainPage(
               data: data,
             );
@@ -54,11 +54,8 @@ class _MyAppState extends State<MyApp> {
     },
 
     'simplePage': (settings, uniqueId) {
-      var map = settings.arguments;
-      String data = "";
-      if (map is Map) {
-        data = map['data'] ?? "";
-      }
+      Map<String, Object> map = settings.arguments ?? {};
+      String data = map['data'] ?? '';
       return CupertinoPageRoute(
         settings: settings,
         builder: (_) => SimplePage(
@@ -69,34 +66,44 @@ class _MyAppState extends State<MyApp> {
     'tab1': (settings, uniqueId) {
       return CupertinoPageRoute(
         settings: settings,
-        builder: (_) => TabPage(color: Colors.blue,title: 'Tab1',),
+        builder: (_) => const TabPage(
+          color: Colors.blue,
+          title: 'Tab1',
+        ),
       );
     },
     'tab2': (settings, uniqueId) {
       return CupertinoPageRoute(
         settings: settings,
-        builder: (_) => TabPage(color: Colors.red,title: 'Tab2',),
+        builder: (_) => const TabPage(
+          color: Colors.red,
+          title: 'Tab2',
+        ),
       );
     },
     'tab3': (settings, uniqueId) {
       return CupertinoPageRoute(
         settings: settings,
-        builder: (_) => TabPage(color: Colors.orange,title: 'Tab3',),
+        builder: (_) => const TabPage(
+          color: Colors.orange,
+          title: 'Tab3',
+        ),
       );
     },
+
     ///生命周期例子页面
     'lifecyclePage': (settings, uniqueId) {
       return CupertinoPageRoute(
           settings: settings,
           builder: (ctx) {
-            return LifecycleTestPage();
+            return const LifecycleTestPage();
           });
     },
     'replacementPage': (settings, uniqueId) {
       return CupertinoPageRoute(
           settings: settings,
           builder: (ctx) {
-            return ReplacementPage();
+            return const ReplacementPage();
           });
     },
 
@@ -110,12 +117,12 @@ class _MyAppState extends State<MyApp> {
           ///背景蒙版颜色
           barrierColor: Colors.black12,
           settings: settings,
-          pageBuilder: (_, __, ___) => DialogPage());
+          pageBuilder: (_, __, ___) => const DialogPage());
     },
   };
 
-  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
-    FlutterBoostRouteFactory? func = routerMap[settings.name!];
+  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
+    FlutterBoostRouteFactory func = routerMap[settings.name];
     if (func == null) {
       return null;
     }
@@ -126,6 +133,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: home,
       debugShowCheckedModeBanner: true,
+
       ///必须加上builder参数，否则showDialog等会出问题
       builder: (_, __) {
         return home;
@@ -142,17 +150,18 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-
 class TabPage extends StatelessWidget {
   final String title;
   final Color color;
-  const TabPage({required this.title, required this.color});
+  const TabPage({Key key, this.title, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:color,
-      body: Center(child: Text(title, style:TextStyle(fontSize: 25)),),
+      backgroundColor: color,
+      body: Center(
+        child: Text(title ?? '', style: const TextStyle(fontSize: 25)),
+      ),
     );
   }
 }
