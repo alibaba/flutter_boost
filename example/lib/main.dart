@@ -8,6 +8,7 @@ import 'package:flutter_boost_example/case/native_view_demo.dart';
 import 'package:flutter_boost_example/case/platform_view_perf.dart';
 import 'package:flutter_boost_example/case/popUntil.dart';
 import 'package:flutter_boost_example/case/return_data.dart';
+import 'package:flutter_boost_example/case/simple_webview_demo.dart';
 import 'package:flutter_boost_example/case/selection_screen.dart';
 import 'package:flutter_boost_example/case/state_restoration.dart';
 import 'package:flutter_boost_example/case/system_ui_overlay_style.dart';
@@ -278,6 +279,10 @@ class _MyAppState extends State<MyApp> {
     'platformview/animation': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
+    },
+    'platformview/simplewebview': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => SimpleWebView());
     },
     'state_restoration': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
