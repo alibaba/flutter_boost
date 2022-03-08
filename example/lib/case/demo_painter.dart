@@ -1,4 +1,5 @@
 import 'dart:ui';
+import "dart:math" show pi;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -9,7 +10,6 @@ import 'package:flutter/services.dart';
 
 class DemoPainter extends CustomPainter {
   final double angle;
-  final double pi = 3.1415926;
 
   DemoPainter({this.angle = 0});
 

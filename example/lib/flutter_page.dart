@@ -243,6 +243,19 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: Text(
+                      'Simple WebView Test',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance.push(
+                    "platformview/simplewebview",
+                    withContainer: withContainer),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
                       'Bottom Navigation Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
