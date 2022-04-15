@@ -40,11 +40,6 @@ flutter_boost:
         ref: 'v3.0-release.1'
 ```
 
-
-
-# Boost  Integration
-
-
 # 使用文档
 
 - [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/master/docs/install.md)
