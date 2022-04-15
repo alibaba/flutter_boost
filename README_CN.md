@@ -2,7 +2,6 @@
   <img src="flutter_boost.png">
 </p>
 
-
 # Release Note
 
 v3.0-release.1
@@ -15,12 +14,11 @@ PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter
 - 3.简化接口
 - 4.双端接口设计统一
 - 5.解决了top issue
-- 6.android不需要区分androidx 和support
+- 6.android不需要区分androidx和support
 
 # FlutterBoost
 
-新一代Flutter-Native混合解决方案。 FlutterBoost是一个Flutter插件，它可以轻松地为现有原生应用程序提供Flutter混合集成方案。FlutterBoost的理念是将Flutter像Webview那样来使用。在现有应用程序中同时管理Native页面和Flutter页面并非易事。 FlutterBoost帮你处理页面的映射和跳转，你只需关心页面的名字和参数即可（通常可以是URL）。
-
+新一代Flutter-Native混合解决方案。FlutterBoost是一个Flutter插件，它可以轻松地为现有原生应用程序提供Flutter混合集成方案。FlutterBoost的理念是将Flutter像Webview那样来使用。在现有应用程序中同时管理Native页面和Flutter页面并非易事。 FlutterBoost帮你处理页面的映射和跳转，你只需关心页面的名字和参数即可（通常可以是URL）。
 
 # 前置条件
 
@@ -46,23 +44,22 @@ flutter_boost:
 - [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/master/docs/event.md)
 
 # 建设文档
+
 - [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md)
 - [如何向我们提PR](https://github.com/alibaba/flutter_boost/blob/master/docs/pr.md)
-
 
 # FAQ
 
 请阅读这篇文章:
 <a href="Frequently Asked Question.md">FAQ</a>
 
-
 # 许可证
+
 该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE.md]（LICENSE.md）文件
 <a name="Acknowledgments"> </a>
 
-
-
 ## 关于我们
+
 阿里巴巴-闲鱼技术是国内最早也是最大规模线上运行Flutter的团队。
 
 我们在公众号中为你精选了Flutter独家干货，全面而深入。
