@@ -88,7 +88,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && !top.isPausing()) {
+          getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
@@ -140,7 +146,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_PAUSE;
 
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        if (top != null && !top.isPausing()) {
+          getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
@@ -219,7 +230,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         // Get engine before |super.onDestroy| callback.
         FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
-        engine.getLifecycleChannel().appIsResumed(); // Go after |super.onDestroy|.
+
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && !top.isPausing()) {
+          engine.getLifecycleChannel().appIsResumed(); // Go after |super.onDestroy|.
+        }
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }

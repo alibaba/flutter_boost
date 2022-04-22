@@ -172,7 +172,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         stage = LifecycleStage.ON_PAUSE;
         didFragmentHide();
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        if (top != null && !top.isPausing()) {
+          getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
         if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
     }
 
@@ -180,7 +186,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && !top.isPausing()) {
+          getFlutterEngine().getLifecycleChannel().appIsResumed();
+        }
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
@@ -195,7 +207,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        engine.getLifecycleChannel().appIsResumed();
+        // To avoid needless activity when the flutter container is in the
+        // background, we send |appIsResumed| iff the most-top flutter
+        // container remains resume state.
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+        if (top != null && !top.isPausing()) {
+          engine.getLifecycleChannel().appIsResumed();
+        }
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }
 

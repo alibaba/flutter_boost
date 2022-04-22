@@ -18,9 +18,11 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
 
   @override
   void handleAppLifecycleStateChanged(AppLifecycleState state) {
-    if (_appLifecycleStateLocked) {
-      return;
-    }
+    // TODO(0xZOne): In order to be able to pause frame scheduling while the
+    // Flutter container is in the background, we remove the restriction here.
+    // if (_appLifecycleStateLocked) {
+    //   return;
+    // }
     Logger.log('boost_flutter_binding: '
         'handleAppLifecycleStateChanged ${state.toString()}');
     super.handleAppLifecycleStateChanged(state);
