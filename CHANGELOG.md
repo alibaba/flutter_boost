@@ -1,3 +1,11 @@
+## NEXT
+
+1. 修复flutter首页打开A页面，打开B页面返回到首页后内存泄露问题
+2. [bugfix] 1.解决异步导致的断言错误(#1583)；2.修改测试案例，解决测试页面被拦截的问题
+3. [Android] 完善PlatformView测试案例： 1. 增加复杂的Native动画场景； 2. 支持intent打开测试页面，方便自动化测试；
+4. 增加简单的WebView测试场景
+5. 将拦截器内部实现修改为同步，避免时序相关问题
+
 ## v3.0-release.1
 1.  [ios]增加platform view测试案例 (#1546)
 2. [Android] 在Fragment的使用场景中，onHiddenChanged/setUserVisibleHint可能比onCreateView先调用 (#1456)
@@ -101,7 +109,7 @@ Breaking Change
 17. PageVisibility不再提供create和destroy方法，另外onPageCreate和onPageDestroy改名为onPagePush和onPagePop
 18. FIXED:同一个容器提供多个FlutterView,业务层通过remove(uniqueId)，指定id移除非首个flutterview会失效
 19. Boost接管handleAppLifecycleStateChanged，让Flutter生命周期与应用前后台对齐
-20. BoostNavigator添加pushReplacement方法，同时修复pop和findContainerById的逻辑 
+20. BoostNavigator添加pushReplacement方法，同时修复pop和findContainerById的逻辑
 21. 过滤内部路由RouteSettings.name为null的路由事件，如对话框路等非页面路由事件，否则影响正常页面生命周期
 22. [双端一致性] iOS端FBFlutterContainerManager与Android统一，FLutterBoostPlugin生命周期相关逻辑统一
 23. 调整 Flutter Engine 初始化流程，避免使用异步方式产生插件注册时序问题
@@ -242,7 +250,7 @@ The main changes are as following:
 From the point of API changes, we did some refactoring as following:
 #### iOS API changes
 1. FlutterBoostPlugin's startFlutterWithPlatform function change its parameter from FlutterViewController to Engine
-2. 
+2.
 **Before change**
 ```objectivec
 FlutterBoostPlugin
@@ -285,7 +293,7 @@ FlutterBoostPlugin2
 @protocol FLB2Platform <NSObject>
 @optional
 - (NSString *)entryForDart;
-    
+
 @required
 - (void)open:(NSString *)url
    urlParams:(NSDictionary *)urlParams

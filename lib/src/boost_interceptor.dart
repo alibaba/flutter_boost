@@ -37,31 +37,23 @@ class InterceptorState<T> {
 }
 
 class _BaseHandler {
-  final _completer = Completer<InterceptorState>();
-
-  Future<InterceptorState> get future => _completer.future;
-
-  bool get isCompleted => _completer.isCompleted;
+  InterceptorState get state => _state;
+  InterceptorState _state;
 }
 
 /// Handler for push interceptor.
 class PushInterceptorHandler extends _BaseHandler {
   /// Continue to call the next push interceptor.
   void next(BoostInterceptorOption options) {
-    _completer.complete(InterceptorState<BoostInterceptorOption>(options));
+    _state = new InterceptorState<BoostInterceptorOption>(options);
   }
 
   /// Return the result directly!
-  /// Other request interceptor(s) will not be executed.
+  /// Other interceptor(s) will not be executed.
   ///
   /// [result]: Response object to return.
   void resolve(Object result) {
-    _completer.complete(
-      InterceptorState<Object>(
-        result,
-        InterceptorResultType.resolve,
-      ),
-    );
+    _state = InterceptorState<Object>(result, InterceptorResultType.resolve);
   }
 }
 

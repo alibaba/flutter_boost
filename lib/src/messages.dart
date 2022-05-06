@@ -55,7 +55,7 @@ class StackInfo {
 }
 
 abstract class FlutterRouterApi {
-  Future<void> pushRoute(CommonParams arg);
+  void pushRoute(CommonParams arg);
   void popRoute(CommonParams arg);
   void removeRoute(CommonParams arg);
   void onForeground(CommonParams arg);
@@ -75,7 +75,7 @@ abstract class FlutterRouterApi {
         channel.setMessageHandler((Object message) async {
           assert(message != null, 'Argument for dev.flutter.pigeon.FlutterRouterApi.pushRoute was null. Expected CommonParams.');
           final CommonParams input = CommonParams.decode(message);
-          await api.pushRoute(input);
+          api.pushRoute(input);
           return;
         });
       }

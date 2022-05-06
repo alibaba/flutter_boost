@@ -23,6 +23,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
 public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, ActivityAware {
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
+    private static final boolean DEBUG = false;
     private FlutterEngine engine;
     private FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
@@ -46,6 +47,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
+        if (DEBUG) Log.v(TAG, "#onAttachedToEngine");
         NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         engine = binding.getFlutterEngine();
         channel = new FlutterRouterApi(binding.getBinaryMessenger());
@@ -54,12 +56,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
+        if (DEBUG) Log.v(TAG, "#onDetachedFromEngine");
         engine = null;
         channel = null;
     }
 
     @Override
     public void pushNativeRoute(CommonParams params) {
+        if (DEBUG) Log.v(TAG, "#pushNativeRoute: " + params.getPageName());
         if (delegate != null) {
             requestCode++;
             if (pageNames != null) {
@@ -78,6 +82,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void pushFlutterRoute(CommonParams params) {
+        if (DEBUG) Log.v(TAG, "#pushFlutterRoute: " + params.getPageName() + ", " + params.getUniqueId());
         if (delegate != null) {
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
@@ -93,6 +98,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void popRoute(CommonParams params, Messages.Result<Void> result) {
+        if (DEBUG) Log.v(TAG, "#popRoute: " + params.getPageName() + ", " + params.getUniqueId());
         if (delegate != null) {
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
@@ -123,14 +129,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         if (dartStack == null) {
             return StackInfo.fromMap(new HashMap());
         }
-        Log.v(TAG, "#getStackFromHost: " + dartStack);
+        if (DEBUG) Log.v(TAG, "#getStackFromHost: " + dartStack);
         return dartStack;
     }
 
     @Override
     public void saveStackToHost(StackInfo arg) {
         dartStack = arg;
-        Log.v(TAG, "#saveStackToHost: " + dartStack);
+        if (DEBUG) Log.v(TAG, "#saveStackToHost: " + dartStack);
     }
 
     @Override
@@ -178,6 +184,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
                           final FlutterRouterApi.Reply<Void> callback) {
+        if (DEBUG) Log.v(TAG, "#pushRoute: " + pageName + ", " + uniqueId);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -195,6 +202,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void popRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
+        if (DEBUG) Log.v(TAG, "#popRoute: " + uniqueId);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -219,6 +227,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void removeRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
+        if (DEBUG) Log.v(TAG, "#removeRoute: " + uniqueId);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -258,6 +267,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onContainerShow(String uniqueId) {
+        if (DEBUG) Log.v(TAG, "#onContainerShow: " + uniqueId);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -267,10 +277,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onContainerShow: " + uniqueId);
     }
 
     public void onContainerHide(String uniqueId) {
+        if (DEBUG) Log.v(TAG, "#onContainerHide: " + uniqueId);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -284,7 +294,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
-        Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
+        if (DEBUG) Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
         FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
         if (FlutterContainerManager.instance().getContainerSize() == 1) {
            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
@@ -293,19 +303,21 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void onContainerAppeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
+        if (DEBUG) Log.v(TAG, "#onContainerAppeared: " + uniqueId);
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
-            onContainerShow(uniqueId);
-        });
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
+        onContainerShow(uniqueId);
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
+        if (DEBUG) Log.v(TAG, "#onContainerDisappeared: " + uniqueId);
         onContainerHide(uniqueId);
     }
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
+        if (DEBUG) Log.v(TAG, "#onContainerDestroyed: " + uniqueId);
         removeRoute(uniqueId, reply -> {});
         FlutterContainerManager.instance().removeContainer(uniqueId);
         if (FlutterContainerManager.instance().getContainerSize() == 0) {
@@ -315,6 +327,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        if (DEBUG) Log.v(TAG, "#onAttachedToActivity");
         activityPluginBinding.addActivityResultListener((requestCode, resultCode, intent) -> {
             if (channel != null) {
                 checkEngineState();
@@ -339,16 +352,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-
+        if (DEBUG) Log.v(TAG, "#onDetachedFromActivityForConfigChanges");
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
-
+        if (DEBUG) Log.v(TAG, "#onReattachedToActivityForConfigChanges");
     }
 
     @Override
     public void onDetachedFromActivity() {
-
+        if (DEBUG) Log.v(TAG, "#onDetachedFromActivity");
     }
 }
