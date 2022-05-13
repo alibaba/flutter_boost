@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-v3.0-release.1
+v3.0-release.2
 
 PS：Here for null-safety https://github.com/alibaba/flutter_boost/tree/null-safety
 
