@@ -5,7 +5,7 @@
 
 # Release Note
 
-v3.0-release.1
+v3.0-release.2
 
 PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter_boost/tree/null-safety
 
