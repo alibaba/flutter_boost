@@ -146,7 +146,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("native")
-                    .then((value) => print("return:${value?.toString()}")),
+                    .then((value) => print("Return from Native: ${value?.toString()}")),
               ),
               InkWell(
                 child: Container(

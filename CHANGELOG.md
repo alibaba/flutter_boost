@@ -1,4 +1,5 @@
 ## NEXT
+1. [Android] 去掉不必要的兜底方案，解决Native页面返回值丢失的问题
 
 v3.0-release.2
 1. 修复flutter首页打开A页面，打开B页面返回到首页后内存泄露问题

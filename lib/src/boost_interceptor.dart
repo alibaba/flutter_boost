@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'boost_navigator.dart';
 
 /// The request object in Interceptor,which is to passed
@@ -45,7 +43,7 @@ class _BaseHandler {
 class PushInterceptorHandler extends _BaseHandler {
   /// Continue to call the next push interceptor.
   void next(BoostInterceptorOption options) {
-    _state = new InterceptorState<BoostInterceptorOption>(options);
+    _state = InterceptorState<BoostInterceptorOption>(options);
   }
 
   /// Return the result directly!

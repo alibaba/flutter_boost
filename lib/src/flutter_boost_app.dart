@@ -603,18 +603,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log('onNativeResult, key:$key, result:${params.arguments}');
   }
 
-  void _completePendingNativeResultIfNeeded(String initiatorPage) {
-    _pendingResult.keys
-        .where((element) => element.startsWith('$initiatorPage#'))
-        .toList()
-        .forEach((key) {
-      _pendingResult[key].complete();
-      _pendingResult.remove(key);
-      Logger.log('_completePendingNativeResultIfNeeded, '
-          'key:$key, size:${_pendingResult.length}');
-    });
-  }
-
   void _completePendingResultIfNeeded<T extends Object>(String uniqueId,
       {T result}) {
     if (uniqueId != null && _pendingResult.containsKey(uniqueId)) {
@@ -626,14 +614,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void onContainerShow(CommonParams params) {
     final container = _findContainerByUniqueId(params.uniqueId);
     BoostLifecycleBinding.instance.containerDidShow(container);
-
-    // Try to complete pending native result when container closed.
-    final topPage = topContainer?.topPage?.pageInfo?.uniqueId;
-    assert(topPage != null);
-    Future<void>.delayed(
-      const Duration(seconds: 1),
-      () => _completePendingNativeResultIfNeeded(topPage),
-    );
   }
 
   void onContainerHide(CommonParams params) {
