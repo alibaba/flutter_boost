@@ -340,7 +340,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
                         Map<Object, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
                         params.setArguments(result);
                     }
+
+                    // Get a result back from an activity when it ends.
                     channel.onNativeResult(params, reply -> {
+                    if (DEBUG) Log.v(TAG, "#onNativeResult, pageName=" + pageName);
                     });
                 }
             } else {

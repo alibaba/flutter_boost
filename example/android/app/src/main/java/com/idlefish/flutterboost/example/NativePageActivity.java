@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,6 +70,7 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
         intent.putExtra("msg","This message is from NativePageActivity!!!");
         intent.putExtra("bool", true);
         intent.putExtra("int", 666);
+        intent.putExtra("time", Calendar.getInstance().getTime().toString());
         setResult(Activity.RESULT_OK, intent);
         super.finish();
     }
