@@ -146,7 +146,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("native")
-                    .then((value) => print("return:${value?.toString()}")),
+                    .then((value) => print("Return from Native: ${value?.toString()}")),
               ),
               InkWell(
                 child: Container(
@@ -235,6 +235,19 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance.push(
                     "platformview/listview",
+                    withContainer: withContainer),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: Text(
+                      'Simple WebView Test',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance.push(
+                    "platformview/simplewebview",
                     withContainer: withContainer),
               ),
               InkWell(

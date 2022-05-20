@@ -235,56 +235,51 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       String? uniqueId,
       bool? withContainer,
       bool opaque = true}) {
+    Logger.log('pushWithInterceptor, uniqueId=$uniqueId, name=$name');
     var pushOption = BoostInterceptorOption(name,
         uniqueId: uniqueId,
         isFromHost: isFromHost,
         arguments: arguments ?? <String, dynamic>{});
-    var future = Future<dynamic>(
-        () => InterceptorState<BoostInterceptorOption>(pushOption));
+    var state = InterceptorState<BoostInterceptorOption>(pushOption);
     for (var interceptor in interceptors) {
-      future = future.then<dynamic>((dynamic _state) {
-        final state = _state as InterceptorState<dynamic>;
-        if (state.type == InterceptorResultType.next) {
-          final pushHandler = PushInterceptorHandler();
-          interceptor.onPrePush(state.data, pushHandler);
-          return pushHandler.future;
-        } else {
-          return state;
-        }
-      });
-    }
-
-    return future.then((dynamic _state) {
-      final state = _state as InterceptorState<dynamic>;
-      if (state.data is BoostInterceptorOption) {
-        assert(state.type == InterceptorResultType.next);
-        pushOption = state.data;
-        if (isFromHost) {
-          pushContainer(name,
-              uniqueId: pushOption.uniqueId, arguments: pushOption.arguments);
-          return Future<T>.value();
-        } else {
-          if (isFlutterPage) {
-            return pushWithResult(pushOption.name,
-                uniqueId: pushOption.uniqueId,
-                arguments: pushOption.arguments,
-                withContainer: withContainer!,
-                opaque: opaque) as FutureOr<T>;
-          } else {
-            final params = CommonParams()
-              ..pageName = pushOption.name
-              ..arguments = pushOption.arguments;
-            nativeRouterApi!.pushNativeRoute(params);
-            return pendNativeResult(pushOption.name);
-          }
-        }
-      } else {
-        assert(state.type == InterceptorResultType.resolve);
+      final pushHandler = PushInterceptorHandler();
+      interceptor.onPrePush(state.data, pushHandler);
+      state = pushHandler.state;
+      if (state.type != InterceptorResultType.next) {
         Logger.log('The page was intercepted by user. name:$name, '
             'isFromHost=$isFromHost, isFlutterPage=$isFlutterPage');
         return Future<T>.value(state.data as T);
       }
-    });
+    }
+
+    if (state.data is BoostInterceptorOption) {
+      assert(state.type == InterceptorResultType.next);
+      pushOption = state.data;
+      if (isFromHost) {
+        pushContainer(name,
+            uniqueId: pushOption.uniqueId,
+            isFromHost: isFromHost,
+            arguments: pushOption.arguments);
+      } else {
+        if (isFlutterPage) {
+          return pushWithResult(pushOption.name,
+              uniqueId: pushOption.uniqueId,
+              arguments: pushOption.arguments,
+              withContainer: withContainer,
+              opaque: opaque);
+        } else {
+          final params = CommonParams()
+            ..pageName = pushOption.name
+            ..arguments = pushOption.arguments;
+          nativeRouterApi.pushNativeRoute(params);
+          return pendNativeResult(pushOption.name);
+        }
+      }
+    } else {
+      Logger.log(
+          'Oops, Unrecognized parameter type: ${state.data.runtimeType}');
+    }
+    return Future<void>.value();
   }
 
   Future<T?>? pushWithResult<T extends Object>(String? pageName,
@@ -322,8 +317,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return topContainer!.addPage(BoostPage.create(pageInfo));
   }
 
-  void pushContainer(String? pageName,
-      {String? uniqueId, Map<String, dynamic>? arguments}) {
+
+  void pushContainer(String pageName,
+      {String? uniqueId,
+      bool isFromHost = false,
+      Map<String, dynamic>? arguments}) {
     _cancelActivePointers();
     final existed = _findContainerByUniqueId(uniqueId);
     if (existed != null) {
@@ -350,33 +348,29 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       refreshOnPush(container);
     }
 
-    _pushFinish(pageName, uniqueId: uniqueId, arguments: arguments);
+    _pushFinish(pageName,
+        uniqueId: uniqueId, isFromHost: isFromHost, arguments: arguments);
     Logger.log('pushContainer, uniqueId=$uniqueId, existed=$existed,'
         ' arguments:$arguments, $containers');
   }
 
-  void _pushFinish(String? pageName,
-      {String? uniqueId, Map<String, dynamic>? arguments}) {
+  void _pushFinish(String pageName,
+      {String uniqueId,
+        bool isFromHost = false,
+        Map<String, dynamic> arguments}) {
     var pushOption = BoostInterceptorOption(pageName,
-        uniqueId: uniqueId, arguments: arguments ?? <String, dynamic>{});
-    var future = Future<dynamic>(
-        () => InterceptorState<BoostInterceptorOption>(pushOption));
+        uniqueId: uniqueId,
+        isFromHost: isFromHost,
+        arguments: arguments ?? <String, dynamic>{});
+    var state = InterceptorState<BoostInterceptorOption>(pushOption);
     for (var interceptor in interceptors) {
-      future = future.then<dynamic>((dynamic _state) {
-        final state = _state as InterceptorState<dynamic>;
-        if (state.type == InterceptorResultType.next) {
-          final pushHandler = PushInterceptorHandler();
-          interceptor.onPostPush(state.data, pushHandler);
-          return pushHandler.future;
-        } else {
-          return state;
-        }
-      });
+      final pushHandler = PushInterceptorHandler();
+      interceptor.onPostPush(state.data, pushHandler);
+      state = pushHandler.state;
+      if (state.type != InterceptorResultType.next) {
+        break;
+      }
     }
-    future.then((dynamic _state) {
-      final state = _state as InterceptorState<dynamic>;
-      return Future<dynamic>.value(state.data as dynamic);
-    });
   }
 
   Future<bool> popWithResult<T extends Object>([T? result]) async {
@@ -604,18 +598,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       _pendingResult.remove(key);
     }
     Logger.log('onNativeResult, key:$key, result:${params.arguments}');
-  }
-
-  void _completePendingNativeResultIfNeeded(String initiatorPage) {
-    _pendingResult.keys
-        .where((element) => element.startsWith('$initiatorPage#'))
-        .toList()
-        .forEach((key) {
-      _pendingResult[key]!.complete();
-      _pendingResult.remove(key);
-      Logger.log('_completePendingNativeResultIfNeeded, '
-          'key:$key, size:${_pendingResult.length}');
-    });
   }
 
   void _completePendingResultIfNeeded<T extends Object>(String? uniqueId,
