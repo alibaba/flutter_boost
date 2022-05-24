@@ -35,8 +35,8 @@ class InterceptorState<T> {
 }
 
 class _BaseHandler {
-  InterceptorState get state => _state;
-  InterceptorState _state;
+  InterceptorState? get state => _state;
+  InterceptorState? _state;
 }
 
 /// Handler for push interceptor.

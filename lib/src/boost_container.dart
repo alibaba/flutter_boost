@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -47,18 +49,15 @@ class BoostContainer extends ChangeNotifier {
   VoidCallback? backPressedHandler;
 
   /// add a [BoostPage] in this container and return its future result
-  Future<T?>? addPage<T extends Object?>(BoostPage page) {
+  Future<T> addPage<T extends Object?>(BoostPage page) {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
       BoostChannel.instance.disablePopGesture(containerId: pageInfo.uniqueId!);
     }
-    if (page != null) {
-      _pages.add(page);
-      notifyListeners();
-      return page.popped.then((value) => value);
-    }
-    return null;
+    _pages.add(page);
+    notifyListeners();
+    return page.popped.then((value) => value);
   }
 
   /// remove a specific [BoostPage]

@@ -233,18 +233,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       String? name, bool isFromHost, bool isFlutterPage,
       {Map<String, dynamic>? arguments,
       String? uniqueId,
-      bool? withContainer,
+      required bool withContainer,
       bool opaque = true}) {
     Logger.log('pushWithInterceptor, uniqueId=$uniqueId, name=$name');
     var pushOption = BoostInterceptorOption(name,
         uniqueId: uniqueId,
         isFromHost: isFromHost,
         arguments: arguments ?? <String, dynamic>{});
-    var state = InterceptorState<BoostInterceptorOption>(pushOption);
+    InterceptorState state = InterceptorState<BoostInterceptorOption>(pushOption);
     for (var interceptor in interceptors) {
       final pushHandler = PushInterceptorHandler();
       interceptor.onPrePush(state.data, pushHandler);
-      state = pushHandler.state;
+      state = pushHandler.state!;
       if (state.type != InterceptorResultType.next) {
         Logger.log('The page was intercepted by user. name:$name, '
             'isFromHost=$isFromHost, isFlutterPage=$isFlutterPage');
@@ -271,7 +271,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           final params = CommonParams()
             ..pageName = pushOption.name
             ..arguments = pushOption.arguments;
-          nativeRouterApi.pushNativeRoute(params);
+          nativeRouterApi!.pushNativeRoute(params);
           return pendNativeResult(pushOption.name);
         }
       }
@@ -279,10 +279,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       Logger.log(
           'Oops, Unrecognized parameter type: ${state.data.runtimeType}');
     }
-    return Future<void>.value();
+    return Future<T>.value();
   }
 
-  Future<T?>? pushWithResult<T extends Object>(String? pageName,
+  Future<T> pushWithResult<T extends Object?>(String? pageName,
       {String? uniqueId,
       Map<String, dynamic>? arguments,
       required bool withContainer,
@@ -303,7 +303,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<T?>? pushPage<T extends Object?>(String? pageName,
+  Future<T> pushPage<T extends Object?>(String? pageName,
       {String? uniqueId, Map<String, dynamic>? arguments}) {
     Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
@@ -318,7 +318,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
 
-  void pushContainer(String pageName,
+  void pushContainer(String? pageName,
       {String? uniqueId,
       bool isFromHost = false,
       Map<String, dynamic>? arguments}) {
@@ -354,19 +354,19 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ' arguments:$arguments, $containers');
   }
 
-  void _pushFinish(String pageName,
-      {String uniqueId,
+  void _pushFinish(String? pageName,
+      {String? uniqueId,
         bool isFromHost = false,
-        Map<String, dynamic> arguments}) {
+        Map<String, dynamic>? arguments}) {
     var pushOption = BoostInterceptorOption(pageName,
         uniqueId: uniqueId,
         isFromHost: isFromHost,
         arguments: arguments ?? <String, dynamic>{});
-    var state = InterceptorState<BoostInterceptorOption>(pushOption);
+    InterceptorState state = InterceptorState<BoostInterceptorOption>(pushOption);
     for (var interceptor in interceptors) {
       final pushHandler = PushInterceptorHandler();
       interceptor.onPostPush(state.data, pushHandler);
-      state = pushHandler.state;
+      state = pushHandler.state!;
       if (state.type != InterceptorResultType.next) {
         break;
       }
@@ -609,16 +609,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void onContainerShow(CommonParams params) {
-    final container = _findContainerByUniqueId(params.uniqueId)!;
-    BoostLifecycleBinding.instance.containerDidShow(container);
-
-    // Try to complete pending native result when container closed.
-    final String topPage = topContainer?.topPage.pageInfo.uniqueId ?? "";
-    assert(topPage != null);
-    Future<void>.delayed(
-      const Duration(seconds: 1),
-      () => _completePendingNativeResultIfNeeded(topPage),
-    );
+    final container = _findContainerByUniqueId(params.uniqueId);
+    BoostLifecycleBinding.instance.containerDidShow(container!);
   }
 
   void onContainerHide(CommonParams params) {
