@@ -521,7 +521,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final params = CommonParams()
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
-        ..arguments = container.pageInfo.arguments as Map<Object, Object>?;
+        ..arguments = Map<String, dynamic>.from(container.pageInfo.arguments ?? <String, dynamic>{});
       return await _nativeRouterApi!.popRoute(params);
     }
   }
