@@ -88,6 +88,14 @@
     }
 }
 
+///刷新顶部的container
+-(void)refreshTopContainer{
+    FBFlutterViewContainer* container = self.containerManager.getTopContainer;
+    if(container){
+        [container refreshTopContainer];
+    }
+}
+
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>  *)registrar {
     FlutterBoostPlugin* plugin = [[FlutterBoostPlugin alloc] initWithMessenger:(registrar.messenger)];
     [registrar publish:plugin];

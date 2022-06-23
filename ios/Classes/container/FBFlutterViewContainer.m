@@ -323,5 +323,11 @@ _Pragma("clang diagnostic pop")
     return YES;
 }
 
+///回到前台时需要刷新下
+-(void)refreshTopContainer{
+    [self attatchFlutterEngine];
+    [self surfaceUpdated:YES];
+}
+
 @end
 

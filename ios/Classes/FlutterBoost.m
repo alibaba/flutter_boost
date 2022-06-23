@@ -187,6 +187,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
+    [self.plugin refreshTopContainer];
     FBCommonParams* params = [[FBCommonParams alloc] init];
     [self.plugin.flutterApi onForeground:params completion:^(NSError * error) {
         

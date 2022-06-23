@@ -28,6 +28,7 @@
 - (NSDictionary *)params;
 - (NSString *)uniqueId;
 - (NSString *)uniqueIDString;
+- (void)refreshTopContainer;
 - (BOOL)opaque;
 - (void)setName:(NSString *)name uniqueId:(NSString *)uniqueId params:(NSDictionary *)params opaque:(BOOL) opaque;
 @end
