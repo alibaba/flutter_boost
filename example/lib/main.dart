@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/bottom_navigation_bar_demo.dart';
+import 'package:flutter_boost_example/case/counter_demo.dart';
+import 'package:flutter_boost_example/case/flutter_rebuild_demo.dart';
 import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
 import 'package:flutter_boost_example/case/image_pick.dart';
 import 'package:flutter_boost_example/case/media_query.dart';
@@ -20,7 +22,6 @@ import 'package:flutter_boost_example/flutter_page.dart';
 import 'package:flutter_boost_example/simple_page_widgets.dart';
 import 'package:flutter_boost_example/tab/simple_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost_example/case/flutter_rebuild_demo.dart';
 
 void main() {
   PageVisibilityBinding.instance
@@ -170,6 +171,10 @@ class _MyAppState extends State<MyApp> {
     'willPop': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WillPopRoute());
+    },
+    'counter': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => CounterPage(title: "Counter Demo"));
     },
     'returnData': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
