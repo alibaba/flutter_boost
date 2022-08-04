@@ -156,7 +156,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private void performAttach() {
         if (!isAttached) {
             // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+            getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
             if (platformPlugin == null) {
                 platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
@@ -305,7 +305,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getCachedEngineId() {
-      return FlutterBoost.ENGINE_ID;
+        return FlutterBoost.ENGINE_ID;
     }
 
     @Override
