@@ -10,7 +10,7 @@ class SimpleWidget extends StatefulWidget {
   const SimpleWidget(this.uniqueId, this.params, this.messages);
 
   @override
-  _SimpleWidgetState createState() => _SimpleWidgetState();
+  State<SimpleWidget> createState() => _SimpleWidgetState();
 }
 
 class _SimpleWidgetState extends State<SimpleWidget>

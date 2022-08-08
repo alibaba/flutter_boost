@@ -8,7 +8,7 @@ class SimplePage extends StatefulWidget {
   const SimplePage({Key? key, this.data}) : super(key: key);
 
   @override
-  _SimplePageState createState() => _SimplePageState();
+  State<SimplePage> createState() => _SimplePageState();
 }
 
 class _SimplePageState extends State<SimplePage> {

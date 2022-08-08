@@ -6,7 +6,7 @@ class ReplacementPage extends StatefulWidget {
   const ReplacementPage({Key? key}) : super(key: key);
 
   @override
-  _ReplacementPageState createState() => _ReplacementPageState();
+  State<ReplacementPage> createState() => _ReplacementPageState();
 }
 
 class _ReplacementPageState extends State<ReplacementPage> {

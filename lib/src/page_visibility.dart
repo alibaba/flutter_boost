@@ -55,8 +55,6 @@ class PageVisibilityBinding {
 
   /// Registers the given object and route as a binding observer.
   void addObserver(PageVisibilityObserver observer, Route<dynamic> route) {
-    assert(observer != null);
-    assert(route != null);
     final observers =
         _listeners.putIfAbsent(route, () => <PageVisibilityObserver>{});
     observers.add(observer);
@@ -66,7 +64,6 @@ class PageVisibilityBinding {
 
   /// Unregisters the given observer.
   void removeObserver(PageVisibilityObserver observer) {
-    assert(observer != null);
     for (final route in _listeners.keys) {
       final observers = _listeners[route];
       observers?.remove(observer);
@@ -76,14 +73,12 @@ class PageVisibilityBinding {
 
   ///Register [observer] to [_globalListeners] set
   void addGlobalObserver(GlobalPageVisibilityObserver observer) {
-    assert(observer != null);
     _globalListeners.add(observer);
     Logger.log('page_visibility, #addGlobalObserver, $observer');
   }
 
   ///Register [observer] from [_globalListeners] set
   void removeGlobalObserver(GlobalPageVisibilityObserver observer) {
-    assert(observer != null);
     _globalListeners.remove(observer);
     Logger.log('page_visibility, #removeGlobalObserver, $observer');
   }
@@ -121,7 +116,7 @@ class PageVisibilityBinding {
   ///When page show first time,we should dispatch event in [FrameCallback]
   ///to avoid the page can't receive the show event
   void dispatchPageShowEventOnPageShowFirstTime(Route<dynamic>? route) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       dispatchPageShowEvent(route);
     });
   }
@@ -201,9 +196,6 @@ class PageVisibilityBinding {
   }
 
   void dispatchGlobalPagePushEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
     final globalObserversList = _globalListeners.toList();
 
     for (var observer in globalObserversList) {
@@ -215,9 +207,6 @@ class PageVisibilityBinding {
   }
 
   void dispatchGlobalPageShowEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
     final globalObserversList = _globalListeners.toList();
 
     for (var observer in globalObserversList) {
@@ -229,9 +218,6 @@ class PageVisibilityBinding {
   }
 
   void dispatchGlobalPageHideEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
     final globalObserversList = _globalListeners.toList();
 
     for (var observer in globalObserversList) {
@@ -243,10 +229,6 @@ class PageVisibilityBinding {
   }
 
   void dispatchGlobalPagePopEvent(Route<dynamic> route) {
-    if (route == null) {
-      return;
-    }
-
     final globalObserversList = _globalListeners.toList();
     for (var observer in globalObserversList) {
       observer.onPagePop(route);

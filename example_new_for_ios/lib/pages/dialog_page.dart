@@ -6,7 +6,7 @@ class DialogPage extends StatefulWidget {
   const DialogPage({Key? key}) : super(key: key);
 
   @override
-  _DialogPageState createState() => _DialogPageState();
+  State<DialogPage> createState() => _DialogPageState();
 }
 
 class _DialogPageState extends State<DialogPage> {

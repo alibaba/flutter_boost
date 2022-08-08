@@ -35,10 +35,6 @@ class BoostChannel {
   ///Send a custom event to native with [key] and [args]
   ///Calls when flutter(here) wants to send event to native side
   void sendEventToNative(String key, Map args) {
-    assert(key != null);
-
-    args ??= {};
-
     var params = CommonParams()
       ..key = key
       ..arguments = args as Map<Object, Object>?;
@@ -47,7 +43,7 @@ class BoostChannel {
 
   /// enable iOS native pop gesture for container matching [containerId]
   void enablePopGesture({required String containerId}) {
-    assert(containerId != null && containerId.isNotEmpty);
+    assert(containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',
       "args": {'enable': true}
@@ -56,7 +52,7 @@ class BoostChannel {
 
   /// disable iOS native pop gesture for container matching [containerId]
   void disablePopGesture({required String containerId}) {
-    assert(containerId != null && containerId.isNotEmpty);
+    assert(containerId.isNotEmpty);
     BoostChannel.instance.sendEventToNative(containerId, {
       'event': 'enablePopGesture',
       "args": {'enable': false}

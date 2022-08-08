@@ -13,7 +13,6 @@ import 'package:pigeon/pigeon.dart';
     prefix: 'FB',
   ),
 ))
-
 class CommonParams {
   String? pageName;
   String? uniqueId;

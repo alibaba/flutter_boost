@@ -89,9 +89,6 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   /// If [isEnvReady] is false, add [operation] into pending queue,
   /// or [operation] will execute immediately.
   void _addInOperationQueueOrExcute(Function operation) {
-    if (operation == null) {
-      return;
-    }
     if (!isEnvReady) {
       BoostOperationQueue.instance.addPendingOperation(operation);
     } else {

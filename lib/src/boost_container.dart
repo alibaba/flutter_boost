@@ -53,12 +53,9 @@ class BoostContainer extends ChangeNotifier {
       /// only iOS will receive this event ,Android will do nothing
       BoostChannel.instance.disablePopGesture(containerId: pageInfo.uniqueId!);
     }
-    if (page != null) {
-      _pages.add(page);
-      notifyListeners();
-      return page.popped.then((value) => value as T);
-    }
-    return null;
+    _pages.add(page);
+    notifyListeners();
+    return page.popped.then((value) => value as T);
   }
 
   /// remove a specific [BoostPage]
@@ -121,7 +118,6 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void initState() {
-    assert(container != null);
     container.addListener(refreshContainer);
     super.initState();
   }
@@ -185,29 +181,37 @@ class NavigatorExt extends Navigator {
 
 class NavigatorExtState extends NavigatorState {
   @override
-  Future<T> pushNamed<T extends Object>(String routeName, {Object? arguments}) {
+  Future<T?> pushNamed<T extends Object?>(String routeName,
+      {Object? arguments}) {
     if (arguments == null) {
-      return BoostNavigator.instance.push(routeName).then((value) => value as T);
+      return BoostNavigator.instance
+          .push(routeName)!
+          .then((value) => value as T);
     }
 
     if (arguments is Map<String, dynamic>) {
-      return BoostNavigator.instance.push(routeName, arguments: arguments).then((value) => value as T);
+      return BoostNavigator.instance
+          .push(routeName, arguments: arguments)!
+          .then((value) => value as T);
     }
 
     if (arguments is Map) {
       return BoostNavigator.instance
-          .push(routeName, arguments: Map<String, dynamic>.from(arguments)).then((value) => value as T);
+          .push(routeName, arguments: Map<String, dynamic>.from(arguments))!
+          .then((value) => value as T);
     } else {
       assert(false, "arguments should be Map<String,dynamic> or Map");
-      return BoostNavigator.instance.push(routeName).then((value) => value as T);
+      return BoostNavigator.instance
+          .push(routeName)!
+          .then((value) => value as T);
     }
   }
 
   @override
-  void pop<T extends Object>([T? result]) {
+  void pop<T extends Object?>([T? result]) {
     // Taking over container page
     if (!canPop()) {
-      BoostNavigator.instance.pop(result);
+      BoostNavigator.instance.pop(result ?? {});
     } else {
       super.pop(result);
     }

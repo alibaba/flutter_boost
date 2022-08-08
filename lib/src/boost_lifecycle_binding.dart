@@ -12,7 +12,7 @@ mixin BoostLifecycleObserver {
 
   void onContainerDidShow(BoostContainer container) {}
 
-  void onContainerDidHide(BoostContainer? container) {}
+  void onContainerDidHide(BoostContainer container) {}
 
   void onContainerDidPop(
       BoostContainer container, BoostContainer? previousContainer) {}
@@ -67,7 +67,7 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidPush');
     PageVisibilityBinding.instance
         .dispatchPagePushEvent(container.topPage.route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidPush(container, previousContainer);
       }
@@ -85,7 +85,7 @@ class BoostLifecycleBinding {
 
     PageVisibilityBinding.instance
         .dispatchPagePopEvent(container.topPage.route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidPop(container, previousContainer);
       }
@@ -93,8 +93,6 @@ class BoostLifecycleBinding {
   }
 
   void containerDidShow(BoostContainer container) {
-    assert(container != null);
-
     ///When this container show,we check the nums of page in this container,
     ///And change the pop gesture in this container
     if (container.pages.length >= 2) {
@@ -107,10 +105,10 @@ class BoostLifecycleBinding {
 
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidShow');
 
-    final id = container?.pageInfo?.uniqueId!;
+    final id = container.pageInfo.uniqueId;
     assert(id != null);
     if (!_hasShownPageIds.contains(id)) {
-      _hasShownPageIds.add(id);
+      _hasShownPageIds.add(id!);
 
       // This case indicates it is the first time that this container show
       // So we should dispatch event using
@@ -122,18 +120,18 @@ class BoostLifecycleBinding {
       PageVisibilityBinding.instance
           .dispatchPageShowEvent(container.topPage.route);
     }
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidShow(container);
       }
     }
   }
 
-  void containerDidHide(BoostContainer? container) {
+  void containerDidHide(BoostContainer container) {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.containerDidHide');
     PageVisibilityBinding.instance
-        .dispatchPageHideEvent(container?.topPage?.route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+        .dispatchPageHideEvent(container.topPage.route);
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onContainerDidHide(container);
       }
@@ -146,7 +144,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPageShowEventOnPageShowFirstTime(route);
     PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onRouteDidPush(route, previousRoute);
       }
@@ -158,7 +156,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance.dispatchPageHideEvent(route);
     PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onRouteDidPop(route, previousRoute);
       }
@@ -174,7 +172,7 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterForeground');
     PageVisibilityBinding.instance
         .dispatchPageForgroundEvent(container.topPage.route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onAppDidEnterForeground(container);
       }
@@ -185,7 +183,7 @@ class BoostLifecycleBinding {
     Logger.log('boost_lifecycle: BoostLifecycleBinding.appDidEnterBackground');
     PageVisibilityBinding.instance
         .dispatchPageBackgroundEvent(container.topPage.route);
-    if (_observerList != null && _observerList.isNotEmpty) {
+    if (_observerList.isNotEmpty) {
       for (BoostLifecycleObserver observer in _observerList) {
         observer.onAppDidEnterBackground(container);
       }

@@ -27,7 +27,7 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
   }
 
   void changeAppLifecycleState(AppLifecycleState state) {
-    if (SchedulerBinding.instance.lifecycleState == state) {
+    if (SchedulerBinding.instance!.lifecycleState == state) {
       return;
     }
     _appLifecycleStateLocked = false;

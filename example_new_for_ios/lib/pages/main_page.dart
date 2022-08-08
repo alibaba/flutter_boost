@@ -15,7 +15,7 @@ class MainPage extends StatefulWidget {
   const MainPage({Key? key, this.data}) : super(key: key);
 
   @override
-  _MainPageState createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
@@ -114,11 +114,11 @@ class _MainPageState extends State<MainPage> {
                     alignment: Alignment.center,
                     height: 100,
                     width: 100,
+                    color: Colors.redAccent,
                     child: const Material(
                       child: Text('this is a dialog',
                           style: TextStyle(fontSize: 25)),
                     ),
-                    color: Colors.redAccent,
                   ),
                 ),
               );
@@ -234,7 +234,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void showTipIfNeeded(String value) {
-    if (value == null || value == 'null' || value.isEmpty) {
+    if (value == 'null' || value.isEmpty) {
       return;
     }
     final bar = SnackBar(

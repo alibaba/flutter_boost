@@ -46,7 +46,7 @@ class LifecycleTestPage extends StatefulWidget {
   const LifecycleTestPage({Key? key}) : super(key: key);
 
   @override
-  _LifecycleTestPageState createState() => _LifecycleTestPageState();
+  State<LifecycleTestPage> createState() => _LifecycleTestPageState();
 }
 
 class _LifecycleTestPageState extends State<LifecycleTestPage>

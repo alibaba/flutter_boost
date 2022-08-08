@@ -104,7 +104,7 @@ class ContainerOverlay {
           // https://github.com/alibaba/flutter_boost/issues/1056
           // Ensure this frame is refreshed after schedule frame,
           // otherwise the PageState.dispose may not be called
-          SchedulerBinding.instance.scheduleWarmUpFrame();
+          SchedulerBinding.instance!.scheduleWarmUpFrame();
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
@@ -132,7 +132,6 @@ class ContainerOverlay {
   /// If no entry matches this id,return null
   ContainerOverlayEntry? _findExistingEntry(
       {required BoostContainer container}) {
-    assert(container != null);
     return _lastEntries.singleWhereOrNull(
         (element) => element.containerUniqueId == container.pageInfo.uniqueId);
   }

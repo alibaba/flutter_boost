@@ -9,12 +9,10 @@ class BoostCacheWidget extends StatefulWidget {
 
   const BoostCacheWidget(
       {required this.uniqueId, required this.builder, Key? key})
-      : assert(builder != null),
-        assert(uniqueId != null),
-        super(key: key);
+      : super(key: key);
 
   @override
-  _BoostCacheWidgetState createState() => _BoostCacheWidgetState();
+  State<BoostCacheWidget> createState() => _BoostCacheWidgetState();
 }
 
 class _BoostCacheWidgetState extends State<BoostCacheWidget> {

@@ -10,7 +10,7 @@ class FlutterRouteWidget extends StatefulWidget {
   final String uniqueId;
 
   @override
-  _FlutterRouteWidgetState createState() => _FlutterRouteWidgetState();
+  State<FlutterRouteWidget> createState() => _FlutterRouteWidgetState();
 }
 
 class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
@@ -144,9 +144,9 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       'Open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
-                onTap: () => BoostNavigator.instance
-                    .push("native")
-                    .then((value) => print("Return from Native: ${value?.toString()}")),
+                onTap: () => BoostNavigator.instance.push("native").then(
+                    (value) =>
+                        print("Return from Native: ${value?.toString()}")),
               ),
               InkWell(
                 child: Container(
@@ -389,7 +389,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
 
 class PushWidget extends StatefulWidget {
   @override
-  _PushWidgetState createState() => _PushWidgetState();
+  State<PushWidget> createState() => _PushWidgetState();
 }
 
 class _PushWidgetState extends State<PushWidget> {

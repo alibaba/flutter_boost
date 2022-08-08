@@ -69,8 +69,8 @@ class BoostNavigator {
       {Map<String, dynamic>? arguments,
       bool withContainer = false,
       bool opaque = true}) {
-    bool is_flutter_page = isFlutterPage(name);
-    if (is_flutter_page && withContainer) {
+    bool isFlutter = isFlutterPage(name);
+    if (isFlutter && withContainer) {
       // 1. open flutter page with container
       // Intercepted in BoostFlutterRouterApi.pushRoute
       return appState!.pushWithResult(name,
@@ -78,7 +78,7 @@ class BoostNavigator {
     } else {
       // 2. open native page or flutter page without container
       return appState!.pushWithInterceptor(
-          name, false /* isFromHost */, is_flutter_page,
+          name, false /* isFromHost */, isFlutter,
           arguments: arguments, withContainer: withContainer, opaque: opaque);
     }
   }

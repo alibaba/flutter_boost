@@ -25,7 +25,7 @@ class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -45,7 +45,8 @@ class _MyAppState extends State<MyApp> {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments as Map<String, Object>? ?? {};
+            Map<String, Object> map =
+                settings.arguments as Map<String, Object>? ?? {};
             String data = map['data'] as String? ?? '';
             return MainPage(
               data: data,
@@ -54,7 +55,8 @@ class _MyAppState extends State<MyApp> {
     },
 
     'simplePage': (settings, uniqueId) {
-      Map<String, Object> map = settings.arguments as Map<String, Object>? ?? {};
+      Map<String, Object> map =
+          settings.arguments as Map<String, Object>? ?? {};
       String data = map['data'] as String? ?? '';
       return CupertinoPageRoute(
         settings: settings,

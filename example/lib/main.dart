@@ -131,7 +131,7 @@ class CustomInterceptor3 extends BoostInterceptor {
 
 class MyApp extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -174,7 +174,8 @@ class _MyAppState extends State<MyApp> {
     },
     'counter': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => CounterPage(title: "Counter Demo"));
+          settings: settings,
+          pageBuilder: (_, __, ___) => CounterPage(title: "Counter Demo"));
     },
     'returnData': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

@@ -6,7 +6,7 @@ class TestPage extends StatefulWidget {
   final String title;
 
   @override
-  _TestPageState createState() => _TestPageState();
+  State<TestPage> createState() => _TestPageState();
 }
 
 class _TestPageState extends State<TestPage> {
@@ -118,7 +118,7 @@ class _TestPageState extends State<TestPage> {
 
 class TestTextField extends StatefulWidget {
   @override
-  _TestTextFieldState createState() => _TestTextFieldState();
+  State<TestTextField> createState() => _TestTextFieldState();
 }
 
 class _TestTextFieldState extends State<TestTextField> {
