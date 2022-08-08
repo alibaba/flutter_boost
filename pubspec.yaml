@@ -12,8 +12,8 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
-  flutter_lints: ^1.0.4
-  pigeon: 0.2.4
+  flutter_lints: ^2.0.1
+  pigeon: ^3.2.6
   flutter_test:
     sdk: flutter
 
