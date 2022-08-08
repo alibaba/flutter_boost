@@ -10,9 +10,9 @@ class Model {
 }
 
 class MainPage extends StatefulWidget {
-  final String data;
+  final String? data;
 
-  const MainPage({Key key, this.data}) : super(key: key);
+  const MainPage({Key? key, this.data}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
 
   GlobalKey<ScaffoldState> key = GlobalKey();
 
-  VoidCallback removeListener;
+  VoidCallback? removeListener;
 
   ValueNotifier<bool> withContainer = ValueNotifier(false);
 
@@ -51,7 +51,7 @@ class _MainPageState extends State<MainPage> {
         ));
       });
 
-      Overlay.of(context).insert(entry);
+      Overlay.of(context)!.insert(entry);
 
       Future.delayed(const Duration(seconds: 2), () {
         entry.remove();
@@ -77,7 +77,7 @@ class _MainPageState extends State<MainPage> {
       Model("open native page", () {
         BoostNavigator.instance.push("homePage", arguments: {
           'data': _controller.text
-        }).then((value) => showTipIfNeeded(value.toString()));
+        })!.then((value) => showTipIfNeeded(value.toString()));
       }),
       Model("return to native page with data", () {
         Map<String, Object> result = {'data': _controller.text};
@@ -88,14 +88,14 @@ class _MainPageState extends State<MainPage> {
             withContainer: withContainer.value,
             arguments: {
               'data': _controller.text
-            }).then((value) => showTipIfNeeded(value.toString()));
+            })!.then((value) => showTipIfNeeded(value.toString()));
       }),
       Model("open flutter simple page", () {
         BoostNavigator.instance.push("simplePage",
             withContainer: withContainer.value,
             arguments: {
               'data': _controller.text
-            }).then((value) => showTipIfNeeded(value.toString()));
+            })!.then((value) => showTipIfNeeded(value.toString()));
       }),
       Model("push with flutter Navigator", () {
         Navigator.of(context)
@@ -257,7 +257,7 @@ class _MainPageState extends State<MainPage> {
           ),
           ValueListenableBuilder(
             valueListenable: withContainer,
-            builder: (BuildContext context, value, Widget child) {
+            builder: (BuildContext context, dynamic value, Widget? child) {
               return CupertinoSwitch(
                   value: value,
                   onChanged: (newValue) {

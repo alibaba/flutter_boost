@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -29,7 +30,7 @@ class ContainerOverlayEntry extends OverlayEntry {
             maintainState: true);
 
   /// This overlay's id, which is the same as the it's related container
-  final String containerUniqueId;
+  final String? containerUniqueId;
 
   @override
   String toString() {
@@ -48,7 +49,7 @@ class ContainerOverlay {
 
   final List<ContainerOverlayEntry> _lastEntries = <ContainerOverlayEntry>[];
 
-  static ContainerOverlayEntryFactory _overlayEntryFactory;
+  static ContainerOverlayEntryFactory? _overlayEntryFactory;
 
   /// Sets a custom [ContainerOverlayEntryFactory].
   static set overlayEntryFactory(ContainerOverlayEntryFactory entryFactory) {
@@ -79,7 +80,7 @@ class ContainerOverlay {
     switch (mode) {
       case BoostSpecificEntryRefreshMode.add:
         // If there is an existing ContainerOverlayEntry in the list,we do nothing
-        final ContainerOverlayEntry existingEntry =
+        final ContainerOverlayEntry? existingEntry =
             _findExistingEntry(container: container);
         if (existingEntry != null) {
           return;
@@ -107,7 +108,7 @@ class ContainerOverlay {
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
-        final ContainerOverlayEntry existingEntry =
+        final ContainerOverlayEntry? existingEntry =
             _findExistingEntry(container: container);
 
         if (existingEntry == null) {
@@ -129,11 +130,10 @@ class ContainerOverlay {
 
   /// Return the result whether we can find a [ContainerOverlayEntry] matching this [container]
   /// If no entry matches this id,return null
-  ContainerOverlayEntry _findExistingEntry(
-      {@required BoostContainer container}) {
+  ContainerOverlayEntry? _findExistingEntry(
+      {required BoostContainer container}) {
     assert(container != null);
-    return _lastEntries.singleWhere(
-        (element) => element.containerUniqueId == container.pageInfo.uniqueId,
-        orElse: () => null);
+    return _lastEntries.singleWhereOrNull(
+        (element) => element.containerUniqueId == container.pageInfo.uniqueId);
   }
 }

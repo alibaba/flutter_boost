@@ -13,8 +13,8 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
     changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
-  static BoostFlutterBinding get instance => _instance;
-  static BoostFlutterBinding _instance;
+  static BoostFlutterBinding? get instance => _instance;
+  static BoostFlutterBinding? _instance;
 
   @override
   void handleAppLifecycleStateChanged(AppLifecycleState state) {

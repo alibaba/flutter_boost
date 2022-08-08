@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class SimplePage extends StatefulWidget {
-  final String data;
+  final String? data;
 
-  const SimplePage({Key key, this.data}) : super(key: key);
+  const SimplePage({Key? key, this.data}) : super(key: key);
 
   @override
   _SimplePageState createState() => _SimplePageState();

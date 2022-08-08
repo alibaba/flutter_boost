@@ -9,13 +9,13 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
       _instance = BoostFlutterRouterApi._(appState);
       FlutterRouterApi.setup(_instance);
     }
-    return _instance;
+    return _instance!;
   }
 
   BoostFlutterRouterApi._(this.appState);
 
   final FlutterBoostAppState appState;
-  static BoostFlutterRouterApi _instance;
+  static BoostFlutterRouterApi? _instance;
 
   /// Whether the dart env is ready to receive messages from host.
   bool isEnvReady = false;

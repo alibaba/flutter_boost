@@ -10,17 +10,17 @@ import 'flutter_boost_app.dart';
 /// This class is an abstraction of native containers
 /// Each of which has a bunch of pages in the [NavigatorExt]
 class BoostContainer extends ChangeNotifier {
-  BoostContainer({this.key, this.pageInfo}) {
+  BoostContainer({this.key, required this.pageInfo}) {
     _pages.add(BoostPage.create(pageInfo));
   }
 
-  static BoostContainer of(BuildContext context) {
+  static BoostContainer? of(BuildContext context) {
     final state = context.findAncestorStateOfType<BoostContainerState>();
     return state?.container;
   }
 
   /// The local key
-  final LocalKey key;
+  final LocalKey? key;
 
   /// The pageInfo for this container
   final PageInfo pageInfo;
@@ -38,35 +38,35 @@ class BoostContainer extends ChangeNotifier {
   int numPages() => pages.length;
 
   /// The navigator used in this container
-  NavigatorState get navigator => _navKey.currentState;
+  NavigatorState? get navigator => _navKey.currentState;
 
   /// The [GlobalKey] to get the [NavigatorExt] in this container
   final GlobalKey<NavigatorState> _navKey = GlobalKey<NavigatorState>();
 
   /// intercept page's backPressed event
-  VoidCallback backPressedHandler;
+  VoidCallback? backPressedHandler;
 
   /// add a [BoostPage] in this container and return its future result
-  Future<T> addPage<T extends Object>(BoostPage page) {
+  Future<T>? addPage<T extends Object>(BoostPage page) {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.disablePopGesture(containerId: pageInfo.uniqueId);
+      BoostChannel.instance.disablePopGesture(containerId: pageInfo.uniqueId!);
     }
     if (page != null) {
       _pages.add(page);
       notifyListeners();
-      return page.popped;
+      return page.popped.then((value) => value as T);
     }
     return null;
   }
 
   /// remove a specific [BoostPage]
-  void removePage(BoostPage page, {dynamic result}) {
+  void removePage(BoostPage? page, {dynamic result}) {
     if (numPages() == 2) {
       /// enable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing
-      BoostChannel.instance.enablePopGesture(containerId: pageInfo.uniqueId);
+      BoostChannel.instance.enablePopGesture(containerId: pageInfo.uniqueId!);
     }
     if (page != null) {
       _pages.remove(page);
@@ -86,7 +86,7 @@ class BoostContainer extends ChangeNotifier {
 /// It overrides the "==" and "hashCode",
 /// to avoid rebuilding when its parent element call element.updateChild
 class BoostContainerWidget extends StatefulWidget {
-  BoostContainerWidget({LocalKey key, this.container})
+  BoostContainerWidget({LocalKey? key, required this.container})
       : super(key: container.key);
 
   /// The container this widget belong
@@ -172,10 +172,10 @@ class BoostContainerState extends State<BoostContainerWidget> {
 /// "Navigator.pop()" is equal to BoostNavigator.instance.pop()
 class NavigatorExt extends Navigator {
   const NavigatorExt({
-    Key key,
-    List<Page<dynamic>> pages,
-    PopPageCallback onPopPage,
-    List<NavigatorObserver> observers,
+    Key? key,
+    required List<Page<dynamic>> pages,
+    PopPageCallback? onPopPage,
+    required List<NavigatorObserver> observers,
   }) : super(
             key: key, pages: pages, onPopPage: onPopPage, observers: observers);
 
@@ -185,26 +185,26 @@ class NavigatorExt extends Navigator {
 
 class NavigatorExtState extends NavigatorState {
   @override
-  Future<T> pushNamed<T extends Object>(String routeName, {Object arguments}) {
+  Future<T> pushNamed<T extends Object>(String routeName, {Object? arguments}) {
     if (arguments == null) {
-      return BoostNavigator.instance.push(routeName);
+      return BoostNavigator.instance.push(routeName).then((value) => value as T);
     }
 
     if (arguments is Map<String, dynamic>) {
-      return BoostNavigator.instance.push(routeName, arguments: arguments);
+      return BoostNavigator.instance.push(routeName, arguments: arguments).then((value) => value as T);
     }
 
     if (arguments is Map) {
       return BoostNavigator.instance
-          .push(routeName, arguments: Map<String, dynamic>.from(arguments));
+          .push(routeName, arguments: Map<String, dynamic>.from(arguments)).then((value) => value as T);
     } else {
       assert(false, "arguments should be Map<String,dynamic> or Map");
-      return BoostNavigator.instance.push(routeName);
+      return BoostNavigator.instance.push(routeName).then((value) => value as T);
     }
   }
 
   @override
-  void pop<T extends Object>([T result]) {
+  void pop<T extends Object>([T? result]) {
     // Taking over container page
     if (!canPop()) {
       BoostNavigator.instance.pop(result);
