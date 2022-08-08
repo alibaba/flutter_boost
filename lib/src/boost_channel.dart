@@ -34,10 +34,10 @@ class BoostChannel {
 
   ///Send a custom event to native with [key] and [args]
   ///Calls when flutter(here) wants to send event to native side
-  void sendEventToNative(String key, Map args) {
+  void sendEventToNative(String key, Map<String, Object> args) {
     var params = CommonParams()
       ..key = key
-      ..arguments = args as Map<Object, Object>?;
+      ..arguments = args;
     _appState!.nativeRouterApi!.sendEventToNative(params);
   }
 

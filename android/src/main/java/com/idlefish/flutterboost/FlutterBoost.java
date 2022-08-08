@@ -220,7 +220,10 @@ public class FlutterBoost {
         this.getPlugin().popRoute(params,new Messages.Result<Void>(){
             @Override
             public void success(Void result) {
+            }
 
+            @Override
+            public void error(Throwable t) {
             }
         });
     }
@@ -241,7 +244,7 @@ public class FlutterBoost {
      * @param key  the key of this event
      * @param args the arguments of this event
      */
-    public void sendEventToFlutter(String key, Map<Object, Object> args) {
+    public void sendEventToFlutter(String key, Map<String, Object> args) {
         Messages.CommonParams params = new Messages.CommonParams();
         params.setKey(key);
         params.setArguments(args);

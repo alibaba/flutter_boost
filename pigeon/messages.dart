@@ -16,14 +16,14 @@ import 'package:pigeon/pigeon.dart';
 class CommonParams {
   String? pageName;
   String? uniqueId;
-  Map<String, Object>? arguments;
+  Map<String?, Object?>? arguments;
   bool? opaque;
   String? key;
 }
 
 class StackInfo {
-  List<String>? containers;
-  Map<String, List<Map<String, Object>>>? routes;
+  List<String?>? containers;
+  Map<String?, List<Map<String, Object>>?>? routes;
 }
 
 @HostApi()
@@ -47,6 +47,6 @@ abstract class FlutterRouterApi {
   void onNativeResult(CommonParams param);
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
-  void sendEventToFlutter(CommonParams params);
+  void sendEventToFlutter(CommonParams param);
   void onBackPressed();
 }

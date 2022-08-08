@@ -272,7 +272,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         } else {
           final params = CommonParams()
             ..pageName = pushOption.name
-            ..arguments = pushOption.arguments as Map<Object, Object>?;
+            ..arguments = pushOption.arguments as Map<String, Object>?;
           nativeRouterApi!.pushNativeRoute(params);
           return pendNativeResult(pushOption.name);
         }
@@ -294,8 +294,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = pageName
         ..uniqueId = uniqueId
         ..opaque = opaque
-        ..arguments = (arguments as Map<Object, Object>? ?? <String, dynamic>{})
-            as Map<Object, Object>?;
+        ..arguments = (arguments ?? <String, dynamic>{});
       nativeRouterApi!.pushFlutterRoute(params);
       _pendingResult[uniqueId] = completer;
       return completer.future;
@@ -489,8 +488,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             ..pageName = container!.pageInfo.pageName
             ..uniqueId = container.pageInfo.uniqueId
             ..arguments = ((result is Map<String, dynamic>)
-                ? result as Map<Object, Object>?
-                : <String, dynamic>{}) as Map<Object, Object>?;
+                ? result
+                : <String, dynamic>{});
           await nativeRouterApi!.popRoute(params);
         } else {
           if (!onBackPressed) {
@@ -524,7 +523,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       final params = CommonParams()
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
-        ..arguments = container.pageInfo.arguments as Map<Object, Object>?;
+        ..arguments = container.pageInfo.arguments;
       return await _nativeRouterApi!.popRoute(params);
     }
   }

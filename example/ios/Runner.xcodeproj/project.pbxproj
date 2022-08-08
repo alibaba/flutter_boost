@@ -494,7 +494,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flutterBoostExample.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REEXPORTED_LIBRARY_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -521,7 +521,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fleamarket.taobao3.com.flutterBoostExample5;
+				PRODUCT_BUNDLE_IDENTIFIER = com.flutterBoostExample.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REEXPORTED_LIBRARY_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";

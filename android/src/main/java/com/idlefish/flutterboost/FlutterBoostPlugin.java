@@ -143,7 +143,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     public void sendEventToNative(CommonParams arg) {
         //deal with the event from flutter side
         String key = arg.getKey();
-        Map<Object, Object> arguments = arg.getArguments();
+        Map<String, Object> arguments = arg.getArguments();
         assert (key != null);
 
         if (arguments == null) {
@@ -190,7 +190,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
-            params.setArguments((Map<Object, Object>) (Object) arguments);
+            params.setArguments(arguments);
             channel.pushRoute(params, reply -> {
                 if (callback != null) {
                     callback.reply(null);
@@ -337,7 +337,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
                 if (null != pageName) {
                     params.setPageName(pageName);
                     if (intent != null) {
-                        Map<Object, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
+                        Map<String, Object> result = FlutterBoostUtils.bundleToMap(intent.getExtras());
                         params.setArguments(result);
                     }
 
