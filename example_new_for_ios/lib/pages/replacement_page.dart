@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class ReplacementPage extends StatefulWidget {
-  const ReplacementPage({Key? key}) : super(key: key);
+  const ReplacementPage({Key key}) : super(key: key);
 
   @override
-  State<ReplacementPage> createState() => _ReplacementPageState();
+  _ReplacementPageState createState() => _ReplacementPageState();
 }
 
 class _ReplacementPageState extends State<ReplacementPage> {

@@ -43,10 +43,10 @@ class AppLifecycleObserver with GlobalPageVisibilityObserver {
 
 ///单个生命周期示例
 class LifecycleTestPage extends StatefulWidget {
-  const LifecycleTestPage({Key? key}) : super(key: key);
+  const LifecycleTestPage({Key key}) : super(key: key);
 
   @override
-  State<LifecycleTestPage> createState() => _LifecycleTestPageState();
+  _LifecycleTestPageState createState() => _LifecycleTestPageState();
 }
 
 class _LifecycleTestPageState extends State<LifecycleTestPage>
@@ -87,7 +87,7 @@ class _LifecycleTestPageState extends State<LifecycleTestPage>
     super.didChangeDependencies();
 
     ///注册监听器
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
   }
 
   @override

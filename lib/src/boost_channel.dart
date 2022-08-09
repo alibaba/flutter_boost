@@ -19,8 +19,8 @@ class BoostChannel {
   FlutterBoostAppState? _appState;
 
   static BoostChannel get instance {
-    _instance._appState ??= overlayKey.currentContext
-        ?.findAncestorStateOfType<FlutterBoostAppState>();
+    _instance._appState ??= overlayKey.currentContext!
+        .findAncestorStateOfType<FlutterBoostAppState>()!;
     return _instance;
   }
 
