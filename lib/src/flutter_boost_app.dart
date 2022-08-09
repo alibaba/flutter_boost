@@ -231,7 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         '_restoreStackForHotRestart, ${stack.containers}, ${stack.routes}');
   }
 
-  Future<T>? pushWithInterceptor<T extends Object>(
+  Future<T> pushWithInterceptor<T extends Object>(
       String? name, bool isFromHost, bool isFlutterPage,
       {Map<String, dynamic>? arguments,
       String? uniqueId,
@@ -282,7 +282,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     return Future<void>.value().then((value) => value as T);
   }
 
-  Future<T>? pushWithResult<T extends Object>(String? pageName,
+  Future<T> pushWithResult<T extends Object>(String? pageName,
       {String? uniqueId,
       Map<String, dynamic>? arguments,
       required bool withContainer,
@@ -303,7 +303,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<T>? pushPage<T extends Object>(String? pageName,
+  Future<T> pushPage<T extends Object>(String? pageName,
       {String? uniqueId, Map<String, dynamic>? arguments}) {
     Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
@@ -714,8 +714,7 @@ class BoostPage<T> extends Page<T> {
 
   static BoostPage<dynamic> create(PageInfo pageInfo) {
     final page = BoostPage<dynamic>(key: UniqueKey(), pageInfo: pageInfo);
-    page._route =
-        BoostNavigator.instance.routeFactory!(page, pageInfo.uniqueId);
+    page._route = BoostNavigator.instance.routeFactory(page, pageInfo.uniqueId);
     return page;
   }
 

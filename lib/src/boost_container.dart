@@ -185,24 +185,24 @@ class NavigatorExtState extends NavigatorState {
       {Object? arguments}) {
     if (arguments == null) {
       return BoostNavigator.instance
-          .push(routeName)!
+          .push(routeName)
           .then((value) => value as T);
     }
 
     if (arguments is Map<String, dynamic>) {
       return BoostNavigator.instance
-          .push(routeName, arguments: arguments)!
+          .push(routeName, arguments: arguments)
           .then((value) => value as T);
     }
 
     if (arguments is Map) {
       return BoostNavigator.instance
-          .push(routeName, arguments: Map<String, dynamic>.from(arguments))!
+          .push(routeName, arguments: Map<String, dynamic>.from(arguments))
           .then((value) => value as T);
     } else {
       assert(false, "arguments should be Map<String,dynamic> or Map");
       return BoostNavigator.instance
-          .push(routeName)!
+          .push(routeName)
           .then((value) => value as T);
     }
   }

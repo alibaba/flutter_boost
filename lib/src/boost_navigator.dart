@@ -10,9 +10,9 @@ typedef FlutterBoostRouteFactory = Route<dynamic>? Function(
     RouteSettings settings, String? uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
-    FlutterBoostRouteFactory? routeFactory) {
+    FlutterBoostRouteFactory routeFactory) {
   return (settings, uniqueId) {
-    var route = routeFactory!(settings, uniqueId);
+    var route = routeFactory(settings, uniqueId);
     if (route == null && settings.name == '/') {
       route = PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
@@ -33,19 +33,19 @@ class BoostNavigator {
   FlutterBoostAppState? appState;
 
   /// The route table in flutter_boost
-  FlutterBoostRouteFactory? _routeFactory;
+  late FlutterBoostRouteFactory _routeFactory;
 
-  set routeFactory(FlutterBoostRouteFactory? routeFactory) =>
+  set routeFactory(FlutterBoostRouteFactory routeFactory) =>
       _routeFactory = routeFactoryWrapper(routeFactory);
 
-  FlutterBoostRouteFactory? get routeFactory => _routeFactory;
-
-  @Deprecated('Use `instance` instead.')
+  FlutterBoostRouteFactory get routeFactory => _routeFactory;
 
   /// Use BoostNavigator.instance instead
+  @Deprecated('Use `instance` instead.')
   static BoostNavigator of() => instance;
 
   static BoostNavigator get instance {
+    // If the root ioslate has initialized, |appState| should not be null.
     _instance.appState ??= overlayKey.currentContext
         ?.findAncestorStateOfType<FlutterBoostAppState>();
     return _instance;
@@ -56,7 +56,7 @@ class BoostNavigator {
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
   bool isFlutterPage(String name) =>
-      routeFactory!(RouteSettings(name: name), null) != null;
+      routeFactory(RouteSettings(name: name), null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
   /// [arguments] is the param you want to pass in next page
@@ -65,10 +65,12 @@ class BoostNavigator {
   /// if [opaque] is true,the page is opaque (not transparent)
   ///
   /// And it will return the result popped by page as a Future<T>
-  Future<T>? push<T extends Object>(String name,
+  Future<T> push<T extends Object>(String name,
       {Map<String, dynamic>? arguments,
       bool withContainer = false,
       bool opaque = true}) {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
     bool isFlutter = isFlutterPage(name);
     if (isFlutter && withContainer) {
       // 1. open flutter page with container
@@ -86,7 +88,7 @@ class BoostNavigator {
   /// This api do two things
   /// 1.Push a new page onto pageStack
   /// 2.remove(pop) previous page
-  Future<T>? pushReplacement<T extends Object>(String name,
+  Future<T> pushReplacement<T extends Object>(String name,
       {Map<String, dynamic>? arguments, bool withContainer = false}) async {
     final id = getTopPageInfo()!.uniqueId;
 

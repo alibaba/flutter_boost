@@ -19,8 +19,8 @@ class BoostChannel {
   FlutterBoostAppState? _appState;
 
   static BoostChannel get instance {
-    _instance._appState ??= overlayKey.currentContext!
-        .findAncestorStateOfType<FlutterBoostAppState>()!;
+    _instance._appState ??= overlayKey.currentContext
+        ?.findAncestorStateOfType<FlutterBoostAppState>();
     return _instance;
   }
 
@@ -29,12 +29,16 @@ class BoostChannel {
   ///
   /// The [VoldCallBack] is to remove this listener
   VoidCallback addEventListener(String key, EventListener listener) {
+    assert(
+        _appState != null, 'Please check if the engine has been initialized!');
     return _appState!.addEventListener(key, listener);
   }
 
   ///Send a custom event to native with [key] and [args]
   ///Calls when flutter(here) wants to send event to native side
   void sendEventToNative(String key, Map<String, Object> args) {
+    assert(
+        _appState != null, 'Please check if the engine has been initialized!');
     var params = CommonParams()
       ..key = key
       ..arguments = args;
