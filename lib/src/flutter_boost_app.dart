@@ -65,11 +65,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   BoostContainer? get topContainer =>
       containers.isNotEmpty ? containers.last : null;
 
-  NativeRouterApi? get nativeRouterApi => _nativeRouterApi;
-  NativeRouterApi? _nativeRouterApi;
+  NativeRouterApi get nativeRouterApi => _nativeRouterApi;
+  late NativeRouterApi _nativeRouterApi;
 
-  BoostFlutterRouterApi? get boostFlutterRouterApi => _boostFlutterRouterApi;
-  BoostFlutterRouterApi? _boostFlutterRouterApi;
+  BoostFlutterRouterApi get boostFlutterRouterApi => _boostFlutterRouterApi;
+  late BoostFlutterRouterApi _boostFlutterRouterApi;
 
   final Set<int> _activePointers = <int>{};
 
@@ -104,7 +104,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }());
 
       refreshOnPush(initialContainer);
-      _boostFlutterRouterApi!.isEnvReady = true;
+      _boostFlutterRouterApi.isEnvReady = true;
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
     });
@@ -199,12 +199,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
       stack.routes![container.pageInfo.uniqueId] = params;
     }
-    await nativeRouterApi!.saveStackToHost(stack);
+    await nativeRouterApi.saveStackToHost(stack);
     Logger.log('_saveStackForHotRestart, ${stack.containers}, ${stack.routes}');
   }
 
   Future<void> _restoreStackForHotRestart() async {
-    final stack = await nativeRouterApi!.getStackFromHost();
+    final stack = await nativeRouterApi.getStackFromHost();
     if (stack.containers != null) {
       for (String? uniqueId in stack.containers as Iterable<String?>) {
         var withContainer = true;
@@ -273,7 +273,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           final params = CommonParams()
             ..pageName = pushOption.name
             ..arguments = pushOption.arguments as Map<String, Object>?;
-          nativeRouterApi!.pushNativeRoute(params);
+          nativeRouterApi.pushNativeRoute(params);
           return pendNativeResult(pushOption.name);
         }
       }
@@ -295,7 +295,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..uniqueId = uniqueId
         ..opaque = opaque
         ..arguments = (arguments ?? <String, dynamic>{});
-      nativeRouterApi!.pushFlutterRoute(params);
+      nativeRouterApi.pushFlutterRoute(params);
       _pendingResult[uniqueId] = completer;
       return completer.future;
     } else {
@@ -436,7 +436,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
           ..pageName = container.pageInfo.pageName
           ..uniqueId = container.pageInfo.uniqueId
           ..arguments = {"animated": false};
-        await nativeRouterApi!.popRoute(params);
+        await nativeRouterApi.popRoute(params);
       }
 
       if (targetContainer.topPage != targetPage) {
@@ -490,7 +490,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
             ..arguments = ((result is Map<String, dynamic>)
                 ? result
                 : <String, dynamic>{});
-          await nativeRouterApi!.popRoute(params);
+          await nativeRouterApi.popRoute(params);
         } else {
           if (!onBackPressed) {
             container!.navigator!.pop(result);
@@ -524,7 +524,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         ..pageName = container.pageInfo.pageName
         ..uniqueId = container.pageInfo.uniqueId
         ..arguments = container.pageInfo.arguments;
-      return await _nativeRouterApi!.popRoute(params);
+      return await _nativeRouterApi.popRoute(params);
     }
   }
 

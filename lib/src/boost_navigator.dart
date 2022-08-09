@@ -90,32 +90,42 @@ class BoostNavigator {
   /// 2.remove(pop) previous page
   Future<T> pushReplacement<T extends Object>(String name,
       {Map<String, dynamic>? arguments, bool withContainer = false}) async {
-    final id = getTopPageInfo()!.uniqueId;
-
+    final String? id = getTopPageInfo()?.uniqueId;
     final result =
         push(name, arguments: arguments, withContainer: withContainer);
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      remove(id);
-    });
+    if (id != null) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        remove(id);
+      });
+    }
     return result as FutureOr<T>;
   }
 
   /// Pop the top-most page off the hybrid stack.
-  Future<bool> pop<T extends Object>([T? result]) async =>
-      await appState!.popWithResult(result);
+  Future<bool> pop<T extends Object>([T? result]) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return await appState!.popWithResult(result);
+  }
 
   /// PopUntil page off the hybrid stack.
-  Future<void> popUntil({String? route, String? uniqueId}) async =>
-      appState!.popUntil(route: route, uniqueId: uniqueId);
+  Future<void> popUntil({String? route, String? uniqueId}) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return appState!.popUntil(route: route, uniqueId: uniqueId);
+  }
 
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
   /// Please use [BoostNavigator.pop] instead.
   Future<bool> remove(String? uniqueId,
-          {Map<String, dynamic>? arguments}) async =>
-      appState!.removeWithResult(uniqueId, arguments);
+      {Map<String, dynamic>? arguments}) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return await appState!.removeWithResult(uniqueId, arguments);
+  }
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;

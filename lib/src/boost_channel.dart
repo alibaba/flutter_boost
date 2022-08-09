@@ -42,7 +42,7 @@ class BoostChannel {
     var params = CommonParams()
       ..key = key
       ..arguments = args;
-    _appState!.nativeRouterApi!.sendEventToNative(params);
+    _appState!.nativeRouterApi.sendEventToNative(params);
   }
 
   /// enable iOS native pop gesture for container matching [containerId]
