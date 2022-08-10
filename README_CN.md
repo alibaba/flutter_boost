@@ -5,9 +5,9 @@
 
 # Release Note
 
-v3.0-release.2
+3.1.0
 
-PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter_boost/tree/null-safety
+PS：主线已支持空安全(null-safety)
 
 
 - 1.flutter sdk升级不需要升级boost
@@ -35,7 +35,7 @@ PS：空安全版本(null-safety)请看这里 https://github.com/alibaba/flutter
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-release.2'
+        ref: '3.1.0'
 ```
 
 # 使用文档
