@@ -43,15 +43,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private boolean isAttached = false;
     private boolean isFinishing = false;
 
-    // @Override
-    public void detachFromFlutterEngine() {
-        /**
-         * Override and do nothing.
-         *
-         * The idea here is to avoid releasing delegate when
-         * a new FlutterFragment is attached in Flutter2.0.
-         */
-        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    @Override
+    public boolean shouldDispatchAppLifecycleState() {
+        return false;
     }
 
     @Override
@@ -138,7 +132,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         stage = LifecycleStage.ON_RESUME;
         if (!isHidden()) {
             didFragmentShow();
-            getFlutterEngine().getLifecycleChannel().appIsResumed();
 
             // Update system UI overlays to match Flutter's desired system chrome style
             onUpdateSystemUiOverlays();
@@ -172,7 +165,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         stage = LifecycleStage.ON_PAUSE;
         didFragmentHide();
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
     }
 
@@ -180,7 +172,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
@@ -195,7 +186,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDetach() {
         FlutterEngine engine = getFlutterEngine();
         super.onDetach();
-        engine.getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onDetach: " + this);
     }
 
@@ -314,7 +304,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private void performAttach() {
         if (!isAttached) {
             // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+            getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
             if (platformPlugin == null) {
                 platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());

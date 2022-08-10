@@ -96,7 +96,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
     // Make sure that the widget in the tree that matches [overlayKey]
     // is already mounted, or [refreshOnPush] will fail.
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       // try to restore routes from host when hot restart.
       assert(() {
         _restoreStackForHotRestart();
@@ -170,7 +170,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   void _cancelActivePointers() {
-    _activePointers.toList().forEach(WidgetsBinding.instance!.cancelPointer);
+    _activePointers.toList().forEach(WidgetsBinding.instance.cancelPointer);
   }
 
   String _createUniqueId(String? pageName) {
