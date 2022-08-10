@@ -15,7 +15,7 @@ class CounterPage extends StatefulWidget {
   final String title;
 
   @override
-  _CounterPageState createState() => _CounterPageState();
+  State<CounterPage> createState() => _CounterPageState();
 }
 
 class _CounterPageState extends State<CounterPage> {

@@ -12,7 +12,6 @@ class BoostOperationQueue {
 
   /// Add an [operation] in queue
   void addPendingOperation(Function operation) {
-    assert(operation != null);
     _queue.add(operation);
   }
 

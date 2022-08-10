@@ -16,7 +16,7 @@ class StateRestorationPage extends StatefulWidget {
   const StateRestorationPage({Key key}) : super(key: key);
 
   @override
-  _StateRestorationPageState createState() => _StateRestorationPageState();
+  State<StateRestorationPage> createState() => _StateRestorationPageState();
 }
 
 class _StateRestorationPageState extends State<StateRestorationPage>

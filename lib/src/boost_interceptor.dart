@@ -6,16 +6,16 @@ class BoostInterceptorOption {
       {this.uniqueId, this.isFromHost, this.arguments});
 
   /// Your page name in route table
-  String name;
+  String? name;
 
   /// Unique identifier for the route
-  String uniqueId;
+  String? uniqueId;
 
   /// Whether or not the flutter page was opened by host
-  bool isFromHost;
+  bool? isFromHost;
 
   /// The arguments you want to pass in next page
-  Map<String, dynamic> arguments;
+  Map<String, dynamic>? arguments;
 
   @override
   String toString() => "Instance of 'BoostInterceptorOption'(name:$name, "
@@ -35,8 +35,8 @@ class InterceptorState<T> {
 }
 
 class _BaseHandler {
-  InterceptorState get state => _state;
-  InterceptorState _state;
+  InterceptorState? get state => _state;
+  InterceptorState? _state;
 }
 
 /// Handler for push interceptor.

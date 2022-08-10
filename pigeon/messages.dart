@@ -1,16 +1,29 @@
 import 'package:pigeon/pigeon.dart';
 
+@ConfigurePigeon(PigeonOptions(
+  input: 'pigeon/messages.dart',
+  dartOut: 'lib/src/messages.dart',
+  objcHeaderOut: 'ios/Classes/messages.h',
+  objcSourceOut: 'ios/Classes/messages.m',
+  javaOut: 'android/src/main/java/com/idlefish/flutterboost/Messages.java',
+  javaOptions: JavaOptions(
+    package: 'com.idlefish.flutterboost',
+  ),
+  objcOptions: ObjcOptions(
+    prefix: 'FB',
+  ),
+))
 class CommonParams {
-  String pageName;
-  String uniqueId;
-  Map<String, Object> arguments;
-  bool opaque;
-  String key;
+  String? pageName;
+  String? uniqueId;
+  Map<String?, Object?>? arguments;
+  bool? opaque;
+  String? key;
 }
 
 class StackInfo {
-  List<String> containers;
-  Map<String, List<Map<String, Object>>> routes;
+  List<String?>? containers;
+  Map<String?, List<Map<String, Object>>?>? routes;
 }
 
 @HostApi()
@@ -34,15 +47,6 @@ abstract class FlutterRouterApi {
   void onNativeResult(CommonParams param);
   void onContainerShow(CommonParams param);
   void onContainerHide(CommonParams param);
-  void sendEventToFlutter(CommonParams params);
+  void sendEventToFlutter(CommonParams param);
   void onBackPressed();
-}
-
-void configurePigeon(PigeonOptions opts) {
-  opts.dartOut = 'lib/src/messages.dart';
-  opts.objcHeaderOut = 'ios/Classes/messages.h';
-  opts.objcSourceOut = 'ios/Classes/messages.m';
-  opts.objcOptions.prefix = 'FB';
-  opts.javaOut =
-      'android/src/main/java/com/idlefish/flutterboost/Messages.java';
 }

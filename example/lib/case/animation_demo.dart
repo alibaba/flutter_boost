@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_boost_example/case/demo_painter.dart';
 
 class AnimationDemo extends StatefulWidget {
-  _AnimationDemoState createState() => _AnimationDemoState();
+  State<AnimationDemo> createState() => _AnimationDemoState();
 }
 
 class _AnimationDemoState extends State<AnimationDemo>

@@ -5,7 +5,7 @@ class FlutterRebuildDemo extends StatefulWidget {
   const FlutterRebuildDemo({Key key}) : super(key: key);
 
   @override
-  _FlutterRebuildDemoState createState() => _FlutterRebuildDemoState();
+  State<FlutterRebuildDemo> createState() => _FlutterRebuildDemoState();
 }
 
 class _FlutterRebuildDemoState extends State<FlutterRebuildDemo> {
@@ -54,7 +54,7 @@ class FlutterRebuildPageA extends StatefulWidget {
   const FlutterRebuildPageA({Key key}) : super(key: key);
 
   @override
-  _FlutterRebuildPageAState createState() => _FlutterRebuildPageAState();
+  State<FlutterRebuildPageA> createState() => _FlutterRebuildPageAState();
 }
 
 class _FlutterRebuildPageAState extends State<FlutterRebuildPageA> {
@@ -103,7 +103,7 @@ class FlutterRebuildPageB extends StatefulWidget {
   const FlutterRebuildPageB({Key key}) : super(key: key);
 
   @override
-  _FlutterRebuildPageBState createState() => _FlutterRebuildPageBState();
+  State<FlutterRebuildPageB> createState() => _FlutterRebuildPageBState();
 }
 
 class _FlutterRebuildPageBState extends State<FlutterRebuildPageB> {

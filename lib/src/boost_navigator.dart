@@ -6,8 +6,8 @@ import 'boost_container.dart';
 import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 
-typedef FlutterBoostRouteFactory = Route<dynamic> Function(
-    RouteSettings settings, String uniqueId);
+typedef FlutterBoostRouteFactory = Route<dynamic>? Function(
+    RouteSettings settings, String? uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
     FlutterBoostRouteFactory routeFactory) {
@@ -30,22 +30,22 @@ class BoostNavigator {
   static final BoostNavigator _instance = BoostNavigator._();
 
   /// The boost data center
-  FlutterBoostAppState appState;
+  FlutterBoostAppState? appState;
 
   /// The route table in flutter_boost
-  FlutterBoostRouteFactory _routeFactory;
+  late FlutterBoostRouteFactory _routeFactory;
 
   set routeFactory(FlutterBoostRouteFactory routeFactory) =>
       _routeFactory = routeFactoryWrapper(routeFactory);
 
   FlutterBoostRouteFactory get routeFactory => _routeFactory;
 
-  @Deprecated('Use `instance` instead.')
-
   /// Use BoostNavigator.instance instead
+  @Deprecated('Use `instance` instead.')
   static BoostNavigator of() => instance;
 
   static BoostNavigator get instance {
+    // If the root ioslate has initialized, |appState| should not be null.
     _instance.appState ??= overlayKey.currentContext
         ?.findAncestorStateOfType<FlutterBoostAppState>();
     return _instance;
@@ -66,19 +66,21 @@ class BoostNavigator {
   ///
   /// And it will return the result popped by page as a Future<T>
   Future<T> push<T extends Object>(String name,
-      {Map<String, dynamic> arguments,
+      {Map<String, dynamic>? arguments,
       bool withContainer = false,
       bool opaque = true}) {
-    bool is_flutter_page = isFlutterPage(name);
-    if (is_flutter_page && withContainer) {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    bool isFlutter = isFlutterPage(name);
+    if (isFlutter && withContainer) {
       // 1. open flutter page with container
       // Intercepted in BoostFlutterRouterApi.pushRoute
-      return appState.pushWithResult(name,
+      return appState!.pushWithResult(name,
           arguments: arguments, withContainer: withContainer, opaque: opaque);
     } else {
       // 2. open native page or flutter page without container
-      return appState.pushWithInterceptor(
-          name, false /* isFromHost */, is_flutter_page,
+      return appState!.pushWithInterceptor(
+          name, false /* isFromHost */, isFlutter,
           arguments: arguments, withContainer: withContainer, opaque: opaque);
     }
   }
@@ -87,45 +89,55 @@ class BoostNavigator {
   /// 1.Push a new page onto pageStack
   /// 2.remove(pop) previous page
   Future<T> pushReplacement<T extends Object>(String name,
-      {Map<String, dynamic> arguments, bool withContainer = false}) async {
-    final id = getTopPageInfo().uniqueId;
-
+      {Map<String, dynamic>? arguments, bool withContainer = false}) async {
+    final String? id = getTopPageInfo()?.uniqueId;
     final result =
         push(name, arguments: arguments, withContainer: withContainer);
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      remove(id);
-    });
-    return result;
+    if (id != null) {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        remove(id);
+      });
+    }
+    return result as FutureOr<T>;
   }
 
   /// Pop the top-most page off the hybrid stack.
-  Future<bool> pop<T extends Object>([T result]) async =>
-      await appState.popWithResult(result);
+  Future<bool> pop<T extends Object>([T? result]) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return await appState!.popWithResult(result);
+  }
 
   /// PopUntil page off the hybrid stack.
-  Future<void> popUntil({String route, String uniqueId}) async =>
-      appState.popUntil(route: route, uniqueId: uniqueId);
+  Future<void> popUntil({String? route, String? uniqueId}) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return appState!.popUntil(route: route, uniqueId: uniqueId);
+  }
 
   /// Remove the page with the given [uniqueId] from hybrid stack.
   ///
   /// This API is for backwards compatibility.
   /// Please use [BoostNavigator.pop] instead.
-  Future<bool> remove(String uniqueId,
-          {Map<String, dynamic> arguments}) async =>
-      appState.removeWithResult(uniqueId, arguments);
+  Future<bool> remove(String? uniqueId,
+      {Map<String, dynamic>? arguments}) async {
+    assert(
+        appState != null, 'Please check if the engine has been initialized!');
+    return await appState!.removeWithResult(uniqueId, arguments);
+  }
 
   /// Retrieves the infomation of the top-most flutter page
   /// on the hybrid stack, such as uniqueId, pagename, etc;
   ///
   /// This is a legacy API for backwards compatibility.
-  PageInfo getTopPageInfo() => appState.getTopPageInfo();
+  PageInfo? getTopPageInfo() => appState!.getTopPageInfo();
 
   @Deprecated('use getPageInfoByContext(BuildContext context) instead')
-  PageInfo getTopByContext(BuildContext context) =>
+  PageInfo? getTopByContext(BuildContext context) =>
       BoostContainer.of(context)?.pageInfo;
 
-  PageInfo getPageInfoByContext(BuildContext context) =>
+  PageInfo? getPageInfoByContext(BuildContext context) =>
       BoostContainer.of(context)?.pageInfo;
 
   bool isTopPage(BuildContext context) {
@@ -135,15 +147,15 @@ class BoostNavigator {
   /// Return the number of flutter pages
   ///
   /// This is a legacy API for backwards compatibility.
-  int pageSize() => appState.pageSize();
+  int pageSize() => appState!.pageSize();
 }
 
 /// The PageInfo use in FlutterBoost ,it is not a public api
 class PageInfo {
   PageInfo({this.pageName, this.uniqueId, this.arguments, this.withContainer});
 
-  bool withContainer;
-  String pageName;
-  String uniqueId;
-  Map<String, dynamic> arguments;
+  bool? withContainer;
+  String? pageName;
+  String? uniqueId;
+  Map<String, dynamic>? arguments;
 }

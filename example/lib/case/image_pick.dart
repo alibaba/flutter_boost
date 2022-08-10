@@ -14,7 +14,7 @@ class ImagePickerPage extends StatefulWidget {
   final String title;
 
   @override
-  _ImagePickerPageState createState() => _ImagePickerPageState();
+  State<ImagePickerPage> createState() => _ImagePickerPageState();
 }
 
 class _ImagePickerPageState extends State<ImagePickerPage> {

@@ -13,8 +13,8 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
     changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
-  static BoostFlutterBinding get instance => _instance;
-  static BoostFlutterBinding _instance;
+  static BoostFlutterBinding? get instance => _instance;
+  static BoostFlutterBinding? _instance;
 
   @override
   void handleAppLifecycleStateChanged(AppLifecycleState state) {
@@ -27,7 +27,7 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
   }
 
   void changeAppLifecycleState(AppLifecycleState state) {
-    if (SchedulerBinding.instance.lifecycleState == state) {
+    if (SchedulerBinding.instance!.lifecycleState == state) {
       return;
     }
     _appLifecycleStateLocked = false;

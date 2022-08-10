@@ -34,8 +34,8 @@ public class FlutterBoostUtils {
         return null;
     }
 
-    public static Map<Object, Object> bundleToMap(Bundle bundle) {
-        Map<Object, Object> map = new HashMap<>();
+    public static Map<String, Object> bundleToMap(Bundle bundle) {
+        Map<String, Object> map = new HashMap<>();
         if(bundle == null || bundle.keySet().isEmpty()) {
             return map;
         }

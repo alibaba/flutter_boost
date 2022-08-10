@@ -9,69 +9,69 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
       _instance = BoostFlutterRouterApi._(appState);
       FlutterRouterApi.setup(_instance);
     }
-    return _instance;
+    return _instance!;
   }
 
   BoostFlutterRouterApi._(this.appState);
 
   final FlutterBoostAppState appState;
-  static BoostFlutterRouterApi _instance;
+  static BoostFlutterRouterApi? _instance;
 
   /// Whether the dart env is ready to receive messages from host.
   bool isEnvReady = false;
 
   @override
-  void pushRoute(CommonParams arg) {
+  void pushRoute(CommonParams param) {
     _addInOperationQueueOrExcute(() {
       appState.pushWithInterceptor(
-          arg.pageName, true /* isFromHost */, true /* isFlutterPage */,
+          param.pageName, true /* isFromHost */, true /* isFlutterPage */,
           withContainer: true,
-          uniqueId: arg.uniqueId,
-          arguments:
-              Map<String, dynamic>.from(arg.arguments ?? <String, dynamic>{}));
+          uniqueId: param.uniqueId,
+          arguments: Map<String, dynamic>.from(
+              param.arguments ?? <String, dynamic>{}));
     });
   }
 
   @override
-  void popRoute(CommonParams arg) {
+  void popRoute(CommonParams param) {
     _addInOperationQueueOrExcute(() {
-      appState.pop(uniqueId: arg.uniqueId);
+      appState.pop(uniqueId: param.uniqueId);
     });
   }
 
-  void popUntilRoute(CommonParams arg) {
+  void popUntilRoute(CommonParams param) {
     _addInOperationQueueOrExcute(() {
-      appState.popUntil(route: arg.pageName, uniqueId: arg.uniqueId);
-    });
-  }
-
-  @override
-  void onForeground(CommonParams arg) => appState.onForeground();
-
-  @override
-  void onBackground(CommonParams arg) => appState.onBackground();
-
-  @override
-  void removeRoute(CommonParams arg) {
-    _addInOperationQueueOrExcute(() {
-      appState.remove(arg.uniqueId);
+      appState.popUntil(route: param.pageName, uniqueId: param.uniqueId);
     });
   }
 
   @override
-  void onNativeResult(CommonParams arg) => appState.onNativeResult(arg);
+  void onForeground(CommonParams param) => appState.onForeground();
 
   @override
-  void onContainerHide(CommonParams arg) {
+  void onBackground(CommonParams param) => appState.onBackground();
+
+  @override
+  void removeRoute(CommonParams param) {
     _addInOperationQueueOrExcute(() {
-      appState.onContainerHide(arg);
+      appState.remove(param.uniqueId);
     });
   }
 
   @override
-  void onContainerShow(CommonParams arg) {
+  void onNativeResult(CommonParams param) => appState.onNativeResult(param);
+
+  @override
+  void onContainerHide(CommonParams param) {
     _addInOperationQueueOrExcute(() {
-      appState.onContainerShow(arg);
+      appState.onContainerHide(param);
+    });
+  }
+
+  @override
+  void onContainerShow(CommonParams param) {
+    _addInOperationQueueOrExcute(() {
+      appState.onContainerShow(param);
     });
   }
 
@@ -80,18 +80,15 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
 
   ///When native send msg to flutter,this method will be called
   @override
-  void sendEventToFlutter(CommonParams arg) {
+  void sendEventToFlutter(CommonParams param) {
     _addInOperationQueueOrExcute(() {
-      appState.onReceiveEventFromNative(arg);
+      appState.onReceiveEventFromNative(param);
     });
   }
 
   /// If [isEnvReady] is false, add [operation] into pending queue,
   /// or [operation] will execute immediately.
   void _addInOperationQueueOrExcute(Function operation) {
-    if (operation == null) {
-      return;
-    }
     if (!isEnvReady) {
       BoostOperationQueue.instance.addPendingOperation(operation);
     } else {
