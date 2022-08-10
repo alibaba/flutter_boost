@@ -81,6 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.v("xlog", "#onActivityResult, requestCode=" + requestCode + ", resultCode=" + resultCode + ", data=" + data.getSerializableExtra(ACTIVITY_RESULT_KEY));
+        Log.v("xlog", "#onActivityResult, requestCode=" + requestCode + ", resultCode=" + resultCode + ", data=" + (data != null ? data.getSerializableExtra(ACTIVITY_RESULT_KEY) : ""));
     }
 }

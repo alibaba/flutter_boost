@@ -59,15 +59,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         if (DEBUG) Log.d(TAG, "#onCreate: " + this);
     }
 
-    // @Override
-    public void detachFromFlutterEngine() {
-        /**
-         * Override and do nothing.
-         *
-         * The idea here is to avoid releasing delegate when
-         * a new FlutterActivity is attached in Flutter2.0.
-         */
-        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    @Override
+    public boolean shouldDispatchAppLifecycleState() {
+        return false;
     }
 
     @Override
@@ -88,7 +82,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
         if (DEBUG) Log.d(TAG, "#onStop: " + this);
     }
 
@@ -115,7 +108,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         performAttach();
         textureHooker.onFlutterTextureViewRestoreState();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
 
         // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
         // the system UI overlays can't be updated in |onPostResume| callback. So we
@@ -140,7 +132,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_PAUSE;
 
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        getFlutterEngine().getLifecycleChannel().appIsResumed();
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
@@ -156,7 +147,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private void performAttach() {
         if (!isAttached) {
             // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getActivity(), getLifecycle());
+            getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
             if (platformPlugin == null) {
                 platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
@@ -219,7 +210,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         // Get engine before |super.onDestroy| callback.
         FlutterEngine engine = getFlutterEngine();
         super.onDestroy();
-        engine.getLifecycleChannel().appIsResumed(); // Go after |super.onDestroy|.
+
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
     }
@@ -305,7 +296,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public String getCachedEngineId() {
-      return FlutterBoost.ENGINE_ID;
+        return FlutterBoost.ENGINE_ID;
     }
 
     @Override

@@ -1,12 +1,13 @@
 ## NEXT
+1. 支持Flutter 3.0
 
-3.1.0
+## 3.1.0
 1. [Android] 去掉不必要的兜底方案，解决Native页面返回值丢失的问题
 2. [Android] 增加计数器测试案例，验证页面刷新问题
 3. 支持空安全（基于Flutter2.5.x）
 4. [Android] 移除对AndroidX的依赖
 
-v3.0-release.2
+## v3.0-release.2
 1. 修复flutter首页打开A页面，打开B页面返回到首页后内存泄露问题
 2. [bugfix] 1.解决异步导致的断言错误(#1583)；2.修改测试案例，解决测试页面被拦截的问题
 3. [Android] 完善PlatformView测试案例： 1. 增加复杂的Native动画场景； 2. 支持intent打开测试页面，方便自动化测试；

@@ -23,6 +23,7 @@
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
@@ -36,6 +37,7 @@
 
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -45,6 +47,7 @@
         </activity>
         <activity
             android:name="com.idlefish.flutterboost.containers.FlutterBoostActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -55,6 +58,7 @@
 
         <activity
             android:name=".tab.TabMainActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -65,6 +69,7 @@
 
         <activity
             android:name=".tab.TabCustomViewActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -74,6 +79,7 @@
 
         <activity
             android:name=".FlutterFragmentPageActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"
@@ -84,12 +90,14 @@
 
         <activity
             android:name=".NativePageActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name=".TransparencyPageActivity"
+            android:exported="true"
             android:theme="@style/TranTheme.Translucente"
             android:configChanges="screenSize|smallestScreenSize|orientation|keyboardHidden"
             android:windowSoftInputMode="adjustResize">
@@ -97,6 +105,7 @@
 
         <activity
             android:name=".PerfTestActivity"
+            android:exported="true"
             android:theme="@style/Theme.AppCompat"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
             android:hardwareAccelerated="true"

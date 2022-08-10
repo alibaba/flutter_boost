@@ -116,7 +116,7 @@ class PageVisibilityBinding {
   ///When page show first time,we should dispatch event in [FrameCallback]
   ///to avoid the page can't receive the show event
   void dispatchPageShowEventOnPageShowFirstTime(Route<dynamic>? route) {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       dispatchPageShowEvent(route);
     });
   }

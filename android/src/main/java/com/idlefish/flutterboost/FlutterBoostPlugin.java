@@ -24,6 +24,12 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, ActivityAware {
     private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
     private static final boolean DEBUG = false;
+
+    private static final String APP_LIFECYCLE_CHANGED_KEY = "app_lifecycle_changed_key";
+    private static final String LIFECYCLE_STATE = "lifecycleState";
+    private static final int FLUTTER_APP_STATE_RESUMED = 0;
+    private static final int FLUTTER_APP_STATE_PAUSED = 2;
+
     private FlutterEngine engine;
     private FlutterRouterApi channel;
     private FlutterBoostDelegate delegate;
@@ -174,6 +180,20 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         return () -> finalListeners.remove(listener);
     }
 
+    void sendEventToFlutter(String key, Map<String, Object> args) {
+        Messages.CommonParams params = new Messages.CommonParams();
+        params.setKey(key);
+        params.setArguments(args);
+        getChannel().sendEventToFlutter(params, reply -> {});
+    }
+
+    void changeFlutterAppLifecycle(int state) {
+        assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
+        Map arguments = new HashMap();
+        arguments.put(LIFECYCLE_STATE, state);
+        sendEventToFlutter(APP_LIFECYCLE_CHANGED_KEY, arguments);
+    }
+
     private void checkEngineState() {
         if (engine == null || !engine.getDartExecutor().isExecutingDart()) {
             throw new RuntimeException("The engine is not ready for use. " +
@@ -297,7 +317,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         if (DEBUG) Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
         FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
         if (FlutterContainerManager.instance().getContainerSize() == 1) {
-           FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
+           changeFlutterAppLifecycle(FLUTTER_APP_STATE_RESUMED);
         }
     }
 
@@ -321,7 +341,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         removeRoute(uniqueId, reply -> {});
         FlutterContainerManager.instance().removeContainer(uniqueId);
         if (FlutterContainerManager.instance().getContainerSize() == 0) {
-            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_PAUSED);
+            changeFlutterAppLifecycle(FLUTTER_APP_STATE_PAUSED);
         }
     }
 
