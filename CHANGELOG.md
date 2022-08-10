@@ -4,6 +4,7 @@
 1. [Android] 去掉不必要的兜底方案，解决Native页面返回值丢失的问题
 2. [Android] 增加计数器测试案例，验证页面刷新问题
 3. 支持空安全（基于Flutter2.5.x）
+4. [Android] 移除对AndroidX的依赖
 
 v3.0-release.2
 1. 修复flutter首页打开A页面，打开B页面返回到首页后内存泄露问题
@@ -13,11 +14,11 @@ v3.0-release.2
 5. 将拦截器内部实现修改为同步，避免时序相关问题
 
 ## v3.0-release.1
-1.  [ios]增加platform view测试案例 (#1546)
+1. [ios]增加platform view测试案例 (#1546)
 2. [Android] 在Fragment的使用场景中，onHiddenChanged/setUserVisibleHint可能比onCreateView先调用 (#1456)
 3. [featurePR]使FlutterBoost的FlutterBoostFragment#finishContainer方法在子类可以定制容器关闭逻辑 (#1565)
 4. fix(Android):FlutterBoost开启FlutterBoostFragment页面导致状态栏颜色异常 (#1570)
-5.  拦截器重构： (#1583)
+5. 拦截器重构： (#1583)
 6. 重命名example_new为example_new_for_ios
 
 Breaking Change
