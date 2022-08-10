@@ -6,9 +6,9 @@
 </p>
 
 # Release Note
-v3.0-release.2
+3.1.0
 
-PS：Here for null-safety https://github.com/alibaba/flutter_boost/tree/null-safety
+PS：Null-safety is already supported.
 
 - 1. Flutter SDK upgrades do not require Boost upgrades
 - 2. Simplify the architecture
@@ -37,7 +37,7 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: 'v3.0-release.2'
+        ref: '3.1.0'
 ```
 
 
