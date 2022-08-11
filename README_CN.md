@@ -5,7 +5,7 @@
 
 # Release Note
 
-3.1.0
+4.0.0
 
 PS：主线已支持空安全(null-safety)
 
@@ -35,7 +35,7 @@ PS：主线已支持空安全(null-safety)
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '3.1.0'
+        ref: '4.0.0'
 ```
 
 # 使用文档
