@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TestPage extends StatefulWidget {
-  TestPage({Key key, this.title = "Input Test"}) : super(key: key);
+  const TestPage({Key? key, this.title = "Input Test"}) : super(key: key);
 
   final String title;
 
@@ -35,74 +35,74 @@ class _TestPageState extends State<TestPage> {
           child: ListView(
             children: <Widget>[
               Container(
-                child: Text(
-                  'You have pushed the button this many times:',
-                ),
                 margin: const EdgeInsets.all(8.0),
                 alignment: Alignment.center,
+                child: const Text(
+                  'You have pushed the button this many times:',
+                ),
               ),
               Container(
+                margin: const EdgeInsets.all(8.0),
+                alignment: Alignment.center,
                 child: Text(
                   '$_counter',
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
-                margin: const EdgeInsets.all(8.0),
-                alignment: Alignment.center,
               ),
               Container(
-                child: TextField(
+                padding: const EdgeInsets.all(8.0),
+                child: const TextField(
                   minLines: 2,
                   maxLines: 10,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               TestTextField(),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Colors.red,
                   width: double.infinity,
                   height: 128.0,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Colors.orange,
                   width: double.infinity,
                   height: 128.0,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Colors.green,
                   width: double.infinity,
                   height: 128.0,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Colors.blue,
                   width: double.infinity,
                   height: 128.0,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               Container(
+                padding: const EdgeInsets.all(8.0),
                 child: Container(
                   color: Colors.yellow,
                   width: double.infinity,
                   height: 128.0,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               Container(
-                child: TextField(
+                padding: const EdgeInsets.all(8.0),
+                child: const TextField(
                   minLines: 2,
                   maxLines: 10,
                 ),
-                padding: const EdgeInsets.all(8.0),
               ),
               TestTextField(),
             ],
@@ -110,7 +110,7 @@ class _TestPageState extends State<TestPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -122,16 +122,16 @@ class TestTextField extends StatefulWidget {
 }
 
 class _TestTextFieldState extends State<TestTextField> {
-  FocusNode _node;
-  PersistentBottomSheetController _controller;
+  FocusNode? _node;
+  PersistentBottomSheetController? _controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _node = FocusNode();
-    _node.addListener(() {
-      if (_node.hasFocus) {
+    _node!.addListener(() {
+      if (_node!.hasFocus) {
         print('showBottomSheet');
         _controller = Scaffold.of(context)
             .showBottomSheet<dynamic>((BuildContext ctx) => Container(
@@ -140,11 +140,8 @@ class _TestTextFieldState extends State<TestTextField> {
                   color: Colors.deepPurple,
                 ));
       } else {
-        if (_controller != null) {
-          //Navigator.of(context).pop();
-          print('closeBottomSheet');
-          _controller.close();
-        }
+        print('closeBottomSheet');
+        _controller!.close();
         _controller = null;
       }
     });
@@ -153,12 +150,12 @@ class _TestTextFieldState extends State<TestTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(8.0),
       child: TextField(
         minLines: 2,
         maxLines: 10,
         focusNode: _node,
       ),
-      padding: const EdgeInsets.all(8.0),
     );
   }
 }

@@ -53,8 +53,8 @@ class FlutterBoostApp extends StatefulWidget {
 class FlutterBoostAppState extends State<FlutterBoostApp> {
   static const String _appLifecycleChangedKey = "app_lifecycle_changed_key";
 
-  final Map<String, Completer<Object>> _pendingResult =
-      <String, Completer<Object>>{};
+  final Map<String, Completer<Object?>> _pendingResult =
+      <String, Completer<Object?>>{};
 
   List<BoostContainer> get containers => _containers;
   final List<BoostContainer> _containers = <BoostContainer>[];
@@ -188,8 +188,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     stack.containers = <String?>[];
     for (var container in containers) {
       stack.containers!.add(container.pageInfo.uniqueId);
-      stack.routes = <String?, List<Map<String, Object>>>{};
-      final List<Map<String, Object?>> params = <Map<String, Object>>[];
+      stack.routes = <String?, List<Map<String, Object?>>>{};
+      final List<Map<String, Object?>> params = <Map<String, Object?>>[];
       for (var page in container.pages) {
         final param = <String, Object?>{};
         param['pageName'] = page.pageInfo.pageName;
@@ -231,7 +231,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         '_restoreStackForHotRestart, ${stack.containers}, ${stack.routes}');
   }
 
-  Future<T> pushWithInterceptor<T extends Object>(
+  Future<T> pushWithInterceptor<T extends Object?>(
       String? name, bool isFromHost, bool isFlutterPage,
       {Map<String, dynamic>? arguments,
       String? uniqueId,
@@ -279,10 +279,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
     }
 
-    return Future<void>.value().then((value) => value as T);
+    return Future<T>.value();
   }
 
-  Future<T> pushWithResult<T extends Object>(String? pageName,
+  Future<T> pushWithResult<T extends Object?>(String? pageName,
       {String? uniqueId,
       Map<String, dynamic>? arguments,
       required bool withContainer,
@@ -303,7 +303,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<T> pushPage<T extends Object>(String? pageName,
+  Future<T> pushPage<T extends Object?>(String? pageName,
       {String? uniqueId, Map<String, dynamic>? arguments}) {
     Logger.log('pushPage, uniqueId=$uniqueId, name=$pageName,'
         ' arguments:$arguments, $topContainer');
@@ -374,7 +374,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     }
   }
 
-  Future<bool> popWithResult<T extends Object>([T? result]) async {
+  Future<bool> popWithResult<T extends Object?>([T? result]) async {
     final uniqueId = topContainer?.topPage.pageInfo.uniqueId;
     _completePendingResultIfNeeded(uniqueId, result: result);
     return await pop(result: result);
@@ -582,7 +582,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log('remove,  uniqueId=$uniqueId, $containers');
   }
 
-  Future<T> pendNativeResult<T extends Object>(String? pageName) {
+  Future<T> pendNativeResult<T extends Object?>(String? pageName) {
     final completer = Completer<T>();
     final initiatorPage = topContainer?.topPage.pageInfo.uniqueId;
     final key = '$initiatorPage#$pageName';
@@ -601,10 +601,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     Logger.log('onNativeResult, key:$key, result:${params.arguments}');
   }
 
-  void _completePendingResultIfNeeded<T extends Object>(String? uniqueId,
+  void _completePendingResultIfNeeded<T extends Object?>(String? uniqueId,
       {T? result}) {
     if (uniqueId != null && _pendingResult.containsKey(uniqueId)) {
-      _pendingResult[uniqueId]!.complete(result);
+      _pendingResult[uniqueId]!.complete(result ?? {});
       _pendingResult.remove(uniqueId);
     }
   }
@@ -645,12 +645,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   ///Add event listener in flutter side with a [key] and [listener]
   VoidCallback addEventListener(String key, EventListener listener) {
-    List<Future<dynamic>? Function(String, Map<dynamic, dynamic>)>? listeners =
+    List<Future<dynamic>? Function(String, Map<dynamic, dynamic>?)>? listeners =
         _listenersTable[key];
     if (listeners == null) {
       listeners = [];
-      _listenersTable[key] = listeners
-          as List<Future<dynamic>? Function(String, Map<dynamic, dynamic>?)>;
+      _listenersTable[key] = listeners;
     }
 
     listeners.add(listener);

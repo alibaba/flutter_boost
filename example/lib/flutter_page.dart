@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class FlutterRouteWidget extends StatefulWidget {
-  FlutterRouteWidget({this.params, this.message, this.uniqueId});
+  const FlutterRouteWidget({this.params, this.message, this.uniqueId});
 
-  final Map params;
-  final String message;
-  final String uniqueId;
+  final Map? params;
+  final String? message;
+  final String? uniqueId;
 
   @override
   State<FlutterRouteWidget> createState() => _FlutterRouteWidgetState();
@@ -27,7 +27,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
   @override
   void didChangeDependencies() {
     Logger.log('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
     super.didChangeDependencies();
   }
 
@@ -43,6 +43,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
     Logger.log('$_kTag#onPageShow, ${widget.uniqueId}, $this');
   }
 
+  @override
   void onPageHide() {
     Logger.log('$_kTag#onPageHide, ${widget.uniqueId}, $this');
   }
@@ -70,7 +71,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('FlutterBoost Example'),
+        title: const Text('FlutterBoost Example'),
         actions: <Widget>[
           Switch(
             value: withContainer,
@@ -95,7 +96,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     const EdgeInsets.only(left: 8.0, top: 10.0, bottom: 20.0),
                 child: RichText(
                     text: TextSpan(children: <TextSpan>[
-                  TextSpan(
+                  const TextSpan(
                       text: "withContainer: ",
                       style: TextStyle(
                           fontSize: 18.0,
@@ -103,7 +104,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                           color: Colors.blue)),
                   TextSpan(
                       text: "$withContainer",
-                      style: TextStyle(fontSize: 16.0, color: Colors.red)),
+                      style:
+                          const TextStyle(fontSize: 16.0, color: Colors.red)),
                 ])),
               ),
               const CupertinoTextField(
@@ -116,12 +118,12 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                 clearButtonMode: OverlayVisibilityMode.editing,
                 textCapitalization: TextCapitalization.words,
               ),
-              new TextField(
+              const TextField(
                 enabled: true,
                 autocorrect: true,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 20.0,
-                    color: const Color(0xFF222222),
+                    color: Color(0xFF222222),
                     fontWeight: FontWeight.w500),
               ),
               InkWell(
@@ -129,7 +131,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Pop with Navigator',
                       style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
@@ -140,20 +142,20 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
                 onTap: () => BoostNavigator.instance.push("native").then(
                     (value) =>
-                        print("Return from Native: ${value?.toString()}")),
+                        print("Return from Native: ${value.toString()}")),
               ),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'image_picker demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -165,7 +167,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'You can not open this page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -177,7 +179,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'WillPopScope demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
@@ -188,7 +190,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'Counter demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
@@ -199,7 +201,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'MediaQuery demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -213,7 +215,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'PlatformView Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -226,7 +228,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'WebView Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -240,7 +242,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'PlatformView Perf Test',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -253,7 +255,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Simple WebView Test',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -266,7 +268,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Bottom Navigation Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -278,7 +280,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'State Restoration Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -290,7 +292,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'SystemUiOverlayStyle Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -303,7 +305,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'push flutter widget',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -320,7 +322,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'returning data demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
@@ -331,7 +333,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'translucent dialog demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -345,7 +347,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'Radial Transition Demo',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
@@ -356,7 +358,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'popUntil demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -370,7 +372,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'flutter rebuild demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -393,12 +395,12 @@ class PushWidget extends StatefulWidget {
 }
 
 class _PushWidgetState extends State<PushWidget> {
-  VoidCallback _backPressedListenerUnsub;
+  late VoidCallback _backPressedListenerUnsub;
 
   @override
   void dispose() {
     super.dispose();
-    _backPressedListenerUnsub?.call();
+    _backPressedListenerUnsub.call();
   }
 
   @override
@@ -417,7 +419,7 @@ class _PushWidgetState extends State<PushWidget> {
               tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
             );
           }),
-          title: Text('flutter_boost_example'),
+          title: const Text('flutter_boost_example'),
         ),
         body: Container(
           color: Colors.red,

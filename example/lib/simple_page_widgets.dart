@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost_example/case/platform_view.dart';
 import 'package:flutter_boost/flutter_boost.dart';
@@ -6,7 +5,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 class FirstRouteWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _FirstRouteWidgetState();
+    return _FirstRouteWidgetState();
   }
 }
 
@@ -47,41 +46,41 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Route'),
+        title: const Text('First Route'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: Text('Open native page'),
+              child: const Text('Open native page'),
               onPressed: () {
                 print("open native page!");
                 BoostNavigator.instance.push("native");
               },
             ),
             ElevatedButton(
-              child: Text('Open FF route'),
+              child: const Text('Open FF route'),
               onPressed: () {
                 print("open FF page!");
                 BoostNavigator.instance.push("firstFirst");
               },
             ),
             ElevatedButton(
-              child: Text('Open second route1'),
+              child: const Text('Open second route1'),
               onPressed: () {
                 print("open willPop page!22");
                 BoostNavigator.instance.push("willPop", withContainer: true);
               },
             ),
             ElevatedButton(
-              child: Text('Present second stateful route'),
+              child: const Text('Present second stateful route'),
               onPressed: () {
                 print("Present second stateful page!");
               },
             ),
             ElevatedButton(
-              child: Text('Present second route'),
+              child: const Text('Present second route'),
               onPressed: () {
                 print("Present second page!");
                 // FlutterBoost.singleton.open("second",urlParams:<String,dynamic>{"present":true}).then((Map<dynamic,dynamic> value) {
@@ -91,7 +90,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
               },
             ),
             ElevatedButton(
-                child: Text('Flutter to Flutter with Animation'),
+                child: const Text('Flutter to Flutter with Animation'),
                 onPressed: () {
                   // FlutterBoost.singleton.open("f2f_first").then((Map<dynamic,dynamic> value) {
                   //   print(
@@ -108,7 +107,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 class FirstFirstRouteWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _FirstFirstRouteWidgetState();
+    return _FirstFirstRouteWidgetState();
   }
 }
 
@@ -149,11 +148,11 @@ class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Route'),
+        title: const Text('First Route'),
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text('Open first route'),
+          child: const Text('Open first route'),
           onPressed: () {
             print("open first page again!");
             // FlutterBoost.singleton.open("first").then((Map value){
@@ -182,7 +181,7 @@ class _EmbeddedFirstRouteWidgetState extends State<EmbeddedFirstRouteWidget> {
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          child: Text('Open second route2'),
+          child: const Text('Open second route2'),
           onPressed: () {
             print("open second page!");
             // FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
@@ -215,7 +214,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SecondStateful Route"),
+        title: const Text("SecondStateful Route"),
       ),
       body: Center(
         child: ElevatedButton(
@@ -230,7 +229,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             // PageInfo pageInfo = BoostNavigator.instance.getTopPageInfo();
             BoostNavigator.instance.pop();
           },
-          child: Text('Go back with result!'),
+          child: const Text('Go back with result!'),
         ),
       ),
     );
@@ -248,14 +247,14 @@ class TabRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tab Route"),
+        title: const Text("Tab Route"),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
             // FlutterBoost.singleton.open("second");
           },
-          child: Text('Open second route3'),
+          child: const Text('Open second route3'),
         ),
       ),
     );
@@ -267,7 +266,7 @@ class PlatformRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Platform Route"),
+        title: const Text("Platform Route"),
       ),
       body: Center(
         child: ElevatedButton(

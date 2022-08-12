@@ -9,7 +9,7 @@ class TransparentWidget extends StatefulWidget {
 }
 
 class TransparentWidgetState extends State<TransparentWidget> {
-  Color _myColor =
+  final Color _myColor =
       Color((Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
   @override
@@ -51,7 +51,7 @@ class TransparentWidgetState extends State<TransparentWidget> {
                                 padding: const EdgeInsets.all(8.0),
                                 margin: const EdgeInsets.all(8.0),
                                 color: Colors.yellow,
-                                child: Text(
+                                child: const Text(
                                   'Go Back',
                                   style: TextStyle(
                                       fontSize: 22.0, color: Colors.black),
@@ -63,7 +63,7 @@ class TransparentWidgetState extends State<TransparentWidget> {
                                 padding: const EdgeInsets.all(8.0),
                                 margin: const EdgeInsets.all(8.0),
                                 color: Colors.yellow,
-                                child: Text(
+                                child: const Text(
                                   'Open New Dialog',
                                   style: TextStyle(
                                       fontSize: 22.0, color: Colors.black),

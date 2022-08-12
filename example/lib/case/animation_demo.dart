@@ -1,26 +1,23 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 
-import 'package:flutter_boost_example/case/demo_painter.dart';
+import 'demo_painter.dart';
 
 class AnimationDemo extends StatefulWidget {
+  @override
   State<AnimationDemo> createState() => _AnimationDemoState();
 }
 
 class _AnimationDemoState extends State<AnimationDemo>
     with TickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller;
 
   //Here we configure the animation controller
+  @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       lowerBound: 0,
       upperBound: 1,
     );

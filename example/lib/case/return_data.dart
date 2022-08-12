@@ -5,11 +5,11 @@ class ReturnDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Return data from a screen')),
-        body: new Builder(builder: (BuildContext context) {
+        appBar: AppBar(title: const Text('Return data from a screen')),
+        body: Builder(builder: (BuildContext context) {
           return Center(
             child: ElevatedButton(
-              child: Text('Pick an option, any option!'),
+              child: const Text('Pick an option, any option!'),
               onPressed: () {
                 _navigateAndDisplaySelection(context);
               },

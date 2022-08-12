@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class SimpleWidget extends StatefulWidget {
-  final Map params;
+  final Map? params;
   final String messages;
-  final String uniqueId;
+  final String? uniqueId;
 
   const SimpleWidget(this.uniqueId, this.params, this.messages);
 
@@ -18,7 +18,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
   static const String _kTag = 'page_visibility';
   @override
   void didChangeDependencies() {
-    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context));
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
     print('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
     super.didChangeDependencies();
   }
@@ -50,30 +50,30 @@ class _SimpleWidgetState extends State<SimpleWidget>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('tab_example'),
+        title: const Text('tab_example'),
       ),
       body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Container(
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                 margin: const EdgeInsets.only(top: 80.0),
+                alignment: AlignmentDirectional.center,
                 child: Text(
                   widget.messages,
-                  style: TextStyle(fontSize: 28.0, color: Colors.blue),
+                  style: const TextStyle(fontSize: 28.0, color: Colors.blue),
                 ),
-                alignment: AlignmentDirectional.center,
               ),
               Container(
                 padding: const EdgeInsets.all(8.0),
                 margin: const EdgeInsets.only(top: 32.0),
-                child: Text(
-                  widget.uniqueId,
-                  style: TextStyle(fontSize: 16.0, color: Colors.red),
-                ),
                 alignment: AlignmentDirectional.center,
+                child: Text(
+                  widget.uniqueId!,
+                  style: const TextStyle(fontSize: 16.0, color: Colors.red),
+                ),
               ),
               const CupertinoTextField(
                 prefix: Icon(
@@ -90,7 +90,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(30.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
@@ -101,42 +101,42 @@ class _SimpleWidgetState extends State<SimpleWidget>
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(30.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'open flutter page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance.push("flutterPage",
-                    arguments: <String, String>{'from': widget.uniqueId}),
+                    arguments: <String, String?>{'from': widget.uniqueId}),
               ),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(30.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'open flutter page with FlutterView',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance.push("flutterPage",
                     withContainer: true,
-                    arguments: <String, String>{'from': widget.uniqueId}),
+                    arguments: <String, String?>{'from': widget.uniqueId}),
               ),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(30.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Navigator.push',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => Navigator.push(context, MaterialPageRoute<void>(
                   builder: (BuildContext context) {
                     return Scaffold(
-                      appBar: AppBar(title: Text('Navigator.push')),
+                      appBar: AppBar(title: const Text('Navigator.push')),
                       body: Center(
                         child: TextButton(
-                          child: Text('POP'),
+                          child: const Text('POP'),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -146,7 +146,7 @@ class _SimpleWidgetState extends State<SimpleWidget>
                   },
                 )),
               ),
-              Container(
+              const SizedBox(
                 height: 300,
                 width: 200,
                 child: Text(

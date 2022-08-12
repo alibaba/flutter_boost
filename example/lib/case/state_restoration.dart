@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class StateRestorationDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return RootRestorationScope(
+    return const RootRestorationScope(
         restorationId: 'root_id',
         child: MaterialApp(
           title: 'State Restoration Demo',
@@ -13,7 +13,7 @@ class StateRestorationDemo extends StatelessWidget {
 }
 
 class StateRestorationPage extends StatefulWidget {
-  const StateRestorationPage({Key key}) : super(key: key);
+  const StateRestorationPage({Key? key}) : super(key: key);
 
   @override
   State<StateRestorationPage> createState() => _StateRestorationPageState();
@@ -21,20 +21,20 @@ class StateRestorationPage extends StatefulWidget {
 
 class _StateRestorationPageState extends State<StateRestorationPage>
     with RestorationMixin {
-  RestorableInt _index = RestorableInt(0);
+  final RestorableInt _index = RestorableInt(0);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('StateRestorationDemo'),
+        title: const Text('StateRestorationDemo'),
       ),
       body: Container(
         color: Colors.primaries[_index.value],
         child: Center(
             child: Text(
           'Index is ${_index.value}.',
-          style: TextStyle(fontSize: 22.0, color: Colors.black),
+          style: const TextStyle(fontSize: 22.0, color: Colors.black),
         )),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -42,7 +42,7 @@ class _StateRestorationPageState extends State<StateRestorationPage>
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.black,
         onTap: (index) => setState(() => _index.value = index),
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.rss_feed), label: 'Feed'),
           BottomNavigationBarItem(
@@ -60,7 +60,7 @@ class _StateRestorationPageState extends State<StateRestorationPage>
   String get restorationId => 'StateRestorationDemo';
 
   @override
-  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     // Register our property to be saved every time it changes,
     // and to be restored every time our app is killed by the OS!
     registerForRestoration(_index, 'nav_bar_index');

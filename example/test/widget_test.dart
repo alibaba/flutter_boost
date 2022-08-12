@@ -17,7 +17,7 @@ void main() {
     expect(
         find.byWidgetPredicate(
           (Widget widget) =>
-              widget is Text && widget.data.startsWith('Running on:'),
+              widget is Text && widget.data!.startsWith('Running on:'),
         ),
         findsOneWidget);
   });

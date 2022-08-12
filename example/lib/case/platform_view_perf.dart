@@ -32,7 +32,7 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
             appBar: AppBar(
               title: const Text('PlatformView Perf Test'),
               actions: <Widget>[
-                Text("HybridComposition"),
+                const Text("HybridComposition"),
                 Switch(
                   value: usingHybridComposition,
                   onChanged: (value) {
@@ -51,7 +51,7 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open flutter page',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
@@ -62,7 +62,7 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open another PlatformView',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
@@ -76,7 +76,7 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
                 margin: const EdgeInsets.all(10.0),
                 child: MaterialButton(
                   color: Colors.blue,
-                  child: Text(
+                  child: const Text(
                     'ListView',
                     style: TextStyle(fontSize: 20.0, color: Colors.white),
                   ),
