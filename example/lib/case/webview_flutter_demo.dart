@@ -43,7 +43,7 @@ class WebViewExampleState extends State<WebViewExample> {
               Container(
                 margin: const EdgeInsets.all(10.0),
                 child: TextFormField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
                       labelText: 'Enter something...'),
                 ),
@@ -52,7 +52,7 @@ class WebViewExampleState extends State<WebViewExample> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open flutter page',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
@@ -63,7 +63,7 @@ class WebViewExampleState extends State<WebViewExample> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open another webview',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
@@ -79,7 +79,7 @@ class WebViewExampleState extends State<WebViewExample> {
                       margin: const EdgeInsets.all(10.0),
                       child: MaterialButton(
                         color: Colors.blue,
-                        child: Text(
+                        child: const Text(
                           'Click me to change something ~~',
                           style: TextStyle(fontSize: 20.0, color: Colors.white),
                         ),

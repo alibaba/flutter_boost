@@ -1,13 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/animation_demo.dart';
 import 'package:flutter_boost_example/case/native_view.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 class NativeViewExample extends StatefulWidget {
   @override
@@ -31,7 +26,7 @@ class NativeViewExampleState extends State<NativeViewExample> {
             appBar: AppBar(
               title: const Text('PlatformView Example'),
               actions: <Widget>[
-                Text("HybridComposition"),
+                const Text("HybridComposition"),
                 Switch(
                   value: hybridCompositionMode,
                   onChanged: (value) {
@@ -50,7 +45,7 @@ class NativeViewExampleState extends State<NativeViewExample> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open flutter page',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),
@@ -61,7 +56,7 @@ class NativeViewExampleState extends State<NativeViewExample> {
                 child: Container(
                     margin: const EdgeInsets.all(10.0),
                     color: Colors.yellow,
-                    child: Text(
+                    child: const Text(
                       'Open another platform view',
                       style: TextStyle(fontSize: 20.0, color: Colors.black),
                     )),

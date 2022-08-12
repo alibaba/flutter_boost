@@ -65,7 +65,7 @@ class BoostNavigator {
   /// if [opaque] is true,the page is opaque (not transparent)
   ///
   /// And it will return the result popped by page as a Future<T>
-  Future<T> push<T extends Object>(String name,
+  Future<T> push<T extends Object?>(String name,
       {Map<String, dynamic>? arguments,
       bool withContainer = false,
       bool opaque = true}) {
@@ -88,7 +88,7 @@ class BoostNavigator {
   /// This api do two things
   /// 1.Push a new page onto pageStack
   /// 2.remove(pop) previous page
-  Future<T> pushReplacement<T extends Object>(String name,
+  Future<T> pushReplacement<T extends Object?>(String name,
       {Map<String, dynamic>? arguments, bool withContainer = false}) async {
     final String? id = getTopPageInfo()?.uniqueId;
     final result =
@@ -103,7 +103,7 @@ class BoostNavigator {
   }
 
   /// Pop the top-most page off the hybrid stack.
-  Future<bool> pop<T extends Object>([T? result]) async {
+  Future<bool> pop<T extends Object?>([T? result]) async {
     assert(
         appState != null, 'Please check if the engine has been initialized!');
     return await appState!.popWithResult(result);

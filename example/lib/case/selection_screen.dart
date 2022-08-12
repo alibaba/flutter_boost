@@ -6,7 +6,7 @@ class SelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick an option and return'),
+        title: const Text('Pick an option and return'),
       ),
       body: Center(
         child: Column(
@@ -19,7 +19,7 @@ class SelectionScreen extends StatelessWidget {
                   // Close the screen and return "A" as the result.
                   BoostNavigator.instance.pop('A');
                 },
-                child: Text('A'),
+                child: const Text('A'),
               ),
             ),
             Padding(
@@ -29,7 +29,7 @@ class SelectionScreen extends StatelessWidget {
                   // Close the screen and return "B" as the result.
                   BoostNavigator.instance.pop('B');
                 },
-                child: Text('B'),
+                child: const Text('B'),
               ),
             )
           ],

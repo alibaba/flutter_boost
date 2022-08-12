@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/basic.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
 class MediaQueryRouteWidget extends StatefulWidget {
-  MediaQueryRouteWidget({this.params, this.message, this.uniqueId});
+  const MediaQueryRouteWidget({this.params, this.message, this.uniqueId});
 
-  final Map params;
-  final String message;
-  final String uniqueId;
+  final Map? params;
+  final String? message;
+  final String? uniqueId;
 
   @override
   State<StatefulWidget> createState() {
-    return new _MediaQueryRouteWidgetState();
+    return _MediaQueryRouteWidgetState();
   }
 }
 
@@ -56,7 +54,7 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('media query demo'),
+        title: const Text('media query demo'),
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
           Widget>[
@@ -83,7 +81,7 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'Pop with Navigator',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
@@ -95,7 +93,7 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
                       padding: const EdgeInsets.all(8.0),
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
-                      child: Text(
+                      child: const Text(
                         'Pop with BoostNavigator',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),

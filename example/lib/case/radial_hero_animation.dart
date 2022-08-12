@@ -22,20 +22,21 @@ class RadialExpansionDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Radial Transition Demo'), centerTitle: true),
+      appBar: AppBar(
+          title: const Text('Radial Transition Demo'), centerTitle: true),
       body: Container(
         alignment: Alignment.center,
         child: Column(
           children: [
-            SizedBox(height: 50),
-            Container(
+            const SizedBox(height: 50),
+            SizedBox(
               width: MediaQuery.of(context).size.width - 100,
-              child: Text(
+              child: const Text(
                 'Click to show big picture in popup window...',
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildHero(context, 'images/flutter.png', 'Click to return...')
           ],
         ),
@@ -45,12 +46,12 @@ class RadialExpansionDemo extends StatelessWidget {
 
   Widget _buildHero(
       BuildContext context, String imageName, String description) {
-    return Container(
+    return SizedBox(
       width: kMinRadius * 2.0,
       height: kMinRadius * 2.0,
       child: Hero(
         createRectTween: _createRectTween,
-        tag: imageName + "${context.hashCode}",
+        tag: "$imageName${context.hashCode}",
         child: RadialExpansion(
           maxRadius: kMaxRadius,
           child: Photo(
@@ -92,7 +93,7 @@ class RadialExpansionDemo extends StatelessWidget {
                         height: kMaxRadius * 2.0,
                         child: Hero(
                           createRectTween: _createRectTween,
-                          tag: imageName + '${context.hashCode}',
+                          tag: '$imageName${context.hashCode}',
                           child: RadialExpansion(
                             maxRadius: kMaxRadius,
                             child: Photo(photo: imageName),
@@ -101,7 +102,7 @@ class RadialExpansionDemo extends StatelessWidget {
                       ),
                       Text(
                         description,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16.0),
                     ],
@@ -113,18 +114,19 @@ class RadialExpansionDemo extends StatelessWidget {
     );
   }
 
-  static RectTween _createRectTween(Rect begin, Rect end) {
+  static RectTween _createRectTween(Rect? begin, Rect? end) {
     return MaterialRectCenterArcTween(begin: begin, end: end);
   }
 }
 
 class Photo extends StatelessWidget {
-  Photo({Key key, this.photo, this.color, this.onTap}) : super(key: key);
+  const Photo({Key? key, this.photo, this.color, this.onTap}) : super(key: key);
 
-  final String photo;
-  final Color color;
-  final VoidCallback onTap;
+  final String? photo;
+  final Color? color;
+  final VoidCallback? onTap;
 
+  @override
   Widget build(BuildContext context) {
     return Material(
       // Slightly opaque color appears where the image has transparency.
@@ -133,7 +135,7 @@ class Photo extends StatelessWidget {
         onTap: onTap,
         child: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints size) {
-            return Image.asset(photo, fit: BoxFit.contain);
+            return Image.asset(photo!, fit: BoxFit.contain);
           },
         ),
       ),
@@ -142,16 +144,16 @@ class Photo extends StatelessWidget {
 }
 
 class RadialExpansion extends StatelessWidget {
-  RadialExpansion({
-    Key key,
-    this.maxRadius,
+  const RadialExpansion({
+    Key? key,
+    required this.maxRadius,
     this.child,
   })  : clipRectSize = 2.0 * (maxRadius / sqrt2),
         super(key: key);
 
   final double maxRadius;
   final clipRectSize;
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +177,7 @@ class PhotoGalleryFadeRouter extends PageRouteBuilder {
 
   PhotoGalleryFadeRouter(this.widget)
       : super(
-          transitionDuration: Duration(milliseconds: 300),
+          transitionDuration: const Duration(milliseconds: 300),
           pageBuilder: (BuildContext context, Animation<double> animation1,
               Animation<double> animation2) {
             return widget;

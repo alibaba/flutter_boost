@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
-import 'package:flutter_boost_example/case/bottom_navigation_bar_demo.dart';
-import 'package:flutter_boost_example/case/counter_demo.dart';
-import 'package:flutter_boost_example/case/flutter_rebuild_demo.dart';
-import 'package:flutter_boost_example/case/flutter_to_flutter_sample.dart';
-import 'package:flutter_boost_example/case/image_pick.dart';
-import 'package:flutter_boost_example/case/media_query.dart';
-import 'package:flutter_boost_example/case/native_view_demo.dart';
-import 'package:flutter_boost_example/case/platform_view_perf.dart';
-import 'package:flutter_boost_example/case/popUntil.dart';
-import 'package:flutter_boost_example/case/return_data.dart';
-import 'package:flutter_boost_example/case/simple_webview_demo.dart';
-import 'package:flutter_boost_example/case/selection_screen.dart';
-import 'package:flutter_boost_example/case/state_restoration.dart';
-import 'package:flutter_boost_example/case/system_ui_overlay_style.dart';
-import 'package:flutter_boost_example/case/transparent_widget.dart';
-import 'package:flutter_boost_example/case/radial_hero_animation.dart';
-import 'package:flutter_boost_example/case/webview_flutter_demo.dart';
-import 'package:flutter_boost_example/case/willpop.dart';
-import 'package:flutter_boost_example/flutter_page.dart';
-import 'package:flutter_boost_example/simple_page_widgets.dart';
-import 'package:flutter_boost_example/tab/simple_widget.dart';
-import 'package:flutter/material.dart';
+import 'case/bottom_navigation_bar_demo.dart';
+import 'case/counter_demo.dart';
+import 'case/flutter_rebuild_demo.dart';
+import 'case/flutter_to_flutter_sample.dart';
+import 'case/image_pick.dart';
+import 'case/media_query.dart';
+import 'case/native_view_demo.dart';
+import 'case/platform_view_perf.dart';
+import 'case/popUntil.dart';
+import 'case/return_data.dart';
+import 'case/simple_webview_demo.dart';
+import 'case/selection_screen.dart';
+import 'case/state_restoration.dart';
+import 'case/system_ui_overlay_style.dart';
+import 'case/transparent_widget.dart';
+import 'case/radial_hero_animation.dart';
+import 'case/webview_flutter_demo.dart';
+import 'case/willpop.dart';
+import 'flutter_page.dart';
+import 'simple_page_widgets.dart';
+import 'tab/simple_widget.dart';
 
 void main() {
   PageVisibilityBinding.instance
@@ -77,7 +76,7 @@ class CustomInterceptor1 extends BoostInterceptor {
       BoostInterceptorOption option, PushInterceptorHandler handler) {
     Logger.log('CustomInterceptor#onPrePush1~~~, $option');
     // Add extra arguments
-    option.arguments['CustomInterceptor1'] = "1";
+    option.arguments!['CustomInterceptor1'] = "1";
     super.onPrePush(option, handler);
   }
 
@@ -95,8 +94,8 @@ class CustomInterceptor2 extends BoostInterceptor {
       BoostInterceptorOption option, PushInterceptorHandler handler) {
     Logger.log('CustomInterceptor#onPrePush2~~~, $option');
     // Add extra arguments
-    option.arguments['CustomInterceptor2'] = "2";
-    if (!option.isFromHost && option.name == "interceptor") {
+    option.arguments!['CustomInterceptor2'] = "2";
+    if (!option.isFromHost! && option.name == "interceptor") {
       handler.resolve(<String, dynamic>{'result': 'xxxx'});
     } else {
       handler.next(option);
@@ -149,7 +148,7 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterRouteWidget(
-                params: settings.arguments,
+                params: settings.arguments as Map<dynamic, dynamic>?,
                 uniqueId: uniqueId,
               ));
     },
@@ -220,7 +219,7 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => FlutterRouteWidget(
-          params: settings.arguments,
+          params: settings.arguments as Map<dynamic, dynamic>?,
           uniqueId: uniqueId,
         ),
         // transitionsBuilder: (BuildContext context, Animation<double> animation,
@@ -245,25 +244,33 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a flutter fragment"));
+              uniqueId,
+              settings.arguments as Map<dynamic, dynamic>?,
+              "This is a flutter fragment"));
     },
     'tab_message': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a flutter fragment"));
+              uniqueId,
+              settings.arguments as Map<dynamic, dynamic>?,
+              "This is a flutter fragment"));
     },
     'tab_flutter1': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a custom FlutterView"));
+              uniqueId,
+              settings.arguments as Map<dynamic, dynamic>?,
+              "This is a custom FlutterView"));
     },
     'tab_flutter2': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
-              uniqueId, settings.arguments, "This is a custom FlutterView"));
+              uniqueId,
+              settings.arguments as Map<dynamic, dynamic>?,
+              "This is a custom FlutterView"));
     },
 
     'f2f_first': (settings, uniqueId) {
@@ -309,7 +316,7 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
-                params: settings.arguments,
+                params: settings.arguments as Map<dynamic, dynamic>?,
                 uniqueId: uniqueId,
               ));
     },
@@ -320,7 +327,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId!,
               builder: (_) => FlutterRebuildDemo(),
             );
           });
@@ -330,7 +337,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId!,
               builder: (_) => FlutterRebuildPageA(),
             );
           });
@@ -340,15 +347,15 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           builder: (ctx) {
             return BoostCacheWidget(
-              uniqueId: uniqueId,
+              uniqueId: uniqueId!,
               builder: (_) => FlutterRebuildPageB(),
             );
           });
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name];
+  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+    FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }
@@ -372,22 +379,23 @@ class _MyAppState extends State<MyApp> {
 
 class BoostNavigatorObserver extends NavigatorObserver {
   @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didPush' + route.settings.name);
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didPush${route.settings.name}');
   }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didPop' + route.settings.name);
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didPop${route.settings.name}');
   }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didRemove' + route.settings.name);
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didRemove${route.settings.name}');
   }
 
   @override
-  void didStartUserGesture(Route<dynamic> route, Route<dynamic> previousRoute) {
-    print('boost-didStartUserGesture' + route.settings.name);
+  void didStartUserGesture(
+      Route<dynamic> route, Route<dynamic>? previousRoute) {
+    print('boost-didStartUserGesture${route.settings.name}');
   }
 }
