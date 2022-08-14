@@ -22,6 +22,18 @@ public class Messages {
 
   /** Generated class from Pigeon that represents data sent in messages. */
   public static class CommonParams {
+    private Boolean opaque;
+    public Boolean getOpaque() { return opaque; }
+    public void setOpaque(Boolean setterArg) {
+      this.opaque = setterArg;
+    }
+
+    private String key;
+    public String getKey() { return key; }
+    public void setKey(String setterArg) {
+      this.key = setterArg;
+    }
+
     private String pageName;
     public String getPageName() { return pageName; }
     public void setPageName(String setterArg) {
@@ -40,19 +52,17 @@ public class Messages {
       this.arguments = setterArg;
     }
 
-    private Boolean opaque;
-    public Boolean getOpaque() { return opaque; }
-    public void setOpaque(Boolean setterArg) {
-      this.opaque = setterArg;
-    }
-
-    private String key;
-    public String getKey() { return key; }
-    public void setKey(String setterArg) {
-      this.key = setterArg;
-    }
-
     public static final class Builder {
+      private Boolean opaque;
+      public Builder setOpaque(Boolean setterArg) {
+        this.opaque = setterArg;
+        return this;
+      }
+      private String key;
+      public Builder setKey(String setterArg) {
+        this.key = setterArg;
+        return this;
+      }
       private String pageName;
       public Builder setPageName(String setterArg) {
         this.pageName = setterArg;
@@ -68,95 +78,196 @@ public class Messages {
         this.arguments = setterArg;
         return this;
       }
-      private Boolean opaque;
-      public Builder setOpaque(Boolean setterArg) {
-        this.opaque = setterArg;
-        return this;
-      }
-      private String key;
-      public Builder setKey(String setterArg) {
-        this.key = setterArg;
-        return this;
-      }
       public CommonParams build() {
         CommonParams pigeonReturn = new CommonParams();
+        pigeonReturn.setOpaque(opaque);
+        pigeonReturn.setKey(key);
         pigeonReturn.setPageName(pageName);
         pigeonReturn.setUniqueId(uniqueId);
         pigeonReturn.setArguments(arguments);
-        pigeonReturn.setOpaque(opaque);
-        pigeonReturn.setKey(key);
         return pigeonReturn;
       }
     }
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("opaque", opaque);
+      toMapResult.put("key", key);
       toMapResult.put("pageName", pageName);
       toMapResult.put("uniqueId", uniqueId);
       toMapResult.put("arguments", arguments);
-      toMapResult.put("opaque", opaque);
-      toMapResult.put("key", key);
       return toMapResult;
     }
     static CommonParams fromMap(Map<String, Object> map) {
       CommonParams pigeonResult = new CommonParams();
+      Object opaque = map.get("opaque");
+      pigeonResult.setOpaque((Boolean)opaque);
+      Object key = map.get("key");
+      pigeonResult.setKey((String)key);
       Object pageName = map.get("pageName");
       pigeonResult.setPageName((String)pageName);
       Object uniqueId = map.get("uniqueId");
       pigeonResult.setUniqueId((String)uniqueId);
       Object arguments = map.get("arguments");
       pigeonResult.setArguments((Map<String, Object>)arguments);
-      Object opaque = map.get("opaque");
-      pigeonResult.setOpaque((Boolean)opaque);
-      Object key = map.get("key");
-      pigeonResult.setKey((String)key);
       return pigeonResult;
     }
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
   public static class StackInfo {
-    private List<String> containers;
-    public List<String> getContainers() { return containers; }
-    public void setContainers(List<String> setterArg) {
+    private List<String> ids;
+    public List<String> getIds() { return ids; }
+    public void setIds(List<String> setterArg) {
+      this.ids = setterArg;
+    }
+
+    private Map<String, FlutterContainer> containers;
+    public Map<String, FlutterContainer> getContainers() { return containers; }
+    public void setContainers(Map<String, FlutterContainer> setterArg) {
       this.containers = setterArg;
     }
 
-    private Map<String, List<Map<String, Object>>> routes;
-    public Map<String, List<Map<String, Object>>> getRoutes() { return routes; }
-    public void setRoutes(Map<String, List<Map<String, Object>>> setterArg) {
-      this.routes = setterArg;
-    }
-
     public static final class Builder {
-      private List<String> containers;
-      public Builder setContainers(List<String> setterArg) {
-        this.containers = setterArg;
+      private List<String> ids;
+      public Builder setIds(List<String> setterArg) {
+        this.ids = setterArg;
         return this;
       }
-      private Map<String, List<Map<String, Object>>> routes;
-      public Builder setRoutes(Map<String, List<Map<String, Object>>> setterArg) {
-        this.routes = setterArg;
+      private Map<String, FlutterContainer> containers;
+      public Builder setContainers(Map<String, FlutterContainer> setterArg) {
+        this.containers = setterArg;
         return this;
       }
       public StackInfo build() {
         StackInfo pigeonReturn = new StackInfo();
+        pigeonReturn.setIds(ids);
         pigeonReturn.setContainers(containers);
-        pigeonReturn.setRoutes(routes);
         return pigeonReturn;
       }
     }
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("ids", ids);
       toMapResult.put("containers", containers);
-      toMapResult.put("routes", routes);
       return toMapResult;
     }
     static StackInfo fromMap(Map<String, Object> map) {
       StackInfo pigeonResult = new StackInfo();
+      Object ids = map.get("ids");
+      pigeonResult.setIds((List<String>)ids);
       Object containers = map.get("containers");
-      pigeonResult.setContainers((List<String>)containers);
-      Object routes = map.get("routes");
-      pigeonResult.setRoutes((Map<String, List<Map<String, Object>>>)routes);
+      pigeonResult.setContainers((Map<String, FlutterContainer>)containers);
+      return pigeonResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class FlutterContainer {
+    private List<FlutterPage> pages;
+    public List<FlutterPage> getPages() { return pages; }
+    public void setPages(List<FlutterPage> setterArg) {
+      this.pages = setterArg;
+    }
+
+    public static final class Builder {
+      private List<FlutterPage> pages;
+      public Builder setPages(List<FlutterPage> setterArg) {
+        this.pages = setterArg;
+        return this;
+      }
+      public FlutterContainer build() {
+        FlutterContainer pigeonReturn = new FlutterContainer();
+        pigeonReturn.setPages(pages);
+        return pigeonReturn;
+      }
+    }
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("pages", pages);
+      return toMapResult;
+    }
+    static FlutterContainer fromMap(Map<String, Object> map) {
+      FlutterContainer pigeonResult = new FlutterContainer();
+      Object pages = map.get("pages");
+      pigeonResult.setPages((List<FlutterPage>)pages);
+      return pigeonResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class FlutterPage {
+    private Boolean withContainer;
+    public Boolean getWithContainer() { return withContainer; }
+    public void setWithContainer(Boolean setterArg) {
+      this.withContainer = setterArg;
+    }
+
+    private String pageName;
+    public String getPageName() { return pageName; }
+    public void setPageName(String setterArg) {
+      this.pageName = setterArg;
+    }
+
+    private String uniqueId;
+    public String getUniqueId() { return uniqueId; }
+    public void setUniqueId(String setterArg) {
+      this.uniqueId = setterArg;
+    }
+
+    private Map<String, Object> arguments;
+    public Map<String, Object> getArguments() { return arguments; }
+    public void setArguments(Map<String, Object> setterArg) {
+      this.arguments = setterArg;
+    }
+
+    public static final class Builder {
+      private Boolean withContainer;
+      public Builder setWithContainer(Boolean setterArg) {
+        this.withContainer = setterArg;
+        return this;
+      }
+      private String pageName;
+      public Builder setPageName(String setterArg) {
+        this.pageName = setterArg;
+        return this;
+      }
+      private String uniqueId;
+      public Builder setUniqueId(String setterArg) {
+        this.uniqueId = setterArg;
+        return this;
+      }
+      private Map<String, Object> arguments;
+      public Builder setArguments(Map<String, Object> setterArg) {
+        this.arguments = setterArg;
+        return this;
+      }
+      public FlutterPage build() {
+        FlutterPage pigeonReturn = new FlutterPage();
+        pigeonReturn.setWithContainer(withContainer);
+        pigeonReturn.setPageName(pageName);
+        pigeonReturn.setUniqueId(uniqueId);
+        pigeonReturn.setArguments(arguments);
+        return pigeonReturn;
+      }
+    }
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("withContainer", withContainer);
+      toMapResult.put("pageName", pageName);
+      toMapResult.put("uniqueId", uniqueId);
+      toMapResult.put("arguments", arguments);
+      return toMapResult;
+    }
+    static FlutterPage fromMap(Map<String, Object> map) {
+      FlutterPage pigeonResult = new FlutterPage();
+      Object withContainer = map.get("withContainer");
+      pigeonResult.setWithContainer((Boolean)withContainer);
+      Object pageName = map.get("pageName");
+      pigeonResult.setPageName((String)pageName);
+      Object uniqueId = map.get("uniqueId");
+      pigeonResult.setUniqueId((String)uniqueId);
+      Object arguments = map.get("arguments");
+      pigeonResult.setArguments((Map<String, Object>)arguments);
       return pigeonResult;
     }
   }
@@ -175,6 +286,12 @@ public class Messages {
           return CommonParams.fromMap((Map<String, Object>) readValue(buffer));
 
         case (byte)129:
+          return FlutterContainer.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte)130:
+          return FlutterPage.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte)131:
           return StackInfo.fromMap((Map<String, Object>) readValue(buffer));
 
         default:
@@ -188,8 +305,16 @@ public class Messages {
         stream.write(128);
         writeValue(stream, ((CommonParams) value).toMap());
       } else
-      if (value instanceof StackInfo) {
+      if (value instanceof FlutterContainer) {
         stream.write(129);
+        writeValue(stream, ((FlutterContainer) value).toMap());
+      } else
+      if (value instanceof FlutterPage) {
+        stream.write(130);
+        writeValue(stream, ((FlutterPage) value).toMap());
+      } else
+      if (value instanceof StackInfo) {
+        stream.write(131);
         writeValue(stream, ((StackInfo) value).toMap());
       } else
 {
