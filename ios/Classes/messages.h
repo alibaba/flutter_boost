@@ -10,25 +10,43 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class FBCommonParams;
 @class FBStackInfo;
+@class FBFlutterContainer;
+@class FBFlutterPage;
 
 @interface FBCommonParams : NSObject
-+ (instancetype)makeWithPageName:(nullable NSString *)pageName
++ (instancetype)makeWithOpaque:(nullable NSNumber *)opaque
+    key:(nullable NSString *)key
+    pageName:(nullable NSString *)pageName
     uniqueId:(nullable NSString *)uniqueId
-    arguments:(nullable NSDictionary<NSString *, id> *)arguments
-    opaque:(nullable NSNumber *)opaque
-    key:(nullable NSString *)key;
+    arguments:(nullable NSDictionary<NSString *, id> *)arguments;
+@property(nonatomic, strong, nullable) NSNumber * opaque;
+@property(nonatomic, copy, nullable) NSString * key;
 @property(nonatomic, copy, nullable) NSString * pageName;
 @property(nonatomic, copy, nullable) NSString * uniqueId;
 @property(nonatomic, strong, nullable) NSDictionary<NSString *, id> * arguments;
-@property(nonatomic, strong, nullable) NSNumber * opaque;
-@property(nonatomic, copy, nullable) NSString * key;
 @end
 
 @interface FBStackInfo : NSObject
-+ (instancetype)makeWithContainers:(nullable NSArray<NSString *> *)containers
-    routes:(nullable NSDictionary<NSString *, NSArray<NSDictionary<NSString *, id> *> *> *)routes;
-@property(nonatomic, strong, nullable) NSArray<NSString *> * containers;
-@property(nonatomic, strong, nullable) NSDictionary<NSString *, NSArray<NSDictionary<NSString *, id> *> *> * routes;
++ (instancetype)makeWithIds:(nullable NSArray<NSString *> *)ids
+    containers:(nullable NSDictionary<NSString *, FBFlutterContainer *> *)containers;
+@property(nonatomic, strong, nullable) NSArray<NSString *> * ids;
+@property(nonatomic, strong, nullable) NSDictionary<NSString *, FBFlutterContainer *> * containers;
+@end
+
+@interface FBFlutterContainer : NSObject
++ (instancetype)makeWithPages:(nullable NSArray<FBFlutterPage *> *)pages;
+@property(nonatomic, strong, nullable) NSArray<FBFlutterPage *> * pages;
+@end
+
+@interface FBFlutterPage : NSObject
++ (instancetype)makeWithWithContainer:(nullable NSNumber *)withContainer
+    pageName:(nullable NSString *)pageName
+    uniqueId:(nullable NSString *)uniqueId
+    arguments:(nullable NSDictionary<NSString *, id> *)arguments;
+@property(nonatomic, strong, nullable) NSNumber * withContainer;
+@property(nonatomic, copy, nullable) NSString * pageName;
+@property(nonatomic, copy, nullable) NSString * uniqueId;
+@property(nonatomic, strong, nullable) NSDictionary<NSString *, id> * arguments;
 @end
 
 /// The codec used by FBNativeRouterApi.

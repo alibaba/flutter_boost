@@ -9,62 +9,116 @@ import 'package:flutter/services.dart';
 
 class CommonParams {
   CommonParams({
+    this.opaque,
+    this.key,
     this.pageName,
     this.uniqueId,
     this.arguments,
-    this.opaque,
-    this.key,
   });
 
+  bool? opaque;
+  String? key;
   String? pageName;
   String? uniqueId;
   Map<String?, Object?>? arguments;
-  bool? opaque;
-  String? key;
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['opaque'] = opaque;
+    pigeonMap['key'] = key;
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
     pigeonMap['arguments'] = arguments;
-    pigeonMap['opaque'] = opaque;
-    pigeonMap['key'] = key;
     return pigeonMap;
   }
 
   static CommonParams decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     return CommonParams(
+      opaque: pigeonMap['opaque'] as bool?,
+      key: pigeonMap['key'] as String?,
       pageName: pigeonMap['pageName'] as String?,
       uniqueId: pigeonMap['uniqueId'] as String?,
       arguments: (pigeonMap['arguments'] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
-      opaque: pigeonMap['opaque'] as bool?,
-      key: pigeonMap['key'] as String?,
     );
   }
 }
 
 class StackInfo {
   StackInfo({
+    this.ids,
     this.containers,
-    this.routes,
   });
 
-  List<String?>? containers;
-  Map<String?, List<Map<String?, Object?>?>?>? routes;
+  List<String?>? ids;
+  Map<String?, FlutterContainer?>? containers;
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['ids'] = ids;
     pigeonMap['containers'] = containers;
-    pigeonMap['routes'] = routes;
     return pigeonMap;
   }
 
   static StackInfo decode(Object message) {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     return StackInfo(
-      containers: (pigeonMap['containers'] as List<Object?>?)?.cast<String?>(),
-      routes: (pigeonMap['routes'] as Map<Object?, Object?>?)?.cast<String?, List<Map<String?, Object?>?>?>(),
+      ids: (pigeonMap['ids'] as List<Object?>?)?.cast<String?>(),
+      containers: (pigeonMap['containers'] as Map<Object?, Object?>?)?.cast<String?, FlutterContainer?>(),
+    );
+  }
+}
+
+class FlutterContainer {
+  FlutterContainer({
+    this.pages,
+  });
+
+  List<FlutterPage?>? pages;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['pages'] = pages;
+    return pigeonMap;
+  }
+
+  static FlutterContainer decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return FlutterContainer(
+      pages: (pigeonMap['pages'] as List<Object?>?)?.cast<FlutterPage?>(),
+    );
+  }
+}
+
+class FlutterPage {
+  FlutterPage({
+    this.withContainer,
+    this.pageName,
+    this.uniqueId,
+    this.arguments,
+  });
+
+  bool? withContainer;
+  String? pageName;
+  String? uniqueId;
+  Map<String?, Object?>? arguments;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['withContainer'] = withContainer;
+    pigeonMap['pageName'] = pageName;
+    pigeonMap['uniqueId'] = uniqueId;
+    pigeonMap['arguments'] = arguments;
+    return pigeonMap;
+  }
+
+  static FlutterPage decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return FlutterPage(
+      withContainer: pigeonMap['withContainer'] as bool?,
+      pageName: pigeonMap['pageName'] as String?,
+      uniqueId: pigeonMap['uniqueId'] as String?,
+      arguments: (pigeonMap['arguments'] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
     );
   }
 }
@@ -77,8 +131,16 @@ class _NativeRouterApiCodec extends StandardMessageCodec {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
     } else 
-    if (value is StackInfo) {
+    if (value is FlutterContainer) {
       buffer.putUint8(129);
+      writeValue(buffer, value.encode());
+    } else 
+    if (value is FlutterPage) {
+      buffer.putUint8(130);
+      writeValue(buffer, value.encode());
+    } else 
+    if (value is StackInfo) {
+      buffer.putUint8(131);
       writeValue(buffer, value.encode());
     } else 
 {
@@ -92,6 +154,12 @@ class _NativeRouterApiCodec extends StandardMessageCodec {
         return CommonParams.decode(readValue(buffer)!);
       
       case 129:       
+        return FlutterContainer.decode(readValue(buffer)!);
+      
+      case 130:       
+        return FlutterPage.decode(readValue(buffer)!);
+      
+      case 131:       
         return StackInfo.decode(readValue(buffer)!);
       
       default:      

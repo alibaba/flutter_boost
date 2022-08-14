@@ -41,61 +41,121 @@ static id GetNullableObjectAtIndex(NSArray* array, NSInteger key) {
 + (nullable FBStackInfo *)nullableFromMap:(NSDictionary *)dict;
 - (NSDictionary *)toMap;
 @end
+@interface FBFlutterContainer ()
++ (FBFlutterContainer *)fromMap:(NSDictionary *)dict;
++ (nullable FBFlutterContainer *)nullableFromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
+@interface FBFlutterPage ()
++ (FBFlutterPage *)fromMap:(NSDictionary *)dict;
++ (nullable FBFlutterPage *)nullableFromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
 
 @implementation FBCommonParams
-+ (instancetype)makeWithPageName:(nullable NSString *)pageName
++ (instancetype)makeWithOpaque:(nullable NSNumber *)opaque
+    key:(nullable NSString *)key
+    pageName:(nullable NSString *)pageName
     uniqueId:(nullable NSString *)uniqueId
-    arguments:(nullable NSDictionary<NSString *, id> *)arguments
-    opaque:(nullable NSNumber *)opaque
-    key:(nullable NSString *)key {
+    arguments:(nullable NSDictionary<NSString *, id> *)arguments {
   FBCommonParams* pigeonResult = [[FBCommonParams alloc] init];
+  pigeonResult.opaque = opaque;
+  pigeonResult.key = key;
   pigeonResult.pageName = pageName;
   pigeonResult.uniqueId = uniqueId;
   pigeonResult.arguments = arguments;
-  pigeonResult.opaque = opaque;
-  pigeonResult.key = key;
   return pigeonResult;
 }
 + (FBCommonParams *)fromMap:(NSDictionary *)dict {
   FBCommonParams *pigeonResult = [[FBCommonParams alloc] init];
+  pigeonResult.opaque = GetNullableObject(dict, @"opaque");
+  pigeonResult.key = GetNullableObject(dict, @"key");
   pigeonResult.pageName = GetNullableObject(dict, @"pageName");
   pigeonResult.uniqueId = GetNullableObject(dict, @"uniqueId");
   pigeonResult.arguments = GetNullableObject(dict, @"arguments");
-  pigeonResult.opaque = GetNullableObject(dict, @"opaque");
-  pigeonResult.key = GetNullableObject(dict, @"key");
   return pigeonResult;
 }
 + (nullable FBCommonParams *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [FBCommonParams fromMap:dict] : nil; }
 - (NSDictionary *)toMap {
   return @{
+    @"opaque" : (self.opaque ?: [NSNull null]),
+    @"key" : (self.key ?: [NSNull null]),
     @"pageName" : (self.pageName ?: [NSNull null]),
     @"uniqueId" : (self.uniqueId ?: [NSNull null]),
     @"arguments" : (self.arguments ?: [NSNull null]),
-    @"opaque" : (self.opaque ?: [NSNull null]),
-    @"key" : (self.key ?: [NSNull null]),
   };
 }
 @end
 
 @implementation FBStackInfo
-+ (instancetype)makeWithContainers:(nullable NSArray<NSString *> *)containers
-    routes:(nullable NSDictionary<NSString *, NSArray<NSDictionary<NSString *, id> *> *> *)routes {
++ (instancetype)makeWithIds:(nullable NSArray<NSString *> *)ids
+    containers:(nullable NSDictionary<NSString *, FBFlutterContainer *> *)containers {
   FBStackInfo* pigeonResult = [[FBStackInfo alloc] init];
+  pigeonResult.ids = ids;
   pigeonResult.containers = containers;
-  pigeonResult.routes = routes;
   return pigeonResult;
 }
 + (FBStackInfo *)fromMap:(NSDictionary *)dict {
   FBStackInfo *pigeonResult = [[FBStackInfo alloc] init];
+  pigeonResult.ids = GetNullableObject(dict, @"ids");
   pigeonResult.containers = GetNullableObject(dict, @"containers");
-  pigeonResult.routes = GetNullableObject(dict, @"routes");
   return pigeonResult;
 }
 + (nullable FBStackInfo *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [FBStackInfo fromMap:dict] : nil; }
 - (NSDictionary *)toMap {
   return @{
+    @"ids" : (self.ids ?: [NSNull null]),
     @"containers" : (self.containers ?: [NSNull null]),
-    @"routes" : (self.routes ?: [NSNull null]),
+  };
+}
+@end
+
+@implementation FBFlutterContainer
++ (instancetype)makeWithPages:(nullable NSArray<FBFlutterPage *> *)pages {
+  FBFlutterContainer* pigeonResult = [[FBFlutterContainer alloc] init];
+  pigeonResult.pages = pages;
+  return pigeonResult;
+}
++ (FBFlutterContainer *)fromMap:(NSDictionary *)dict {
+  FBFlutterContainer *pigeonResult = [[FBFlutterContainer alloc] init];
+  pigeonResult.pages = GetNullableObject(dict, @"pages");
+  return pigeonResult;
+}
++ (nullable FBFlutterContainer *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [FBFlutterContainer fromMap:dict] : nil; }
+- (NSDictionary *)toMap {
+  return @{
+    @"pages" : (self.pages ?: [NSNull null]),
+  };
+}
+@end
+
+@implementation FBFlutterPage
++ (instancetype)makeWithWithContainer:(nullable NSNumber *)withContainer
+    pageName:(nullable NSString *)pageName
+    uniqueId:(nullable NSString *)uniqueId
+    arguments:(nullable NSDictionary<NSString *, id> *)arguments {
+  FBFlutterPage* pigeonResult = [[FBFlutterPage alloc] init];
+  pigeonResult.withContainer = withContainer;
+  pigeonResult.pageName = pageName;
+  pigeonResult.uniqueId = uniqueId;
+  pigeonResult.arguments = arguments;
+  return pigeonResult;
+}
++ (FBFlutterPage *)fromMap:(NSDictionary *)dict {
+  FBFlutterPage *pigeonResult = [[FBFlutterPage alloc] init];
+  pigeonResult.withContainer = GetNullableObject(dict, @"withContainer");
+  pigeonResult.pageName = GetNullableObject(dict, @"pageName");
+  pigeonResult.uniqueId = GetNullableObject(dict, @"uniqueId");
+  pigeonResult.arguments = GetNullableObject(dict, @"arguments");
+  return pigeonResult;
+}
++ (nullable FBFlutterPage *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [FBFlutterPage fromMap:dict] : nil; }
+- (NSDictionary *)toMap {
+  return @{
+    @"withContainer" : (self.withContainer ?: [NSNull null]),
+    @"pageName" : (self.pageName ?: [NSNull null]),
+    @"uniqueId" : (self.uniqueId ?: [NSNull null]),
+    @"arguments" : (self.arguments ?: [NSNull null]),
   };
 }
 @end
@@ -110,6 +170,12 @@ static id GetNullableObjectAtIndex(NSArray* array, NSInteger key) {
       return [FBCommonParams fromMap:[self readValue]];
     
     case 129:     
+      return [FBFlutterContainer fromMap:[self readValue]];
+    
+    case 130:     
+      return [FBFlutterPage fromMap:[self readValue]];
+    
+    case 131:     
       return [FBStackInfo fromMap:[self readValue]];
     
     default:    
@@ -128,8 +194,16 @@ static id GetNullableObjectAtIndex(NSArray* array, NSInteger key) {
     [self writeByte:128];
     [self writeValue:[value toMap]];
   } else 
-  if ([value isKindOfClass:[FBStackInfo class]]) {
+  if ([value isKindOfClass:[FBFlutterContainer class]]) {
     [self writeByte:129];
+    [self writeValue:[value toMap]];
+  } else 
+  if ([value isKindOfClass:[FBFlutterPage class]]) {
+    [self writeByte:130];
+    [self writeValue:[value toMap]];
+  } else 
+  if ([value isKindOfClass:[FBStackInfo class]]) {
+    [self writeByte:131];
     [self writeValue:[value toMap]];
   } else 
 {

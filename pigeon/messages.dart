@@ -14,16 +14,30 @@ import 'package:pigeon/pigeon.dart';
   ),
 ))
 class CommonParams {
+  bool? opaque;
+  String? key;
   String? pageName;
   String? uniqueId;
   Map<String?, Object?>? arguments;
-  bool? opaque;
-  String? key;
 }
 
+// TODO: [pigeon] Generics are supported, but can currently only
+// be used with nullable types (example: List<int?>).
+// https://pub.dev/packages/pigeon
 class StackInfo {
-  List<String?>? containers;
-  Map<String?, List<Map<String, Object>>?>? routes;
+  List<String?>? ids;
+  Map<String?, FlutterContainer?>? containers;
+}
+
+class FlutterContainer {
+  List<FlutterPage?>? pages;
+}
+
+class FlutterPage {
+  bool? withContainer;
+  String? pageName;
+  String? uniqueId;
+  Map<String?, Object?>? arguments;
 }
 
 @HostApi()
