@@ -209,8 +209,6 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final stack = await nativeRouterApi.getStackFromHost();
     final List<String?>? ids = stack.ids;
     final Map<String?, FlutterContainer?>? containers = stack.containers;
-    print('routes: ${containers?.runtimeType}');
-    print('$containers');
     if (ids != null && containers != null) {
       for (var id in ids) {
         var withContainer = true;
@@ -221,7 +219,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
               Map<String, Object> args = <String, Object>{};
               for (var key in page.arguments!.keys) {
                 if (key != null && page.arguments![key] != null) {
-                  args[key!] = page.arguments![key]!;
+                  args[key] = page.arguments![key]!;
                 }
               }
 
