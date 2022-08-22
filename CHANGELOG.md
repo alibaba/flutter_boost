@@ -1,5 +1,8 @@
 ## NEXT
+
+## 4.0.2
 1. 增加dual_screen测试案例
+2. [Android]恢复detachFromFlutterEngine重载逻辑，解决空指针崩溃问题
 
 ## 4.0.1
 1. 修复部分场景下运行时类型错误，例如hot restart

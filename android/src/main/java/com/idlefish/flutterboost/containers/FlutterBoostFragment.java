@@ -44,6 +44,15 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private boolean isFinishing = false;
 
     @Override
+    public void detachFromFlutterEngine() {
+        /**
+         * TODO:// Override and do nothing to avoid destroying
+         * FlutterView unexpectedly.
+         */
+        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    }
+
+    @Override
     public boolean shouldDispatchAppLifecycleState() {
         return false;
     }
