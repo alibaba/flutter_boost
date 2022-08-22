@@ -1,4 +1,5 @@
 ## NEXT
+1. 增加dual_screen测试案例
 
 ## 4.0.1
 1. 修复部分场景下运行时类型错误，例如hot restart
