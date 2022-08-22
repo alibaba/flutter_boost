@@ -60,6 +60,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     @Override
+    public void detachFromFlutterEngine() {
+        /**
+         * TODO:// Override and do nothing to avoid destroying
+         * FlutterView unexpectedly.
+         */
+        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+    }
+
+    @Override
     public boolean shouldDispatchAppLifecycleState() {
         return false;
     }
