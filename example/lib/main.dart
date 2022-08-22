@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'case/bottom_navigation_bar_demo.dart';
 import 'case/counter_demo.dart';
+import 'case/dual_screen.dart';
 import 'case/flutter_rebuild_demo.dart';
 import 'case/flutter_to_flutter_sample.dart';
 import 'case/image_pick.dart';
@@ -175,6 +176,10 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => CounterPage(title: "Counter Demo"));
+    },
+    'dualScreen': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => DualScreen());
     },
     'returnData': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
