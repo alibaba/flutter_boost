@@ -1,13 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WillPopRoute extends StatefulWidget {
-  WillPopRoute({Key key, this.title}) : super(key: key);
+  const WillPopRoute({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
-  State<StatefulWidget> createState() => new _WillPopRouteState();
+  State<StatefulWidget> createState() => _WillPopRouteState();
 }
 
 class _WillPopRouteState extends State<WillPopRoute> {

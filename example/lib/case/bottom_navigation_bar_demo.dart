@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:io' show Platform;
 
+import 'package:flutter/material.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
 class BottomNavigationPage extends StatefulWidget {
-  const BottomNavigationPage({Key key}) : super(key: key);
+  const BottomNavigationPage({Key? key}) : super(key: key);
 
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
@@ -23,7 +24,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   Route<dynamic> normal(Widget widget, RouteSettings settings) =>
       MaterialPageRoute<Widget>(
         settings: settings,
-        builder: (BuildContext context) => widget,
+        builder: (context) => widget,
       );
 
   @override
@@ -33,7 +34,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
       body: Navigator(
         key: globalKey,
         initialRoute: "test1",
-        onGenerateRoute: (RouteSettings settings) {
+        onGenerateRoute: (settings) {
           switch (settings.name) {
             case "test1":
               return normal(const Test1(), settings);
@@ -42,6 +43,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             case "test3":
               return normal(const Test3(), settings);
           }
+          return null;
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -72,7 +74,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 }
 
 class Test1 extends StatelessWidget {
-  const Test1({Key key}) : super(key: key);
+  const Test1({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +87,7 @@ class Test1 extends StatelessWidget {
 }
 
 class Test2 extends StatelessWidget {
-  const Test2({Key key}) : super(key: key);
+  const Test2({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +98,7 @@ class Test2 extends StatelessWidget {
 }
 
 class Test3 extends StatelessWidget {
-  const Test3({Key key}) : super(key: key);
+  const Test3({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

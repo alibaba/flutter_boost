@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 
 class NativeView extends StatelessWidget {
@@ -13,7 +12,7 @@ class NativeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Pass parameters to the platform side.
-    final Map<String, dynamic> creationParams = <String, dynamic>{
+    final creationParams = <String, dynamic>{
       'msg': 'Hi there!',
       'hybridCompositionMode': hybridCompositionMode
     };
@@ -24,8 +23,7 @@ class NativeView extends StatelessWidget {
         if (hybridCompositionMode) {
           return PlatformViewLink(
             viewType: viewType,
-            surfaceFactory:
-                (BuildContext context, PlatformViewController controller) {
+            surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
                 gestureRecognizers: const <
@@ -33,13 +31,13 @@ class NativeView extends StatelessWidget {
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },
-            onCreatePlatformView: (PlatformViewCreationParams params) {
+            onCreatePlatformView: (params) {
               return PlatformViewsService.initSurfaceAndroidView(
                 id: params.id,
                 viewType: viewType,
                 layoutDirection: TextDirection.ltr,
                 creationParams: creationParams,
-                creationParamsCodec: StandardMessageCodec(),
+                creationParamsCodec: const StandardMessageCodec(),
                 onFocus: () {
                   params.onFocusChanged(true);
                 },

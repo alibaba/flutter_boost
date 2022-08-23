@@ -1,12 +1,6 @@
-import 'dart:ui';
 import "dart:math" show pi;
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 
 class DemoPainter extends CustomPainter {
   final double angle;
@@ -17,7 +11,7 @@ class DemoPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     //Painters aren't our topic in this article,
     //but briefly it draws 2 mirrored arcs by calculating the sweep angle
-    Paint paint = Paint()..color = Colors.blue;
+    var paint = Paint()..color = Colors.blue;
     canvas.drawArc(
       Rect.fromCenter(
         center: Offset(size.height / 2, size.width / 2),

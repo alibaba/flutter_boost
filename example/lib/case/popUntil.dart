@@ -27,7 +27,7 @@ class PopUntilRouteState extends State<PopUntilRoute> {
         appBar: AppBar(
           leading: GestureDetector(
             child: Row(
-              children: [
+              children: const [
                 // Icon(Icons.arrow_back),
                 Text('popUntil'),
               ],
@@ -46,13 +46,13 @@ class PopUntilRouteState extends State<PopUntilRoute> {
                     BoostNavigator.instance
                         .push("popUntilView", withContainer: true);
                   },
-                  child: Text('push with container')),
+                  child: const Text('push with container')),
               TextButton(
                   onPressed: () {
                     BoostNavigator.instance
                         .push("popUntilView", withContainer: false);
                   },
-                  child: Text('push without container ')),
+                  child: const Text('push without container ')),
             ],
           )),
         ));

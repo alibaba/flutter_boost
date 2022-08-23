@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_boost_example/case/platform_view.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/case/platform_view.dart';
 
 class FirstRouteWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _FirstRouteWidgetState();
+    return _FirstRouteWidgetState();
   }
 }
 
@@ -15,31 +14,31 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 
   @override
   void initState() {
-    print('initState');
+    debugPrint('initState');
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    print('didChangeDependencies');
+    debugPrint('didChangeDependencies');
     super.didChangeDependencies();
   }
 
   @override
   void didUpdateWidget(FirstRouteWidget oldWidget) {
-    print('didUpdateWidget');
+    debugPrint('didUpdateWidget');
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void deactivate() {
-    print('deactivate');
+    debugPrint('deactivate');
     super.deactivate();
   }
 
   @override
   void dispose() {
-    print('[XDEBUG] - FirstRouteWidget is disposing~');
+    debugPrint('[XDEBUG] - FirstRouteWidget is disposing~');
     super.dispose();
   }
 
@@ -47,54 +46,54 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Route'),
+        title: const Text('First Route'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              child: Text('Open native page'),
+              child: const Text('Open native page'),
               onPressed: () {
-                print("open native page!");
+                debugPrint("open native page!");
                 BoostNavigator.instance.push("native");
               },
             ),
             ElevatedButton(
-              child: Text('Open FF route'),
+              child: const Text('Open FF route'),
               onPressed: () {
-                print("open FF page!");
+                debugPrint("open FF page!");
                 BoostNavigator.instance.push("firstFirst");
               },
             ),
             ElevatedButton(
-              child: Text('Open second route1'),
+              child: const Text('Open second route1'),
               onPressed: () {
-                print("open willPop page!22");
+                debugPrint("open willPop page!22");
                 BoostNavigator.instance.push("willPop", withContainer: true);
               },
             ),
             ElevatedButton(
-              child: Text('Present second stateful route'),
+              child: const Text('Present second stateful route'),
               onPressed: () {
-                print("Present second stateful page!");
+                debugPrint("Present second stateful page!");
               },
             ),
             ElevatedButton(
-              child: Text('Present second route'),
+              child: const Text('Present second route'),
               onPressed: () {
-                print("Present second page!");
+                debugPrint("Present second page!");
                 // FlutterBoost.singleton.open("second",urlParams:<String,dynamic>{"present":true}).then((Map<dynamic,dynamic> value) {
-                //   print(
+                //   debugPrint(
                 //       "call me when page is finished. did receive second route result $value");
                 // });
               },
             ),
             ElevatedButton(
-                child: Text('Flutter to Flutter with Animation'),
+                child: const Text('Flutter to Flutter with Animation'),
                 onPressed: () {
                   // FlutterBoost.singleton.open("f2f_first").then((Map<dynamic,dynamic> value) {
-                  //   print(
+                  //   debugPrint(
                   //       "call me when page is finished. did receive second route result $value");
                   // });
                 })
@@ -108,7 +107,7 @@ class _FirstRouteWidgetState extends State<FirstRouteWidget> {
 class FirstFirstRouteWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new _FirstFirstRouteWidgetState();
+    return _FirstFirstRouteWidgetState();
   }
 }
 
@@ -117,31 +116,31 @@ class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget> {
 
   @override
   void initState() {
-    print('initState');
+    debugPrint('initState');
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    print('didChangeDependencies');
+    debugPrint('didChangeDependencies');
     super.didChangeDependencies();
   }
 
   @override
   void didUpdateWidget(FirstFirstRouteWidget oldWidget) {
-    print('didUpdateWidget');
+    debugPrint('didUpdateWidget');
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void deactivate() {
-    print('deactivate');
+    debugPrint('deactivate');
     super.deactivate();
   }
 
   @override
   void dispose() {
-    print('[XDEBUG] - FirstFirstRouteWidget is disposing~');
+    debugPrint('[XDEBUG] - FirstFirstRouteWidget is disposing~');
     super.dispose();
   }
 
@@ -149,16 +148,16 @@ class _FirstFirstRouteWidgetState extends State<FirstFirstRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('First Route'),
+        title: const Text('First Route'),
       ),
       body: Center(
         child: ElevatedButton(
-          child: Text('Open first route'),
+          child: const Text('Open first route'),
           onPressed: () {
-            print("open first page again!");
+            debugPrint("open first page again!");
             // FlutterBoost.singleton.open("first").then((Map value){
-            //   print("did receive first route result");
-            //   print("did receive first route result $value");
+            //   debugPrint("did receive first route result");
+            //   debugPrint("did receive first route result $value");
             // });
           },
         ),
@@ -178,15 +177,15 @@ class EmbeddedFirstRouteWidget extends StatefulWidget {
 class _EmbeddedFirstRouteWidgetState extends State<EmbeddedFirstRouteWidget> {
   @override
   Widget build(BuildContext context) {
-    print('_EmbeddedFirstRouteWidgetState build called!');
+    debugPrint('_EmbeddedFirstRouteWidgetState build called!');
     return Scaffold(
       body: Center(
         child: ElevatedButton(
-          child: Text('Open second route2'),
+          child: const Text('Open second route2'),
           onPressed: () {
-            print("open second page!");
+            debugPrint("open second page!");
             // FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
-            //   print(
+            //   debugPrint(
             //       "call me when page is finished. did receive second route result $value");
             // });
           },
@@ -197,7 +196,7 @@ class _EmbeddedFirstRouteWidgetState extends State<EmbeddedFirstRouteWidget> {
 
   @override
   void dispose() {
-    print('[XDEBUG]:_EmbeddedFirstRouteWidgetState disposing~');
+    debugPrint('[XDEBUG]:_EmbeddedFirstRouteWidgetState disposing~');
     super.dispose();
   }
 }
@@ -215,7 +214,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SecondStateful Route"),
+        title: const Text("SecondStateful Route"),
       ),
       body: Center(
         child: ElevatedButton(
@@ -230,7 +229,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
             // PageInfo pageInfo = BoostNavigator.instance.getTopPageInfo();
             BoostNavigator.instance.pop();
           },
-          child: Text('Go back with result!'),
+          child: const Text('Go back with result!'),
         ),
       ),
     );
@@ -238,7 +237,7 @@ class _SecondStatefulRouteWidgetState extends State<SecondStatefulRouteWidget> {
 
   @override
   void dispose() {
-    print('[XDEBUG]:SecondStatefulRouteWidget disposing~');
+    debugPrint('[XDEBUG]:SecondStatefulRouteWidget disposing~');
     super.dispose();
   }
 }
@@ -248,14 +247,14 @@ class TabRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Tab Route"),
+        title: const Text("Tab Route"),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
             // FlutterBoost.singleton.open("second");
           },
-          child: Text('Open second route3'),
+          child: const Text('Open second route3'),
         ),
       ),
     );
@@ -267,15 +266,15 @@ class PlatformRouteWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Platform Route"),
+        title: const Text("Platform Route"),
       ),
       body: Center(
         child: ElevatedButton(
           child: TextView(),
           onPressed: () {
-            print("open second page!");
+            debugPrint("open second page!");
             // FlutterBoost.singleton.open("second").then((Map<dynamic,dynamic> value) {
-            //   print(
+            //   debugPrint(
             //       "call me when page is finished. did receive second route result $value");
             // });
           },

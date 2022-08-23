@@ -47,7 +47,7 @@ class BoostContainer extends ChangeNotifier {
   VoidCallback? backPressedHandler;
 
   /// add a [BoostPage] in this container and return its future result
-  Future<T>? addPage<T extends Object>(BoostPage page) {
+  Future<T>? addPage<T extends Object?>(BoostPage page) {
     if (numPages() == 1) {
       /// disable the native slide pop gesture
       /// only iOS will receive this event ,Android will do nothing

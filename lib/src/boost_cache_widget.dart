@@ -21,7 +21,7 @@ class _BoostCacheWidgetState extends State<BoostCacheWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bool shouldUpdate = _oldUniqueId != widget.uniqueId;
+    final shouldUpdate = _oldUniqueId != widget.uniqueId;
     if (shouldUpdate) {
       _oldUniqueId = widget.uniqueId;
       _cacheWidget = widget.builder(context);

@@ -80,8 +80,7 @@ class ContainerOverlay {
     switch (mode) {
       case BoostSpecificEntryRefreshMode.add:
         // If there is an existing ContainerOverlayEntry in the list,we do nothing
-        final ContainerOverlayEntry? existingEntry =
-            _findExistingEntry(container: container);
+        final existingEntry = _findExistingEntry(container: container);
         if (existingEntry != null) {
           return;
         }
@@ -108,8 +107,7 @@ class ContainerOverlay {
         }
         break;
       case BoostSpecificEntryRefreshMode.moveToTop:
-        final ContainerOverlayEntry? existingEntry =
-            _findExistingEntry(container: container);
+        final existingEntry = _findExistingEntry(container: container);
 
         if (existingEntry == null) {
           /// If there is no entry in the list,we add it in list

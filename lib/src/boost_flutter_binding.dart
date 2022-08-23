@@ -1,5 +1,6 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
+
 import 'logger.dart';
 
 /// This class is to hook the Binding，to handle lifecycle events

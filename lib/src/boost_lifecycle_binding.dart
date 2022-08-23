@@ -68,7 +68,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPagePushEvent(container.topPage.route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onContainerDidPush(container, previousContainer);
       }
     }
@@ -86,7 +86,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPagePopEvent(container.topPage.route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onContainerDidPop(container, previousContainer);
       }
     }
@@ -121,7 +121,7 @@ class BoostLifecycleBinding {
           .dispatchPageShowEvent(container.topPage.route);
     }
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onContainerDidShow(container);
       }
     }
@@ -132,7 +132,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPageHideEvent(container.topPage.route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onContainerDidHide(container);
       }
     }
@@ -145,7 +145,7 @@ class BoostLifecycleBinding {
         .dispatchPageShowEventOnPageShowFirstTime(route);
     PageVisibilityBinding.instance.dispatchPageHideEvent(previousRoute);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onRouteDidPush(route, previousRoute);
       }
     }
@@ -157,7 +157,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance.dispatchPageShowEvent(previousRoute);
     PageVisibilityBinding.instance.dispatchPagePopEvent(route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onRouteDidPop(route, previousRoute);
       }
     }
@@ -173,7 +173,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPageForgroundEvent(container.topPage.route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onAppDidEnterForeground(container);
       }
     }
@@ -184,7 +184,7 @@ class BoostLifecycleBinding {
     PageVisibilityBinding.instance
         .dispatchPageBackgroundEvent(container.topPage.route);
     if (_observerList.isNotEmpty) {
-      for (BoostLifecycleObserver observer in _observerList) {
+      for (var observer in _observerList) {
         observer.onAppDidEnterBackground(container);
       }
     }
