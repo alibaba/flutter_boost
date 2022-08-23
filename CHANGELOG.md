@@ -1,5 +1,8 @@
 ## NEXT
 
+## 4.0.3
+1. 修复`addEventListener`函数中可能的类型转换错误
+
 ## 4.0.2
 1. 增加dual_screen测试案例
 2. [Android]恢复detachFromFlutterEngine重载逻辑，解决空指针崩溃问题

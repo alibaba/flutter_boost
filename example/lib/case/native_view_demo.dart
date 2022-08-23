@@ -68,7 +68,7 @@ class NativeViewExampleState extends State<NativeViewExample> {
                 Expanded(child: NativeView(viewType3, hybridCompositionMode)),
                 Expanded(child: NativeView(viewType3, hybridCompositionMode)),
               ])),
-              Expanded(child: AnimationDemo()),
+              const Expanded(child: AnimationDemo()),
               Expanded(
                   child: Row(children: [
                 Expanded(child: NativeView(viewType3, hybridCompositionMode)),

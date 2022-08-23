@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dual_screen/dual_screen.dart';
 
 class DualScreen extends StatefulWidget {
+  const DualScreen({Key? key}) : super(key: key);
   @override
   State<DualScreen> createState() => _DualScreenState();
 }
@@ -38,9 +39,9 @@ class _DualScreenState extends State<DualScreen> {
           ),
         ),
       ),
-      endPane: Material(
+      endPane: const Material(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(16.0),
           child: Center(
             child: Text('This pane is visible on dual-screen devices.'),
           ),

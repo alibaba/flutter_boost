@@ -19,31 +19,31 @@ class _SimpleWidgetState extends State<SimpleWidget>
   @override
   void didChangeDependencies() {
     PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
-    print('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
+    debugPrint('$_kTag#didChangeDependencies, ${widget.uniqueId}, $this');
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
-    print('$_kTag#initState, ${widget.uniqueId}, $this');
+    debugPrint('$_kTag#initState, ${widget.uniqueId}, $this');
     super.initState();
   }
 
   @override
   void dispose() {
     PageVisibilityBinding.instance.removeObserver(this);
-    print('$_kTag#dispose, ${widget.uniqueId}, $this');
+    debugPrint('$_kTag#dispose, ${widget.uniqueId}, $this');
     super.dispose();
   }
 
   @override
   void onPageShow() {
-    print('$_kTag#onPageShow, ${widget.uniqueId}, $this');
+    debugPrint('$_kTag#onPageShow, ${widget.uniqueId}, $this');
   }
 
   @override
   void onPageHide() {
-    print('$_kTag#onPageHide, ${widget.uniqueId}, $this');
+    debugPrint('$_kTag#onPageHide, ${widget.uniqueId}, $this');
   }
 
   @override

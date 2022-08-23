@@ -148,7 +148,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance.push("native").then(
                     (value) =>
-                        print("Return from Native: ${value.toString()}")),
+                        debugPrint("Return from Native: ${value.toString()}")),
               ),
               InkWell(
                 child: Container(
@@ -219,7 +219,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                 onTap: () => BoostNavigator.instance
                     .push("mediaquery", withContainer: withContainer)
                     .then((value) =>
-                        print('xlog, mediaquery, Return Value:$value')),
+                        debugPrint('xlog, mediaquery, Return Value:$value')),
               ),
               InkWell(
                 child: Container(
@@ -246,7 +246,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                 onTap: () => BoostNavigator.instance
                     .push("webview", withContainer: withContainer)
                     .then(
-                        (value) => print('xlog, webview, Return Value:$value')),
+                        (value) => debugPrint('xlog, webview, Return Value:$value')),
               ),
               InkWell(
                 child: Container(
@@ -325,7 +325,7 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       context,
                       MaterialPageRoute<dynamic>(
                           builder: (_) => PushWidget())).then((value) =>
-                      print('xlog, PushWidget, Return Value: $value'));
+                      debugPrint('xlog, PushWidget, Return Value: $value'));
                 },
               ),
               InkWell(

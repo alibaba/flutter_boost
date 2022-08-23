@@ -120,7 +120,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       //and 0 is resumed
       //and 2 is paused
 
-      final int? index = arguments!["lifecycleState"];
+      final int? index = arguments["lifecycleState"];
 
       if (index == AppLifecycleState.resumed.index) {
         BoostFlutterBinding.instance!
@@ -129,7 +129,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         BoostFlutterBinding.instance!
             .changeAppLifecycleState(AppLifecycleState.paused);
       }
-      return;
+      return Future<dynamic>.value();
     });
   }
 
@@ -637,7 +637,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void onReceiveEventFromNative(CommonParams params) {
     //Get the name and args from native
     var key = params.key!;
-    Map? args = params.arguments;
+    Map args = params.arguments ?? <String, Object>{};
 
     //Get all of listeners matching this key
     final listeners = _listenersTable[key];
@@ -651,8 +651,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   ///Add event listener in flutter side with a [key] and [listener]
   VoidCallback addEventListener(String key, EventListener listener) {
-    List<Future<dynamic>? Function(String, Map<dynamic, dynamic>?)>? listeners =
-        _listenersTable[key];
+    var listeners = _listenersTable[key];
     if (listeners == null) {
       listeners = [];
       _listenersTable[key] = listeners;
