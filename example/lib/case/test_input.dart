@@ -132,7 +132,7 @@ class _TestTextFieldState extends State<TestTextField> {
     _node = FocusNode();
     _node!.addListener(() {
       if (_node!.hasFocus) {
-        print('showBottomSheet');
+        debugPrint('showBottomSheet');
         _controller = Scaffold.of(context)
             .showBottomSheet<dynamic>((BuildContext ctx) => Container(
                   width: double.infinity,
@@ -140,7 +140,7 @@ class _TestTextFieldState extends State<TestTextField> {
                   color: Colors.deepPurple,
                 ));
       } else {
-        print('closeBottomSheet');
+        debugPrint('closeBottomSheet');
         _controller!.close();
         _controller = null;
       }

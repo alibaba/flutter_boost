@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'demo_painter.dart';
 
 class AnimationDemo extends StatefulWidget {
+  const AnimationDemo({Key? key}) : super(key: key);
   @override
   State<AnimationDemo> createState() => _AnimationDemoState();
 }

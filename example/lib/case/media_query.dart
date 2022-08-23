@@ -19,25 +19,25 @@ class _MediaQueryRouteWidgetState extends State<MediaQueryRouteWidget> {
 
   @override
   void initState() {
-    print('initState');
+    debugPrint('initState');
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    print('didChangeDependencies');
+    debugPrint('didChangeDependencies');
     super.didChangeDependencies();
   }
 
   @override
   void deactivate() {
-    print('deactivate');
+    debugPrint('deactivate');
     super.deactivate();
   }
 
   @override
   void dispose() {
-    print('[XDEBUG] - FirstFirstRouteWidget is disposing~');
+    debugPrint('[XDEBUG] - FirstFirstRouteWidget is disposing~');
     super.dispose();
   }
 

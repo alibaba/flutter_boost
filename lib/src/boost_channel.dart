@@ -4,7 +4,7 @@ import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
 
-typedef EventListener = Future<dynamic>? Function(String key, Map? arguments);
+typedef EventListener = Future<dynamic> Function(String key, Map arguments);
 
 /// The [BoostChannel] is a tool to get [FlutterBoostAppState]
 /// to operate the Custom events
