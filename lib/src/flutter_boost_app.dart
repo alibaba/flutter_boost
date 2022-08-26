@@ -253,12 +253,14 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     for (var interceptor in interceptors) {
       final pushHandler = PushInterceptorHandler();
       interceptor.onPrePush(state!.data, pushHandler);
-      state = pushHandler.state as InterceptorState<BoostInterceptorOption>?;
-      if (state!.type != InterceptorResultType.next) {
+
+      // user resolve or do nothing
+      if (pushHandler.state?.type != InterceptorResultType.next) {
         Logger.log('The page was intercepted by user. name:$name, '
             'isFromHost=$isFromHost, isFlutterPage=$isFlutterPage');
         return Future<T>.value(state.data as T);
       }
+      state = pushHandler.state as InterceptorState<BoostInterceptorOption>?;
     }
 
     if (state?.type == InterceptorResultType.next) {
@@ -373,10 +375,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     for (var interceptor in interceptors) {
       final pushHandler = PushInterceptorHandler();
       interceptor.onPostPush(state!.data, pushHandler);
-      state = pushHandler.state as InterceptorState<BoostInterceptorOption>?;
-      if (state!.type != InterceptorResultType.next) {
+      // user resolve or do nothing
+      if (pushHandler.state?.type != InterceptorResultType.next) {
         break;
       }
+      state = pushHandler.state as InterceptorState<BoostInterceptorOption>?;
     }
   }
 
