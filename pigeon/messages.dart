@@ -3,15 +3,12 @@ import 'package:pigeon/pigeon.dart';
 @ConfigurePigeon(PigeonOptions(
   input: 'pigeon/messages.dart',
   dartOut: 'lib/src/messages.dart',
+  copyrightHeader: 'pigeon/copyright.txt',
+  javaOptions: JavaOptions(package: 'com.idlefish.flutterboost'),
+  javaOut: 'android/src/main/java/com/idlefish/flutterboost/Messages.java',
+  objcOptions: ObjcOptions(prefix: 'FB'),
   objcHeaderOut: 'ios/Classes/messages.h',
   objcSourceOut: 'ios/Classes/messages.m',
-  javaOut: 'android/src/main/java/com/idlefish/flutterboost/Messages.java',
-  javaOptions: JavaOptions(
-    package: 'com.idlefish.flutterboost',
-  ),
-  objcOptions: ObjcOptions(
-    prefix: 'FB',
-  ),
 ))
 class CommonParams {
   bool? opaque;
