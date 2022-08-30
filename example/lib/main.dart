@@ -161,7 +161,8 @@ class _MyAppState extends State<MyApp> {
     'interceptor': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
-          pageBuilder: (_, __, ___) => const ImagePickerPage(title: "interceptor"));
+          pageBuilder: (_, __, ___) =>
+              const ImagePickerPage(title: "interceptor"));
     },
     'firstFirst': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -170,12 +171,14 @@ class _MyAppState extends State<MyApp> {
     },
     'willPop': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => const WillPopRoute());
+          settings: settings,
+          pageBuilder: (_, __, ___) => const WillPopRoute());
     },
     'counter': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
-          pageBuilder: (_, __, ___) => const CounterPage(title: "Counter Demo"));
+          pageBuilder: (_, __, ___) =>
+              const CounterPage(title: "Counter Demo"));
     },
     'dualScreen': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -82,5 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v("xlog", "#onActivityResult, requestCode=" + requestCode + ", resultCode=" + resultCode + ", data=" + (data != null ? data.getSerializableExtra(ACTIVITY_RESULT_KEY) : ""));
+        if (data != null) {
+            Toast.makeText(getApplicationContext(), "#onActivityResult:" + data.getSerializableExtra(ACTIVITY_RESULT_KEY) , Toast.LENGTH_SHORT).show();
+        }
     }
 }

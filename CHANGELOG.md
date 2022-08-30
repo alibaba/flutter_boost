@@ -1,5 +1,9 @@
 ## NEXT
 
+## 4.0.4
+1. 修复 onPostPush 和 onPostPush 类型强转失败 (#1707)
+2. [Android] 提前暴露混淆导致的异常，并给出明确指引
+
 ## 4.0.3
 1. 修复`addEventListener`函数中可能的类型转换错误
 

@@ -132,10 +132,11 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: const Text(
-                      'Pop with Navigator',
+                      'Pop with parameter',
                       style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
-                onTap: () => Navigator.of(context).pop(),
+                onTap: () =>
+                    Navigator.of(context).pop({'msg': 'I am from dart ...'}),
               ),
               InkWell(
                 child: Container(
@@ -168,11 +169,11 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: const Text(
-                      'You can not open this page',
+                      'Blocked by interceptor',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
                 onTap: () => BoostNavigator.instance
-                    .push("interceptor", withContainer: withContainer),
+                    .push("interceptor", withContainer: false),
               ),
               InkWell(
                   child: Container(
@@ -245,8 +246,8 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     )),
                 onTap: () => BoostNavigator.instance
                     .push("webview", withContainer: withContainer)
-                    .then(
-                        (value) => debugPrint('xlog, webview, Return Value:$value')),
+                    .then((value) =>
+                        debugPrint('xlog, webview, Return Value:$value')),
               ),
               InkWell(
                 child: Container(

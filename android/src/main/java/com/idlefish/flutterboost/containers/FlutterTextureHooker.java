@@ -67,7 +67,8 @@ class FlutterTextureHooker {
                         isNeedRestoreState = false;
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    // https://github.com/alibaba/flutter_boost/issues/1560
+                    throw new RuntimeException("You *SHOULD* keep FlutterTextureView: -keep class io.flutter.embedding.android.FlutterTextureView { *; }.", e);
                 }
             }
         }
@@ -104,7 +105,8 @@ class FlutterTextureHooker {
                             Field isAttachedToFlutterRenderer = aClass.getDeclaredField("isAttachedToFlutterRenderer");
                             isAttachedToFlutterRenderer.setAccessible(true);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            // https://github.com/alibaba/flutter_boost/issues/1560
+                            throw new RuntimeException("You *SHOULD* keep FlutterTextureView: -keep class io.flutter.embedding.android.FlutterTextureView { *; }.", e);
                         }
                         isNeedRestoreState = true;
                         //return false, handle the last frame of surfaceTexture ourselves;
