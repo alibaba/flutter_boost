@@ -124,6 +124,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
                 } else {
                     throw new RuntimeException("Oops!! The unique id is null!");
                 }
+            } else {
+                //被拦截处理了，那么直接通知result
+                result.success(null);
             }
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* set delegate!");
