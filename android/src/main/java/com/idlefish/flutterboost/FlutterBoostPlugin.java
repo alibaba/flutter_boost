@@ -251,6 +251,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             CommonParams params = new CommonParams();
             channel.onForeground(params, reply -> {
             });
+
+            // The scheduling frames are resumed when [onForeground] is called.
+            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -263,6 +266,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             CommonParams params = new CommonParams();
             channel.onBackground(params, reply -> {
             });
+
+            // The scheduling frames are paused when [onBackground] is called.
+            FlutterBoost.instance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_PAUSED);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
