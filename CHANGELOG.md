@@ -1,4 +1,6 @@
 ## NEXT
+1. [Android]fix popUntil not working (#1718)
+2. Add demo for afterimage test
 
 ## 4.0.4
 1. 修复 onPostPush 和 onPostPush 类型强转失败 (#1707)

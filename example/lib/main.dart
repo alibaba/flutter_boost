@@ -11,6 +11,7 @@ import 'case/native_view_demo.dart';
 import 'case/platform_view_perf.dart';
 import 'case/popUntil.dart';
 import 'case/return_data.dart';
+import 'case/rotation_transition.dart';
 import 'case/simple_webview_demo.dart';
 import 'case/selection_screen.dart';
 import 'case/state_restoration.dart';
@@ -309,6 +310,10 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => StateRestorationDemo());
+    },
+    'rotation_transition': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => RotationTranDemo());
     },
     'bottom_navigation': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

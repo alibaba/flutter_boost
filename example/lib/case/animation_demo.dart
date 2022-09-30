@@ -26,8 +26,8 @@ class _AnimationDemoState extends State<AnimationDemo>
     //We want the motion to be both sided
     _controller.repeat(reverse: true);
 
-    //Adding a listener to set the state is needed
-    //if your widget tree needs to rebuild in each tick
+    // Adding a listener to set the state is needed
+    // if your widget tree needs to rebuild in each tick
     _controller.addListener(() {
       setState(() {});
     });
