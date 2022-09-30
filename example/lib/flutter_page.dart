@@ -270,6 +270,18 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: const Text(
+                      'Afterimage Test',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push('rotation_transition', withContainer: withContainer),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: const Text(
                       'Bottom Navigation Example',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),

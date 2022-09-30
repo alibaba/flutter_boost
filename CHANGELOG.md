@@ -1,4 +1,6 @@
 ## NEXT
+1. [Android]fix popUntil not working (#1718)
+2. Add demo for afterimage test
 
 ## 3.1.2
 1. [Android] 提前暴露混淆导致的异常，并给出明确指引
