@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_boost/flutter_boost.dart';
 
 class RotationTranDemo extends StatefulWidget {
   RotationTranDemo({Key? key}) : super(key: key);
@@ -12,11 +13,12 @@ class RotationTranDemo extends StatefulWidget {
 }
 
 class RotationTranDemoState extends State<RotationTranDemo>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, PageVisibilityObserver {
   late AnimationController _controller;
   late Animation<double> _animation;
 
-  initState() {
+  @override
+  void initState() {
     super.initState();
     _controller = AnimationController(
         duration: const Duration(milliseconds: 3000),
@@ -34,14 +36,18 @@ class RotationTranDemoState extends State<RotationTranDemo>
     _controller.addListener(() {
       setState(() {});
     });
+    print("RotationTranDemo - initState");
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    PageVisibilityBinding.instance.removeObserver(this);
     super.dispose();
+    print("RotationTranDemo - dispose");
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -61,5 +67,36 @@ class RotationTranDemoState extends State<RotationTranDemo>
             ]),
       ),
     );
+  }
+
+  @override
+  void onBackground() {
+    super.onBackground();
+    print("RotationTranDemo - onBackground");
+  }
+
+  @override
+  void onForeground() {
+    super.onForeground();
+    print("RotationTranDemo - onForeground");
+  }
+
+  @override
+  void onPageHide() {
+    super.onPageHide();
+    print("RotationTranDemo - onPageHide");
+  }
+
+  @override
+  void onPageShow() {
+    super.onPageShow();
+    print("RotationTranDemo - onPageShow");
+  }
+
+  @override
+  void didChangeDependencies() {
+    PageVisibilityBinding.instance.addObserver(this, ModalRoute.of(context)!);
+    super.didChangeDependencies();
+    print("RotationTranDemo - didChangeDependencies");
   }
 }
