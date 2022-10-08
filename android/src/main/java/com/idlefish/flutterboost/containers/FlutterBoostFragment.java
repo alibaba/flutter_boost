@@ -290,7 +290,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         return (stage == LifecycleStage.ON_PAUSE || stage == LifecycleStage.ON_STOP) && !isFinishing;
     }
 
-    private void didFragmentShow() {
+    protected void didFragmentShow() {
         // try to detach prevous container from the engine.
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (top != null && top != this) {
@@ -303,7 +303,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
-    private void didFragmentHide() {
+    protected void didFragmentHide() {
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         // We defer |performDetach| call to new Flutter container's |onResume|;
         // performDetach();
