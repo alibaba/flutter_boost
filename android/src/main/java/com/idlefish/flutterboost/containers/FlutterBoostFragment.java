@@ -42,6 +42,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private LifecycleStage stage;
     private boolean isAttached = false;
     private boolean isFinishing = false;
+    private boolean isManualShowHide = false;
 
     @Override
     public void detachFromFlutterEngine() {
@@ -101,7 +102,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.onHiddenChanged(hidden);
         // If |onHiddenChanged| method is called before the |onCreateView|,
         // we just return here.
-        if (flutterView == null) return;
+        if (flutterView == null || isManualShowHide) return;
         if (hidden) {
             didFragmentHide();
         } else {
@@ -115,7 +116,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         super.setUserVisibleHint(isVisibleToUser);
         // If |setUserVisibleHint| method is called before the |onCreateView|,
         // we just return here.
-        if (flutterView == null) return;
+        if (flutterView == null || isManualShowHide) return;
         if (isVisibleToUser) {
             didFragmentShow();
         } else {
@@ -127,6 +128,23 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
+        if (!this.isManualShowHide) {
+            this.manualResume();
+        }
+    }
+
+    // Update system UI overlays to match Flutter's desired system chrome style
+    protected void onUpdateSystemUiOverlays() {
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
+    }
+
+    // Allow you control yourself.
+    public void setManualShowHide(boolean isManual) {
+        this.isManualShowHide = isManual;
+    }
+
+    public void manualResume() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             final FlutterContainerManager containerManager = FlutterContainerManager.instance();
             FlutterViewContainer top = containerManager.getTopActivityContainer();
@@ -145,13 +163,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             // Update system UI overlays to match Flutter's desired system chrome style
             onUpdateSystemUiOverlays();
         }
-       if (DEBUG) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
-    }
-
-    // Update system UI overlays to match Flutter's desired system chrome style
-    protected void onUpdateSystemUiOverlays() {
-        Assert.assertNotNull(platformPlugin);
-        platformPlugin.updateSystemUiOverlays();
+        if (DEBUG) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
     }
 
     @Override
@@ -163,6 +175,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
+        if (!this.isManualShowHide) {
+            this.manualPause();
+        }
+    }
+
+    public void manualPause() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
             if (top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
@@ -291,23 +309,33 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     protected void didFragmentShow() {
-        // try to detach prevous container from the engine.
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-        if (top != null && top != this) {
-            top.detachFromEngineIfNeeded();
-        }
+        try {
+            // try to detach prevous container from the engine.
+            FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
+            if (top != null && top != this) {
+                top.detachFromEngineIfNeeded();
+            }
 
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        performAttach();
-        textureHooker.onFlutterTextureViewRestoreState();
-        if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
+            FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+            performAttach();
+            textureHooker.onFlutterTextureViewRestoreState();
+            if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "#didFragmentShow error：" + e.getMessage());
+        }
     }
 
     protected void didFragmentHide() {
-        FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
-        // We defer |performDetach| call to new Flutter container's |onResume|;
-        // performDetach();
-        if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
+        try {
+            FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
+            // We defer |performDetach| call to new Flutter container's |onResume|;
+            // performDetach();
+            if (DEBUG) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "#didFragmentHide error：" + e.getMessage());
+        }
     }
 
     private void performAttach() {
