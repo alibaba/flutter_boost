@@ -1,7 +1,11 @@
 ## NEXT
+
+## 3.1.3
 1. [Android]fix popUntil not working (#1718)
 2. Add demo for afterimage test
 3. [Android] 与纯Flutter应用生命周期行为保持一致：应用切换到后台时，暂停帧调度，解决动画残影的问题。[注意] 应用「务必」确保前后台通知事件（onBackground/onForeground）的准确性（必要时通过dispatchBackForegroundEvent接口进行接管），否则可能出现页面假死现象；
+4. [Android]对子类开放didFragmentShow和didFragmentHide (#1726)
+5. [Android] 修复FlutterFragment可能会盖住NativeFragment的Bug (#1736)
 
 ## 3.1.2
 1. [Android] 提前暴露混淆导致的异常，并给出明确指引
