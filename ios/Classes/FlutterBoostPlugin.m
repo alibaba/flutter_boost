@@ -74,6 +74,11 @@
     }];
 }
 
+- (void)onBackSwipe {
+    [self.flutterApi onBackPressedWithCompletion: ^(NSError * e) {
+    }];
+}
+
 - (void)containerDestroyed:(id<FBFlutterContainer>)vc {
     FBCommonParams* params =[[FBCommonParams alloc] init ];
     params.pageName = vc.name;
