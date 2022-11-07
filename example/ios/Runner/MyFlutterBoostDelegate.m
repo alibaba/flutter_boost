@@ -27,11 +27,16 @@
 }
 
 - (void)pushFlutterRoute:(FlutterBoostRouteOptions *)options {
-    FBFlutterViewContainer *vc = FBFlutterViewContainer.new;
+    FBFlutterViewContainer *vc = [[FBFlutterViewContainer alloc] init];
     [vc setName:options.pageName uniqueId:options.uniqueId params:options.arguments opaque:options.opaque];
 
     //是否伴随动画
-    BOOL animated = YES;//[options.arguments[@"animated"] boolValue];
+    BOOL animated = YES;
+    NSNumber * animatedValue = options.arguments[@"animated"];
+    if(animatedValue){
+        animated = [animatedValue boolValue];
+    }
+
     //是否是present的方式打开,如果要push的页面是透明的，那么也要以present形式打开
     BOOL present = [options.arguments[@"present"] boolValue] || !options.opaque;
 

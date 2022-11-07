@@ -43,7 +43,7 @@
     UIViewControllerDemo *vc = [[UIViewControllerDemo alloc] initWithNibName:@"UIViewControllerDemo" bundle:[NSBundle mainBundle]];
     vc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"hybrid" image:nil tag:0];
 
-    FBFlutterViewContainer *fvc = FBFlutterViewContainer.new ;
+    FBFlutterViewContainer *fvc = [[FBFlutterViewContainer alloc] init] ;
 
     [fvc setName:@"tab_friend" uniqueId:nil params:@{} opaque:YES];
     fvc.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"flutter_tab" image:nil tag:1];
