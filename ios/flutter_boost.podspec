@@ -9,12 +9,12 @@ Pod::Spec.new do |s|
 A new Flutter plugin make flutter better to use!
                        DESC
   s.homepage         = 'http://example.com'
-  s.license          = { :file => '../LICENSE.md' }
+  s.license          = { :file => '../LICENSE' }
   s.author           = { 'Alibaba Xianyu' => 'email@example.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*.{h,m,mm}'
-  
-  s.public_header_files = 
+
+  s.public_header_files =
     'Classes/FlutterBoost.h',
     'Classes/FlutterBoostDelegate.h',
     'Classes/FlutterBoostPlugin.h',
@@ -23,14 +23,14 @@ A new Flutter plugin make flutter better to use!
     'Classes/Options.h',
     'Classes/messages.h'
 
-    
+
   s.dependency 'Flutter'
   s.libraries = 'c++'
   s.pod_target_xcconfig = {
       'CLANG_CXX_LANGUAGE_STANDARD' => 'c++11',
       'CLANG_CXX_LIBRARY' => 'libc++'
   }
-  
+
   s.ios.deployment_target = '8.0'
 end
 
