@@ -1,5 +1,12 @@
 ## NEXT
 
+## 3.2.0
+1. [ios] Animations are enabled by default on ios. (#1750)
+2. ios] Use a screen edge pan gesture to go back to the previous page of a non-container page. (#1752)
+3. Add hero animation demo. (#1761)
+4. [ios] Fixes the warning that the license file does not exist (#1762)
+5. 处理 pushReplacement 泛型转换错误 (#1758)
+
 ## 3.1.3
 1. [Android]fix popUntil not working (#1718)
 2. Add demo for afterimage test
