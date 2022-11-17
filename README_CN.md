@@ -57,7 +57,7 @@ flutter_boost:
 
 
 # 许可证
-该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE.md]（LICENSE.md）文件
+该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE]（LICENSE）文件
 <a name="Acknowledgments"> </a>
 
 
