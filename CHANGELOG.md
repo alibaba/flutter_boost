@@ -1,5 +1,14 @@
 ## NEXT
 
+## 4.2.0
+1. [Android] Fixes HybridCompositon does not work (#1743)
+2. Add pigeon commands to script file. (#1744)
+3. [ios] Use a screen edge pan gesture to go back to the previous page of a non-container page. (#1751)
+
+## 4.1.1
+1. [Android] 修复FlutterFragment可能会盖住NativeFragment的Bug (#1736)
+2. Update README_CN.md (#1731)
+
 ## 4.1.0
 1. [Android]fix popUntil not working (#1718)
 2. Add demo for afterimage test

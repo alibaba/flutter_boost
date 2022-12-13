@@ -23,8 +23,7 @@ class NativeView extends StatelessWidget {
         if (hybridCompositionMode) {
           return PlatformViewLink(
             viewType: viewType,
-            surfaceFactory:
-                (BuildContext context, PlatformViewController controller) {
+            surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
                 gestureRecognizers: const <
@@ -32,8 +31,8 @@ class NativeView extends StatelessWidget {
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },
-            onCreatePlatformView: (PlatformViewCreationParams params) {
-              return PlatformViewsService.initSurfaceAndroidView(
+            onCreatePlatformView: (params) {
+              return PlatformViewsService.initExpensiveAndroidView(
                 id: params.id,
                 viewType: viewType,
                 layoutDirection: TextDirection.ltr,

@@ -5,6 +5,7 @@ import 'case/counter_demo.dart';
 import 'case/dual_screen.dart';
 import 'case/flutter_rebuild_demo.dart';
 import 'case/flutter_to_flutter_sample.dart';
+import 'case/hero_animation.dart';
 import 'case/image_pick.dart';
 import 'case/media_query.dart';
 import 'case/native_view_demo.dart';
@@ -172,8 +173,25 @@ class _MyAppState extends State<MyApp> {
     },
     'willPop': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
-          settings: settings,
-          pageBuilder: (_, __, ___) => const WillPopRoute());
+        settings: settings,
+        pageBuilder: (_, __, ___) => const WillPopRoute(),
+        transitionsBuilder: (BuildContext context, Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(1.0, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset.zero,
+                end: const Offset(-1.0, 0),
+              ).animate(secondaryAnimation),
+              child: child,
+            ),
+          );
+        },
+      );
     },
     'counter': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
@@ -184,6 +202,10 @@ class _MyAppState extends State<MyApp> {
     'dualScreen': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => const DualScreen());
+    },
+    'hero_animation': (settings, uniqueId) {
+      return MaterialPageRoute(
+          settings: settings, builder: (_) => const HeroAnimation());
     },
     'returnData': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(

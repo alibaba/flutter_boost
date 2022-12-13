@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/case/native_view.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class WebViewExample extends StatefulWidget {
@@ -10,13 +11,15 @@ class WebViewExample extends StatefulWidget {
 class WebViewExampleState extends State<WebViewExample> {
   bool withContainer = true;
   bool visible = true;
+  bool usingHybridComposition = true;
   final url = 'https://flutter.dev';
+  final String viewType = '<simple-text-view>';
 
   @override
   void initState() {
     super.initState();
-    // Enable hybrid composition.
-    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    // Enable virtual display.
+    // if (Platform.isAndroid) WebView.platform = AndroidWebView();
   }
 
   @override
@@ -113,9 +116,7 @@ class WebViewExampleState extends State<WebViewExample> {
                             width: 200,
                             height: 200,
                             margin: const EdgeInsets.all(10.0),
-                            child: WebView(
-                              initialUrl: url,
-                            ),
+                            child: NativeView(viewType, usingHybridComposition),
                           ),
                         ),
                         Container(
@@ -125,9 +126,7 @@ class WebViewExampleState extends State<WebViewExample> {
                           width: 100,
                           height: 100,
                           margin: const EdgeInsets.all(10.0),
-                          child: WebView(
-                            initialUrl: url,
-                          ),
+                          child: NativeView(viewType, !usingHybridComposition),
                         ),
                       ],
                     ),

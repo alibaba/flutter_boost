@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-## 4.1.0
+## 4.2.0
 
 PS：Null-safety is already supported.
 
@@ -25,6 +25,10 @@ A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plug
 1. Before proceeding, you need to integrate Flutter into your existing project.
 2. The Flutter SDK version supported by Boost 3.0 is >= 1.22
 
+> Flutter SDK version support:
+>1. Flutter SDK 3.0 and above, use a version greater than `4.0.1`
+>2. Flutter SDK 3.0 or below, use `v3.0-release.2` or below
+>3. The null-safe version that supports Flutter SDK 2.5.x is `3.1.x`
 
 # Getting Started
 
@@ -37,7 +41,7 @@ Open you pubspec.yaml and add the following line to dependencies:
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '4.1.0'
+        ref: '4.2.0'
 ```
 
 
@@ -63,7 +67,7 @@ please read this document:
 
 
 # License
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 
 ## 关于我们

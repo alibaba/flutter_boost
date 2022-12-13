@@ -92,14 +92,14 @@ class BoostNavigator {
       {Map<String, dynamic>? arguments, bool withContainer = false}) async {
     final String? id = getTopPageInfo()?.uniqueId;
     final result =
-        push(name, arguments: arguments, withContainer: withContainer);
+        push<T>(name, arguments: arguments, withContainer: withContainer);
 
     if (id != null) {
       Future.delayed(const Duration(milliseconds: 100), () {
         remove(id);
       });
     }
-    return result as FutureOr<T>;
+    return result;
   }
 
   /// Pop the top-most page off the hybrid stack.

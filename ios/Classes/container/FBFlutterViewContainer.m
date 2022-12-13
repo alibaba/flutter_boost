@@ -74,8 +74,9 @@ _Pragma("clang diagnostic pop")
 @property (nonatomic,copy) NSString *uniqueId;
 @property (nonatomic, copy) NSString *flbNibName;
 @property (nonatomic, strong) NSBundle *flbNibBundle;
-@property(nonatomic, assign) BOOL opaque;
+@property (nonatomic, assign) BOOL opaque;
 @property (nonatomic, strong) FBVoidCallback removeEventCallback;
+@property (nonatomic, strong) UIScreenEdgePanGestureRecognizer* leftEdgeGesture;
 @end
 
 @implementation FBFlutterViewContainer
@@ -142,7 +143,7 @@ _Pragma("clang diagnostic pop")
         }
     }
     [FB_PLUGIN containerCreated:self];
-    
+
     /// 设置这个container对应的从flutter过来的事件监听
     [self setupEventListeningFromFlutter];
 }
@@ -157,7 +158,7 @@ _Pragma("clang diagnostic pop")
         NSString *event = arguments[@"event"];
         //事件参数
         NSDictionary *args = arguments[@"args"];
-        
+
         if ([event isEqualToString:@"enablePopGesture"]) {
             // 多page情况下的侧滑动态禁用和启用事件
             NSNumber *enableNum = args[@"enable"];
@@ -185,7 +186,7 @@ _Pragma("clang diagnostic pop")
 }
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
-    
+
     [super dismissViewControllerAnimated:flag completion:^(){
         if (completion) {
             completion();
@@ -202,6 +203,8 @@ _Pragma("clang diagnostic pop")
         self.removeEventCallback();
     }
     [NSNotificationCenter.defaultCenter removeObserver:self];
+
+    _leftEdgeGesture.delegate = nil;
 }
 
 - (void)notifyWillDealloc
@@ -212,11 +215,22 @@ _Pragma("clang diagnostic pop")
 - (void)viewDidLoad {
     // Ensure current view controller attach to Flutter engine
     [self attatchFlutterEngine];
-    
+
     [super viewDidLoad];
     //只有在不透明情况下，才设置背景颜色，否则不设置颜色（也就是默认透明）
     if(self.opaque){
         self.view.backgroundColor = UIColor.whiteColor;
+    }
+
+    _leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftEdgeGesture:)];
+    _leftEdgeGesture.edges = UIRectEdgeLeft;
+    _leftEdgeGesture.delegate = self;
+    [self.view addGestureRecognizer:_leftEdgeGesture];
+}
+
+- (void)handleLeftEdgeGesture:(UIScreenEdgePanGestureRecognizer *)gesture {
+    if (UIGestureRecognizerStateEnded == gesture.state) {
+        [FB_PLUGIN onBackSwipe];
     }
 }
 
@@ -240,7 +254,7 @@ _Pragma("clang diagnostic pop")
         //interal engine platformViewController,or dealloc will not be called after controller close.
         //detail:https://github.com/flutter/engine/blob/07e2520d5d8f837da439317adab4ecd7bff2f72d/shell/platform/darwin/ios/framework/Source/FlutterViewController.mm#L529
         [self surfaceUpdated:NO];
-        
+
         if(ENGINE.viewController != nil) {
             ENGINE.viewController = nil;
         }
@@ -268,32 +282,32 @@ _Pragma("clang diagnostic pop")
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
+
     [FB_PLUGIN containerWillAppear:self];
     //For new page we should attach flutter view in view will appear
     //for better performance.
     [self attatchFlutterEngine];
-    
+
     [super bridge_viewWillAppear:animated];
     [self.view setNeedsLayout];//TODO:通过param来设定
-    
+
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     //Ensure flutter view is attached.
     [self attatchFlutterEngine];
-    
+
     //根据淘宝特价版日志证明，即使在UIViewController的viewDidAppear下，application也可能在inactive模式，此时如果提交渲染会导致GPU后台渲染而crash
     //参考：https://github.com/flutter/flutter/issues/57973
     //https://github.com/flutter/engine/pull/18742
     if([UIApplication sharedApplication].applicationState == UIApplicationStateActive){
         //NOTES：务必在show之后再update，否则有闪烁; 或导致侧滑返回时上一个页面会和top页面内容一样
         [self surfaceUpdated:YES];
-        
+
     }
     [super viewDidAppear:animated];
-    
+
     // Enable or disable pop gesture
     // note: if disablePopGesture is nil, do nothing
     if (self.disablePopGesture) {

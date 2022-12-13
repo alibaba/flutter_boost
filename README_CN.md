@@ -5,7 +5,7 @@
 
 # Release Note
 
-## 4.1.0
+## 4.2.0
 
 PS：主线已支持空安全(null-safety)
 
@@ -27,6 +27,11 @@ PS：主线已支持空安全(null-safety)
 1.在继续之前，您需要将Flutter集成到你现有的项目中。
 2.boost3.0版本支持的flutter sdk 版本为 >= 1.22
 
+>Flutter SDK版本支持情况：
+>1. Flutter SDK 3.0及以上，使用大于`4.0.1`的版本
+>2. Flutter SDK 3.0以下，使用`v3.0-release.2`或以下版本
+>3. 支持Flutter SDK 2.5.x的空安全版本是`3.1.x`
+
 ## 将FlutterBoost添加到你的Flutter工程依赖中
 
 打开你的工程的pubspec.yaml ，增加以下依赖
@@ -35,7 +40,7 @@ PS：主线已支持空安全(null-safety)
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '4.1.0'
+        ref: '4.2.0'
 ```
 
 # 使用文档
@@ -57,7 +62,7 @@ flutter_boost:
 
 
 # 许可证
-该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE.md]（LICENSE.md）文件
+该项目根据MIT许可证授权 - 有关详细信息，请参阅[LICENSE](LICENSE)文件
 <a name="Acknowledgments"> </a>
 
 

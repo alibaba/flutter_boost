@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
@@ -93,6 +94,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (DEBUG) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
+        if (view == flutterView) {
+            // fix https://github.com/alibaba/flutter_boost/issues/1732
+            FrameLayout frameLayout = new FrameLayout(view.getContext());
+            frameLayout.addView(view);
+            return frameLayout;
+        }
         return view;
     }
 

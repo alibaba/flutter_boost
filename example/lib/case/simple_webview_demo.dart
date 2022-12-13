@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 
 class SimpleWebView extends StatefulWidget {
@@ -7,23 +8,17 @@ class SimpleWebView extends StatefulWidget {
 }
 
 class SimpleWebViewState extends State<SimpleWebView> {
-  final url = 'https://3g.163.com';
-
   @override
   void initState() {
     super.initState();
-    // Enable hybrid composition.
-    // if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    // Enable virtual display.
+    // if (Platform.isAndroid) WebView.platform = AndroidWebView();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Simple WebView Example'),
-      ),
-      body: WebView(initialUrl: url),
-    ));
+    return WebView(
+      initialUrl: 'https://flutter.dev',
+    );
   }
 }

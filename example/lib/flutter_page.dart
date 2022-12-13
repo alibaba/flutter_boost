@@ -181,11 +181,11 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: const Text(
-                        'WillPopScope demo',
+                        'WillPopScope demo (without container)',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),
                   onTap: () => BoostNavigator.instance
-                      .push("willPop", withContainer: withContainer)),
+                      .push("willPop", withContainer: false)),
               InkWell(
                   child: Container(
                       padding: const EdgeInsets.all(8.0),
@@ -208,6 +208,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       )),
                   onTap: () => BoostNavigator.instance
                       .push('dualScreen', withContainer: withContainer)),
+              InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'Hero Animation Demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.instance
+                      .push('hero_animation', withContainer: withContainer)),
               InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
