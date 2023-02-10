@@ -222,10 +222,12 @@ _Pragma("clang diagnostic pop")
         self.view.backgroundColor = UIColor.whiteColor;
     }
 
-    _leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftEdgeGesture:)];
-    _leftEdgeGesture.edges = UIRectEdgeLeft;
-    _leftEdgeGesture.delegate = self;
-    [self.view addGestureRecognizer:_leftEdgeGesture];
+    if (self.enableLeftPanBackGesture) {
+        _leftEdgeGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleLeftEdgeGesture:)];
+        _leftEdgeGesture.edges = UIRectEdgeLeft;
+        _leftEdgeGesture.delegate = self;
+       [self.view addGestureRecognizer:_leftEdgeGesture];
+    }
 }
 
 - (void)handleLeftEdgeGesture:(UIScreenEdgePanGestureRecognizer *)gesture {
