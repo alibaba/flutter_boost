@@ -46,7 +46,7 @@ class _TestPageState extends State<TestPage> {
                 alignment: Alignment.center,
                 child: Text(
                   '$_counter',
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
               Container(
