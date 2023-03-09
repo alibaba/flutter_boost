@@ -55,9 +55,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   final Map<String, Completer<Object?>> _pendingResult =
       <String, Completer<Object?>>{};
-
+  
   final List<BoostContainer> _containers = <BoostContainer>[];
 
+  List<BoostContainer> get containers => _containers;
+  
   /// All interceptors from widget
   List<BoostInterceptor> get interceptors => widget.interceptors;
 
