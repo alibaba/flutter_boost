@@ -319,7 +319,6 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onContainerHide: " + uniqueId);
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
@@ -330,12 +329,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         }
     }
 
-    public void onContainerAppeared(FlutterViewContainer container) {
+    public void onContainerAppeared(FlutterViewContainer container, Runnable onPushRouteComplete) {
         String uniqueId = container.getUniqueId();
         if (DEBUG) Log.v(TAG, "#onContainerAppeared: " + uniqueId);
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {});
-        onContainerShow(uniqueId);
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
+            if (onPushRouteComplete != null) {
+                onPushRouteComplete.run();
+            }
+            onContainerShow(uniqueId);
+        });
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {

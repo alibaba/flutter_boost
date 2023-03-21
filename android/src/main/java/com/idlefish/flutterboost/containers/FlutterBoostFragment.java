@@ -112,7 +112,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         if (hidden) {
             didFragmentHide();
         } else {
-            didFragmentShow();
+            didFragmentShow(() -> {});
         }
         if (DEBUG) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
@@ -124,7 +124,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         // we just return here.
         if (flutterView == null) return;
         if (isVisibleToUser) {
-            didFragmentShow();
+            didFragmentShow(() -> {});
         } else {
             didFragmentHide();
         }
@@ -147,10 +147,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         stage = LifecycleStage.ON_RESUME;
         if (!isHidden()) {
-            didFragmentShow();
-
-            // Update system UI overlays to match Flutter's desired system chrome style
-            onUpdateSystemUiOverlays();
+            didFragmentShow(() -> {
+                // Update system UI overlays to match Flutter's desired system chrome style
+                onUpdateSystemUiOverlays();
+            });
         }
        if (DEBUG) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
     }
@@ -297,15 +297,17 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         return (stage == LifecycleStage.ON_PAUSE || stage == LifecycleStage.ON_STOP) && !isFinishing;
     }
 
-    protected void didFragmentShow() {
+    protected void didFragmentShow(Runnable onComplete) {
         // try to detach prevous container from the engine.
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (top != null && top != this) {
             top.detachFromEngineIfNeeded();
         }
 
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
-        performAttach();
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
+            performAttach();
+            onComplete.run();
+        });
         textureHooker.onFlutterTextureViewRestoreState();
         if (DEBUG) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
