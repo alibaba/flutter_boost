@@ -141,6 +141,7 @@ public class FlutterBoost {
         if (activityStack != null) {
             return activityStack.peek();
         }
+        return null;
     }
 
     /**
