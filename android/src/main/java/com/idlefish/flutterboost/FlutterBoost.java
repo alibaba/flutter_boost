@@ -143,6 +143,7 @@ public class FlutterBoost {
         } else {
             return null;
         }
+        return null;
     }
 
     /**
