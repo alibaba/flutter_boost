@@ -9,6 +9,7 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -20,6 +21,7 @@ public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
 
     private Activity topActivity = null;
+    private Stack<Activity> activityStack= null;
     private FlutterBoostPlugin plugin;
     private boolean isBackForegroundEventOverridden = false;
     private boolean isAppInBackground = false;
@@ -101,6 +103,7 @@ public class FlutterBoost {
             FlutterEngineCache.getInstance().remove(ENGINE_ID);
         }
         topActivity = null;
+        activityStack = null;
         plugin = null;
         isBackForegroundEventOverridden = false;
         isAppInBackground = false;
@@ -137,7 +140,11 @@ public class FlutterBoost {
      * @return the current activity
      */
     public Activity currentActivity() {
-        return topActivity;
+        if (activityStack != null) {
+            return activityStack.peek();
+        } else {
+            return topActivity;
+        }
     }
 
     /**
@@ -293,6 +300,10 @@ public class FlutterBoost {
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
             topActivity = activity;
+            if (activityStack == null) {
+                activityStack = new Stack<Activity>();
+            }
+            activityStack.push(activity);
         }
 
         @Override
@@ -328,6 +339,9 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
+            if (activityStack != null && activityStack.size() > 0) {
+                activityStack.pop();
+            }
             if (topActivity == activity) {
                 topActivity = null;
             }
