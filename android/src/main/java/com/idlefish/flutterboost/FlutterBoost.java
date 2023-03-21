@@ -20,7 +20,6 @@ import io.flutter.view.FlutterMain;
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
 
-    private Activity topActivity = null;
     private Stack<Activity> activityStack= null;
     private FlutterBoostPlugin plugin;
     private boolean isBackForegroundEventOverridden = false;
@@ -102,7 +101,6 @@ public class FlutterBoost {
             engine.destroy();
             FlutterEngineCache.getInstance().remove(ENGINE_ID);
         }
-        topActivity = null;
         activityStack = null;
         plugin = null;
         isBackForegroundEventOverridden = false;
@@ -142,8 +140,6 @@ public class FlutterBoost {
     public Activity currentActivity() {
         if (activityStack != null) {
             return activityStack.peek();
-        } else {
-            return topActivity;
         }
     }
 
@@ -299,7 +295,6 @@ public class FlutterBoost {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            topActivity = activity;
             if (activityStack == null) {
                 activityStack = new Stack<Activity>();
             }
@@ -316,7 +311,6 @@ public class FlutterBoost {
 
         @Override
         public void onActivityResumed(Activity activity) {
-            topActivity = activity;
         }
 
         @Override
@@ -339,11 +333,8 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-            if (activityStack != null && activityStack.size() > 0) {
+            if (activityStack != null && activityStack.size() > 0 && activityStack.peek() == activity) {
                 activityStack.pop();
-            }
-            if (topActivity == activity) {
-                topActivity = null;
             }
         }
     }
