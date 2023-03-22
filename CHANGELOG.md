@@ -1,5 +1,16 @@
 ## NEXT
 
+## 4.2.1
+1. Add hero animation demo. (#1756)
+2. [ios] Fixes the warning that the license file does not exist (#1759)
+3. 处理 pushReplacement 泛型转换错误 (#1758)
+4. 更新授权许可链接 (#1754)
+5. fix(FlutterTextureHooker):设置setSurfaceTexture异常问题 (#1774)
+6. 为半透明弹窗增加PlatformView场景 (#1799)
+7. 开放FlutterBoostAppState中的_containers (#1800)
+8. 修复部分push场景与该手势可能冲突导致触发了两次pop
+9. [Android] 解决FlutterBoostFragment切换时可能闪现上一个页面的问题 (#1807)
+
 ## 4.2.0
 1. [Android] Fixes HybridCompositon does not work (#1743)
 2. Add pigeon commands to script file. (#1744)
