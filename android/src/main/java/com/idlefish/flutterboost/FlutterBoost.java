@@ -138,7 +138,7 @@ public class FlutterBoost {
      * @return the current activity
      */
     public Activity currentActivity() {
-        if (activityQueue != null) {
+        if (activityQueue != null && !activityQueue.isEmpty()) {
             return activityQueue.peek();
         } else {
             return null;
