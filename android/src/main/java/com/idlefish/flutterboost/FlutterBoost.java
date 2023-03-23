@@ -9,6 +9,7 @@ import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.LinkedList;
 
 import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -19,7 +20,7 @@ import io.flutter.view.FlutterMain;
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
 
-    private Activity topActivity = null;
+    private LinkedList<Activity> activityQueue = null;
     private FlutterBoostPlugin plugin;
     private boolean isBackForegroundEventOverridden = false;
     private boolean isAppInBackground = false;
@@ -100,7 +101,7 @@ public class FlutterBoost {
             engine.destroy();
             FlutterEngineCache.getInstance().remove(ENGINE_ID);
         }
-        topActivity = null;
+        activityQueue = null;
         plugin = null;
         isBackForegroundEventOverridden = false;
         isAppInBackground = false;
@@ -137,7 +138,11 @@ public class FlutterBoost {
      * @return the current activity
      */
     public Activity currentActivity() {
-        return topActivity;
+        if (activityQueue != null && !activityQueue.isEmpty()) {
+            return activityQueue.peek();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -292,7 +297,10 @@ public class FlutterBoost {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            topActivity = activity;
+            if (activityQueue == null) {
+                activityQueue = new LinkedList<Activity>();
+            }
+            activityQueue.addFirst(activity);
         }
 
         @Override
@@ -305,7 +313,16 @@ public class FlutterBoost {
 
         @Override
         public void onActivityResumed(Activity activity) {
-            topActivity = activity;
+            if (activityQueue == null) {
+                activityQueue  = new LinkedList<Activity>();
+                activityQueue.addFirst(activity);
+            } else if(activityQueue.isEmpty()) {
+                activityQueue.addFirst(activity);
+            } else if (activityQueue.peek() != activity) {
+                //针对多tab且每个tab都为Activity，在切换时并不会走remove，所以先从队列中删除再加入
+                activityQueue.removeFirstOccurrence(activity);
+                activityQueue.addFirst(activity);
+            }
         }
 
         @Override
@@ -328,8 +345,8 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-            if (topActivity == activity) {
-                topActivity = null;
+            if (activityQueue != null && !activityQueue.isEmpty()) {
+                activityQueue.remove(activity);
             }
         }
     }
