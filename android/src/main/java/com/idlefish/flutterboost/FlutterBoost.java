@@ -345,8 +345,8 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-            if (activityQueue != null && activityQueue.size() > 0 && activityQueue.peek() == activity) {
-                activityQueue.removeFirst();
+            if (activityQueue != null && !activityQueue.isEmpty()) {
+                activityQueue.remove(activity);
             }
         }
     }
