@@ -316,8 +316,9 @@ public class FlutterBoost {
             if (activityQueue == null) {
                 activityQueue  = new LinkedList<Activity>();
                 activityQueue.addFirst(activity);
-            }
-            else if (activityQueue.peek() != activity) {
+            } else if (activityQueue.isEmpty()) {
+                activityQueue.addFirst(activity);
+            } else if (activityQueue.peek() != activity) {
                 //针对多tab且每个tab都为Activity，在切换时并不会走remove，所以先从队列中删除再加入
                 activityQueue.removeFirstOccurrence(activity);
                 activityQueue.addFirst(activity);
