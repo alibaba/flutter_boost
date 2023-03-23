@@ -138,15 +138,10 @@ public class FlutterBoost {
      * @return the current activity
      */
     public Activity currentActivity() {
-<<<<<<< HEAD
         if (activityQueue != null && !activityQueue.isEmpty()) {
-=======
-        if (activityQueue != null) {
->>>>>>> edb8a7d ([Android] 通过队列来记录活动的Activity，解决部分场景下topActivity可能为空的问题(#1806))
             return activityQueue.peek();
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
