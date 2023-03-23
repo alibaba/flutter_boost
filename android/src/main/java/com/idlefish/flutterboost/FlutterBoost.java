@@ -20,7 +20,7 @@ import io.flutter.view.FlutterMain;
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
 
-    private LinkedList<Activity> activityQueue = null;
+    private LinkedList<Activity> topActivityQueue = null;
     private FlutterBoostPlugin plugin;
     private boolean isBackForegroundEventOverridden = false;
     private boolean isAppInBackground = false;
@@ -101,7 +101,7 @@ public class FlutterBoost {
             engine.destroy();
             FlutterEngineCache.getInstance().remove(ENGINE_ID);
         }
-        activityQueue = null;
+        topActivityQueue = null;
         plugin = null;
         isBackForegroundEventOverridden = false;
         isAppInBackground = false;
@@ -138,8 +138,8 @@ public class FlutterBoost {
      * @return the current activity
      */
     public Activity currentActivity() {
-        if (activityQueue != null && !activityQueue.isEmpty()) {
-            return activityQueue.peek();
+        if (topActivityQueue != null && !topActivityQueue.isEmpty()) {
+            return topActivityQueue.peek();
         } else {
             return null;
         }
@@ -297,10 +297,10 @@ public class FlutterBoost {
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-            if (activityQueue == null) {
-                activityQueue = new LinkedList<Activity>();
+            if (topActivityQueue == null) {
+                topActivityQueue = new LinkedList<Activity>();
             }
-            activityQueue.addFirst(activity);
+            topActivityQueue.addFirst(activity);
         }
 
         @Override
@@ -313,15 +313,15 @@ public class FlutterBoost {
 
         @Override
         public void onActivityResumed(Activity activity) {
-            if (activityQueue == null) {
-                activityQueue  = new LinkedList<Activity>();
-                activityQueue.addFirst(activity);
-            } else if (activityQueue.isEmpty()) {
-                activityQueue.addFirst(activity);
-            } else if (activityQueue.peek() != activity) {
+            if (topActivityQueue == null) {
+                topActivityQueue  = new LinkedList<Activity>();
+                topActivityQueue.addFirst(activity);
+            } else if(topActivityQueue.isEmpty()) {
+                topActivityQueue.addFirst(activity);
+            } else if (topActivityQueue.peek() != activity) {
                 //针对多tab且每个tab都为Activity，在切换时并不会走remove，所以先从队列中删除再加入
-                activityQueue.removeFirstOccurrence(activity);
-                activityQueue.addFirst(activity);
+                topActivityQueue.removeFirstOccurrence(activity);
+                topActivityQueue.addFirst(activity);
             }
         }
 
@@ -345,8 +345,8 @@ public class FlutterBoost {
 
         @Override
         public void onActivityDestroyed(Activity activity) {
-            if (activityQueue != null && activityQueue.size() > 0 && activityQueue.peek() == activity) {
-                activityQueue.removeFirst();
+            if (topActivityQueue != null && topActivityQueue.size() > 0 && topActivityQueue.peek() == activity) {
+                topActivityQueue.removeFirst();
             }
         }
     }
