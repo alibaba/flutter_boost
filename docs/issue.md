@@ -12,3 +12,19 @@
    我们就不清楚是业务问题还是框架本身的问题，之前遇到了一些同学，debug下来结果是自己业务代码出了问题造成结果不一致，所以请理解） </font>**
 
 3. 在您的issue中给出您的分支链接，提交即可，我们debug的时候就会直接进入您分支下的`exmaple3.0`中您所给的用例进行bug复现 
+
+
+Caused by: java.lang.NullPointerException: Attempt to invoke virtual method 'void com.idlefish.flutterboost.FlutterBoostPlugin.setDelegate(com.idlefish.flutterboost.FlutterBoostDelegate)' on a null object reference
+                                                                                                    	at com.idlefish.flutterboost.FlutterBoost.setup(FlutterBoost.java:88)
+                                                                                                    	at com.idlefish.flutterboost.FlutterBoost.setup(FlutterBoost.java:51)
+                                                                                                    	at com.example.boosttestandroid.App.onCreate(App.java:17)
+                                                                                                    	at android.app.Instrumentation.callApplicationOnCreate(Instrumentation.java:1154)
+                                                                                                    	at android.app.ActivityThread.handleBindApplication(ActivityThread.java:5939)
+                                                                                                    	at android.app.ActivityThread.access$1100(ActivityThread.java:203) 
+                                                                                                    	at android.app.ActivityThread$H.handleMessage(ActivityThread.java:1659) 
+                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:106) 
+                                                                                                    	at android.os.Looper.loop(Looper.java:193) 
+                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:6737) 
+                                                                                                    	at java.lang.reflect.Method.invoke(Native Method) 
+                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:493) 
+                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:860) 
