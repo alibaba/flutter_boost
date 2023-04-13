@@ -104,8 +104,8 @@ class _AssetImageRouteState extends State<AssetImageRoute> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                BoostNavigator.instance
-                                    .push("flutterPage", withContainer: true);
+                                BoostNavigator.instance.push("flutterPage",
+                                    withContainer: withContainer);
                               },
                               child: const Text('Open flutter page'),
                             ),

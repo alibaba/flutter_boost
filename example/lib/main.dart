@@ -152,7 +152,7 @@ class _MyAppState extends State<MyApp> {
     'presentFlutterPage': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
-          pageBuilder: (_, __, ___) => FlutterRouteWidget(
+          pageBuilder: (_, __, ___) => FlutterIndexRoute(
                 params: settings.arguments as Map<dynamic, dynamic>?,
                 uniqueId: uniqueId,
               ));
@@ -265,7 +265,7 @@ class _MyAppState extends State<MyApp> {
       debugPrint('flutterPage settings:$settings, uniqueId:$uniqueId');
       return PageRouteBuilder<dynamic>(
         settings: settings,
-        pageBuilder: (_, __, ___) => FlutterRouteWidget(
+        pageBuilder: (_, __, ___) => FlutterIndexRoute(
           params: settings.arguments as Map<dynamic, dynamic>?,
           uniqueId: uniqueId,
         ),

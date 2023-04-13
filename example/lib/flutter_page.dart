@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
-class FlutterRouteWidget extends StatefulWidget {
-  const FlutterRouteWidget({this.params, this.message, this.uniqueId});
+class FlutterIndexRoute extends StatefulWidget {
+  const FlutterIndexRoute({this.params, this.message, this.uniqueId});
 
   final Map? params;
   final String? message;
   final String? uniqueId;
 
   @override
-  State<FlutterRouteWidget> createState() => _FlutterRouteWidgetState();
+  State<FlutterIndexRoute> createState() => _FlutterIndexRouteState();
 }
 
-class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
+class _FlutterIndexRouteState extends State<FlutterIndexRoute>
     with PageVisibilityObserver {
   static const String _kTag = 'page_visibility';
   bool withContainer = true;
