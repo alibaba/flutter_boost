@@ -66,8 +66,8 @@ class _ImageCacheRouteState extends State<ImageCacheRoute> {
                 ElevatedButton(
                   child: const Text('Asset Images'),
                   onPressed: () {
-                    BoostNavigator.instance.push("assetImageRoute",
-                        arguments: <String, bool>{'precache': precache},
+                    BoostNavigator.instance.push('assetImageRoute',
+                        arguments: <String, dynamic>{'precache': precache},
                         withContainer: withContainer);
                   },
                 ),

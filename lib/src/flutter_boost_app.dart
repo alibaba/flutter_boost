@@ -55,11 +55,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   final Map<String, Completer<Object?>> _pendingResult =
       <String, Completer<Object?>>{};
-  
+
   final List<BoostContainer> _containers = <BoostContainer>[];
 
   List<BoostContainer> get containers => _containers;
-  
+
   /// All interceptors from widget
   List<BoostInterceptor> get interceptors => widget.interceptors;
 
@@ -717,14 +717,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
 // ignore: must_be_immutable
 class BoostPage<T> extends Page<T> {
-  BoostPage({LocalKey? key, required this.pageInfo})
-      : super(key: key, name: pageInfo.pageName, arguments: pageInfo.arguments);
+  BoostPage._({LocalKey? key, required this.pageInfo})
+      : super(
+            key: key, name: pageInfo.pageName, arguments: pageInfo.arguments) {
+    _route = BoostNavigator.instance.routeFactory(this, pageInfo.uniqueId)
+        as Route<T>?;
+    assert(_route != null,
+        "Oops! Route name is not registered: '${pageInfo.pageName}'.");
+  }
   final PageInfo pageInfo;
 
-  static BoostPage<dynamic> create(PageInfo pageInfo) {
-    final page = BoostPage<dynamic>(key: UniqueKey(), pageInfo: pageInfo);
-    page._route = BoostNavigator.instance.routeFactory(page, pageInfo.uniqueId);
-    return page;
+  factory BoostPage.create(PageInfo pageInfo) {
+    return BoostPage._(key: UniqueKey(), pageInfo: pageInfo);
   }
 
   Route<T>? _route;
