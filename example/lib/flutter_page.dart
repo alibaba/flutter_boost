@@ -181,6 +181,17 @@ class _FlutterRouteWidgetState extends State<FlutterRouteWidget>
                       margin: const EdgeInsets.all(8.0),
                       color: Colors.yellow,
                       child: const Text(
+                        'ImageCache Example',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.instance
+                      .push("imageCache", withContainer: withContainer)),
+              InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
                         'WillPopScope demo (without container)',
                         style: TextStyle(fontSize: 22.0, color: Colors.black),
                       )),

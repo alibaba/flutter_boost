@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'case/asset_image_route.dart';
 import 'case/bottom_navigation_bar_demo.dart';
 import 'case/counter_demo.dart';
 import 'case/dual_screen.dart';
 import 'case/flutter_rebuild_demo.dart';
 import 'case/flutter_to_flutter_sample.dart';
 import 'case/hero_animation.dart';
+import 'case/image_cache_route.dart';
 import 'case/image_pick.dart';
 import 'case/media_query.dart';
 import 'case/native_view_demo.dart';
@@ -119,7 +121,7 @@ class CustomInterceptor3 extends BoostInterceptor {
       BoostInterceptorOption option, PushInterceptorHandler handler) {
     Logger.log('CustomInterceptor#onPrePush3~~~, $option');
     // Replace arguments
-    option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
+    // option.arguments = <String, dynamic>{'CustomInterceptor3': '3'};
     handler.next(option);
   }
 
@@ -159,6 +161,20 @@ class _MyAppState extends State<MyApp> {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => const ImagePickerPage(title: "xxx"));
+    },
+    'imageCache': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) =>
+              const ImageCacheRoute(title: "ImageCache Example"));
+    },
+    'assetImageRoute': (settings, uniqueId) {
+      Map<String, dynamic>? args = settings.arguments as Map<String, dynamic>?;
+      bool? precache = args?['precache'];
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) =>
+              AssetImageRoute(precache: precache ?? false));
     },
     'interceptor': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
