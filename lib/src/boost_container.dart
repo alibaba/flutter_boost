@@ -60,16 +60,24 @@ class BoostContainer extends ChangeNotifier {
 
   /// remove a specific [BoostPage]
   void removePage(BoostPage? page, {dynamic result}) {
+    if (page != null) {
+      if (removePageInternal(page, result: result)) {
+        notifyListeners();
+      }
+    }
+  }
+
+  bool removePageInternal(BoostPage page, {dynamic result}) {
     if (numPages() == 2) {
       /// enable the native slide pop gesture
-      /// only iOS will receive this event ,Android will do nothing
+      /// only iOS will receive this event, Android will do nothing
       BoostChannel.instance.enablePopGesture(containerId: pageInfo.uniqueId!);
     }
-    if (page != null) {
-      _pages.remove(page);
+    bool retVal = _pages.remove(page);
+    if (retVal) {
       page.didComplete(result);
-      notifyListeners();
     }
+    return retVal;
   }
 
   @override
@@ -90,7 +98,7 @@ class BoostContainerWidget extends StatefulWidget {
   final BoostContainer container;
 
   @override
-  State<StatefulWidget> createState() => BoostContainerState();
+  State<BoostContainerWidget> createState() => BoostContainerState();
 
   @override
   // ignore: invalid_override_of_non_virtual_member
@@ -113,26 +121,26 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   void _updatePagesList(BoostPage page, dynamic result) {
     assert(container.topPage == page);
-    container.removePage(page, result: result);
+    container.removePageInternal(page, result: result);
   }
 
   @override
   void initState() {
-    container.addListener(refreshContainer);
     super.initState();
+    container.addListener(_onRouteChanged);
   }
 
   @override
   void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
-    if (oldWidget != widget) {
-      oldWidget.container.removeListener(refreshContainer);
-      container.addListener(refreshContainer);
-    }
     super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      oldWidget.container.removeListener(_onRouteChanged);
+      container.addListener(_onRouteChanged);
+    }
   }
 
   ///just refresh
-  void refreshContainer() {
+  void _onRouteChanged() {
     setState(() {});
   }
 
@@ -159,7 +167,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void dispose() {
-    container.removeListener(refreshContainer);
+    container.removeListener(_onRouteChanged);
     super.dispose();
   }
 }
