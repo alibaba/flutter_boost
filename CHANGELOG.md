@@ -1,5 +1,11 @@
 ## NEXT
 
+## 4.2.2
+1. [Android] 通过栈来记录活动的Activity，解决部分场景下topActivity可能为空的问题 (#1810)
+2. Add Test Cases for ImageCache. (#1822)
+3. Fix type conversion errors and add a prompt for unregistered routes. (#1823)
+4. 修复后退时前一个页面不必要的rebuild的问题 (#1824)
+
 ## 4.2.1
 1. Add hero animation demo. (#1756)
 2. [ios] Fixes the warning that the license file does not exist (#1759)
