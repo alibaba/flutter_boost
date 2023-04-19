@@ -420,11 +420,17 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterBoostApp(routeFactory, interceptors: [
-      CustomInterceptor1(),
-      CustomInterceptor2(),
-      CustomInterceptor3()
-    ]);
+    return FlutterBoostApp(routeFactory,
+        // 如果自定了appBuilder，需要将传入的参数添加到widget层次结构中去，
+        // 否则会导致FluttBoost初始化失败。
+        appBuilder: (child) => MaterialApp(
+              home: child,
+            ),
+        interceptors: [
+          CustomInterceptor1(),
+          CustomInterceptor2(),
+          CustomInterceptor3(),
+        ]);
   }
 }
 
