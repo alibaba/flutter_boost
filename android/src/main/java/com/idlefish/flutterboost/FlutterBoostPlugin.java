@@ -334,11 +334,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         if (DEBUG) Log.v(TAG, "#onContainerAppeared: " + uniqueId);
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
         pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
-            if (onPushRouteComplete != null) {
-                onPushRouteComplete.run();
+            if (FlutterContainerManager.instance().isTopContainer(uniqueId)) {
+                if (onPushRouteComplete != null) {
+                    onPushRouteComplete.run();
+                }
             }
-            onContainerShow(uniqueId);
         });
+        //onContainerDisappeared并非异步触发，为了匹配对应，onContainerShow也不做异步
+        onContainerShow(uniqueId);
     }
 
     public void onContainerDisappeared(FlutterViewContainer container) {
