@@ -10,7 +10,6 @@ import android.util.Log;
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
-import com.idlefish.flutterboost.Messages;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -214,6 +213,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onDestroy() {
         stage = LifecycleStage.ON_DESTROY;
+        if (isAttached) {
+            //不在performDetach中进行flush，是因为performDetach在打开新的Flutter页面时也会触发。
+            //flush一旦调用，会清空记录的platformViews，那么重新back回有PlatformView的界面时，上面的PlatformView将无法恢复。
+            //因此只能在界面销毁时进行flush
+            FlutterBoostUtils.flushAllPlatformViews(getFlutterEngine());
+        }
         detachFromEngineIfNeeded();
         textureHooker.onFlutterTextureViewRelease();
 

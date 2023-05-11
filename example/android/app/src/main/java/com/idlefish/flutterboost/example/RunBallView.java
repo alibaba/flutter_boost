@@ -27,6 +27,19 @@ class RunBallView implements PlatformView {
 
 
     @Override
+    public void onFlutterViewAttached(@NonNull View flutterView) {
+        PlatformView.super.onFlutterViewAttached(flutterView);
+        view.start();
+    }
+
+    @Override
+    public void onFlutterViewDetached() {
+        PlatformView.super.onFlutterViewDetached();
+        view.stop();
+    }
+
+    @Override
     public void dispose() {
+       view.dispose();
     }
 }

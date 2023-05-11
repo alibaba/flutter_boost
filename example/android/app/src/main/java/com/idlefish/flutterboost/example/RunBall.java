@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -14,6 +13,8 @@ import android.view.animation.LinearInterpolator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import androidx.annotation.Nullable;
 
 public class RunBall extends View {
     private ValueAnimator mAnimator;//时间流
@@ -196,5 +197,23 @@ public class RunBall extends View {
         int g = 30 + random.nextInt(200);
         int b = 30 + random.nextInt(200);
         return Color.rgb( r, g, b);
+    }
+
+    public void dispose() {
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
+    }
+
+    public void start() {
+        if (mAnimator != null) {
+            mAnimator.start();
+        }
+    }
+
+    public void stop() {
+        if (mAnimator != null) {
+            mAnimator.cancel();
+        }
     }
 }

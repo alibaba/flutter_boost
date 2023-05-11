@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.UUID;
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.platform.PlatformViewsController;
 
 /**
  * Helper methods to deal with common tasks.
@@ -66,5 +68,19 @@ public class FlutterBoostUtils {
             }
         }
         return null;
+    }
+
+    public static void flushAllPlatformViews(FlutterEngine engine) {
+        if (engine == null) {
+            return;
+        }
+        PlatformViewsController pc = engine.getPlatformViewsController();
+        try {
+            Method flushAllViewsMth = pc.getClass().getDeclaredMethod("flushAllViews");
+            flushAllViewsMth.setAccessible(true);
+            flushAllViewsMth.invoke(pc);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
