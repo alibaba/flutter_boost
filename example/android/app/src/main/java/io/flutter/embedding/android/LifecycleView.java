@@ -47,6 +47,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   public String getDartEntrypointLibraryUri() { return null; }
   public ExclusiveAppComponent<Activity> getExclusiveAppComponent() { return mDelegate; }
   public List<String> getDartEntrypointArgs() { return null; }
+  public String getCachedEngineGroupId() { return null; }
 
   public void setArguments(Bundle args) {
     mArguments = args;
