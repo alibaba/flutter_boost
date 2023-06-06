@@ -15,8 +15,9 @@ import 'case/platform_view_perf.dart';
 import 'case/popUntil.dart';
 import 'case/return_data.dart';
 import 'case/rotation_transition.dart';
-import 'case/simple_webview_demo.dart';
 import 'case/selection_screen.dart';
+import 'case/show_dialog_demo.dart';
+import 'case/simple_webview_demo.dart';
 import 'case/state_restoration.dart';
 import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';
@@ -286,6 +287,10 @@ class _MyAppState extends State<MyApp> {
         //   );
         // },
       );
+    },
+    'showDialog': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ShowDialogDemo());
     },
     'tab_friend': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
