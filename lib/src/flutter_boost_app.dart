@@ -383,14 +383,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 
   Future<bool> popWithResult<T extends Object?>([T? result]) async {
-    final uniqueId = topContainer?.topPage.pageInfo.uniqueId;
-    _completePendingResultIfNeeded(uniqueId, result: result);
     return await pop(result: result);
   }
 
   Future<bool> removeWithResult(
       [String? uniqueId, Map<String, dynamic>? result]) async {
-    _completePendingResultIfNeeded(uniqueId, result: result);
     return await pop(uniqueId: uniqueId, result: result);
   }
 
@@ -476,32 +473,39 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       container = topContainer;
     }
 
-    final currentPage = topContainer!.topPage.pageInfo.uniqueId!;
-    _completePendingResultIfNeeded(currentPage);
-
     // 1.If uniqueId == null,indicate we simply call BoostNavigaotor.pop(),
     // so we call navigator?.maybePop();
     // 2.If uniqueId is topPage's uniqueId, so we navigator?.maybePop();
     // 3.If uniqueId is not topPage's uniqueId, so we will remove an existing
     // page in container.
-    if (uniqueId == null ||
-        uniqueId == container!.pages.last.pageInfo.uniqueId) {
+    String? targetPage = uniqueId;
+    final String topPage = container!.pages.last.pageInfo.uniqueId!;
+    if (uniqueId == null || uniqueId == topPage) {
       final handled = onBackPressed
-          ? await _performBackPressed(container!, result)
-          : container?.navigator?.canPop();
+          ? await _performBackPressed(container, result)
+          : container.navigator?.canPop();
       if (handled != null) {
         if (!handled) {
-          assert(container!.pageInfo.withContainer!);
+          assert(container.pageInfo.withContainer!);
           final params = CommonParams()
-            ..pageName = container!.pageInfo.pageName
+            ..pageName = container.pageInfo.pageName
             ..uniqueId = container.pageInfo.uniqueId
             ..arguments = ((result is Map<String, dynamic>)
                 ? result
                 : <String, dynamic>{});
           await nativeRouterApi.popRoute(params);
+          targetPage = targetPage ?? topPage;
         } else {
           if (!onBackPressed) {
-            container!.navigator!.pop(result);
+            container.navigator!.pop(result);
+          }
+
+          if (topPage != container.pages.last.pageInfo.uniqueId!) {
+            // 1. Popped out pages pushed by FlutterBoost, including internal routes
+            targetPage = targetPage ?? topPage;
+          } else {
+            // 2. Popped out route pushed by `Navigator`, for example, showDialog
+            assert(targetPage == null);
           }
         }
       }
@@ -511,6 +515,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       container.removePage(page);
     }
 
+    _completePendingResultIfNeeded(targetPage, result: result);
     Logger.log('pop container, uniqueId=$uniqueId, result:$result, $container');
     return true;
   }
