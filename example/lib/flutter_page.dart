@@ -169,6 +169,20 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: const Text(
+                      'showDialog demo',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("showDialog", withContainer: withContainer)
+                    .then((value) => debugPrint(
+                        'xlog, showDialog demo, Return Value:$value')),
+              ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: const Text(
                       'Blocked by interceptor',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
