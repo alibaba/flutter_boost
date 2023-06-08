@@ -469,6 +469,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         return false;
       }
       if (container != topContainer) {
+        _completePendingResultIfNeeded(container.pageInfo.uniqueId,
+            result: result);
         await _removeContainer(container);
         return true;
       }
