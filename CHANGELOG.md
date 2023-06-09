@@ -1,5 +1,14 @@
 ## NEXT
 
+## 4.2.3
+1. 增加自定义`appBuilder`示例 (#1827)
+2. [Android] fix flutterfragment快速切换时，出现不渲染的bug (#1830)
+3. Fixes the compilation errors when running the example with Flutter 3.10.0 (#1838)
+4. 解决打开弹窗并关闭后再关闭页面时「返回参数」不能传递到上一个页面的问题 (#1846)
+5. 修复removeWithResult接口不能返回结果的问题 (#1850)
+6. Add license headers (#1851)
+7. 暴露接口，让业务可以开启Android端内部日志输出，便于调试问题 (#1853)
+
 ## 4.2.2
 1. [Android] 通过栈来记录活动的Activity，解决部分场景下topActivity可能为空的问题 (#1810)
 2. Add Test Cases for ImageCache. (#1822)
