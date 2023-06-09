@@ -1,5 +1,7 @@
 package com.idlefish.flutterboost.example;
 
+import android.content.pm.ApplicationInfo;
+
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostSetupOptions;
 
@@ -14,7 +16,11 @@ public class MyApplication extends FlutterApplication {
         ArrayList<String> args = new ArrayList<>();
         args.add("--trace-systrace");
         args.add("--user-authorization-code=QZvoUptODA+KDgeFUluhheYns7X7CnDu9YRv8YmU0GXQcKLzs4C2WgjblrAIhtkqqGg==");
-        FlutterBoostSetupOptions options = new FlutterBoostSetupOptions.Builder().shellArgs(args.toArray(new String[0])).build();
+        boolean isDebugMode = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        FlutterBoostSetupOptions options = new FlutterBoostSetupOptions.Builder()
+                                                                       .isDebugLoggingEnabled(isDebugMode)
+                                                                       .shellArgs(args.toArray(new String[0]))
+                                                                       .build();
         FlutterBoost.instance().setup(this, new MyFlutterBoostDelegate(), engine->{
             // Register the platform view
             engine.getPlatformViewsController().getRegistry().registerViewFactory("<simple-text-view>", new TextViewFactory());

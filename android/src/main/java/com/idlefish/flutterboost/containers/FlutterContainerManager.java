@@ -13,8 +13,8 @@ import java.util.Map;
 import io.flutter.Log;
 
 public class FlutterContainerManager {
-    private static final String TAG = "FlutterContainerManager";
-    private static final boolean DEBUG = false;
+    private static final String TAG = FlutterContainerManager.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
     private FlutterContainerManager() {
     }

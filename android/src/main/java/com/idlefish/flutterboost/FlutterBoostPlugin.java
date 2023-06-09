@@ -26,9 +26,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 
 public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, ActivityAware {
-    private static final String TAG = FlutterBoostPlugin.class.getSimpleName();
-    private static final boolean DEBUG = false;
-
+    private static final String TAG = "FlutterBoost_java";
     private static final String APP_LIFECYCLE_CHANGED_KEY = "app_lifecycle_changed_key";
     private static final String LIFECYCLE_STATE = "lifecycleState";
     private static final int FLUTTER_APP_STATE_RESUMED = 0;
@@ -42,6 +40,10 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     private int requestCode = 1000;
 
     private HashMap<String, LinkedList<EventListener>> listenersTable = new HashMap<>();
+
+    private boolean isDebugLoggingEnabled() {
+        return FlutterBoostUtils.isDebugLoggingEnabled();
+    }
 
     public FlutterRouterApi getChannel() {
         return channel;
@@ -57,7 +59,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
-        if (DEBUG) Log.v(TAG, "#onAttachedToEngine");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onAttachedToEngine: " + this);
         NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         engine = binding.getFlutterEngine();
         channel = new FlutterRouterApi(binding.getBinaryMessenger());
@@ -66,14 +68,14 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
-        if (DEBUG) Log.v(TAG, "#onDetachedFromEngine");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDetachedFromEngine: " + this);
         engine = null;
         channel = null;
     }
 
     @Override
     public void pushNativeRoute(CommonParams params) {
-        if (DEBUG) Log.v(TAG, "#pushNativeRoute: " + params.getPageName());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#pushNativeRoute: " + params.getUniqueId() + ", " + this);
         if (delegate != null) {
             requestCode++;
             if (pageNames != null) {
@@ -92,7 +94,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void pushFlutterRoute(CommonParams params) {
-        if (DEBUG) Log.v(TAG, "#pushFlutterRoute: " + params.getPageName() + ", " + params.getUniqueId());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#pushFlutterRoute: " + params.getUniqueId() + ", " + this);
         if (delegate != null) {
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
@@ -108,7 +110,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void popRoute(CommonParams params, Messages.Result<Void> result) {
-        if (DEBUG) Log.v(TAG, "#popRoute: " + params.getPageName() + ", " + params.getUniqueId());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#popRoute: " + params.getUniqueId() + ", " + this);
         if (delegate != null) {
             FlutterBoostRouteOptions options = new FlutterBoostRouteOptions.Builder()
                     .pageName(params.getPageName())
@@ -142,18 +144,19 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         if (dartStack == null) {
             return StackInfo.fromMap(new HashMap());
         }
-        if (DEBUG) Log.v(TAG, "#getStackFromHost: " + dartStack);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#getStackFromHost: " + dartStack + ", " + this);
         return dartStack;
     }
 
     @Override
     public void saveStackToHost(StackInfo arg) {
         dartStack = arg;
-        if (DEBUG) Log.v(TAG, "#saveStackToHost: " + dartStack);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#saveStackToHost: " + dartStack + ", " + this);
     }
 
     @Override
     public void sendEventToNative(CommonParams arg) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#sendEventToNative: " + this);
         //deal with the event from flutter side
         String key = arg.getKey();
         Map<String, Object> arguments = arg.getArguments();
@@ -174,6 +177,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     ListenerRemover addEventListener(String key, EventListener listener) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#addEventListener: " + key + ", " + this);
         assert (key != null && listener != null);
 
         LinkedList<EventListener> listeners = listenersTable.get(key);
@@ -188,6 +192,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     void sendEventToFlutter(String key, Map<String, Object> args) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#sendEventToFlutter: " + key + ", " + this);
         Messages.CommonParams params = new Messages.CommonParams();
         params.setKey(key);
         params.setArguments(args);
@@ -195,6 +200,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     void changeFlutterAppLifecycle(int state) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#changeFlutterAppLifecycle: " + state + ", " + this);
         assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
         Map arguments = new HashMap();
         arguments.put(LIFECYCLE_STATE, state);
@@ -211,7 +217,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
                           final FlutterRouterApi.Reply<Void> callback) {
-        if (DEBUG) Log.v(TAG, "#pushRoute: " + pageName + ", " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#pushRoute start: " + pageName + ", " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
@@ -219,6 +225,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             params.setPageName(pageName);
             params.setArguments(arguments);
             channel.pushRoute(params, reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#pushRoute end: " + pageName + ", " + uniqueId);
                 if (callback != null) {
                     callback.reply(null);
                 }
@@ -229,12 +236,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void popRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
-        if (DEBUG) Log.v(TAG, "#popRoute: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#popRoute start: " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.popRoute(params, reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#popRoute end: " + uniqueId + ", " + this);
                 if (callback != null) {
                     callback.reply(null);
                 }
@@ -245,21 +253,25 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onBackPressed() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onBackPressed start: " + this);
         if (channel != null) {
             checkEngineState();
-            channel.onBackPressed(reply -> {});
+            channel.onBackPressed(reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#onBackPressed end: " + this);
+            });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
     }
 
     public void removeRoute(String uniqueId, final FlutterRouterApi.Reply<Void> callback) {
-        if (DEBUG) Log.v(TAG, "#removeRoute: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#removeRoute start: " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.removeRoute(params, reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#removeRoute end: " + uniqueId + ", " + this);
                 if (callback != null) {
                     callback.reply(null);
                 }
@@ -270,10 +282,12 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onForeground() {
+        Log.d(TAG, "## onForeground start: " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             channel.onForeground(params, reply -> {
+                Log.d(TAG, "## onForeground end: " + this);
             });
 
             // The scheduling frames are resumed when [onForeground] is called.
@@ -281,14 +295,15 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onForeground: " + channel);
     }
 
     public void onBackground() {
+        Log.d(TAG, "## onBackground start: " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             channel.onBackground(params, reply -> {
+                Log.d(TAG, "## onBackground end: " + this);
             });
 
             // The scheduling frames are paused when [onBackground] is called.
@@ -296,16 +311,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
-        Log.v(TAG, "## onBackground: " + channel);
     }
 
     public void onContainerShow(String uniqueId) {
-        if (DEBUG) Log.v(TAG, "#onContainerShow: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerShow start: " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.onContainerShow(params, reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerShow end: " + uniqueId + ", " + this);
             });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
@@ -313,12 +328,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onContainerHide(String uniqueId) {
-        if (DEBUG) Log.v(TAG, "#onContainerHide: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerHide start: " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
             CommonParams params = new CommonParams();
             params.setUniqueId(uniqueId);
             channel.onContainerHide(params, reply -> {
+                if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerHide end: " + uniqueId + ", " + this);
             });
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
@@ -326,7 +342,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     }
 
     public void onContainerCreated(FlutterViewContainer container) {
-        if (DEBUG) Log.v(TAG, "#onContainerCreated: " + container.getUniqueId());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerCreated: " + container.getUniqueId() + ", " + this);
         FlutterContainerManager.instance().addContainer(container.getUniqueId(), container);
         if (FlutterContainerManager.instance().getContainerSize() == 1) {
            changeFlutterAppLifecycle(FLUTTER_APP_STATE_RESUMED);
@@ -335,7 +351,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void onContainerAppeared(FlutterViewContainer container, Runnable onPushRouteComplete) {
         String uniqueId = container.getUniqueId();
-        if (DEBUG) Log.v(TAG, "#onContainerAppeared: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerAppeared: " + uniqueId + ", " + this);
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
         pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
             if (FlutterContainerManager.instance().isTopContainer(uniqueId)) {
@@ -350,13 +366,13 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     public void onContainerDisappeared(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        if (DEBUG) Log.v(TAG, "#onContainerDisappeared: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerDisappeared: " + uniqueId + ", " + this);
         onContainerHide(uniqueId);
     }
 
     public void onContainerDestroyed(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        if (DEBUG) Log.v(TAG, "#onContainerDestroyed: " + uniqueId);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerDestroyed: " + uniqueId + ", " + this);
         removeRoute(uniqueId, reply -> {});
         FlutterContainerManager.instance().removeContainer(uniqueId);
         if (FlutterContainerManager.instance().getContainerSize() == 0) {
@@ -366,7 +382,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
-        if (DEBUG) Log.v(TAG, "#onAttachedToActivity");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onAttachedToActivity: " + this);
         activityPluginBinding.addActivityResultListener((requestCode, resultCode, intent) -> {
             if (channel != null) {
                 checkEngineState();
@@ -382,7 +398,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
                     // Get a result back from an activity when it ends.
                     channel.onNativeResult(params, reply -> {
-                    if (DEBUG) Log.v(TAG, "#onNativeResult, pageName=" + pageName);
+                    if (isDebugLoggingEnabled()) Log.d(TAG, "#onNativeResult return, pageName=" + pageName + ", " + this);
                     });
                 }
             } else {
@@ -394,16 +410,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
-        if (DEBUG) Log.v(TAG, "#onDetachedFromActivityForConfigChanges");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDetachedFromActivityForConfigChanges: " + this);
     }
 
     @Override
     public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
-        if (DEBUG) Log.v(TAG, "#onReattachedToActivityForConfigChanges");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onReattachedToActivityForConfigChanges: " + this);
     }
 
     @Override
     public void onDetachedFromActivity() {
-        if (DEBUG) Log.v(TAG, "#onDetachedFromActivity");
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDetachedFromActivity: " + this);
     }
 }
