@@ -61,6 +61,7 @@ public class FlutterBoost {
             options = FlutterBoostSetupOptions.createDefault();
         }
         isBackForegroundEventOverridden = options.shouldOverrideBackForegroundEvent();
+        FlutterBoostUtils.setDebugLoggingEnabled(options.isDebugLoggingEnabled());
 
         // 1. initialize default engine
         FlutterEngine engine = getEngine();

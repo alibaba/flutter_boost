@@ -10,6 +10,7 @@ public class FlutterBoostSetupOptions {
     private final String initialRoute;
     private final String dartEntrypoint;
     private final String[] shellArgs;
+    private final boolean isDebugLoggingEnabled;
     private final boolean shouldOverrideBackForegroundEvent;
     private FlutterEngineProvider flutterEngineProvider;
 
@@ -17,6 +18,7 @@ public class FlutterBoostSetupOptions {
         this.initialRoute = builder.initialRoute;
         this.dartEntrypoint = builder.dartEntrypoint;
         this.shellArgs = builder.shellArgs;
+        this.isDebugLoggingEnabled = builder.isDebugLoggingEnabled;
         this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
         this.flutterEngineProvider = builder.flutterEngineProvider;
     }
@@ -41,6 +43,10 @@ public class FlutterBoostSetupOptions {
         return flutterEngineProvider;
     }
 
+    public boolean isDebugLoggingEnabled() {
+        return isDebugLoggingEnabled;
+    }
+
     public boolean shouldOverrideBackForegroundEvent() {
         return shouldOverrideBackForegroundEvent;
     }
@@ -63,6 +69,7 @@ public class FlutterBoostSetupOptions {
         }
         return "initialRoute:" + this.initialRoute +
                 ", dartEntrypoint:" + this.dartEntrypoint +
+                ", isDebugLoggingEnabled: " + this.isDebugLoggingEnabled +
                 ", shouldOverrideBackForegroundEvent:" + this.shouldOverrideBackForegroundEvent +
                 ", shellArgs:" + sb.toString();
     }
@@ -70,6 +77,7 @@ public class FlutterBoostSetupOptions {
     public static class Builder {
         private String initialRoute = "/";
         private String dartEntrypoint = "main";
+        private boolean isDebugLoggingEnabled = false;
         private boolean shouldOverrideBackForegroundEvent = false;
         private String[] shellArgs;
         private FlutterEngineProvider flutterEngineProvider;
@@ -94,6 +102,11 @@ public class FlutterBoostSetupOptions {
 
         public Builder flutterEngineProvider(FlutterEngineProvider flutterEngineProvider) {
             this.flutterEngineProvider = flutterEngineProvider;
+            return this;
+        }
+
+        public Builder isDebugLoggingEnabled(boolean enable) {
+            isDebugLoggingEnabled = enable;
             return this;
         }
 

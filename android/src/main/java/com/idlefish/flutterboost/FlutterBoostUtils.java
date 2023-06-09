@@ -21,6 +21,17 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin;
  * Helper methods to deal with common tasks.
  */
 public class FlutterBoostUtils {
+    // Control whether the internal debugging logs are turned on.
+    private static boolean sEnableDebugLogging = false;
+
+    public static void setDebugLoggingEnabled(boolean enable) {
+        sEnableDebugLogging = enable;
+    }
+
+    public static boolean isDebugLoggingEnabled() {
+        return sEnableDebugLogging;
+    }
+
     public static String createUniqueId(String name) {
         return UUID.randomUUID().toString() + "_" + name;
     }

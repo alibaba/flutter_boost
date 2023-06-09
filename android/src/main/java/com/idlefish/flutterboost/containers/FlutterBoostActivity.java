@@ -7,6 +7,7 @@ package com.idlefish.flutterboost.containers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,8 +41,7 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
-    private static final String TAG = "FlutterBoostActivity";
-    private static final boolean DEBUG = false;
+    private static final String TAG = "FlutterBoost_java";
     private final String who = UUID.randomUUID().toString();
     private final FlutterTextureHooker textureHooker =new FlutterTextureHooker();
     private FlutterView flutterView;
@@ -49,8 +49,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private LifecycleStage stage;
     private boolean isAttached = false;
 
+    private boolean isDebugLoggingEnabled() {
+        return FlutterBoostUtils.isDebugLoggingEnabled();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreate: " + this);
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         // try to detach prevous container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
@@ -60,7 +65,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         flutterView.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
-        if (DEBUG) Log.d(TAG, "#onCreate: " + this);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
          * TODO:// Override and do nothing to avoid destroying
          * FlutterView unexpectedly.
          */
-        if (DEBUG) Log.d(TAG, "#detachFromFlutterEngine: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#detachFromFlutterEngine: " + this);
     }
 
     @Override
@@ -81,26 +85,27 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     // This method is called right before the activity's onPause() callback.
     public void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if (DEBUG) Log.d(TAG, "#onUserLeaveHint: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onUserLeaveHint: " + this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         stage = LifecycleStage.ON_START;
-        if (DEBUG) Log.d(TAG, "#onStart: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onStart: " + this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         stage = LifecycleStage.ON_STOP;
-        if (DEBUG) Log.d(TAG, "#onStop: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onStop: " + this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             FlutterViewContainer top = containerManager.getTopActivityContainer();
@@ -128,12 +133,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             Assert.assertNotNull(platformPlugin);
             platformPlugin.updateSystemUiOverlays();
         });
-        if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
         FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
@@ -149,7 +154,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         // We defer |performDetach| call to new Flutter container's |onResume|.
         setIsFlutterUiDisplayed(false);
-        if (DEBUG) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
     }
 
     @Override
@@ -160,6 +164,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     private void performAttach() {
         if (!isAttached) {
+            if (isDebugLoggingEnabled()) Log.d(TAG, "#performAttach: " + this);
+
             // Attach plugins to the activity.
             getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
@@ -170,12 +176,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             // Attach rendering pipeline.
             flutterView.attachToFlutterEngine(getFlutterEngine());
             isAttached = true;
-            if (DEBUG) Log.d(TAG, "#performAttach: " + this);
         }
     }
 
     private void performDetach() {
         if (isAttached) {
+            if (isDebugLoggingEnabled()) Log.d(TAG, "#performDetach: " + this);
+
             // Plugins are no longer attached to the activity.
             getFlutterEngine().getActivityControlSurface().detachFromActivity();
 
@@ -185,7 +192,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             // Detach rendering pipeline.
             flutterView.detachFromFlutterEngine();
             isAttached = false;
-            if (DEBUG) Log.d(TAG, "#performDetach: " + this);
         }
     }
 
@@ -212,11 +218,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void detachFromEngineIfNeeded() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#detachFromEngineIfNeeded: " + this);
         performDetach();
     }
 
     @Override
     protected void onDestroy() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroy: " + this);
         stage = LifecycleStage.ON_DESTROY;
         detachFromEngineIfNeeded();
         textureHooker.onFlutterTextureViewRelease();
@@ -226,7 +234,18 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onDestroy();
 
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
-        if (DEBUG) Log.d(TAG, "#onDestroy: " + this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "ORIENTATION_LANDSCAPE" : "ORIENTATION_PORTRAIT") + ", " +  this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onSaveInstanceState: " + this);
     }
 
     @Override
@@ -258,9 +277,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void onBackPressed() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onBackPressed: " + this);
         // Intercept the user's press of the back key.
         FlutterBoost.instance().getPlugin().onBackPressed();
-        if (DEBUG) Log.d(TAG, "#onBackPressed: " + this);
     }
 
     @Override
@@ -276,13 +295,13 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#finishContainer: " + this);
         if (result != null) {
             Intent intent = new Intent();
             intent.putExtra(ACTIVITY_RESULT_KEY, new HashMap<String, Object>(result));
             setResult(Activity.RESULT_OK, intent);
         }
         finish();
-        if (DEBUG) Log.d(TAG, "#finishContainer: " + this);
     }
 
     @Override
