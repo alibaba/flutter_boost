@@ -189,6 +189,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     private void releasePlatformChannel() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#releasePlatformChannel: " + this);
         if (platformPlugin != null) {
             platformPlugin.destroy();
             platformPlugin = null;
@@ -232,18 +233,16 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         stage = LifecycleStage.ON_DESTROY;
         detachFromEngineIfNeeded();
         textureHooker.onFlutterTextureViewRelease();
-
-        // Get engine before |super.onDestroy| callback.
-        FlutterEngine engine = getFlutterEngine();
-        super.onDestroy();
-
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+
+        // Call super's onDestroy
+        super.onDestroy();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "ORIENTATION_LANDSCAPE" : "ORIENTATION_PORTRAIT") + ", " +  this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT") + ", " +  this);
     }
 
     @Override
