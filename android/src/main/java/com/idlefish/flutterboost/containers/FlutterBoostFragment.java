@@ -68,8 +68,8 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        stage = LifecycleStage.ON_CREATE;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreate: " + this);
+        stage = LifecycleStage.ON_CREATE;
     }
 
     @Override
@@ -80,11 +80,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroy: " + this);
         stage = LifecycleStage.ON_DESTROY;
         textureHooker.onFlutterTextureViewRelease();
         detachFromEngineIfNeeded();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroy: " + this);
+
+        // Call super's onDestroy
+        super.onDestroy();
     }
 
     @Override
@@ -95,12 +97,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreateView: " + this);
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreateView: " + flutterView + ", " + this);
         if (view == flutterView) {
             // fix https://github.com/alibaba/flutter_boost/issues/1732
             FrameLayout frameLayout = new FrameLayout(view.getContext());
@@ -113,6 +115,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
         // If |onHiddenChanged| method is called before the |onCreateView|,
         // we just return here.
         if (flutterView == null) return;
@@ -121,12 +124,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         } else {
             didFragmentShow(() -> {});
         }
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onHiddenChanged: hidden="  + hidden + ", " + this);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
         // If |setUserVisibleHint| method is called before the |onCreateView|,
         // we just return here.
         if (flutterView == null) return;
@@ -135,12 +138,12 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         } else {
             didFragmentHide();
         }
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#setUserVisibleHint: isVisibleToUser="  + isVisibleToUser + ", " + this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             final FlutterContainerManager containerManager = FlutterContainerManager.instance();
             FlutterViewContainer top = containerManager.getTopActivityContainer();
@@ -159,11 +162,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
                 onUpdateSystemUiOverlays();
             });
         }
-       if (isDebugLoggingEnabled()) Log.d(TAG, "#onResume: isHidden=" + isHidden() + ", " + this);
     }
 
     // Update system UI overlays to match Flutter's desired system chrome style
     protected void onUpdateSystemUiOverlays() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onUpdateSystemUiOverlays: " + this);
         Assert.assertNotNull(platformPlugin);
         platformPlugin.updateSystemUiOverlays();
     }
@@ -177,6 +180,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     @Override
     public void onPause() {
         super.onPause();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
             if (top != null && top != this.getContextActivity() && !top.isOpaque() && top.isPausing()) {
@@ -188,26 +192,25 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         stage = LifecycleStage.ON_PAUSE;
         didFragmentHide();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onPause: " + this + ", isFinshing=" + isFinishing);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        stage = LifecycleStage.ON_STOP;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onStop: " + this);
+        stage = LifecycleStage.ON_STOP;
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
-        FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroyView: " + this);
+        FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
+
+        super.onDestroyView();
     }
 
     @Override
     public void onDetach() {
-        FlutterEngine engine = getFlutterEngine();
         super.onDetach();
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onDetach: " + this);
     }
@@ -221,15 +224,15 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void onBackPressed() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onBackPressed: " + this);
         // Intercept the user's press of the back key.
         FlutterBoost.instance().getPlugin().onBackPressed();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onBackPressed: " + this);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "ORIENTATION_LANDSCAPE" : "ORIENTATION_PORTRAIT") + ", " +  this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT") + ", " +  this);
     }
 
     @Override
@@ -272,6 +275,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     @Override
     public void finishContainer(Map<String, Object> result) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#finishContainer: " + this);
         isFinishing = true;
         if (result != null) {
             Intent intent = new Intent();
@@ -279,7 +283,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             getActivity().setResult(Activity.RESULT_OK, intent);
         }
         onFinishContainer();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#finishContainer: " + this);
     }
 
     // finish activity container
@@ -317,6 +320,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     protected void didFragmentShow(Runnable onComplete) {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
         // try to detach prevous container from the engine.
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (top != null && top != this) {
@@ -328,14 +332,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
             onComplete.run();
         });
         textureHooker.onFlutterTextureViewRestoreState();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
     }
 
     protected void didFragmentHide() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
         FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
         // We defer |performDetach| call to new Flutter container's |onResume|;
         // performDetach();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentHide: " + this + ", isOpaque=" + isOpaque());
     }
 
     private void performAttach() {
@@ -366,6 +369,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     private void releasePlatformChannel() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#releasePlatformChannel: " + this);
         if (platformPlugin != null) {
             platformPlugin.destroy();
             platformPlugin = null;
