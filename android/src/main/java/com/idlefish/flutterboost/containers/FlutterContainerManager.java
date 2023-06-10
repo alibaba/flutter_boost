@@ -5,18 +5,21 @@
 package com.idlefish.flutterboost.containers;
 
 import android.app.Activity;
+import android.os.Build;
+import android.util.Log;
+
+import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import io.flutter.Log;
-
 public class FlutterContainerManager {
-    private static final String TAG = FlutterContainerManager.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final String TAG = "FlutterBoost_java";
 
-    private FlutterContainerManager() {
+    private FlutterContainerManager() {}
+    private boolean isDebugLoggingEnabled() {
+        return FlutterBoostUtils.isDebugLoggingEnabled();
     }
 
     private static class LazyHolder {
@@ -33,7 +36,7 @@ public class FlutterContainerManager {
     // onContainerCreated
     public void addContainer(String uniqueId, FlutterViewContainer container) {
         allContainers.put(uniqueId, container);
-        if (DEBUG) Log.d(TAG, "#addContainer:" + toString());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#addContainer: " + uniqueId + ", " + this);
     }
 
     // onContainerAppeared
@@ -45,7 +48,7 @@ public class FlutterContainerManager {
             activeContainers.remove(container);
         }
         activeContainers.add(container);
-        if (DEBUG) Log.d(TAG, "#activateContainer:" + toString());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#activateContainer: " + uniqueId + "," + this);
     }
 
     // onContainerDestroyed
@@ -53,7 +56,7 @@ public class FlutterContainerManager {
         if (uniqueId == null) return;
         FlutterViewContainer container = allContainers.remove(uniqueId);
         activeContainers.remove(container);
-        if (DEBUG) Log.d(TAG, "#removeContainer:" + toString());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#removeContainer: " + uniqueId + ", " + this);
     }
 
 
@@ -101,10 +104,13 @@ public class FlutterContainerManager {
         return allContainers.size();
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("activeContainers=" + activeContainers.size() + ", [");
-        activeContainers.forEach((value) -> sb.append(value.getUrl() + ','));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            activeContainers.forEach((value) -> sb.append(value.getUrl() + ','));
+        }
         sb.append("]");
         return sb.toString();
     }
