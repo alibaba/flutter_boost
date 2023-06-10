@@ -4,6 +4,11 @@
 
 package com.idlefish.flutterboost.containers;
 
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +23,6 @@ import android.widget.FrameLayout;
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
-import com.idlefish.flutterboost.Messages;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,11 +36,6 @@ import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.platform.PlatformPlugin;
-
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
     private static final String TAG = "FlutterBoost_java";
@@ -325,7 +324,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
 
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            performAttach();
+            attachToEngineIfNeeded();
             onComplete.run();
         });
         textureHooker.onFlutterTextureViewRestoreState();
@@ -340,35 +339,30 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     }
 
     private void performAttach() {
-        if (!isAttached) {
-            // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#performAttach: " + this);
 
-            if (platformPlugin == null) {
-                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-            }
+        // Attach plugins to the activity.
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
-            // Attach rendering pipeline.
-            flutterView.attachToFlutterEngine(getFlutterEngine());
-            isAttached = true;
-            if (isDebugLoggingEnabled()) Log.d(TAG, "#performAttach: " + this);
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         }
+
+        // Attach rendering pipeline.
+        flutterView.attachToFlutterEngine(getFlutterEngine());
     }
 
     private void performDetach() {
-        if (isAttached) {
-            // Plugins are no longer attached to the activity.
-            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#performDetach: " + this);
 
-            // Release Flutter's control of UI such as system chrome.
-            releasePlatformChannel();
+        // Plugins are no longer attached to the activity.
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
 
-            // Detach rendering pipeline.
-            flutterView.detachFromFlutterEngine();
+        // Release Flutter's control of UI such as system chrome.
+        releasePlatformChannel();
 
-            isAttached = false;
-            if (isDebugLoggingEnabled()) Log.d(TAG, "#performDetach: " + this);
-        }
+        // Detach rendering pipeline.
+        flutterView.detachFromFlutterEngine();
     }
 
     private void releasePlatformChannel() {
@@ -378,9 +372,21 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         }
     }
 
+    public void attachToEngineIfNeeded() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#attachToEngineIfNeeded: " + this);
+        if (!isAttached) {
+            performAttach();
+            isAttached = true;
+        }
+    }
+
     @Override
     public void detachFromEngineIfNeeded() {
-        performDetach();
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#detachFromEngineIfNeeded: " + this);
+        if (isAttached) {
+            performDetach();
+            isAttached = false;
+        }
     }
 
     // Defaults to {@link TransparencyMode#opaque}.
