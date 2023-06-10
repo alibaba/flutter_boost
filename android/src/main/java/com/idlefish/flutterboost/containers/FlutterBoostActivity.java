@@ -4,6 +4,15 @@
 
 package com.idlefish.flutterboost.containers;
 
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +24,6 @@ import android.util.Log;
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
-import com.idlefish.flutterboost.Messages;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -30,15 +38,6 @@ import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.plugin.platform.PlatformPlugin;
-
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoost_java";
@@ -125,7 +124,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         textureHooker.onFlutterTextureViewRestoreState();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            performAttach();
+            attachToEngineIfNeeded();
 
             // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
             // the system UI overlays can't be updated in |onPostResume| callback. So we
@@ -163,36 +162,30 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     private void performAttach() {
-        if (!isAttached) {
-            if (isDebugLoggingEnabled()) Log.d(TAG, "#performAttach: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#performAttach: " + this);
 
-            // Attach plugins to the activity.
-            getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
+        // Attach plugins to the activity.
+        getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
-            if (platformPlugin == null) {
-                platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
-            }
-
-            // Attach rendering pipeline.
-            flutterView.attachToFlutterEngine(getFlutterEngine());
-            isAttached = true;
+        if (platformPlugin == null) {
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
         }
+
+        // Attach rendering pipeline.
+        flutterView.attachToFlutterEngine(getFlutterEngine());
     }
 
     private void performDetach() {
-        if (isAttached) {
-            if (isDebugLoggingEnabled()) Log.d(TAG, "#performDetach: " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#performDetach: " + this);
 
-            // Plugins are no longer attached to the activity.
-            getFlutterEngine().getActivityControlSurface().detachFromActivity();
+        // Plugins are no longer attached to the activity.
+        getFlutterEngine().getActivityControlSurface().detachFromActivity();
 
-            // Release Flutter's control of UI such as system chrome.
-            releasePlatformChannel();
+        // Release Flutter's control of UI such as system chrome.
+        releasePlatformChannel();
 
-            // Detach rendering pipeline.
-            flutterView.detachFromFlutterEngine();
-            isAttached = false;
-        }
+        // Detach rendering pipeline.
+        flutterView.detachFromFlutterEngine();
     }
 
     private void releasePlatformChannel() {
@@ -216,10 +209,21 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
     }
 
+    public void attachToEngineIfNeeded() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#attachToEngineIfNeeded: " + this);
+        if (!isAttached) {
+            performAttach();
+            isAttached = true;
+        }
+    }
+
     @Override
     public void detachFromEngineIfNeeded() {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#detachFromEngineIfNeeded: " + this);
-        performDetach();
+        if (isAttached) {
+            performDetach();
+            isAttached = false;
+        }
     }
 
     @Override

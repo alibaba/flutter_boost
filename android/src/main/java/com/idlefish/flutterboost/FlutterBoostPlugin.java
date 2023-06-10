@@ -7,7 +7,6 @@ package com.idlefish.flutterboost;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.idlefish.flutterboost.Messages.Result;
 import com.idlefish.flutterboost.Messages.CommonParams;
 import com.idlefish.flutterboost.Messages.FlutterRouterApi;
 import com.idlefish.flutterboost.Messages.NativeRouterApi;
