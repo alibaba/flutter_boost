@@ -118,12 +118,14 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         stage = LifecycleStage.ON_RESUME;
 
-        // try to detach prevous container from the engine.
-        FlutterViewContainer top = containerManager.getTopContainer();
-        if (top != null && top != this) top.detachFromEngineIfNeeded();
-
         textureHooker.onFlutterTextureViewRestoreState();
+
+        FlutterViewContainer top = containerManager.getTopContainer();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
+            // try to detach *prevous* container from the engine.
+            if (top != null && top != this) top.detachFromEngineIfNeeded();
+
+            // attach new container to the engine.
             attachToEngineIfNeeded();
 
             // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,

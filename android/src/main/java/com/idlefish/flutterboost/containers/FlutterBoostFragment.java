@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import io.flutter.Log;
 import io.flutter.embedding.android.FlutterFragment;
 import io.flutter.embedding.android.FlutterTextureView;
 import io.flutter.embedding.android.FlutterView;
@@ -321,13 +321,13 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
     protected void didFragmentShow(Runnable onComplete) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
-        // try to detach prevous container from the engine.
-        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-        if (top != null && top != this) {
-            top.detachFromEngineIfNeeded();
-        }
 
+        FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
+            // try to detach *prevous* container from the engine.
+            if (top != null && top != this) top.detachFromEngineIfNeeded();
+
+            // attach new container to the engine.
             attachToEngineIfNeeded();
             onComplete.run();
         });
