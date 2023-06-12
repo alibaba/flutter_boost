@@ -1,5 +1,12 @@
 ## NEXT
 
+## 4.3.0
+1. Improve codes in Android. (#1855)
+2. Improve codes (#1856)
+3. [Android] 解决横/竖屏切换后，后退时闪现页面被拉伸（或压缩）的问题 (#1857)
+4. Support passing through Dart entrypoint arguments (#1858)
+5. Revert: "[Android] 解决横/竖屏切换后，后退时闪现页面被拉伸（或压缩）的问题 (#1857)" (#1859)
+
 ## 4.2.3
 1. 增加自定义`appBuilder`示例 (#1827)
 2. [Android] fix flutterfragment快速切换时，出现不渲染的bug (#1830)
