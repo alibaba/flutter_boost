@@ -322,11 +322,11 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     protected void didFragmentShow(Runnable onComplete) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#didFragmentShow: " + this + ", isOpaque=" + isOpaque());
 
+        // try to detach *prevous* container from the engine.
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            // try to detach *prevous* container from the engine.
-            if (top != null && top != this) top.detachFromEngineIfNeeded();
+        if (top != null && top != this) top.detachFromEngineIfNeeded();
 
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
             // attach new container to the engine.
             attachToEngineIfNeeded();
             onComplete.run();
