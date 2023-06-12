@@ -120,11 +120,11 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         textureHooker.onFlutterTextureViewRestoreState();
 
+        // try to detach *prevous* container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            // try to detach *prevous* container from the engine.
-            if (top != null && top != this) top.detachFromEngineIfNeeded();
+        if (top != null && top != this) top.detachFromEngineIfNeeded();
 
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
             // attach new container to the engine.
             attachToEngineIfNeeded();
 
