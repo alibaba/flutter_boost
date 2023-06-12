@@ -28,11 +28,12 @@ import 'flutter_page.dart';
 import 'simple_page_widgets.dart';
 import 'tab/simple_widget.dart';
 
-void main() {
+void main(List<String> args) {
   PageVisibilityBinding.instance
       .addGlobalObserver(AppGlobalPageVisibilityObserver());
   CustomFlutterBinding();
   runApp(MyApp());
+  print('dartEntrypointArgs: $args');
 }
 
 class AppGlobalPageVisibilityObserver extends GlobalPageVisibilityObserver {

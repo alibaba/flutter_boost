@@ -53,10 +53,14 @@
     //从options中获取参数
     NSString* initialRoute = options.initalRoute;
     NSString* dartEntrypointFunctionName = options.dartEntryPoint;
+    NSArray<NSString*>* dartEntryPointArgs = options.dartEntryPointArgs;
 
     void(^engineRun)(void) = ^(void) {
 
-        [self.engine runWithEntrypoint:dartEntrypointFunctionName  initialRoute : initialRoute];
+        [self.engine runWithEntrypoint:dartEntrypointFunctionName
+                            libraryURI:nil
+                          initialRoute:initialRoute
+                        entrypointArgs:dartEntryPointArgs];
 
         //根据配置提前预热引擎,配置默认预热引擎
         if(options.warmUpEngine){
