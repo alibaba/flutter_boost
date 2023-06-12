@@ -4,11 +4,14 @@
 
 package com.idlefish.flutterboost;
 
+import java.util.List;
+
 import io.flutter.embedding.android.FlutterEngineProvider;
 
 public class FlutterBoostSetupOptions {
     private final String initialRoute;
     private final String dartEntrypoint;
+    private final List<String> dartEntrypointArgs;
     private final String[] shellArgs;
     private final boolean isDebugLoggingEnabled;
     private final boolean shouldOverrideBackForegroundEvent;
@@ -17,6 +20,7 @@ public class FlutterBoostSetupOptions {
     private FlutterBoostSetupOptions(Builder builder) {
         this.initialRoute = builder.initialRoute;
         this.dartEntrypoint = builder.dartEntrypoint;
+        this.dartEntrypointArgs = builder.dartEntrypointArgs;
         this.shellArgs = builder.shellArgs;
         this.isDebugLoggingEnabled = builder.isDebugLoggingEnabled;
         this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
@@ -33,6 +37,10 @@ public class FlutterBoostSetupOptions {
 
     public String dartEntrypoint() {
         return dartEntrypoint;
+    }
+
+    public List<String> dartEntrypointArgs() {
+        return dartEntrypointArgs;
     }
 
     public String[] shellArgs() {
@@ -77,6 +85,7 @@ public class FlutterBoostSetupOptions {
     public static class Builder {
         private String initialRoute = "/";
         private String dartEntrypoint = "main";
+        private List<String> dartEntrypointArgs;
         private boolean isDebugLoggingEnabled = false;
         private boolean shouldOverrideBackForegroundEvent = false;
         private String[] shellArgs;
@@ -92,6 +101,11 @@ public class FlutterBoostSetupOptions {
 
         public Builder dartEntrypoint(String dartEntrypoint){
             this.dartEntrypoint = dartEntrypoint;
+            return this;
+        }
+
+        public Builder dartEntrypointArgs(List<String> args) {
+            this.dartEntrypointArgs = args;
             return this;
         }
 

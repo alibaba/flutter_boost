@@ -12,6 +12,7 @@ import com.idlefish.flutterboost.containers.FlutterContainerManager;
 import com.idlefish.flutterboost.containers.FlutterViewContainer;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterEngineProvider;
@@ -85,7 +86,7 @@ public class FlutterBoost {
             // Pre-warm the cached FlutterEngine.
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
             engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), options.dartEntrypoint()));
+                    FlutterMain.findAppBundlePath(), options.dartEntrypoint()), options.dartEntrypointArgs());
         }
         if (callback != null) callback.onStart(engine);
 

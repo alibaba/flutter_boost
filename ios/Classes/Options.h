@@ -36,6 +36,9 @@
 ///dart 入口
 @property (nonatomic, strong) NSString* dartEntryPoint;
 
+/// dart入口参数
+@property (nonatomic, strong) NSArray<NSString*>* dartEntryPointArgs;
+
 ///FlutterDartProject数据
 @property (nonatomic, strong) FlutterDartProject* dartObject;
 
