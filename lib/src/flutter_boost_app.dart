@@ -327,7 +327,9 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         arguments: arguments,
         withContainer: false);
     assert(topContainer != null);
-    var result = topContainer!.addPage(BoostPage.create(pageInfo));
+    var boostPage = BoostPage.create(pageInfo);
+    var result = topContainer!.addPage(boostPage);
+    topContainer!.navigator?.push(boostPage.route as Route<Object?>);
     _pushFinish(pageName, uniqueId: uniqueId, arguments: arguments);
     return result!.then((value) => value as T);
   }
