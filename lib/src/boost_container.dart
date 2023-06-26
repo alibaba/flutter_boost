@@ -131,21 +131,11 @@ class BoostContainerState extends State<BoostContainerWidget> {
   @override
   void initState() {
     super.initState();
-    container.addListener(_onRouteChanged);
   }
 
   @override
   void didUpdateWidget(covariant BoostContainerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget != widget) {
-      oldWidget.container.removeListener(_onRouteChanged);
-      container.addListener(_onRouteChanged);
-    }
-  }
-
-  ///just refresh
-  void _onRouteChanged() {
-    setState(() {});
   }
 
   @override
@@ -171,7 +161,6 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   @override
   void dispose() {
-    container.removeListener(_onRouteChanged);
     super.dispose();
   }
 }
