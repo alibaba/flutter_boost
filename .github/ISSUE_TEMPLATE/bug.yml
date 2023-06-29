@@ -1,0 +1,65 @@
+name: 反馈BUG
+description: File a bug report.
+title: "[Bug]: "
+body:
+  - type: textarea
+    id: Bug
+    attributes:
+      label: "请描述遇到的问题，以及您所期望的正确的结果"
+    validations:
+      required: true
+  - type: textarea
+    id: Step
+    attributes:
+      label: "请说明如何操作会遇到上述问题"
+    validations:
+      required: false
+  - type: textarea
+    id: Code
+    attributes:
+      label: "在下面填入关键复现代码"
+      value: |
+        <!-- 在下面填入关键复现代码 -->
+        ```
+        ```
+    validations:
+      required: false
+  - type: dropdown
+    id: System
+    attributes:
+      label: "复现的平台"
+      options:
+        - "Both"
+        - "Android"
+        - "iOS"
+    validations:
+      required: true
+  - type: input
+    id: FlutterVersion
+    attributes:
+      label: "Flutter SDK版本"
+    validations:
+      required: true
+  - type: input
+    id: FlutterBoostVersion
+    attributes:
+      label: "FlutterBoost版本"
+    validations:
+      required: true
+  - type: dropdown
+    id: LazyInit
+    attributes:
+      label: "是否延迟初始化FlutterBoost"
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+  - type: textarea
+    id: Solution
+    attributes:
+      label: "解决方案"
+      value: |
+        <!-- 如果已经知道原因或解决方案，可以在这里描述 -->
+    validations:
+      required: false
