@@ -118,7 +118,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         stage = LifecycleStage.ON_RESUME;
 
-        textureHooker.onFlutterTextureViewRestoreState();
 
         // try to detach *prevous* container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
@@ -127,7 +126,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
             // attach new container to the engine.
             attachToEngineIfNeeded();
-
+            textureHooker.onFlutterTextureViewRestoreState();
             // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
             // the system UI overlays can't be updated in |onPostResume| callback. So we
             // update system UI overlays to match Flutter's desired system chrome style here.

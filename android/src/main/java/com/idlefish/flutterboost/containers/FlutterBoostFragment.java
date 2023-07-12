@@ -329,9 +329,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
             // attach new container to the engine.
             attachToEngineIfNeeded();
+            textureHooker.onFlutterTextureViewRestoreState();
             onComplete.run();
         });
-        textureHooker.onFlutterTextureViewRestoreState();
     }
 
     protected void didFragmentHide() {
