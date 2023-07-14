@@ -30,13 +30,12 @@
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic, strong) NSNumber *disablePopGesture;
 @property (nonatomic, strong) NSNumber *enableLeftPanBackGesture;
+
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
 - (void)updateViewportMetrics;
-
 - (void)detachFlutterEngineIfNeeded;
 - (void)notifyWillDealloc;
-
 @end
 
 

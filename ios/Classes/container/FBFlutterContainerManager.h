@@ -26,20 +26,11 @@
 #import "FBFlutterContainer.h"
 
 @interface FBFlutterContainerManager : NSObject
-
 - (void)addContainer:(id<FBFlutterContainer>)container forUniqueId:(NSString *)uniqueId;
-
 - (void)activeContainer:(id<FBFlutterContainer>)container forUniqueId:(NSString *)uniqueId;
-
 - (void)removeContainerByUniqueId:(NSString *)uniqueId;
-
 - (id<FBFlutterContainer>)findContainerByUniqueId:(NSString *)uniqueId;
-
 - (id<FBFlutterContainer>)getTopContainer;
-
 - (BOOL)isTopContainer:(NSString *)uniqueId;
-
 - (NSInteger)containerSize;
-
-
 @end

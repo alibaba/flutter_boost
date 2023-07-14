@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 
-
 @interface FBLifecycle : NSObject
 + (void)pause;
 + (void)resume;

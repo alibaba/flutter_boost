@@ -28,8 +28,7 @@
 #import "FlutterBoostDelegate.h"
 #import "FBFlutterContainer.h"
 
-typedef void (^FBEventListener) (NSString *name ,
-                                 NSDictionary *arguments);
+typedef void (^FBEventListener) (NSString *name, NSDictionary *arguments);
 typedef void (^FBVoidCallback)(void);
 
 @interface FlutterBoostPlugin : NSObject <FlutterPlugin>
