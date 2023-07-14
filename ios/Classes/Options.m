@@ -24,42 +24,29 @@
 
 #import "Options.h"
 
-
 @implementation FlutterBoostSetupOptions
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        self.dartEntryPoint = @"main";
-        self.initalRoute = @"/";
-        self.warmUpEngine = YES;
-    }
-    return self;
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    self.dartEntryPoint = @"main";
+    self.initalRoute = @"/";
+    self.warmUpEngine = YES;
+  }
+  return self;
 }
 
-+ (FlutterBoostSetupOptions*)createDefault{
-    return [[FlutterBoostSetupOptions alloc] init];
++ (FlutterBoostSetupOptions*)createDefault {
+  return [[FlutterBoostSetupOptions alloc] init];
 }
-
 @end
-
 
 @implementation FlutterBoostRouteOptions
-
-- (instancetype)init
-{
-    self = [super init];
-    if (self) {
-        //设置opaque默认为YES
-        self.opaque = YES;
-    }
-    return self;
+- (instancetype)init {
+  self = [super init];
+  if (self) {
+    //设置opaque默认为YES
+    self.opaque = YES;
+  }
+  return self;
 }
-
 @end
-
-
-
-
-

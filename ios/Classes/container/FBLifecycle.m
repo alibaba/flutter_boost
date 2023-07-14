@@ -29,15 +29,16 @@
 #define ENGINE [[FlutterBoost instance] engine]
 
 @implementation FBLifecycle
-
-+ (void)pause{
-    [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@2}];
-    if(ENGINE.viewController != nil){
-        ENGINE.viewController = nil;
-    }
-}
-+ (void)resume{
-    [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key" arguments:@{@"lifecycleState":@0}];
++ (void)pause {
+  [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key"
+                                       arguments:@{@"lifecycleState":@2}];
+  if (ENGINE.viewController != nil){
+    ENGINE.viewController = nil;
+  }
 }
 
++ (void)resume {
+  [[FlutterBoost instance]sendEventToFlutterWith:@"app_lifecycle_changed_key"
+                                       arguments:@{@"lifecycleState":@0}];
+}
 @end
