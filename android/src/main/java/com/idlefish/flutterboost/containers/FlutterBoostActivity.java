@@ -112,16 +112,16 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         FlutterViewContainer top = containerManager.getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
-        performAttach();
         textureHooker.onFlutterTextureViewRestoreState();
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this);
+        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
+            performAttach();
+            // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
+            // the system UI overlays can't be updated in |onPostResume| callback. So we
+            // update system UI overlays to match Flutter's desired system chrome style here.
+            Assert.assertNotNull(platformPlugin);
+            platformPlugin.updateSystemUiOverlays();
+        });
         getFlutterEngine().getLifecycleChannel().appIsResumed();
-
-        // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
-        // the system UI overlays can't be updated in |onPostResume| callback. So we
-        // update system UI overlays to match Flutter's desired system chrome style here.
-        Assert.assertNotNull(platformPlugin);
-        platformPlugin.updateSystemUiOverlays();
         if (DEBUG) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
     }
 
