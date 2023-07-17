@@ -1,5 +1,9 @@
 ## NEXT
 
+## 3.2.1
+1. 解决打开弹窗并关闭后再关闭页面时「返回参数」不能传递到上一个页面的问题 (#1847)
+2. [Android] 解决FlutterBoostFragment切换时可能闪现上一个页面的问题 (#1807)
+
 ## 3.2.0
 1. [ios] Animations are enabled by default on ios. (#1750)
 2. ios] Use a screen edge pan gesture to go back to the previous page of a non-container page. (#1752)
