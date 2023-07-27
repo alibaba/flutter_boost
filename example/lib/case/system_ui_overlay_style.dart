@@ -1,41 +1,40 @@
 /// Flutter code sample for SystemChrome.setSystemUIOverlayStyle
 
-// The following example creates a widget that changes the status bar color
-// to a random value on Android.
-
-import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 
-/// This is the main application widget.
-class SystemUiOverlayStyleDemo extends StatelessWidget {
-  const SystemUiOverlayStyleDemo({Key? key}) : super(key: key);
+///
+/// SystemUiOverlayStyle 测试Demo
+///
+class SystemUiOverlayStyleDemo extends StatefulWidget {
+  final bool? isDark;
+
+  const SystemUiOverlayStyleDemo({Key? key, this.isDark = false})
+      : super(key: key);
 
   static const String _title = 'SystemUiOverlayStyle Demo';
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-    );
-  }
+  State<SystemUiOverlayStyleDemo> createState() =>
+      _SystemUiOverlayStyleDemoState();
 }
 
-/// This is the stateful widget that the main application instantiates.
-class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key? key}) : super(key: key);
+class _SystemUiOverlayStyleDemoState extends State<SystemUiOverlayStyleDemo> {
+  late bool withContainer;
+  late Random _random = Random();
+  late SystemUiOverlayStyle _currentStyle;
 
   @override
-  State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-}
-
-/// This is the private State class that goes with MyStatefulWidget.
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  final math.Random _random = math.Random();
-  SystemUiOverlayStyle _currentStyle = SystemUiOverlayStyle.light;
+  void initState() {
+    super.initState();
+    _currentStyle = (widget.isDark ?? false)
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light;
+    withContainer = true;
+  }
 
   void _changeColor() {
     final Color color = Color.fromRGBO(
@@ -45,7 +44,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       1.0,
     );
     setState(() {
-      _currentStyle = SystemUiOverlayStyle.dark.copyWith(
+      _currentStyle = _currentStyle.copyWith(
         statusBarColor: color,
       );
     });
@@ -53,24 +52,88 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: _currentStyle,
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: _changeColor,
-                child: const Text('Change SystemUiOverlayStyle'),
-              ),
-              ElevatedButton(
-                child: const Text('Open Flutter Page'),
-                onPressed: () => BoostNavigator.instance
-                    .push("flutterPage", withContainer: true),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(SystemUiOverlayStyleDemo._title),
+        systemOverlayStyle: _currentStyle,
+      ),
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('newContainer'),
+                Switch(
+                  value: withContainer,
+                  onChanged: (value) {
+                    setState(() {
+                      withContainer = value;
+                    });
+                  },
+                  activeTrackColor: Colors.yellow,
+                  activeColor: Colors.orangeAccent,
+                ),
+              ],
+            ),
           ),
-        ));
+          Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'change current systemUIOverlay',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () {
+                    _changeColor();
+                  },
+                ),
+                InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'Open Light SystemUIOverlay Style Page',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () {
+                    BoostNavigator.instance.push("system_ui_overlay_style",
+                        arguments: {
+                          'isDark': false,
+                        },
+                        withContainer: withContainer);
+                  },
+                ),
+                InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'Open Dark SystemUIOverlay Style Page',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () {
+                    BoostNavigator.instance.push("system_ui_overlay_style",
+                        arguments: {
+                          'isDark': true,
+                        },
+                        withContainer: withContainer);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
