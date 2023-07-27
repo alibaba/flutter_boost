@@ -4,15 +4,6 @@
 
 package com.idlefish.flutterboost.containers;
 
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
-import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,14 +28,24 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
+import io.flutter.embedding.engine.systemchannels.PlatformChannel;
 import io.flutter.plugin.platform.PlatformPlugin;
+
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_CACHED_ENGINE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_DESTROY_ENGINE_WITH_ACTIVITY;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_UNIQUE_ID;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL;
+import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_URL_PARAM;
 
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoost_java";
     private final String who = UUID.randomUUID().toString();
     private final FlutterTextureHooker textureHooker =new FlutterTextureHooker();
     private FlutterView flutterView;
-    private PlatformPlugin platformPlugin;
+    protected PlatformPlugin platformPlugin;
     private LifecycleStage stage;
     private boolean isAttached = false;
 
@@ -58,7 +59,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         // try to detach prevous container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
-        if (top != null && top != this) top.detachFromEngineIfNeeded();
+        if (top != null && top != this) {
+            if (top instanceof FlutterBoostActivity) {
+                PlatformChannel.SystemChromeStyle preContainerTheme = FlutterBoostUtils.getCurrentSystemUiOverlayTheme(((FlutterBoostActivity) top).platformPlugin);
+                if (preContainerTheme != null) {
+                    FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(this, preContainerTheme);
+                }
+            }
+            top.detachFromEngineIfNeeded();
+        }
         super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
