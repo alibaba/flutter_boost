@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+
 import 'case/asset_image_route.dart';
 import 'case/bottom_navigation_bar_demo.dart';
 import 'case/counter_demo.dart';
@@ -13,6 +14,7 @@ import 'case/media_query.dart';
 import 'case/native_view_demo.dart';
 import 'case/platform_view_perf.dart';
 import 'case/popUntil.dart';
+import 'case/radial_hero_animation.dart';
 import 'case/return_data.dart';
 import 'case/rotation_transition.dart';
 import 'case/selection_screen.dart';
@@ -21,7 +23,6 @@ import 'case/simple_webview_demo.dart';
 import 'case/state_restoration.dart';
 import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';
-import 'case/radial_hero_animation.dart';
 import 'case/webview_flutter_demo.dart';
 import 'case/willpop.dart';
 import 'flutter_page.dart';
@@ -367,7 +368,13 @@ class _MyAppState extends State<MyApp> {
     'system_ui_overlay_style': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
-          pageBuilder: (_, __, ___) => const SystemUiOverlayStyleDemo());
+          pageBuilder: (_, __, ___) {
+            bool? isDark;
+            if (settings.arguments is Map<String, dynamic>?) {
+              isDark = (settings.arguments as Map<String, dynamic>)['isDark'];
+            }
+            return SystemUiOverlayStyleDemo(isDark: isDark);
+          });
     },
     'mediaquery': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
