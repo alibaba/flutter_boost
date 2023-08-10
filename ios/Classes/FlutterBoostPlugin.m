@@ -145,12 +145,16 @@
     options.uniqueId = input.uniqueId;
     options.arguments = input.arguments;
     options.completion = ^(BOOL ret) {
-      completion(nil);
     };
 
-    //调用代理回调给调用层
+    // 调用代理回调给调用层
     [self.delegate popRoute:options];
-  };
+    completion(nil);
+  } else {
+    completion([FlutterError errorWithCode:@"Invalid uniqueId"
+                                   message:@"No container to pop."
+                                   details:nil]);
+  }
 }
 
 - (nullable FBStackInfo *)getStackFromHostWithError:(FlutterError *_Nullable *_Nonnull)error {
