@@ -1,5 +1,11 @@
 ## NEXT
 
+## 4.3.1
+1. Uniform iOS code style.
+2. 更新提issue的模版
+3. fix: 修复6.0 AccessibilityBridge.release()' on a null object reference
+4. [ios] 解决pop传参不能返回的问题
+
 ## 4.3.0
 1. Improve codes in Android. (#1855)
 2. Improve codes (#1856)
