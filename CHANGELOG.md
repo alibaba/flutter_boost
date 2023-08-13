@@ -1,5 +1,11 @@
 ## NEXT
 
+## 4.4.0
+1. 向业务暴露更新SystemUIOverlays方法
+2. 完善SystemUiOverlayStyle Demo
+3. 创建新容器时，默认使用上个容器的SystemUiOverlayStyle来配置新容器的状态栏、导航栏
+4. 修复快速内部路由切换导致页面卡死的问题
+
 ## 4.3.1
 1. Uniform iOS code style.
 2. 更新提issue的模版
