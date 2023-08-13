@@ -130,9 +130,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             // Since we takeover PlatformPlugin from FlutterActivityAndFragmentDelegate,
             // the system UI overlays can't be updated in |onPostResume| callback. So we
             // update system UI overlays to match Flutter's desired system chrome style here.
-            Assert.assertNotNull(platformPlugin);
-            platformPlugin.updateSystemUiOverlays();
+            onUpdateSystemUiOverlays();
         });
+    }
+
+    // Update system UI overlays to match Flutter's desired system chrome style
+    protected void onUpdateSystemUiOverlays() {
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onUpdateSystemUiOverlays: " + this);
+        Assert.assertNotNull(platformPlugin);
+        platformPlugin.updateSystemUiOverlays();
     }
 
     @Override
