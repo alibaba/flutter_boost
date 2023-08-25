@@ -327,9 +327,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public String getUrl() {
         if (!getIntent().hasExtra(EXTRA_URL)) {
-            Log.e(TAG, "Oops! The activity url are *MISSED*! You should override"
+            throw new RuntimeException("Oops! The activity url are *MISSED*! You should override"
                     + " the |getUrl|, or set url via |CachedEngineIntentBuilder.url|.");
-            return null;
         }
         return getIntent().getStringExtra(EXTRA_URL);
     }
