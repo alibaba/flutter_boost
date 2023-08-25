@@ -323,7 +323,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         finish();
     }
 
-    ////
     @Override
     public String getUrl() {
         if (!getIntent().hasExtra(EXTRA_URL)) {
