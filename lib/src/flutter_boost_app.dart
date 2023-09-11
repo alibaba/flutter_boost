@@ -149,12 +149,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   Widget build(BuildContext context) {
     return widget.appBuilder(WillPopScope(
         onWillPop: () async {
-          final canPop = topContainer!.navigator!.canPop();
-          if (canPop) {
-            topContainer!.navigator!.pop();
-            return true;
+          final topNavigator = topContainer!.navigator!;
+          if (topNavigator.canPop()) {
+            topNavigator.pop();
+            return false;
           }
-          return false;
+          return !topNavigator.canPop();
         },
         child: Listener(
             onPointerDown: _handlePointerDown,
