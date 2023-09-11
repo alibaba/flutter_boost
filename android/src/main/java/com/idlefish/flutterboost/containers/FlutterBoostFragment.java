@@ -35,6 +35,7 @@ import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.android.RenderMode;
 import io.flutter.embedding.android.TransparencyMode;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.systemchannels.PlatformChannel;
 import io.flutter.plugin.platform.PlatformPlugin;
 
 public class FlutterBoostFragment extends FlutterFragment implements FlutterViewContainer {
@@ -46,9 +47,15 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private LifecycleStage stage;
     private boolean isAttached = false;
     private boolean isFinishing = false;
+    private PlatformChannel.SystemChromeStyle currentTheme;
 
     private boolean isDebugLoggingEnabled() {
         return FlutterBoostUtils.isDebugLoggingEnabled();
+    }
+
+    @Override
+    public PlatformPlugin getPlatformPlugin() {
+        return platformPlugin;
     }
 
     @Override
@@ -205,7 +212,6 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     public void onDestroyView() {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroyView: " + this);
         FlutterBoost.instance().getPlugin().onContainerDestroyed(this);
-
         super.onDestroyView();
     }
 
@@ -349,6 +355,9 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
 
         if (platformPlugin == null) {
             platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            if (currentTheme != null) {
+                FlutterBoostUtils.setCurrentSystemUiOverlayTheme(platformPlugin, currentTheme);
+            }
         }
 
         // Attach rendering pipeline.
@@ -371,6 +380,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
     private void releasePlatformChannel() {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#releasePlatformChannel: " + this);
         if (platformPlugin != null) {
+            currentTheme = FlutterBoostUtils.getCurrentSystemUiOverlayTheme(platformPlugin);
             platformPlugin.destroy();
             platformPlugin = null;
         }

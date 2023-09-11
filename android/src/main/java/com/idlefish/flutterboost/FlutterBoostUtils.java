@@ -21,6 +21,8 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.WindowInsetsControllerCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -53,7 +55,7 @@ public class FlutterBoostUtils {
                         (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
                 return (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
             } catch (Throwable t) {
-              t.printStackTrace();
+                t.printStackTrace();
             }
         }
         return null;
@@ -61,15 +63,15 @@ public class FlutterBoostUtils {
 
     public static Map<String, Object> bundleToMap(Bundle bundle) {
         Map<String, Object> map = new HashMap<>();
-        if(bundle == null || bundle.keySet().isEmpty()) {
+        if (bundle == null || bundle.keySet().isEmpty()) {
             return map;
         }
         Set<String> keys = bundle.keySet();
         for (String key : keys) {
             Object value = bundle.get(key);
-            if(value instanceof Bundle) {
+            if (value instanceof Bundle) {
                 map.put(key, bundleToMap(bundle.getBundle(key)));
-            } else if (value != null){
+            } else if (value != null) {
                 map.put(key, value);
             }
         }
@@ -107,6 +109,20 @@ public class FlutterBoostUtils {
             }
         }
         return null;
+    }
+
+    public static void setCurrentSystemUiOverlayTheme(PlatformPlugin platformPlugin, PlatformChannel.SystemChromeStyle currentTheme) {
+        if (platformPlugin != null) {
+            try {
+                Field field = platformPlugin.getClass().getDeclaredField("currentTheme");
+                field.setAccessible(true);
+                field.set(platformPlugin, currentTheme);
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void setSystemChromeSystemUIOverlayStyle(@NonNull Activity activity,

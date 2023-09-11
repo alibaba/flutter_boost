@@ -43,9 +43,9 @@ import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.
 public class FlutterBoostActivity extends FlutterActivity implements FlutterViewContainer {
     private static final String TAG = "FlutterBoost_java";
     private final String who = UUID.randomUUID().toString();
-    private final FlutterTextureHooker textureHooker =new FlutterTextureHooker();
+    private final FlutterTextureHooker textureHooker = new FlutterTextureHooker();
     private FlutterView flutterView;
-    protected PlatformPlugin platformPlugin;
+    private PlatformPlugin platformPlugin;
     private LifecycleStage stage;
     private boolean isAttached = false;
 
@@ -54,21 +54,24 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     }
 
     @Override
+    public PlatformPlugin getPlatformPlugin() {
+        return platformPlugin;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreate: " + this);
+        super.onCreate(savedInstanceState);
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         // try to detach prevous container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
         if (top != null && top != this) {
-            if (top instanceof FlutterBoostActivity) {
-                PlatformChannel.SystemChromeStyle preContainerTheme = FlutterBoostUtils.getCurrentSystemUiOverlayTheme(((FlutterBoostActivity) top).platformPlugin);
-                if (preContainerTheme != null) {
-                    FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(this, preContainerTheme);
-                }
+            PlatformChannel.SystemChromeStyle preContainerTheme = FlutterBoostUtils.getCurrentSystemUiOverlayTheme(top.getPlatformPlugin());
+            if (preContainerTheme != null) {
+                FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(this, preContainerTheme);
             }
             top.detachFromEngineIfNeeded();
         }
-        super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         flutterView.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
@@ -219,7 +222,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
             Field isDisplayingFlutterUiField = FlutterRenderer.class.getDeclaredField("isDisplayingFlutterUi");
             isDisplayingFlutterUiField.setAccessible(true);
             isDisplayingFlutterUiField.setBoolean(flutterRenderer, false);
-            assert(!flutterRenderer.isDisplayingFlutterUi());
+            assert (!flutterRenderer.isDisplayingFlutterUi());
         } catch (Exception e) {
             Log.e(TAG, "You *should* keep fields in io.flutter.embedding.engine.renderer.FlutterRenderer.");
             e.printStackTrace();
@@ -258,7 +261,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT") + ", " +  this);
+        if (isDebugLoggingEnabled())
+            Log.d(TAG, "#onConfigurationChanged: " + (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ? "LANDSCAPE" : "PORTRAIT") + ", " + this);
     }
 
     @Override
@@ -335,7 +339,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public Map<String, Object> getUrlParams() {
-        return (HashMap<String, Object>)getIntent().getSerializableExtra(EXTRA_URL_PARAM);
+        return (HashMap<String, Object>) getIntent().getSerializableExtra(EXTRA_URL_PARAM);
     }
 
     @Override
@@ -353,7 +357,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public boolean isOpaque() {
-        return getBackgroundMode() ==  BackgroundMode.opaque;
+        return getBackgroundMode() == BackgroundMode.opaque;
     }
 
     @Override
@@ -391,7 +395,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         }
 
         public FlutterBoostActivity.CachedEngineIntentBuilder urlParams(Map<String, Object> params) {
-            this.params = (params instanceof HashMap) ? (HashMap)params : new HashMap<String, Object>(params);
+            this.params = (params instanceof HashMap) ? (HashMap) params : new HashMap<String, Object>(params);
             return this;
         }
 
