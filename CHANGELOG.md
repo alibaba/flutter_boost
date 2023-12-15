@@ -1,5 +1,8 @@
 ## NEXT
 
+## 4.4.1
+1. Revert: "修复快速内部路由切换导致页面卡死的问题"
+
 ## 4.4.0
 1. 向业务暴露更新SystemUIOverlays方法
 2. 完善SystemUiOverlayStyle Demo
