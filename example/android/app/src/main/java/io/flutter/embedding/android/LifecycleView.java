@@ -174,11 +174,6 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   }
 
   @Nullable
-  public SplashScreen provideSplashScreen() {
-    return null;
-  }
-
-  @Nullable
   public FlutterEngine provideFlutterEngine(@NonNull Context context) {
     return null;
   }
@@ -197,6 +192,10 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public boolean shouldAttachEngineToActivity() {
     return true;
+  }
+
+  public boolean attachToEngineAutomatically() {
+    return false;
   }
 
   public boolean shouldRestoreAndSaveState() {
