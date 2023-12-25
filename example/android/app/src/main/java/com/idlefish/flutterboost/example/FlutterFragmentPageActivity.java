@@ -15,15 +15,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 
-import io.flutter.embedding.android.DrawableSplashScreen;
 import io.flutter.embedding.android.FlutterFragment;
-import io.flutter.embedding.android.SplashScreen;
-import io.flutter.embedding.android.SplashScreenProvider;
 import io.flutter.plugin.platform.PlatformPlugin;
 
-public class FlutterFragmentPageActivity extends AppCompatActivity implements View.OnClickListener, SplashScreenProvider {
-    protected static final String SPLASH_SCREEN_META_DATA_KEY = "io.flutter.embedding.android.SplashScreenDrawable";
-
+public class FlutterFragmentPageActivity extends AppCompatActivity implements View.OnClickListener {
     private FlutterFragment mFragment;
 
     private View mTab1;
@@ -95,35 +90,5 @@ public class FlutterFragmentPageActivity extends AppCompatActivity implements Vi
     protected void onResume() {
         super.onResume();
         mTab1.performClick();
-    }
-
-    @Nullable
-    @Override
-    public SplashScreen provideSplashScreen() {
-        Drawable manifestSplashDrawable = getSplashScreenFromManifest();
-        if (manifestSplashDrawable != null) {
-            return new DrawableSplashScreen(manifestSplashDrawable, ImageView.ScaleType.CENTER,500L);
-        } else {
-            return null;
-        }
-    }
-
-    private Drawable getSplashScreenFromManifest() {
-        try {
-            ActivityInfo activityInfo = getPackageManager().getActivityInfo(
-                    getComponentName(),
-                    PackageManager.GET_META_DATA | PackageManager.GET_ACTIVITIES
-            );
-            Bundle metadata = activityInfo.metaData;
-            Integer splashScreenId = metadata != null ? metadata.getInt(SPLASH_SCREEN_META_DATA_KEY) : null;
-            return splashScreenId != null
-                    ? Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP
-                    ? getResources().getDrawable(splashScreenId, getTheme())
-                    : getResources().getDrawable(splashScreenId)
-                    : null;
-        } catch (PackageManager.NameNotFoundException e) {
-            // This is never expected to happen.
-            return null;
-        }
     }
 }
