@@ -184,7 +184,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         getFlutterEngine().getActivityControlSurface().attachToActivity(getExclusiveAppComponent(), getLifecycle());
 
         if (platformPlugin == null) {
-            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+            platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel(), this);
         }
 
         // Attach rendering pipeline.

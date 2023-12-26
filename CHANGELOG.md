@@ -1,5 +1,6 @@
 ## NEXT
 1. Fix the sample code's compilation errors on Flutter 3.16.x
+2. Fix NPE when platform plugin delegate is null
 
 ## 4.4.2
 1. 将AGP的版本从7.0.4降回3.3.0
