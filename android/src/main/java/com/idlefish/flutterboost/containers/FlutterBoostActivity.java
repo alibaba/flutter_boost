@@ -57,7 +57,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onCreate(Bundle savedInstanceState) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreate: " + this);
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
-        // try to detach prevous container from the engine.
         FlutterViewContainer top = containerManager.getTopContainer();
         if (top != null && top != this) {
             if (top instanceof FlutterBoostActivity) {
@@ -66,7 +65,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
                     FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(this, preContainerTheme);
                 }
             }
-            top.detachFromEngineIfNeeded();
         }
         super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
@@ -86,6 +84,21 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
     @Override
     public boolean shouldDispatchAppLifecycleState() {
+        return false;
+    }
+
+    /**
+     * Whether to automatically attach the {@link FlutterView} to the engine.
+     *
+     * <p>In the add-to-app scenario where multiple {@link FlutterView} share the same {@link
+     * FlutterEngine}, the host application desires to determine the timing of attaching the {@link
+     * FlutterView} to the engine, for example, during the {@code onResume} instead of the {@code
+     * onCreateView}.
+     *
+     * <p>Defaults to {@code true}.
+     */
+    @Override
+    public boolean attachToEngineAutomatically() {
         return false;
     }
 

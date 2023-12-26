@@ -65,6 +65,21 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         return false;
     }
 
+    /**
+     * Whether to automatically attach the {@link FlutterView} to the engine.
+     *
+     * <p>In the add-to-app scenario where multiple {@link FlutterView} share the same {@link
+     * FlutterEngine}, the host application desires to determine the timing of attaching the {@link
+     * FlutterView} to the engine, for example, during the {@code onResume} instead of the {@code
+     * onCreateView}.
+     *
+     * <p>Defaults to {@code true}.
+     */
+    @Override
+    public boolean attachToEngineAutomatically() {
+        return false;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
