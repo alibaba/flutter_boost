@@ -77,7 +77,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public void onResume() {
     mLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-    platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel());
+    platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel(), this);
     mDelegate.onResume();
   }
 
