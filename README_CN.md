@@ -5,7 +5,7 @@
 
 # Release Note
 
-## 4.4.2
+## 5.0.0
 
 PS：主线已支持空安全(null-safety)
 
