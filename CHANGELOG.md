@@ -1,4 +1,6 @@
 ## NEXT
+
+## 5.0.0
 1. Fix the sample code's compilation errors on Flutter 3.16.x
 2. Fix NPE when platform plugin delegate is null
 3. Avoid unnecessary attach/detach operations of the engine
