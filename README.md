@@ -6,7 +6,7 @@
 </p>
 
 # Release Note
-## 4.4.2
+## 5.0.0
 
 PS：Null-safety is already supported.
 
