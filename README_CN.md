@@ -40,7 +40,7 @@ PS：主线已支持空安全(null-safety)
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '4.4.1'
+        ref: '5.0.0'
 ```
 
 # 使用文档
