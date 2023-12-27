@@ -455,11 +455,18 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         Future<void>.delayed(
             const Duration(milliseconds: 50),
             () => targetContainer?.navigator
-                ?.popUntil(ModalRoute.withName(targetPage!.name!)));
+                ?.popUntil(_withPage(targetPage!)));
       }
     } else {
-      topContainer?.navigator?.popUntil(ModalRoute.withName(targetPage!.name!));
+      topContainer?.navigator?.popUntil(_withPage(targetPage!));
     }
+  }
+
+  RoutePredicate _withPage(BoostPage targetPage) {
+    return (Route<dynamic> route) {
+      return !route.willHandlePopInternally
+          && route == targetPage.route;
+    };
   }
 
   Future<bool> pop(
