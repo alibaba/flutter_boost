@@ -8,7 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'logger.dart';
 
 ///Observer for all pages visibility
-class GlobalPageVisibilityObserver {
+mixin class GlobalPageVisibilityObserver {
   void onPagePush(Route<dynamic> route) {}
 
   void onPageShow(Route<dynamic> route) {}
@@ -23,7 +23,7 @@ class GlobalPageVisibilityObserver {
 }
 
 ///Observer for single page visibility
-class PageVisibilityObserver {
+mixin class PageVisibilityObserver {
   ///
   /// Tip:If you want to do things when page is created,
   /// please in your [StatefulWidget]'s [State]
