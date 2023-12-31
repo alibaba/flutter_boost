@@ -1,4 +1,5 @@
 ## NEXT
+1. Add `mixin` modifier to avoid breaking user codes
 
 ## 5.0.0
 1. Fix the sample code's compilation errors on Flutter 3.16.x
