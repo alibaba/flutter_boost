@@ -1,5 +1,8 @@
 ## NEXT
+
+## 5.0.1
 1. Add `mixin` modifier to avoid breaking user codes
+2. 修复当同一个PageContainer存在多个相同路由名字的Page时,popUntil无法指定uniqueId
 
 ## 5.0.0
 1. Fix the sample code's compilation errors on Flutter 3.16.x
