@@ -28,8 +28,9 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     private static final String TAG = "FlutterBoost_java";
     private static final String APP_LIFECYCLE_CHANGED_KEY = "app_lifecycle_changed_key";
     private static final String LIFECYCLE_STATE = "lifecycleState";
-    private static final int FLUTTER_APP_STATE_RESUMED = 0;
-    private static final int FLUTTER_APP_STATE_PAUSED = 2;
+    // See https://github.com/flutter/engine/pull/42418 for details
+    private static final int FLUTTER_APP_STATE_RESUMED = 1;
+    private static final int FLUTTER_APP_STATE_PAUSED = 4;
 
     private FlutterEngine engine;
     private FlutterRouterApi channel;

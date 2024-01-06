@@ -1,4 +1,5 @@
 ## NEXT
+1. Adapt to the official engine's App Lifecycle state changes
 
 ## 5.0.1
 1. Add `mixin` modifier to avoid breaking user codes
