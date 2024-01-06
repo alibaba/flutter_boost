@@ -122,9 +122,10 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   void _addAppLifecycleStateEventListener() {
     _lifecycleStateListenerRemover = BoostChannel.instance
         .addEventListener(_appLifecycleChangedKey, (key, arguments) {
-      //we just deal two situation,resume and pause
-      //and 0 is resumed
-      //and 2 is paused
+      // we just deal two situation,resume and pause
+      // and 1 is resumed
+      // and 4 is paused
+      // See https://github.com/flutter/engine/pull/42418 for more details.
 
       final int? index = arguments["lifecycleState"];
 

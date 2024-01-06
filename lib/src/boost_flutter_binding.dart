@@ -14,7 +14,6 @@ mixin BoostFlutterBinding on WidgetsFlutterBinding {
   void initInstances() {
     super.initInstances();
     _instance = this;
-    changeAppLifecycleState(AppLifecycleState.resumed);
   }
 
   static BoostFlutterBinding? get instance => _instance;
