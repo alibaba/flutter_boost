@@ -1,0 +1,40 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "FMFlutterAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "FMFlutterAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "PureFlutterAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "PureFlutterAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "FishAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "FishAbility_label",
+      "value": "label"
+    }
+  ]
+}

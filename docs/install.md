@@ -320,9 +320,265 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
 //创建代理，做初始化操作
 let delegate = BoostDelegate()
 FlutterBoost.instance().setup(application, delegate: delegate) { engine in
-
+    
 }
 ```
+
+## OHOS部分
+
+单UIAbility
+
+整个应用只有唯一UIAbility，Flutter界面由FlutterPage进行承载
+
+1. Flutter与UIAbility进行绑定
+
+在UIAbility的`onCreate`，`onDestroy`，`onWindowStageCreate`，`onWindowStageDestroy`生命周期函数将Flutter进行绑定。
+
+```typescript
+async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
+  FlutterManager.getInstance().pushUIAbility(this)：
+}
+
+onDestroy(): void {
+  FlutterManager.getInstance().popUIAbility(this);
+}
+        
+onWindowStageCreate(windowStage: window.WindowStage): void {
+  FlutterManager.getInstance().pushWindowStage(this, windowStage)
+}
+
+onWindowStageDestroy(): void {
+  FlutterManager.getInstance().popWindowStage(this);
+}
+```
+
+1. 初始化FlutterBoost
+
+因为FlutterBoost调用usetup后会初始化引擎，建议的初始化optionsBuilder时带上GeneratedPluginRegistrant.getPlugins()
+
+- 当前UIAbility继承FlutterBoostDelegate
+- 并在适当的时机调用`FlutterBoost.getInstance().setup` (建议onWindowStageCreate)
+
+```typescript
+export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
+  // FlutterBoostDelegate override
+  pushNativeRoute(options: FlutterBoostRouteOptions) {
+
+  }
+  // FlutterBoostDelegate override
+  pushFlutterRoute(options: FlutterBoostRouteOptions) {
+
+    router.pushUrl({
+      url: 'pages/MyFlutterPage', params: {
+        uri: options.getPageName(),
+        params: options.getArguments(),
+      }
+    }).then(() => {
+      console.info('Succeeded in jumping to the second page.')
+    })
+  }
+  onWindowStageCreate(windowStage: window.WindowStage): void {
+    
+    // 初始化启动参数（建议带上GeneratedPluginRegistrant.getPlugins()）
+    const optionsBuilder: FlutterBoostSetupOptionsBuilder = new FlutterBoostSetupOptionsBuilder()
+      .setPlugins(GeneratedPluginRegistrant.getPlugins());
+
+    FlutterBoost.getInstance().setup(this, this.context, () => {
+      //引擎初始化成功
+    }, optionsBuilder.build())
+
+  }
+}
+```
+如果想要带Promise的setup函数，请使用`FlutterBoost.getInstance().setupSync`
+
+1. 自定义FlutterPage
+
+创建一个Page，加上相关相关`FlutterBoostEntry`以及`FlutterPage`代码
+
+```typescript
+@Entry
+@Component
+struct MyFlutterPage {
+  private flutterEntry: FlutterBoostEntry | null = null;
+  private flutterView?: FlutterView
+
+  aboutToAppear() {
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), router.getParams());
+    this.flutterEntry.aboutToAppear();
+    this.flutterView = this.flutterEntry.getFlutterView();
+    hilog.info(0x0000, "Flutter", "Index aboutToAppear===");
+  }
+  //2
+  aboutToDisappear() {
+    hilog.info(0x0000, "Flutter", "Index aboutToDisappear===");
+    this.flutterEntry?.aboutToDisappear()
+  }
+
+  onPageShow() {
+    hilog.info(0x0000, "Flutter", "Index onPageShow===");
+    this.flutterEntry?.onPageShow()
+  }
+  // 1
+  onPageHide() {
+    hilog.info(0x0000, "Flutter", "Index onPageHide===");
+    this.flutterEntry?.onPageHide()
+  }
+
+  build() {
+    Stack() {
+      FlutterPage({ viewId: this.flutterView?.getId() })
+    }
+  }
+}
+```
+
+4. 跳转Flutter界面
+   后面直接使用router跳转到3步骤中的page即可
+```typescript
+
+router.pushUrl({
+  url: 'pages/MyFlutterPage', params: {
+    uri: '这里写dart侧注册好的路由名',
+    params: '传递给界面的参数',
+  }
+}).then(() => {
+  console.info('Succeeded in jumping to the second page.')
+})
+```
+
+*多tab共存*
+
+如何在多tab上有多个flutter界面共存
+
+```typescript
+
+@Entry
+@Component
+struct EntryPage {
+  @State currentIndex: number = 0;
+  private flutterEntries: Array<FlutterBoostEntry> = [];
+
+  build() {
+    Column() {
+      Tabs({
+        index: this.currentIndex,
+        barPosition: BarPosition.End
+      }) {
+        ForEach(bottomTabItems.getTabItems(), (item: TabItem) => {
+          TabContent() {
+            Column() {
+              this.Content()
+            }
+          }
+          .tabBar(this.CardTab(item))
+        }, (item: TabItem, index?: number) => index + JSON.stringify(item))
+      }
+      .vertical(false)
+      .barWidth("100%")
+      .barHeight("56vp")
+      .layoutWeight(1)
+      .barMode(BarMode.Fixed)
+      .align(Alignment.Center)
+      .onChange((index: number) => {
+        this.currentIndex = index;
+
+        if (this.currentIndex == 1) {
+          this.flutterEntries[0]?.aboutToAppear();
+          this.flutterEntries[0]?.onPageShow();
+          this.flutterEntries[1]?.onPageHide();
+        } else if (this.currentIndex == 2) {
+          this.flutterEntries[1]?.aboutToAppear();
+          this.flutterEntries[1]?.onPageShow();
+          this.flutterEntries[0]?.onPageHide();
+        }
+      })
+    }
+    .backgroundColor("#F1F3F5")
+  }
+
+  // 组件生命周期
+  aboutToAppear() {
+    console.info('MyComponent aboutToAppear');
+
+    const firstFlutterEntry = new FlutterBoostEntry(getContext(this), {
+      uri: 'firstFirst'
+    });
+
+    const secondFlutterEntry = new FlutterBoostEntry(getContext(this), {
+      uri: 'flutterPage'
+    });
+
+    this.flutterEntries.push(firstFlutterEntry);
+    this.flutterEntries.push(secondFlutterEntry);
+  }
+
+  // 组件生命周期
+  aboutToDisappear() {
+    console.info('MyComponent aboutToDisappear');
+  }
+
+  // 只有被@Entry装饰的组件才可以调用页面的生命周期
+  onPageShow() {
+    console.info('Index onPageShow');
+  }
+
+  // 只有被@Entry装饰的组件才可以调用页面的生命周期
+  onPageHide() {
+    console.info('Index onPageHide');
+  }
+
+  @Builder
+  CardTab(item: TabItem) {
+    Column() {
+      Image(this.currentIndex === item.index ? item.imageActivated : item.imageOriginal)
+        .width("21vp")
+        .height("21vp")
+        .objectFit(ImageFit.Contain)
+        .margin({
+          top: "4vp",
+          bottom: "5.5vp"
+        })
+      Text(item.title)
+        .fontSize("10fp")
+        .fontColor(this.currentIndex === item.index ?
+          "#007DFF" : "#66000000")
+    }
+    .justifyContent(FlexAlign.Center)
+    .width("100%")
+    .height("100%")
+  }
+
+  @Builder
+  Content() {
+    if (this.currentIndex === 0) {
+      Column() {
+        Button('打开FlutterEntry')
+          .onClick(() => {
+            router.pushUrl({ url: 'pages/MyFlutterPage', params: {
+              uri: 'flutterPage',
+              params: {}
+            } }).then(() => {
+              console.info('Succeeded in jumping to the second page.')
+            })
+          })
+      }
+    } else if (this.currentIndex === 1) {
+      FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
+    } else if (this.currentIndex === 2) {
+      FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
+    } else {
+      Text("内容" + this.currentIndex)
+        .fontSize("20fp")
+        .fontColor(Color.Black)
+        .fontWeight(500)
+    }``
+  }
+}
+
+```
+
+
 
 到此为止，所有的前置内容均已完成
 

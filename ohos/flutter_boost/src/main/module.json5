@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "flutter_boost",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}

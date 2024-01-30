@@ -1,0 +1,11 @@
+{
+  "name": "flutter_boost",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@ohos/flutter_ohos": "file:./libs/flutter_ohos.har"
+  }
+}

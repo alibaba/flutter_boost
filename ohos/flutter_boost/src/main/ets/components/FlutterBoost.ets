@@ -1,0 +1,228 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Alibaba Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+import FlutterBoostDelegate from './FlutterBoostDelegate';
+import { FlutterBoostSetupOptions } from './FlutterBoostSetupOptions';
+import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
+import PlatformViewsController from '@ohos/flutter_ohos/src/main/ets/plugin/platform/PlatformViewsController';
+import { DartEntrypoint } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/dart/DartExecutor';
+import FlutterEngineCache from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngineCache';
+import FlutterInjector from '@ohos/flutter_ohos/src/main/ets/FlutterInjector';
+import common from '@ohos.app.ability.common';
+import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
+import FlutterBoostUtils from './FlutterBoostUtils';
+import CommonParams from './messages/CommonParams';
+import NativeRouterApi from './messages/NativeRouterApi';
+import StackInfo from './messages/StackInfo';
+import HiLog from '@ohos.hilog';
+import FlutterBoostRouteOptions, { FlutterBoostRouteOptionsBuilder } from './FlutterBoostRouteOptions';
+import Log from './util/Log';
+
+const TAG = "FlutterBoost";
+
+/**
+ * FlutterBoost核心类
+ *
+ * 实现NativeRouterApi是用户接受来自dart侧的消息
+ */
+export class FlutterBoost {
+  private static instance: FlutterBoost;
+  public static ENGINE_ID = 'flutter_boost_default_engine'
+  public static APP_LIFECYCLE_CHANGED_KEY = 'app_lifecycle_changed_key'
+  public static LIFECYCLE_STATE = 'lifecycleState'
+  public static FLUTTER_APP_STATE_RESUMED = 0
+  public static FLUTTER_APP_STATE_PAUSED = 2
+  private plugin?: FlutterBoostPlugin | null
+  private flutterEngine?: FlutterEngine | null
+  private delegate?: FlutterBoostDelegate
+
+  public static getInstance(): FlutterBoost {
+    if (!FlutterBoost.instance) {
+      FlutterBoost.instance = new FlutterBoost();
+    }
+    return FlutterBoost.instance;
+  }
+
+  /**
+   * 设置FlutterBoost的配置信息
+   * @param delegate FlutterBoost的委托对象
+   * @param context 上下文对象
+   * @param callback 回调函数
+   * @param options FlutterBoost的配置选项
+   */
+  public async setup(delegate: FlutterBoostDelegate,
+                     context: common.Context,
+                     callback: (engine: FlutterEngine) => void,
+                     options: FlutterBoostSetupOptions | null) {
+
+    this.delegate = delegate
+
+    // 0.如果为null，指定默认设置参数（初始路由为/,入口参数main）
+    if (options == null) {
+      options = FlutterBoostSetupOptions.createDefault()
+    }
+
+    // 1.初始化engine
+    let engine: FlutterEngine | null = this.getEngine()
+    if (engine == null) {
+      const engineProvider = options.getFlutterEngineProvider()
+      if (engineProvider) {
+        engine = engineProvider.provideFlutterEngine(context)
+      }
+      if (engine == null) {
+        engine = new FlutterEngine(context, null, null, new PlatformViewsController())
+        await engine.init(context, null, true, true, null, options.getPlugins())
+      }
+      FlutterEngineCache.getInstance().put(FlutterBoost.ENGINE_ID, engine);
+    }
+
+    this.flutterEngine = engine
+    //2. 设置代理
+    if (this.delegate) {
+      this.getPlugin()?.setDelegate(this.delegate)
+    }
+
+    // 3.预热FlutterEngine
+    if (!engine.getDartExecutor().isExecutingDart()) {
+      const navigationChannel = engine.getNavigationChannel()
+      if (navigationChannel) {
+        navigationChannel.setInitialRoute(options.getInitialRoute())
+      }
+      // TODO:这里没完全对齐
+      const dartEntrypoint: DartEntrypoint = new DartEntrypoint(
+        FlutterInjector.getInstance().getFlutterLoader().findAppBundlePath(),
+        '',
+        options.getDartEntrypoint()
+      );
+      engine.getDartExecutor().executeDartEntrypoint(dartEntrypoint);
+    }
+
+    if (callback) {
+      callback(engine)
+    }
+
+    // TODO:添加OHOS实现
+    // setupActivityLifecycleCallback(application, isBackForegroundEventOverridden);
+  }
+
+
+  /**
+   * 设置FlutterBoost的配置信息(Promise)
+   * @param delegate FlutterBoost的委托对象
+   * @param context 上下文对象
+   * @param options FlutterBoost的配置选项
+   */
+  public setupSync(delegate: FlutterBoostDelegate,
+                   context: common.Context,
+                   options: FlutterBoostSetupOptions | null): Promise<FlutterEngine> {
+    return new Promise<FlutterEngine>((resolve, reject) => {
+      try {
+        this.setup(delegate, context, (engine: FlutterEngine) => {
+          resolve(engine);
+        }, options)
+      } catch (error) {
+        // 如果有错误发生，则拒绝Promise
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * 打开页面
+   * @param pageName 页面名称
+   * @param param 参数
+   */
+  public open(pageName: string, param: Record<string, Object>, opaque?: boolean) {
+    let options = new FlutterBoostRouteOptionsBuilder()
+      .setPageName(pageName)
+      .setArguments(param)
+      .setOpaque(opaque ?? true)
+      .build();
+    const plugin: FlutterBoostPlugin | null = this.getPlugin()
+    if (plugin) {
+      const delegate = plugin.getDelegate() as FlutterBoostDelegate;
+      if (delegate) {
+        delegate.pushFlutterRoute(options);
+      } else {
+        Log.e(TAG, 'open fail. get delegate fail! Maybe setup function has not been invoked.');
+      }
+    } else {
+      Log.e(TAG, 'open fail. get plugin fail! Maybe setup function has not been invoked.');
+    }
+  }
+
+  /**
+   * 获取引擎对象
+   * @returns 引擎对象，如果不存在则返回null
+   */
+  public getEngine(): FlutterEngine | null {
+    return FlutterEngineCache.getInstance().get(FlutterBoost.ENGINE_ID);
+  }
+
+  /**
+   * 获取插件对象
+   * @returns {FlutterBoostPlugin | null} 插件对象或者null
+   */
+  public getPlugin(): FlutterBoostPlugin | null {
+    if (this.plugin == null) {
+      let engine = this.getEngine();
+      if (engine) {
+        const plugin: FlutterBoostPlugin | null = FlutterBoostUtils.getPlugin(engine);
+        if (plugin !== undefined) {
+          this.plugin = plugin;
+        } else {
+          throw new Error('getPlugin fail. can not get the FlutterBoostPlugin instance,')
+          return null
+        }
+      } else {
+        throw new Error('getPlugin fail. can not get the engine instance,')
+        return null
+      }
+    }
+    return this.plugin;
+  }
+
+  /**
+   * 向Flutter发送事件
+   * @param key 事件的键
+   * @param args 事件的参数
+   */
+  public sendEventToFlutter(key: string, args: Record<string, Object>) {
+    let params = new CommonParams();
+    params.key = key;
+    params.arguments = args as Record<string, Object>;
+    this.getPlugin()?.getChannel()?.sendEventToFlutter(params, () => {
+    });
+  }
+
+  /**
+   * 修改Flutter应用生命周期状态
+   * @param state 状态值
+   */
+  public changeFlutterAppLifecycle(state: Number) {
+    // assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
+    let args: Record<string, Object> = {}
+    args[FlutterBoost.LIFECYCLE_STATE] = state;
+    this.sendEventToFlutter(FlutterBoost.APP_LIFECYCLE_CHANGED_KEY, args);
+  }
+}

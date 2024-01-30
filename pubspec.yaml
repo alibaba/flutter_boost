@@ -27,3 +27,6 @@ flutter:
         pluginClass: FlutterBoostPlugin
       ios:
         pluginClass: FlutterBoostPlugin
+      ohos:
+        package: com.idlefish.flutterboost
+        pluginClass: FlutterBoostPlugin

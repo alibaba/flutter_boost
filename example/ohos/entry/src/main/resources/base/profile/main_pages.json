@@ -1,0 +1,8 @@
+{
+  "src": [
+    "pages/NativePage",
+    "pages/EntryPage",
+    "pages/MyFlutterPage",
+    "pages/MyTransparentFlutterPage"
+  ]
+}
