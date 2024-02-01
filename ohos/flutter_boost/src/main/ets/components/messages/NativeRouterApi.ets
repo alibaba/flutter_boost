@@ -23,12 +23,8 @@
  */
 import CommonParams from './CommonParams';
 import StackInfo from './StackInfo';
-import { BinaryMessenger } from '@ohos/flutter_ohos/src/main/ets/plugin/common/BinaryMessenger';
-import BasicMessageChannel, {
-  MessageHandler,
-  Reply
-} from '@ohos/flutter_ohos/src/main/ets/plugin/common/BasicMessageChannel';
-import StandardMessageCodec from '@ohos/flutter_ohos/src/main/ets/plugin/common/StandardMessageCodec';
+import { BinaryMessenger, BasicMessageChannel } from '@ohos/flutter_ohos';
+import { Reply } from '@ohos/flutter_ohos/src/main/ets/plugin/common/BasicMessageChannel';
 import FlutterRouterApiCodec from './FlutterRouterApiCodec';
 
 /**

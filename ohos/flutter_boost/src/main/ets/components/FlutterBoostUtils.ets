@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
+import { FlutterEngine } from '@ohos/flutter_ohos';
 import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
 
 export default class FlutterBoostUtils {
@@ -45,12 +45,12 @@ export default class FlutterBoostUtils {
   }
 
   /**
-    * 递归遍历映射对象，将其转换为Record对象。
-    *
-    * @param map 要遍历的映射对象
-    * @returns 转换后的记录对象
-    */
-    public static mapToRecord(map: Map<string, Object>): Record<string, Object> {
+   * 递归遍历映射对象，将其转换为Record对象。
+   *
+   * @param map 要遍历的映射对象
+   * @returns 转换后的记录对象
+   */
+  public static mapToRecord(map: Map<string, Object>): Record<string, Object> {
     let result: Record<string, Object> = {};
     map.forEach((value, key) => {
       if (value instanceof Map) {

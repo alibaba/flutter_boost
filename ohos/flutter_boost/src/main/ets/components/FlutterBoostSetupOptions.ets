@@ -21,8 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import FlutterEngineProvider from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterEngineProvider'
-import { FlutterPlugin } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/plugins/FlutterPlugin'
+import { FlutterEngineProvider, FlutterPlugin } from '@ohos/flutter_ohos';
 import List from '@ohos.util.List';
 
 export class FlutterBoostSetupOptionsBuilder {
