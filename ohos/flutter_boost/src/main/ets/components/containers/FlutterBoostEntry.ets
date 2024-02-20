@@ -22,20 +22,14 @@
  * THE SOFTWARE.
  */
 
-import { FlutterPlugin } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/plugins/FlutterPlugin'
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
-import FlutterEntry from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterEntry';
-
+import { FlutterEntry, PlatformPlugin, } from '@ohos/flutter_ohos';
 import { FlutterViewContainer } from './FlutterViewContainer';
 import { LifecycleStage } from './Lifecycle';
 import util from '@ohos.util';
 import Log from '../util/Log';
-import PlatformPlugin from '@ohos/flutter_ohos/src/main/ets/plugin/PlatformPlugin';
 import { FlutterBoost } from '../FlutterBoost';
 import FlutterContainerManager from './FlutterContainerManager';
 import router from '@ohos.router';
-import ExclusiveAppComponent from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterEntry';
-import UIAbility from '@ohos.app.ability.UIAbility';
 
 const TAG = "FlutterBoostEntry";
 

@@ -23,5 +23,5 @@
  */
 
 export default interface EventListener {
-  onEvent(key: string, args: Record<string, Object>);
+  onEvent(key: string, args: Record<string, Object>): void;
 }

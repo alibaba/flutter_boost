@@ -1,6 +1,6 @@
 import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect, MockKit } from '@ohos/hypium'
 import { FlutterBoost, FlutterBoostDelegate, FlutterBoostRouteOptions } from '../../index';
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
+import { FlutterEngine } from '@ohos/flutter_ohos';
 import abilityDelegatorRegistry from '@ohos.app.ability.abilityDelegatorRegistry';
 import TestFlutterBoostDelegate from './TestFlutterBoostDelegate';
 

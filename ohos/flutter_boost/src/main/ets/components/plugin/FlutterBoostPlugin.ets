@@ -30,7 +30,7 @@ import { MethodCallHandler, MethodResult } from '@ohos/flutter_ohos/src/main/ets
 import MethodCall from '@ohos/flutter_ohos/src/main/ets/plugin/common/MethodCall';
 import { FlutterViewContainer } from '../containers/FlutterViewContainer';
 import FlutterContainerManager from '../containers/FlutterContainerManager';
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
+import { FlutterEngine } from '@ohos/flutter_ohos';
 import { FlutterBoost } from '../FlutterBoost';
 import FlutterRouterApi from '../messages/FlutterRouterApi';
 import NativeRouterApi, { NativeRouterApiSetup } from '../messages/NativeRouterApi';
@@ -38,7 +38,7 @@ import FlutterBoostDelegate from '../FlutterBoostDelegate';
 import CommonParams from '../messages/CommonParams';
 import Log from '../util/Log'
 import StackInfo from '../messages/StackInfo';
-import FlutterBoostRouteOptions, { FlutterBoostRouteOptionsBuilder } from '../FlutterBoostRouteOptions';
+import { FlutterBoostRouteOptionsBuilder } from '../FlutterBoostRouteOptions';
 import EventListener from '../util/EventListener';
 import ListenerRemover from '../util/ListenerRemover';
 

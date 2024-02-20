@@ -23,19 +23,13 @@
  */
 import FlutterBoostDelegate from './FlutterBoostDelegate';
 import { FlutterBoostSetupOptions } from './FlutterBoostSetupOptions';
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
-import PlatformViewsController from '@ohos/flutter_ohos/src/main/ets/plugin/platform/PlatformViewsController';
+import { FlutterEngine,PlatformViewsController,FlutterEngineCache ,FlutterInjector} from '@ohos/flutter_ohos';//src/main/ets/embedding/engine/FlutterEngine';
 import { DartEntrypoint } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/dart/DartExecutor';
-import FlutterEngineCache from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngineCache';
-import FlutterInjector from '@ohos/flutter_ohos/src/main/ets/FlutterInjector';
 import common from '@ohos.app.ability.common';
 import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
 import FlutterBoostUtils from './FlutterBoostUtils';
 import CommonParams from './messages/CommonParams';
-import NativeRouterApi from './messages/NativeRouterApi';
-import StackInfo from './messages/StackInfo';
-import HiLog from '@ohos.hilog';
-import FlutterBoostRouteOptions, { FlutterBoostRouteOptionsBuilder } from './FlutterBoostRouteOptions';
+import { FlutterBoostRouteOptionsBuilder } from './FlutterBoostRouteOptions';
 import Log from './util/Log';
 
 const TAG = "FlutterBoost";

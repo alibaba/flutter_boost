@@ -22,11 +22,9 @@
  * THE SOFTWARE.
  */
 
-import { FlutterPage } from '@ohos/flutter_ohos';
 import hilog from '@ohos.hilog';
-import FlutterEntry from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterEntry';
+import { FlutterEntry, FlutterView, FlutterPage } from '@ohos/flutter_ohos';
 import { FlutterBoostEntry } from '@ohos/flutter_boost';
-import { FlutterView } from '@ohos/flutter_ohos/src/main/ets/view/FlutterView';
 
 import router from '@ohos.router';
 

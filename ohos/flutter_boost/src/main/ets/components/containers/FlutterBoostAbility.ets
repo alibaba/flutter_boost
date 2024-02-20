@@ -22,8 +22,7 @@
  * THE SOFTWARE.
  */
 
-import { FlutterAbility } from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterAbility';
-import PlatformPlugin from '@ohos/flutter_ohos/src/main/ets/plugin/PlatformPlugin';
+import { FlutterAbility, PlatformPlugin } from '@ohos/flutter_ohos';
 import Want from '@ohos.app.ability.Want';
 import AbilityConstant from '@ohos.app.ability.AbilityConstant';
 import { FlutterBoost } from '../FlutterBoost';
