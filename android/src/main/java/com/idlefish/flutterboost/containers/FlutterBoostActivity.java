@@ -15,6 +15,7 @@ import android.util.Log;
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
+import com.idlefish.flutterboost.invoke.RenderSurfaceHandler;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -69,6 +70,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
+        RenderSurfaceHandler.inject(flutterView);
         flutterView.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
     }

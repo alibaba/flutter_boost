@@ -24,6 +24,7 @@ import android.widget.FrameLayout;
 import com.idlefish.flutterboost.Assert;
 import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.FlutterBoostUtils;
+import com.idlefish.flutterboost.invoke.RenderSurfaceHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -116,6 +117,7 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
         flutterView = FlutterBoostUtils.findFlutterView(view);
+        RenderSurfaceHandler.inject(flutterView);
         // Detach FlutterView from engine before |onResume|.
         flutterView.detachFromFlutterEngine();
         if (view == flutterView) {
