@@ -69,11 +69,11 @@ struct EntryPage {
   aboutToAppear() {
     console.info('MyComponent aboutToAppear');
 
-    const firstFlutterEntry = new FlutterBoostEntry(getContext(this), {
+    const firstFlutterEntry:FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
       uri: 'firstFirst'
     });
 
-    const secondFlutterEntry = new FlutterBoostEntry(getContext(this), {
+    const secondFlutterEntry:FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
       uri: 'flutterPage'
     });
 

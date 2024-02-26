@@ -10,6 +10,6 @@
   "version": "1.0.0",
   "dependencies": {},
   "overrides": {
-    "@ohos/flutter_ohos": "file:./har/flutter_embedding.har"
+    "@ohos/flutter_ohos": "file:./har/flutter.har"
   }
 }
