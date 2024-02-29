@@ -224,4 +224,9 @@ struct EntryPage {
       PageTransitionExit({ type: RouteType.None, duration: 0 })
     }
   }
+
+  onBackPress(): boolean | void {
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    return true;
+  }
 }

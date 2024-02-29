@@ -430,6 +430,12 @@ struct MyFlutterPage {
       FlutterPage({ viewId: this.flutterView?.getId() })
     }
   }
+
+  // 拦截返回键
+  onBackPress(): boolean | void {
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    return true;
+  }
 }
 ```
 
@@ -449,7 +455,7 @@ router.pushUrl({
 
 *多tab共存*
 
-如何在多tab上有多个flutter界面共存
+如何在多tab上有多个flutter界面共存。
 
 ```typescript
 
@@ -573,6 +579,12 @@ struct EntryPage {
         .fontColor(Color.Black)
         .fontWeight(500)
     }``
+  }
+
+  // 拦截返回键
+  onBackPress(): boolean | void {
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    return true;
   }
 }
 
