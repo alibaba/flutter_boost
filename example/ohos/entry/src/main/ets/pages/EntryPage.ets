@@ -42,15 +42,54 @@ struct EntryPage {
         index: this.currentIndex,
         barPosition: BarPosition.End
       }) {
-        ForEach(bottomTabItems.getTabItems(), (item: TabItem) => {
-          TabContent() {
-            Column() {
-              this.Content()
-            }
+        // ForEach(bottomTabItems.getTabItems(), (item: TabItem) => {
+        //   TabContent() {
+        //     Column() {
+        //       this.Content()
+        //     }
+        //   }
+        //   .tabBar(this.CardTab(item))
+        // }, (item: TabItem, index?: number) => index + JSON.stringify(item))
+
+        TabContent() {
+          Column() {
+            FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
           }
-          .tabBar(this.CardTab(item))
-        }, (item: TabItem, index?: number) => index + JSON.stringify(item))
+        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[0]))
+
+
+        TabContent() {
+          Column() {
+            FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
+          }
+        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[1]))
+
+
+        TabContent() {
+          Column() {
+            FlutterPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
+          }
+        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[2]))
+
+
+        TabContent() {
+          Column() {
+            Button('打开FlutterEntry')
+              .onClick(() => {
+                this.isOpaque = true;
+                FlutterBoost.getInstance().open('flutterPage', {})
+              })
+
+            Button('打开透明FlutterEntry')
+              .onClick(() => {
+                this.isOpaque = false;
+                FlutterBoost.getInstance().open('transparentWidget', {}, this.isOpaque)
+              })
+          }
+        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[3]))
+
       }
+      .animationDuration(0)
       .vertical(false)
       .barWidth("100%")
       .barHeight("56vp")
@@ -69,19 +108,25 @@ struct EntryPage {
   aboutToAppear() {
     console.info('MyComponent aboutToAppear');
 
-    const firstFlutterEntry:FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
+    const firstFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
       uri: 'firstFirst'
     });
 
-    const secondFlutterEntry:FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
+    const secondFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
+      uri: 'flutterPage'
+    });
+
+    const thirdFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
       uri: 'flutterPage'
     });
 
     firstFlutterEntry.aboutToAppear();
     secondFlutterEntry.aboutToAppear();
+    thirdFlutterEntry.aboutToAppear();
 
     this.flutterEntries.push(firstFlutterEntry);
     this.flutterEntries.push(secondFlutterEntry);
+    this.flutterEntries.push(thirdFlutterEntry);
   }
 
   // 组件生命周期
@@ -98,17 +143,22 @@ struct EntryPage {
   // 只有被@Entry装饰的组件才可以调用页面的生命周期
   onPageHide() {
     console.info('Index onPageHide');
-
     this._onFlutterTabHide();
   }
 
   _onFlutterTabShow() {
     if (this.currentIndex == 0) {
       this.flutterEntries[1]?.onPageHide();
+      this.flutterEntries[2]?.onPageHide();
       this.flutterEntries[0]?.onPageShow();
     } else if (this.currentIndex == 1) {
       this.flutterEntries[0]?.onPageHide();
+      this.flutterEntries[2]?.onPageHide();
       this.flutterEntries[1]?.onPageShow();
+    } else if (this.currentIndex == 2) {
+      this.flutterEntries[0]?.onPageHide();
+      this.flutterEntries[1]?.onPageHide();
+      this.flutterEntries[2]?.onPageShow();
     }
   }
 
@@ -117,6 +167,8 @@ struct EntryPage {
       this.flutterEntries[0]?.onPageHide();
     } else if (this.currentIndex == 1) {
       this.flutterEntries[1]?.onPageHide();
+    } else if (this.currentIndex == 2) {
+      this.flutterEntries[2]?.onPageHide();
     }
   }
 
@@ -148,6 +200,8 @@ struct EntryPage {
     } else if (this.currentIndex === 1) {
       FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
     } else if (this.currentIndex === 2) {
+      FlutterPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
+    } else {
       Column() {
         Button('打开FlutterEntry')
           .onClick(() => {
@@ -161,11 +215,6 @@ struct EntryPage {
             FlutterBoost.getInstance().open('transparentWidget', {}, this.isOpaque)
           })
       }
-    } else {
-      Text("内容" + this.currentIndex)
-        .fontSize("20fp")
-        .fontColor(Color.Black)
-        .fontWeight(500)
     }
   }
 
