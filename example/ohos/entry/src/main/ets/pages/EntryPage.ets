@@ -103,20 +103,20 @@ struct EntryPage {
   }
 
   _onFlutterTabShow() {
-    if (this.currentIndex == 1) {
+    if (this.currentIndex == 0) {
       this.flutterEntries[1]?.onPageHide();
       this.flutterEntries[0]?.onPageShow();
-    } else if (this.currentIndex == 2) {
+    } else if (this.currentIndex == 1) {
       this.flutterEntries[0]?.onPageHide();
       this.flutterEntries[1]?.onPageShow();
     }
   }
 
   _onFlutterTabHide() {
-    if (this.currentIndex == 1) {
-      this.flutterEntries[1]?.onPageHide();
-    } else if (this.currentIndex == 2) {
+    if (this.currentIndex == 0) {
       this.flutterEntries[0]?.onPageHide();
+    } else if (this.currentIndex == 1) {
+      this.flutterEntries[1]?.onPageHide();
     }
   }
 
@@ -144,6 +144,10 @@ struct EntryPage {
   @Builder
   Content() {
     if (this.currentIndex === 0) {
+      FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
+    } else if (this.currentIndex === 1) {
+      FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
+    } else if (this.currentIndex === 2) {
       Column() {
         Button('打开FlutterEntry')
           .onClick(() => {
@@ -157,10 +161,6 @@ struct EntryPage {
             FlutterBoost.getInstance().open('transparentWidget', {}, this.isOpaque)
           })
       }
-    } else if (this.currentIndex === 1) {
-      FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
-    } else if (this.currentIndex === 2) {
-      FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
     } else {
       Text("内容" + this.currentIndex)
         .fontSize("20fp")
