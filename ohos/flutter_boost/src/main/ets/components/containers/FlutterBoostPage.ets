@@ -23,6 +23,7 @@
 */
 
 import { FlutterPage, FlutterManager, FlutterView } from '@ohos/flutter_ohos';
+import Log from '../util/Log';
 
 const TAG = "FlutterBoostPage";
 
@@ -35,13 +36,16 @@ export struct FlutterBoostPage {
 
   aboutToAppear() {
     let list: Map<String, FlutterView> = FlutterManager.getInstance().getFlutterViewList();
-    const values = Array.from(list.values());
-    for (let i = 0; i < values.length; i++) {
-      const flutterView: FlutterView = values[i];
-      // if (flutterView.) {
-
-      // }
-
+    const keys = Array.from(list.keys());
+    for (let i = 0; i < keys.length; i++) {
+      const viewId = keys[i];
+      if (viewId !== this.viewId) {
+        const flutterView: FlutterView = list.get(viewId) as FlutterView;
+        if (flutterView.isAttachedToFlutterEngine()) {
+          Log.e(TAG, 'flutterView  ' + viewId + 'detachFromFlutterEngine');
+          flutterView.detachFromFlutterEngine();
+        }
+      }
     }
   }
 
