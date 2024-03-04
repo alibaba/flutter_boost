@@ -25,7 +25,7 @@ import router from '@ohos.router';
 import { FlutterPage } from '@ohos/flutter_ohos';
 import bottomTabItems from '../viewmodel/BottomTabItems';
 import { TabItem } from '../viewmodel/TabItem';
-import { FlutterBoost, FlutterBoostEntry } from '@ohos/flutter_boost';
+import { FlutterBoost, FlutterBoostEntry, FlutterBoostPage } from '@ohos/flutter_boost';
 
 const TAG = "EntryPage";
 
@@ -53,24 +53,21 @@ struct EntryPage {
 
         TabContent() {
           Column() {
-            FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
+            FlutterBoostPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
           }
         }.tabBar(this.CardTab(bottomTabItems.getTabItems()[0]))
 
-
         TabContent() {
           Column() {
-            FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
+            FlutterBoostPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
           }
         }.tabBar(this.CardTab(bottomTabItems.getTabItems()[1]))
 
-
         TabContent() {
           Column() {
-            FlutterPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
+            FlutterBoostPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
           }
         }.tabBar(this.CardTab(bottomTabItems.getTabItems()[2]))
-
 
         TabContent() {
           Column() {
@@ -196,11 +193,11 @@ struct EntryPage {
   @Builder
   Content() {
     if (this.currentIndex === 0) {
-      FlutterPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
+      FlutterBoostPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
     } else if (this.currentIndex === 1) {
-      FlutterPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
+      FlutterBoostPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
     } else if (this.currentIndex === 2) {
-      FlutterPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
+      FlutterBoostPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
     } else {
       Column() {
         Button('打开FlutterEntry')
