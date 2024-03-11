@@ -18,7 +18,7 @@
 flutter_boost:
   git:
     url: 'https://github.com/alibaba/flutter_boost.git'
-    ref: '4.4.2'
+    ref: '4.5.0'
 ```
 
 之后在flutter工程下运行`flutter pub get` dart端就集成完毕了，然后可以在dart端放上一些代码,以下代码基于example3.0
@@ -320,7 +320,7 @@ class BoostDelegate: NSObject,FlutterBoostDelegate {
 //创建代理，做初始化操作
 let delegate = BoostDelegate()
 FlutterBoost.instance().setup(application, delegate: delegate) { engine in
-    
+
 }
 ```
 
@@ -342,7 +342,7 @@ async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
 onDestroy(): void {
   FlutterManager.getInstance().popUIAbility(this);
 }
-        
+
 onWindowStageCreate(windowStage: window.WindowStage): void {
   FlutterManager.getInstance().pushWindowStage(this, windowStage)
 }
@@ -378,7 +378,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     })
   }
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    
+
     // 初始化启动参数（建议带上GeneratedPluginRegistrant.getPlugins()）
     const optionsBuilder: FlutterBoostSetupOptionsBuilder = new FlutterBoostSetupOptionsBuilder()
       .setPlugins(GeneratedPluginRegistrant.getPlugins());
