@@ -49,6 +49,8 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     private LifecycleStage stage;
     private boolean isAttached = false;
 
+    PlatformChannel.SystemChromeStyle restoreTheme = null;
+
     private boolean isDebugLoggingEnabled() {
         return FlutterBoostUtils.isDebugLoggingEnabled();
     }
@@ -58,13 +60,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onCreate: " + this);
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         FlutterViewContainer top = containerManager.getTopContainer();
-        if (top != null && top != this) {
-            if (top instanceof FlutterBoostActivity) {
-                PlatformChannel.SystemChromeStyle preContainerTheme = FlutterBoostUtils.getCurrentSystemUiOverlayTheme(((FlutterBoostActivity) top).platformPlugin);
-                if (preContainerTheme != null) {
-                    FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(this, preContainerTheme);
-                }
-            }
+        if (top != this && top instanceof FlutterBoostActivity) {
+            // find the theme of the previous container
+            restoreTheme = ContainerThemeMgr.findTheme((FlutterBoostActivity) top);
+        } else if (top == null) {
+            // this is the first active container, try to get the theme of the last-destroyed container
+            restoreTheme = ContainerThemeMgr.getFinalStyle();
         }
         super.onCreate(savedInstanceState);
         stage = LifecycleStage.ON_CREATE;
@@ -167,6 +168,9 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected void onPause() {
         super.onPause();
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
+        // update the restoreTheme of this container
+        ContainerThemeMgr.onActivityPause(this, restoreTheme);
+        restoreTheme = ContainerThemeMgr.findTheme(this);
         FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             if (top != null && top != this && !top.isOpaque() && top.isPausing()) {
@@ -198,6 +202,10 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
 
         if (platformPlugin == null) {
             platformPlugin = new PlatformPlugin(getActivity(), getFlutterEngine().getPlatformChannel(), this);
+            // Set the restoreTheme to current container
+            if (restoreTheme != null) {
+                FlutterBoostUtils.setSystemChromeSystemUIOverlayStyle(platformPlugin, restoreTheme);
+            }
         }
 
         // Attach rendering pipeline.
@@ -259,6 +267,7 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onDestroy() {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onDestroy: " + this);
+        ContainerThemeMgr.onActivityDestroy(this);
         stage = LifecycleStage.ON_DESTROY;
         detachFromEngineIfNeeded();
         textureHooker.onFlutterTextureViewRelease();

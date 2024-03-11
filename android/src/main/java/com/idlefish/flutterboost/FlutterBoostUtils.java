@@ -13,6 +13,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -53,7 +55,7 @@ public class FlutterBoostUtils {
                         (Class<? extends FlutterPlugin>) Class.forName("com.idlefish.flutterboost.FlutterBoostPlugin");
                 return (FlutterBoostPlugin) engine.getPlugins().get(pluginClass);
             } catch (Throwable t) {
-              t.printStackTrace();
+                t.printStackTrace();
             }
         }
         return null;
@@ -61,15 +63,15 @@ public class FlutterBoostUtils {
 
     public static Map<String, Object> bundleToMap(Bundle bundle) {
         Map<String, Object> map = new HashMap<>();
-        if(bundle == null || bundle.keySet().isEmpty()) {
+        if (bundle == null || bundle.keySet().isEmpty()) {
             return map;
         }
         Set<String> keys = bundle.keySet();
         for (String key : keys) {
             Object value = bundle.get(key);
-            if(value instanceof Bundle) {
+            if (value instanceof Bundle) {
                 map.put(key, bundleToMap(bundle.getBundle(key)));
-            } else if (value != null){
+            } else if (value != null) {
                 map.put(key, value);
             }
         }
@@ -94,12 +96,18 @@ public class FlutterBoostUtils {
     }
 
     @Nullable
-    public static PlatformChannel.SystemChromeStyle getCurrentSystemUiOverlayTheme(PlatformPlugin platformPlugin) {
+    public static PlatformChannel.SystemChromeStyle getCurrentSystemUiOverlayTheme(PlatformPlugin platformPlugin, boolean copy) {
         if (platformPlugin != null) {
             try {
                 Field field = platformPlugin.getClass().getDeclaredField("currentTheme");
                 field.setAccessible(true);
-                return (PlatformChannel.SystemChromeStyle) field.get(platformPlugin);
+                PlatformChannel.SystemChromeStyle style =
+                        (PlatformChannel.SystemChromeStyle) field.get(platformPlugin);
+                if (!copy || style == null) {
+                    return style;
+                } else {
+                    return copySystemChromeStyle(style);
+                }
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {
@@ -109,62 +117,52 @@ public class FlutterBoostUtils {
         return null;
     }
 
-    public static void setSystemChromeSystemUIOverlayStyle(@NonNull Activity activity,
-                                                           PlatformChannel.SystemChromeStyle systemChromeStyle) {
-        Window window = activity.getWindow();
-        View view = window.getDecorView();
-        WindowInsetsControllerCompat windowInsetsControllerCompat =
-                new WindowInsetsControllerCompat(window, view);
+    public static PlatformChannel.SystemChromeStyle copySystemChromeStyle(PlatformChannel.SystemChromeStyle style) {
+        if (style == null) {
+            return null;
+        }
+        return new PlatformChannel.SystemChromeStyle(
+                style.statusBarColor,
+                style.statusBarIconBrightness,
+                style.systemStatusBarContrastEnforced,
+                style.systemNavigationBarColor,
+                style.systemNavigationBarIconBrightness,
+                style.systemNavigationBarDividerColor,
+                style.systemNavigationBarContrastEnforced
+        );
+    }
 
-        if (Build.VERSION.SDK_INT < 30) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                            | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    public static PlatformChannel.SystemChromeStyle mergeSystemChromeStyle(PlatformChannel.SystemChromeStyle old, PlatformChannel.SystemChromeStyle ne_w) {
+        if (ne_w == null) {
+            return copySystemChromeStyle(old);
         }
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (systemChromeStyle.statusBarIconBrightness != null) {
-                switch (systemChromeStyle.statusBarIconBrightness) {
-                    case DARK:
-                        windowInsetsControllerCompat.setAppearanceLightStatusBars(true);
-                        break;
-                    case LIGHT:
-                        windowInsetsControllerCompat.setAppearanceLightStatusBars(false);
-                        break;
-                }
-            }
+        if (old == null) {
+            return copySystemChromeStyle(ne_w);
+        }
+        return new PlatformChannel.SystemChromeStyle(
+                ne_w.statusBarColor != null ? ne_w.statusBarColor : old.statusBarColor,
+                ne_w.statusBarIconBrightness != null ? ne_w.statusBarIconBrightness : old.statusBarIconBrightness,
+                ne_w.systemStatusBarContrastEnforced != null ? ne_w.systemStatusBarContrastEnforced : old.systemStatusBarContrastEnforced,
+                ne_w.systemNavigationBarColor != null ? ne_w.systemNavigationBarColor : old.systemNavigationBarColor,
+                ne_w.systemNavigationBarIconBrightness != null ? ne_w.systemNavigationBarIconBrightness : old.systemNavigationBarIconBrightness,
+                ne_w.systemNavigationBarDividerColor != null ? ne_w.systemNavigationBarDividerColor : old.systemNavigationBarDividerColor,
+                ne_w.systemNavigationBarContrastEnforced != null ? ne_w.systemNavigationBarContrastEnforced : old.systemNavigationBarContrastEnforced
+        );
+    }
 
-            if (systemChromeStyle.statusBarColor != null) {
-                window.setStatusBarColor(systemChromeStyle.statusBarColor);
-            }
-        }
-        if (systemChromeStyle.systemStatusBarContrastEnforced != null && Build.VERSION.SDK_INT >= 29) {
-            window.setStatusBarContrastEnforced(systemChromeStyle.systemStatusBarContrastEnforced);
-        }
-
-        if (Build.VERSION.SDK_INT >= 26) {
-            if (systemChromeStyle.systemNavigationBarIconBrightness != null) {
-                switch (systemChromeStyle.systemNavigationBarIconBrightness) {
-                    case DARK:
-                        windowInsetsControllerCompat.setAppearanceLightNavigationBars(true);
-                        break;
-                    case LIGHT:
-                        windowInsetsControllerCompat.setAppearanceLightNavigationBars(false);
-                        break;
-                }
-            }
-
-            if (systemChromeStyle.systemNavigationBarColor != null) {
-                window.setNavigationBarColor(systemChromeStyle.systemNavigationBarColor);
-            }
-        }
-        if (systemChromeStyle.systemNavigationBarDividerColor != null && Build.VERSION.SDK_INT >= 28) {
-            window.setNavigationBarDividerColor(systemChromeStyle.systemNavigationBarDividerColor);
-        }
-        if (systemChromeStyle.systemNavigationBarContrastEnforced != null
-                && Build.VERSION.SDK_INT >= 29) {
-            window.setNavigationBarContrastEnforced(
-                    systemChromeStyle.systemNavigationBarContrastEnforced);
+    public static void setSystemChromeSystemUIOverlayStyle(@NonNull PlatformPlugin platformPlugin,
+                                                           @NonNull PlatformChannel.SystemChromeStyle systemChromeStyle) {
+        try {
+            Method mth = platformPlugin.getClass().getDeclaredMethod(
+                    "setSystemChromeSystemUIOverlayStyle", PlatformChannel.SystemChromeStyle.class);
+            mth.setAccessible(true);
+            mth.invoke(platformPlugin, systemChromeStyle);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 }

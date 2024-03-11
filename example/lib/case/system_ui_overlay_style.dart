@@ -30,7 +30,7 @@ class _SystemUiOverlayStyleDemoState extends State<SystemUiOverlayStyleDemo> {
   @override
   void initState() {
     super.initState();
-    _currentStyle = (widget.isDark ?? false)
+    _currentStyle = (widget.isDark ?? true)
         ? SystemUiOverlayStyle.dark
         : SystemUiOverlayStyle.light;
     withContainer = true;
