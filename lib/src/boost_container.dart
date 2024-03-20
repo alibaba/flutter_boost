@@ -125,7 +125,7 @@ class BoostContainerState extends State<BoostContainerWidget> {
 
   void _updatePagesList(BoostPage page, dynamic result) {
     assert(container.topPage == page);
-    container.removePageInternal(page, result: result);
+    container.removePage(page, result: result);
   }
 
   @override

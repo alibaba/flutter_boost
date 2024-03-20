@@ -389,6 +389,17 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                   onTap: () => BoostNavigator.instance
                       .push("returnData", withContainer: withContainer)),
               InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'pushReplacement Demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.instance
+                      .push("pushReplacement", arguments: {'index': 1}, withContainer: withContainer)),
+              InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
