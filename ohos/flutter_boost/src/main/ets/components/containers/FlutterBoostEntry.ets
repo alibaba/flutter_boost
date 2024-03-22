@@ -40,6 +40,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private stage?: LifecycleStage;
   private thisContext: Context;
   private thisParams: ESObject;
+  private isFirstAttached: boolean = true;
 
   constructor(context: Context, params: ESObject = {}) {
     super(context, params);
@@ -50,6 +51,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     const uniqueId = util.generateRandomUUID(false);
     this.uniqueId = uniqueId;
     this.isAttached = false;
+    this.isFirstAttached = true;
 
     this.stage = LifecycleStage.ON_CREATE;
     this.onContainerCreated();
@@ -120,15 +122,21 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // override FlutterViewContainer interface ====== end
 
 
+  // Avoid failure when attaching to engine in tab scenario
+  // See https://github.com/flutter/engine/pull/43595 for more details
+  EnsureEngineDetachedForTheFirstTime(): void {
+    if (this.isFirstAttached) {
+      this.getFlutterView()?.detachFromFlutterEngine();
+      this.isFirstAttached = false;
+    }
+  }
 
   /**
    * 当容器创建完成时
    */
   private onContainerCreated() {
-    this.getFlutterView()?.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
     FlutterBoost.getInstance().getPlugin()?.onContainerCreated(this);
-
-    Log.d(TAG, "#onContainerCreated: " + this);
+    Log.d(TAG, "#onContainerCreated: " + this.getUrl());
   }
 
   /**
@@ -140,13 +148,14 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     if (top && top != this) top.detachFromEngineIfNeeded()
 
     // perform attach
+    this.EnsureEngineDetachedForTheFirstTime();
     this.performAttach()
     FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this)
 
     this.getFlutterEngine()?.getLifecycleChannel()?.appIsResumed()
     this.platformPlugin?.updateSystemUiOverlays()
     //
-    Log.d(TAG, "#onContainerAppeared: " + this);
+    Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
   }
 
   /**
@@ -154,7 +163,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    */
   private onContainerDisappeared() {
     FlutterBoost.getInstance().getPlugin()?.onContainerDisappeared(this);
-    Log.d(TAG, "#onContainerDisappeared: " + this);
+    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
   }
 
   /**
@@ -169,7 +178,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
       Log.e(TAG, "#onContainerDisappeared: engine can not null!");
     }
     FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this);
-    Log.d(TAG, "#onContainerDisappeared: " + this);
+    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
   }
 
   // super method override ===> start
@@ -219,7 +228,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
         this.platformPlugin = new PlatformPlugin(this.getFlutterEngine()!.getPlatformChannel()!, this.thisContext);
       }
 
-      Log.d(TAG, "#performAttach: " + this);
+      Log.d(TAG, "#performAttach: " + this.getUrl());
       this.isAttached = true
     }
   }
@@ -239,7 +248,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
       this.getFlutterView()?.detachFromFlutterEngine();
 
       this.isAttached = false
-      Log.d(TAG, "#performDetach: " + this);
+      Log.d(TAG, "#performDetach: " + this.getUrl());
     }
   }
 
