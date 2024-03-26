@@ -147,14 +147,15 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded()
 
-    // perform attach
     this.EnsureEngineDetachedForTheFirstTime();
-    this.performAttach()
-    FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this)
+    // switch dart router
+    FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this, () => {
+      // attach XComponent
+      this.performAttach()
+    });
 
     this.getFlutterEngine()?.getLifecycleChannel()?.appIsResumed()
     this.platformPlugin?.updateSystemUiOverlays()
-    //
     Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
   }
 
