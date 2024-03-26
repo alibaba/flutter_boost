@@ -188,13 +188,14 @@ export default class FlutterBoostAbility extends FlutterAbility implements Flutt
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded()
 
-    // perform attach
-    this.performAttach()
-    FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this)
+    // Switch dart router
+    FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this, () => {
+      // Attach XComponent
+      this.performAttach()
+    })
 
     this.getFlutterEngine()?.getLifecycleChannel()?.appIsResumed()
     this.platformPlugin?.updateSystemUiOverlays()
-    //
     Log.d(TAG, "#onContainerAppeared: " + this);
   }
 

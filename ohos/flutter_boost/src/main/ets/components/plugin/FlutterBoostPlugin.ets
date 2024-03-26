@@ -242,6 +242,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error('pushRoute fail.this.channel is null')
     }
+    Log.i(TAG, "#pushRoute: " + uniqueId + ", " + pageName);
   }
 
   /*
@@ -260,6 +261,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
     }
+    Log.i(TAG, "#popRoute: " + uniqueId);
   }
 
   // public method
@@ -273,12 +275,14 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   // 展示 [2/4]
-  public onContainerAppeared(container: FlutterViewContainer) {
+  public onContainerAppeared(container: FlutterViewContainer, callback: () => void) {
     let uniqueId = container.getUniqueId()
     FlutterContainerManager.getInstance().activateContainer(uniqueId, container)
     // 这里和android对齐。将pushRoute+onContainerShow合并到一起
     this.pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), () => {
-      //do nothing
+      if (callback) {
+        callback();
+      }
     })
     this._sendContainerShow(uniqueId);
   }
