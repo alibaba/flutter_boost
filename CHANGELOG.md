@@ -1,4 +1,6 @@
 ## NEXT
+1. Minor refactoring
+
 ## 4.5.2
 1. [ohos]解决页面切换闪烁问题
 
