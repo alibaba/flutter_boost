@@ -1,5 +1,6 @@
 ## NEXT
 1. [ohos]移除不必要的生命周期通知
+2. [ohos]修复getStackFromHost/saveStackToHost相关的message channel代码错误
 
 ## 4.5.2
 1. [ohos]解决页面切换闪烁问题
