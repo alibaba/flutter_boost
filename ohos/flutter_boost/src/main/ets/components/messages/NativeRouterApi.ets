@@ -152,15 +152,14 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
               const input: CommonParams = CommonParams.fromObject(message[0]);
               api.onPopRoute(input, () => {
                 wrapped["result"] = {} as Record<string, Object>;
-                reply.reply(wrapped);
               });
             } else {
               wrapped["error"] = wrapError(new Error("message is not array"));
             }
           } catch (exception) {
             wrapped["error"] = wrapError(exception);
-            reply.reply(wrapped);
           }
+          reply.reply(wrapped);
         }
       })
     } else {
@@ -184,8 +183,8 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
             wrapped["result"] = output.toRecord()
           } catch (exception) {
             wrapped["error"] = wrapError(exception);
-            reply.reply(wrapped);
           }
+          reply.reply(wrapped);
         }
       })
     } else {
@@ -214,8 +213,8 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
             }
           } catch (exception) {
             wrapped["error"] = wrapError(exception);
-            reply.reply(wrapped);
           }
+          reply.reply(wrapped);
         }
       })
     } else {
@@ -242,7 +241,6 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
             } else {
               wrapped["error"] = wrapError(new Error("message is not array"));
             }
-
           } catch (exception) {
             wrapped["error"] = wrapError(exception);
           }
