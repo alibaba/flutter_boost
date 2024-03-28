@@ -27,14 +27,15 @@ const EVENT_BACK_PRESS = 'EVENT_BACK_PRESS'
 @Entry
 @Component
 struct NativePage {
-  @State currentIndex: number = 0;
   build() {
-    Column() {
-      Text("原生artui界面")
-        .fontSize("20fp")
-        .fontColor(Color.Black)
-        .fontWeight(500)
+    Row() {
+      Column() {
+        Text("ArkUI")
+          .fontSize(50)
+          .fontWeight(FontWeight.Bold)
+      }
+      .width('100%')
     }
-    .backgroundColor("#F1F3F5")
+    .height('100%')
   }
 }

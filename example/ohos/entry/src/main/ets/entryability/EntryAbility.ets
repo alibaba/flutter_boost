@@ -42,7 +42,7 @@ import router from '@ohos.router';
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
   // 打开原生
   pushNativeRoute(options: FlutterBoostRouteOptions) {
-
+    router.pushUrl({ url: 'pages/NativePage' })
   }
 
   // 打开flutter
