@@ -50,6 +50,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
     const uniqueId = util.generateRandomUUID(false);
     this.uniqueId = uniqueId;
+    if(params.uniqueId !=null && params.uniqueId !=''){
+      this.uniqueId = params.uniqueId;
+    }
     this.isAttached = false;
     this.isFirstAttached = true;
 
