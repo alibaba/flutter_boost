@@ -21,41 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import router from '@ohos.router'
-import FlutterContainer from './FlutterContainer';
+import FlutterPage from './FlutterPage'
 
-/**
- * Dart路由栈信息
- * Containers Stack Information
- */
-export default class StackInfo {
-  public ids: string[]
-  public containers: Map<string, FlutterContainer>
-
+export default class FlutterContainer {
+  public pages: Array<FlutterPage>
   constructor() {
-    this.ids = []
-    this.containers = new Map<string, FlutterContainer>()
+    this.pages = new Array<FlutterPage>();
   }
 
   public toMap(): Map<string, Object> {
     let toMapResult: Map<string, Object> = new Map();
-    toMapResult.set('ids', this.ids);
-    toMapResult.set('containers', this.containers);
+    toMapResult.set('pages', this.pages);
     return toMapResult;
   }
 
-  static fromMap(map: Map<string, Object>): StackInfo {
-    let fromRecordResult: StackInfo = new StackInfo();
-
-    let ids = map.get('ids');
-    if (ids) {
-      fromRecordResult.ids = ids as string[]
-    }
-    let containers = map.get("containers");
-    if (containers) {
-      fromRecordResult.containers = containers as Map<string, FlutterContainer>;
-    }
-
-    return fromRecordResult;
+  static fromMap(map: Map<String, Object>): FlutterContainer {
+    let fromMapResult: FlutterContainer = new FlutterContainer()
+    fromMapResult.pages = map.get("pages") as Array<FlutterPage>;
+    return fromMapResult;
   }
 }
