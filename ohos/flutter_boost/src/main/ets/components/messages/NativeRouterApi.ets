@@ -25,7 +25,7 @@ import CommonParams from './CommonParams';
 import StackInfo from './StackInfo';
 import { BinaryMessenger, BasicMessageChannel } from '@ohos/flutter_ohos';
 import { Reply } from '@ohos/flutter_ohos/src/main/ets/plugin/common/BasicMessageChannel';
-import FlutterRouterApiCodec from './FlutterRouterApiCodec';
+import NativeRouterApiCodec from './NativeRouterApiCodec';
 
 /**
  * 来自 Flutter 的消息处理器
@@ -78,7 +78,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.pushNativeRoute",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
 
     if (api) {
@@ -109,7 +109,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.pushFlutterRoute",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
 
     if (api) {
@@ -140,7 +140,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.popRoute",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
 
     if (api) {
@@ -172,7 +172,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.getStackFromHost",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
     if (api) {
       channel.setMessageHandler({
@@ -180,7 +180,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
           const wrapped: Record<string, Object> = {}
           try {
             const output: StackInfo = api.onGetStackFromHost()
-            wrapped["result"] = output.toRecord()
+            wrapped["result"] = output
           } catch (exception) {
             wrapped["error"] = wrapError(exception);
           }
@@ -197,7 +197,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.saveStackToHost",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
     if (api) {
       channel.setMessageHandler({
@@ -205,8 +205,8 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
           const wrapped: Record<string, Object> = {}
           try {
             if (Array.isArray(message)) {
-              const stack: StackInfo = StackInfo.fromObject(message[0]);
-              api.onSaveStackToHost(stack)
+              const stack: StackInfo = message[0] as StackInfo;
+              api.onSaveStackToHost(stack);
               wrapped["result"] = {} as Record<string, Object>;
             } else {
               wrapped["error"] = wrapError(new Error("message is not array"));
@@ -227,7 +227,7 @@ export function NativeRouterApiSetup(binaryMessenger: BinaryMessenger, api: Nati
     const channel = new BasicMessageChannel<Object>(
       binaryMessenger,
       "dev.flutter.pigeon.NativeRouterApi.sendEventToNative",
-      FlutterRouterApiCodec.INSTANCE
+      NativeRouterApiCodec.INSTANCE
     );
     if (api) {
       channel.setMessageHandler({

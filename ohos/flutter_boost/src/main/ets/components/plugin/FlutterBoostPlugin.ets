@@ -54,7 +54,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   private delegate: FlutterBoostDelegate | null
   private requestCode: number = 1000;
   private pageNames: Map<number, string>
-  private dartStack?: StackInfo
+  private dartStack: StackInfo
   private listenersTable: Record<string, EventListener[]> = {};
 
   constructor() {
@@ -62,6 +62,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     this.delegate = null
     this.channel = null
     this.pageNames = new Map<number, string>()
+    this.dartStack = new StackInfo()
   }
 
   onMethodCall(call: MethodCall, result: MethodResult) {
@@ -142,15 +143,12 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onGetStackFromHost(): StackInfo {
-    if (!this.dartStack) {
-      return StackInfo.fromObject(new Object());
-    }
     Log.i(TAG, "#getStackFromHost: " + this.dartStack)
     return this.dartStack
   }
 
-  onSaveStackToHost(arg: StackInfo) {
-    this.dartStack = arg;
+  onSaveStackToHost(args: StackInfo) {
+    this.dartStack = args;
     Log.i(TAG, "#saveStackToHost: " + this.dartStack);
   }
 
