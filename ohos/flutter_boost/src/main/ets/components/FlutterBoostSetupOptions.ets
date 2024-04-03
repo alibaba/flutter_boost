@@ -27,6 +27,7 @@ import List from '@ohos.util.List';
 export class FlutterBoostSetupOptionsBuilder {
   public initialRoute: string = "/";
   public dartEntrypoint: string = "main";
+  public dartEntrypointArgs: string[];
   public shouldOverrideBackForegroundEvent: boolean = false;
   public shellArgs: string[];
   public flutterEngineProvider: FlutterEngineProvider | null
@@ -35,6 +36,7 @@ export class FlutterBoostSetupOptionsBuilder {
   constructor() {
     this.initialRoute = '/'
     this.dartEntrypoint = 'main'
+    this.dartEntrypointArgs = []
     this.shouldOverrideBackForegroundEvent = false
     this.shellArgs = []
     this.flutterEngineProvider = null
@@ -48,6 +50,11 @@ export class FlutterBoostSetupOptionsBuilder {
 
   public setDartEntrypoint(dartEntrypoint: string): FlutterBoostSetupOptionsBuilder {
     this.dartEntrypoint = dartEntrypoint;
+    return this;
+  }
+
+  public setDartEntrypointArgs(args: string[]): FlutterBoostSetupOptionsBuilder {
+    this.dartEntrypointArgs = args;
     return this;
   }
 
@@ -83,6 +90,7 @@ export class FlutterBoostSetupOptionsBuilder {
 export class FlutterBoostSetupOptions {
   private readonly initialRoute: string;
   private readonly dartEntrypoint: string;
+  private readonly dartEntrypointArgs: string[];
   private readonly shellArgs: string[];
   private readonly shouldOverrideBackForegroundEvent: boolean;
   private flutterEngineProvider: FlutterEngineProvider | null
@@ -91,6 +99,7 @@ export class FlutterBoostSetupOptions {
   public constructor(builder: FlutterBoostSetupOptionsBuilder) {
     this.initialRoute = builder.initialRoute;
     this.dartEntrypoint = builder.dartEntrypoint;
+    this.dartEntrypointArgs = builder.dartEntrypointArgs;
     this.shellArgs = builder.shellArgs;
     this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
     this.flutterEngineProvider = builder.flutterEngineProvider;
@@ -107,6 +116,10 @@ export class FlutterBoostSetupOptions {
 
   public getDartEntrypoint(): string {
     return this.dartEntrypoint;
+  }
+
+  public getDartEntrypointArgs(): string[] {
+    return this.dartEntrypointArgs;
   }
 
   public getShellArgs(): string[] {

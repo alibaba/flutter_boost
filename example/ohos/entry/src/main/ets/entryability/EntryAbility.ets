@@ -77,6 +77,8 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     FlutterManager.getInstance().pushWindowStage(this, windowStage)
 
     const optionsBuilder: FlutterBoostSetupOptionsBuilder = new FlutterBoostSetupOptionsBuilder()
+      .setShellArgs(['--trace-systrace', '--user-authorization-code=QZvoUptODA+KDgeFUluhheYns7X7CnDu9YRv8YmU0GXQcKLzs4C2WgjblrAIhtkqqGg=='])
+      .setDartEntrypointArgs(['I am from ohos!', '--for-test'])
       .setPlugins(GeneratedPluginRegistrant.getPlugins())
 
     FlutterBoost.getInstance().setup(this, this.context, () => {
