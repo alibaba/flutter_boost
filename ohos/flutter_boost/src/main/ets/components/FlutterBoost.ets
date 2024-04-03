@@ -85,7 +85,7 @@ export class FlutterBoost {
       }
       if (engine == null) {
         engine = new FlutterEngine(context, null, null, new PlatformViewsController())
-        await engine.init(context, null, true, true, null, options.getPlugins())
+        await engine.init(context, options.getShellArgs(), true, true, null, options.getPlugins())
       }
       FlutterEngineCache.getInstance().put(FlutterBoost.ENGINE_ID, engine);
     }
@@ -108,7 +108,7 @@ export class FlutterBoost {
         '',
         options.getDartEntrypoint()
       );
-      engine.getDartExecutor().executeDartEntrypoint(dartEntrypoint);
+      engine.getDartExecutor().executeDartEntrypoint(dartEntrypoint, options.getDartEntrypointArgs());
     }
 
     if (callback) {
