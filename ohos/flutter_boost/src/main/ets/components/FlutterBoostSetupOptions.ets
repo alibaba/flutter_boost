@@ -30,8 +30,7 @@ export class FlutterBoostSetupOptionsBuilder {
   public dartEntrypointArgs: string[];
   public shouldOverrideBackForegroundEvent: boolean = false;
   public shellArgs: string[];
-  public flutterEngineProvider: FlutterEngineProvider | null
-  public plugins: List<FlutterPlugin> | null = null;
+  public flutterEngineProvider: FlutterEngineProvider | null;
 
   constructor() {
     this.initialRoute = '/'
@@ -40,7 +39,6 @@ export class FlutterBoostSetupOptionsBuilder {
     this.shouldOverrideBackForegroundEvent = false
     this.shellArgs = []
     this.flutterEngineProvider = null
-    this.plugins = null
   }
 
   public setInitialRoute(initialRoute: string): FlutterBoostSetupOptionsBuilder {
@@ -74,11 +72,6 @@ export class FlutterBoostSetupOptionsBuilder {
     return this;
   }
 
-  public setPlugins(plugins: List<FlutterPlugin>): FlutterBoostSetupOptionsBuilder {
-    this.plugins = plugins;
-    return this;
-  }
-
   public build(): FlutterBoostSetupOptions {
     return new FlutterBoostSetupOptions(this);
   }
@@ -93,8 +86,7 @@ export class FlutterBoostSetupOptions {
   private readonly dartEntrypointArgs: string[];
   private readonly shellArgs: string[];
   private readonly shouldOverrideBackForegroundEvent: boolean;
-  private flutterEngineProvider: FlutterEngineProvider | null
-  private plugins: List<FlutterPlugin> | null = null;
+  private flutterEngineProvider: FlutterEngineProvider | null;
 
   public constructor(builder: FlutterBoostSetupOptionsBuilder) {
     this.initialRoute = builder.initialRoute;
@@ -103,7 +95,6 @@ export class FlutterBoostSetupOptions {
     this.shellArgs = builder.shellArgs;
     this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
     this.flutterEngineProvider = builder.flutterEngineProvider;
-    this.plugins = builder.plugins
   }
 
   public static createDefault(): FlutterBoostSetupOptions {
@@ -132,10 +123,6 @@ export class FlutterBoostSetupOptions {
 
   public getShouldOverrideBackForegroundEvent(): boolean {
     return this.shouldOverrideBackForegroundEvent;
-  }
-
-  public getPlugins(): List<FlutterPlugin> | null {
-    return this.plugins;
   }
 
   public toString(): string {

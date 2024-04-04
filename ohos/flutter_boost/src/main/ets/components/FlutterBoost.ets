@@ -61,42 +61,43 @@ export class FlutterBoost {
    * 设置FlutterBoost的配置信息
    * @param delegate FlutterBoost的委托对象
    * @param context 上下文对象
-   * @param callback 回调函数
+   * @param onEngineReady 回调函数
    * @param options FlutterBoost的配置选项
    */
   public async setup(delegate: FlutterBoostDelegate,
                      context: common.Context,
-                     callback: (engine: FlutterEngine) => void,
+                     onEngineReady: (engine: FlutterEngine) => void,
                      options: FlutterBoostSetupOptions | null) {
 
-    this.delegate = delegate
+    this.delegate = delegate;
 
-    // 0.如果为null，指定默认设置参数（初始路由为/,入口参数main）
     if (options == null) {
-      options = FlutterBoostSetupOptions.createDefault()
+      // 指定默认设置参数（初始路由为/,入口参数main）
+      options = FlutterBoostSetupOptions.createDefault();
     }
 
-    // 1.初始化engine
+    // 1. 初始化引擎
     let engine: FlutterEngine | null = this.getEngine()
     if (engine == null) {
-      const engineProvider = options.getFlutterEngineProvider()
+      const engineProvider = options.getFlutterEngineProvider();
       if (engineProvider) {
-        engine = engineProvider.provideFlutterEngine(context)
+        engine = engineProvider.provideFlutterEngine(context);
       }
       if (engine == null) {
-        engine = new FlutterEngine(context, null, null, new PlatformViewsController())
-        await engine.init(context, options.getShellArgs(), true, true, null, options.getPlugins())
+        engine = new FlutterEngine(context, null, null, new PlatformViewsController());
+        await engine.init(context, options.getShellArgs(), true);
       }
       FlutterEngineCache.getInstance().put(FlutterBoost.ENGINE_ID, engine);
     }
+    this.flutterEngine = engine;
 
-    this.flutterEngine = engine
-    //2. 设置代理
-    if (this.delegate) {
-      this.getPlugin()?.setDelegate(this.delegate)
-    }
+    // 2. 通知业务引擎就绪
+    onEngineReady(engine);
 
-    // 3.预热FlutterEngine
+    // 3. 设置message channel消息代理
+    this.getPlugin()!.setDelegate(this.delegate);
+
+    // 4. DartVM预热
     if (!engine.getDartExecutor().isExecutingDart()) {
       const navigationChannel = engine.getNavigationChannel()
       if (navigationChannel) {
@@ -110,13 +111,6 @@ export class FlutterBoost {
       );
       engine.getDartExecutor().executeDartEntrypoint(dartEntrypoint, options.getDartEntrypointArgs());
     }
-
-    if (callback) {
-      callback(engine)
-    }
-
-    // TODO:添加OHOS实现
-    // setupActivityLifecycleCallback(application, isBackForegroundEventOverridden);
   }
 
 
@@ -182,15 +176,13 @@ export class FlutterBoost {
       let engine = this.getEngine();
       if (engine) {
         const plugin: FlutterBoostPlugin | null = FlutterBoostUtils.getPlugin(engine);
-        if (plugin !== undefined) {
+        if (plugin != null) {
           this.plugin = plugin;
         } else {
           throw new Error('getPlugin fail. can not get the FlutterBoostPlugin instance,')
-          return null
         }
       } else {
         throw new Error('getPlugin fail. can not get the engine instance,')
-        return null
       }
     }
     return this.plugin;
