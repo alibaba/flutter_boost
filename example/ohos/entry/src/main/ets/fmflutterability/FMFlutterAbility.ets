@@ -25,7 +25,6 @@ import AbilityConstant from '@ohos.app.ability.AbilityConstant';
 import hilog from '@ohos.hilog';
 import Want from '@ohos.app.ability.Want';
 import List from '@ohos.util.List';
-import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { FlutterPlugin } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/plugins/FlutterPlugin';
 import { FlutterBoost, FlutterBoostDelegate, FlutterBoostRouteOptions, FlutterBoostAbility } from '@ohos/flutter_boost'
 
@@ -33,9 +32,5 @@ export default class FMFlutterAbility extends FlutterBoostAbility {
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
     await super.onCreate(want, launchParam)
-  }
-
-  getPlugins():List<FlutterPlugin>{
-    return GeneratedPluginRegistrant.getPlugins()
   }
 }
