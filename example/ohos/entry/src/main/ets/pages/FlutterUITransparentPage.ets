@@ -22,43 +22,62 @@
  * THE SOFTWARE.
  */
 
+import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
-import { FlutterEntry, FlutterView, FlutterPage } from '@ohos/flutter_ohos';
-import { FlutterBoostEntry } from '@ohos/flutter_boost';
-
 import router from '@ohos.router';
+import { FlutterBoost, FlutterBoostEntry } from '@ohos/flutter_boost';
+import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
+
+const TAG: string = "xlog-FlutterUITransparentPage";
 
 @Entry
 @Component
-struct MyFlutterPage {
+struct FlutterUITransparentPage {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView?: FlutterView
+  private opaque: boolean = true;
 
   aboutToAppear() {
     this.flutterEntry = new FlutterBoostEntry(getContext(this), router.getParams());
     this.flutterEntry.aboutToAppear();
     this.flutterView = this.flutterEntry.getFlutterView();
-    hilog.info(0x0000, "Flutter", "Index aboutToAppear===");
+    hilog.info(0x0000, TAG, "Page aboutToAppear===");
   }
 
   aboutToDisappear() {
-    hilog.info(0x0000, "Flutter", "Index aboutToDisappear===");
+    hilog.info(0x0000, TAG, "Page aboutToDisappear===");
     this.flutterEntry?.aboutToDisappear()
   }
 
   onPageShow() {
-    hilog.info(0x0000, "Flutter", "Index onPageShow===");
+    hilog.info(0x0000, TAG, "Page onPageShow===");
     this.flutterEntry?.onPageShow()
   }
-  // 1
+
   onPageHide() {
-    hilog.info(0x0000, "Flutter", "Index onPageHide===");
+    hilog.info(0x0000, TAG, "Page onPageHide===");
     this.flutterEntry?.onPageHide()
+  }
+
+  onBackPress(): boolean | void {
+    hilog.info(0x0000, TAG, "Page onBackPress===");
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    return true;
   }
 
   build() {
     Stack() {
       FlutterPage({ viewId: this.flutterView?.getId() })
     }
+    .backgroundColor(Color.Transparent)
+  }
+
+  pageTransition() {
+    PageTransitionEnter({ duration: 300 })
+      .slide(SlideEffect.Bottom)
+
+    PageTransitionExit({ duration: 200 })
+      .translate({ x: 0, y: 0 })
+      .opacity(0)
   }
 }

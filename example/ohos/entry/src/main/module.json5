@@ -31,25 +31,6 @@
           }
         ]
       },
-      {
-        "name": "FMFlutterAbility",
-        "srcEntry": "./ets/fmflutterability/FMFlutterAbility.ets",
-        "description": "$string:FMFlutterAbility_desc",
-        "icon": "$media:icon",
-        "label": "$string:FMFlutterAbility_label",
-        "startWindowIcon": "$media:startIcon",
-        "launchType": "multiton",
-        "startWindowBackground": "$color:start_window_background"
-      },
-      {
-        "name": "PureFlutterAbility",
-        "srcEntry": "./ets/pureflutterability/PureFlutterAbility.ets",
-        "description": "$string:PureFlutterAbility_desc",
-        "icon": "$media:icon",
-        "label": "$string:PureFlutterAbility_label",
-        "startWindowIcon": "$media:startIcon",
-        "startWindowBackground": "$color:start_window_background"
-      }
     ],
     "requestPermissions": [
       {

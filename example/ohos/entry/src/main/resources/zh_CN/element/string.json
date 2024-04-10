@@ -6,35 +6,11 @@
     },
     {
       "name": "EntryAbility_desc",
-      "value": "description"
+      "value": "This is a EntryAbility."
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
-    },
-    {
-      "name": "FMFlutterAbility_desc",
-      "value": "FMFlutterAbility_desc"
-    },
-    {
-      "name": "FMFlutterAbility_label",
-      "value": "FMFlutterAbility"
-    },
-    {
-      "name": "PureFlutterAbility_desc",
-      "value": "description"
-    },
-    {
-      "name": "PureFlutterAbility_label",
-      "value": "PureFlutterAbility"
-    },
-    {
-      "name": "FishAbility_desc",
-      "value": "description"
-    },
-    {
-      "name": "FishAbility_label",
-      "value": "label"
+      "value": "FlutterBoost示例"
     },
     {
       "name": "tab_title",

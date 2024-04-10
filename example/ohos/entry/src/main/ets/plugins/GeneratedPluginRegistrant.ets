@@ -1,6 +1,8 @@
 import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
 import Log from '@ohos/flutter_ohos/src/main/ets/util/Log';
 import FlutterBoostPlugin from '@ohos/flutter_boost'
+import ImagePickerPlugin from '@ohos/image_picker_ohos'
+import VideoPlayerPlugin from '@ohos/video_player_ohos'
 
 /**
  * Generated file. Do not edit.
@@ -15,6 +17,8 @@ export class GeneratedPluginRegistrant {
   static registerWith(flutterEngine: FlutterEngine) {
     try {
       flutterEngine.getPlugins()?.add(new FlutterBoostPlugin());
+      flutterEngine.getPlugins()?.add(new ImagePickerPlugin());
+      flutterEngine.getPlugins()?.add(new VideoPlayerPlugin());
     } catch (e) {
       Log.e(
         TAG,

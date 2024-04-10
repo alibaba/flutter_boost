@@ -22,8 +22,6 @@
  * THE SOFTWARE.
  */
 
-const EVENT_BACK_PRESS = 'EVENT_BACK_PRESS'
-
 @Entry
 @Component
 struct NativePage {

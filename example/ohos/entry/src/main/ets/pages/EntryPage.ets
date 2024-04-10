@@ -21,205 +21,114 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+
+import hilog from '@ohos.hilog';
 import router from '@ohos.router';
-import { FlutterPage } from '@ohos/flutter_ohos';
-import bottomTabItems from '../viewmodel/BottomTabItems';
-import { TabItem } from '../viewmodel/TabItem';
-import { FlutterBoost, FlutterBoostEntry, FlutterBoostPage } from '@ohos/flutter_boost';
+import { FlutterBoost } from '@ohos/flutter_boost';
+import { FlutterUIComponent } from './FlutterUIPage';
 
-const TAG = "EntryPage";
-
+const TAG: string = "xlog-EntryPage";
 @Entry
 @Component
 struct EntryPage {
-  @State currentIndex: number = 0;
-  private flutterEntries: Array<FlutterBoostEntry> = [];
-  private isOpaque: boolean = true;
+  @State message: string = 'FlutterBoost Example';
+  @State fontColor: string = '#182431'
+  @State selectedFontColor: string = '#007DFF'
+  @State currentIndex: number = 0
+  private controller: TabsController = new TabsController()
+
+  @Builder tabBuilder(index: number, name: string) {
+    Column() {
+      Text(name)
+        .fontColor(this.currentIndex === index ? this.selectedFontColor : this.fontColor)
+        .fontSize(16)
+        .fontWeight(this.currentIndex === index ? 500 : 400)
+        .lineHeight(22)
+        .margin({ top: 17, bottom: 7 })
+      Divider()
+        .strokeWidth(2)
+        .color('#007DFF')
+        .opacity(this.currentIndex === index ? 1 : 0)
+    }.width('100%')
+  }
 
   build() {
     Column() {
-      Tabs({
-        index: this.currentIndex,
-        barPosition: BarPosition.End
-      }) {
-        // ForEach(bottomTabItems.getTabItems(), (item: TabItem) => {
-        //   TabContent() {
-        //     Column() {
-        //       this.Content()
-        //     }
-        //   }
-        //   .tabBar(this.CardTab(item))
-        // }, (item: TabItem, index?: number) => index + JSON.stringify(item))
-
+      Tabs({ barPosition: BarPosition.Start, controller: this.controller }) {
+        // 1. Home
         TabContent() {
-          Column() {
-            FlutterBoostPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
+          Row() {
+            Column() {
+              Text(this.message)
+                .fontSize(28)
+                .fontColor(Color.Red)
+                .fontWeight(FontWeight.Bold)
+                .decoration({ type: TextDecorationType.Underline, color: Color.Yellow })
+                .margin({ bottom: 70 })
+              Button('打开Flutter页面')
+                .margin({ bottom: 20 })
+                .onClick(() => {
+                  try {
+                    FlutterBoost.getInstance().open('flutterPage', {})
+                  } catch (err) {
+                    hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
+                  }
+                })
+              Button('打开Native页面')
+                .margin({ bottom: 20 })
+                .onClick(() => {
+                  try {
+                    router.pushUrl({ url: 'pages/NativePage' })
+                  } catch (err) {
+                    hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Native页面');
+                  }
+                })
+              Button('打开Flutter半透明弹窗')
+                .margin({ bottom: 20 })
+                .onClick(() => {
+                  try {
+                    FlutterBoost.getInstance().open('transparentWidget', {})
+                  } catch (err) {
+                    hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
+                  }
+                })
+            }
+            .width('100%')
           }
-        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[0]))
-
+          .height('100%')
+        }.tabBar(this.tabBuilder(0, 'Home'))
+        // 2. Index
         TabContent() {
-          Column() {
-            FlutterBoostPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
-          }
-        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[1]))
-
+          FlutterUIComponent({ uri: 'flutterPage' })
+        }.tabBar(this.tabBuilder(1, 'Index'))
+        // 3. MediaQuery
         TabContent() {
-          Column() {
-            FlutterBoostPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
-          }
-        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[2]))
-
+          FlutterUIComponent({ uri: 'mediaquery' })
+        }.tabBar(this.tabBuilder(2, 'MediaQuery'))
+        // 4. ArkUI
         TabContent() {
-          Column() {
-            Button('打开FlutterEntry')
-              .onClick(() => {
-                this.isOpaque = true;
-                FlutterBoost.getInstance().open('flutterPage', {})
-              })
-
-            Button('打开透明FlutterEntry')
-              .onClick(() => {
-                this.isOpaque = false;
-                FlutterBoost.getInstance().open('transparentWidget', {}, this.isOpaque)
-              })
+          Row() {
+            Column() {
+              Text("ArkUI")
+                .fontSize(50)
+                .fontWeight(FontWeight.Bold)
+            }
+            .width('100%')
           }
-        }.tabBar(this.CardTab(bottomTabItems.getTabItems()[3]))
-
+          .height('100%')
+        }.tabBar(this.tabBuilder(3, 'ArkUI'))
       }
-      .animationDuration(0)
       .vertical(false)
-      .barWidth("100%")
-      .barHeight("56vp")
-      .layoutWeight(1)
       .barMode(BarMode.Fixed)
-      .align(Alignment.Center)
+      .barWidth('100%')
+      .barHeight(56)
+      .animationDuration(300)
       .onChange((index: number) => {
-        this.currentIndex = index;
-        this._onFlutterTabShow();
+        this.currentIndex = index
       })
-    }
-    .backgroundColor("#F1F3F5")
-  }
-
-  // 组件生命周期
-  aboutToAppear() {
-    console.info('MyComponent aboutToAppear');
-
-    const firstFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
-      uri: 'firstFirst'
-    });
-
-    const secondFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
-      uri: 'flutterPage'
-    });
-
-    const thirdFlutterEntry: FlutterBoostEntry = new FlutterBoostEntry(getContext(this), {
-      uri: 'flutterPage'
-    });
-
-    firstFlutterEntry.aboutToAppear();
-    secondFlutterEntry.aboutToAppear();
-    thirdFlutterEntry.aboutToAppear();
-
-    this.flutterEntries.push(firstFlutterEntry);
-    this.flutterEntries.push(secondFlutterEntry);
-    this.flutterEntries.push(thirdFlutterEntry);
-  }
-
-  // 组件生命周期
-  aboutToDisappear() {
-    console.info('MyComponent aboutToDisappear');
-  }
-
-  // 只有被@Entry装饰的组件才可以调用页面的生命周期
-  onPageShow() {
-    console.info('Index onPageShow');
-    this._onFlutterTabShow();
-  }
-
-  // 只有被@Entry装饰的组件才可以调用页面的生命周期
-  onPageHide() {
-    console.info('Index onPageHide');
-    this._onFlutterTabHide();
-  }
-
-  _onFlutterTabShow() {
-    if (this.currentIndex == 0) {
-      this.flutterEntries[1]?.onPageHide();
-      this.flutterEntries[2]?.onPageHide();
-      this.flutterEntries[0]?.onPageShow();
-    } else if (this.currentIndex == 1) {
-      this.flutterEntries[0]?.onPageHide();
-      this.flutterEntries[2]?.onPageHide();
-      this.flutterEntries[1]?.onPageShow();
-    } else if (this.currentIndex == 2) {
-      this.flutterEntries[0]?.onPageHide();
-      this.flutterEntries[1]?.onPageHide();
-      this.flutterEntries[2]?.onPageShow();
-    }
-  }
-
-  _onFlutterTabHide() {
-    if (this.currentIndex == 0) {
-      this.flutterEntries[0]?.onPageHide();
-    } else if (this.currentIndex == 1) {
-      this.flutterEntries[1]?.onPageHide();
-    } else if (this.currentIndex == 2) {
-      this.flutterEntries[2]?.onPageHide();
-    }
-  }
-
-  @Builder
-  CardTab(item: TabItem) {
-    Column() {
-      Image(this.currentIndex === item.index ? item.imageActivated : item.imageOriginal)
-        .width("21vp")
-        .height("21vp")
-        .objectFit(ImageFit.Contain)
-        .margin({
-          top: "4vp",
-          bottom: "5.5vp"
-        })
-      Text(item.title)
-        .fontSize("10fp")
-        .fontColor(this.currentIndex === item.index ?
-          "#007DFF" : "#66000000")
-    }
-    .justifyContent(FlexAlign.Center)
-    .width("100%")
-    .height("100%")
-  }
-
-  @Builder
-  Content() {
-    if (this.currentIndex === 0) {
-      FlutterBoostPage({ viewId: this.flutterEntries[0]?.getFlutterView()?.getId() })
-    } else if (this.currentIndex === 1) {
-      FlutterBoostPage({ viewId: this.flutterEntries[1]?.getFlutterView()?.getId() })
-    } else if (this.currentIndex === 2) {
-      FlutterBoostPage({ viewId: this.flutterEntries[2]?.getFlutterView()?.getId() })
-    } else {
-      Column() {
-        Button('打开FlutterEntry')
-          .onClick(() => {
-            this.isOpaque = true;
-            FlutterBoost.getInstance().open('flutterPage', {})
-          })
-
-        Button('打开透明FlutterEntry')
-          .onClick(() => {
-            this.isOpaque = false;
-            FlutterBoost.getInstance().open('transparentWidget', {}, this.isOpaque)
-          })
-      }
-    }
-  }
-
-  pageTransition() {
-    if (this.isOpaque == false) {
-      PageTransitionEnter({ type: RouteType.None, duration: 0 })
-      PageTransitionExit({ type: RouteType.None, duration: 0 })
-    }
+      .width('100%')
+      .height('100%')
+    }.width('100%')
   }
 
   onBackPress(): boolean | void {
