@@ -1,6 +1,8 @@
 ## NEXT
+
+## 4.5.4
 1. [ohos]支持传入启动参数和dart入口参数
-2. [ohos]更新plugin注册逻辑
+2. [ohos]更新plugin注册逻辑（BREAKING CHANGE）
 
 ## 4.5.3
 1. [ohos]移除不必要的生命周期通知
