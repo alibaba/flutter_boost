@@ -19,7 +19,7 @@ import 'case/return_data.dart';
 import 'case/rotation_transition.dart';
 import 'case/selection_screen.dart';
 import 'case/show_dialog_demo.dart';
-import 'case/simple_webview_demo.dart';
+import 'case/simple_webview.dart';
 import 'case/state_restoration.dart';
 import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';

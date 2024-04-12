@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:io' show Platform;
+import 'simple_webview.dart';
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({Key? key}) : super(key: key);
@@ -16,8 +15,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   void initState() {
     super.initState();
-    // Enable hybrid composition.
-    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
   }
 
   Route<dynamic> normal(Widget widget, RouteSettings settings) =>
@@ -77,11 +74,7 @@ class Test1 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const WebView(
-      initialUrl: 'https://flutter.dev',
-      javascriptMode: JavascriptMode.unrestricted,
-      //   backgroundColor: Color(0x00000000),
-    );
+    return const SimpleWebView();
   }
 }
 
