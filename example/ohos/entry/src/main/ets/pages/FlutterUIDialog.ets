@@ -22,25 +22,19 @@
  * THE SOFTWARE.
  */
 
-import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
-import router from '@ohos.router';
-import { FlutterBoost, FlutterBoostEntry } from '@ohos/flutter_boost';
+import { FlutterBoostEntry } from '@ohos/flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
+import { RouterModule, RouterOptions } from '../router/RouterModule';
 
-const TAG: string = "xlog-FlutterUITransparentPage";
-
-@Entry
+const TAG: string = "FlutterUIDialog";
 @Component
-struct FlutterUITransparentPage {
+export struct FlutterUIDialog {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView?: FlutterView
-  private opaque: boolean = true;
+  private params: RouterOptions | null = null;
 
   aboutToAppear() {
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), router.getParams());
-    this.flutterEntry.aboutToAppear();
-    this.flutterView = this.flutterEntry.getFlutterView();
     hilog.info(0x0000, TAG, "Page aboutToAppear===");
   }
 
@@ -61,23 +55,37 @@ struct FlutterUITransparentPage {
 
   onBackPress(): boolean | void {
     hilog.info(0x0000, TAG, "Page onBackPress===");
-    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    this.flutterEntry?.onBackPress();
     return true;
   }
 
   build() {
-    Stack() {
+    NavDestination() {
       FlutterPage({ viewId: this.flutterView?.getId() })
     }
-    .backgroundColor(Color.Transparent)
-  }
-
-  pageTransition() {
-    PageTransitionEnter({ duration: 300 })
-      .slide(SlideEffect.Bottom)
-
-    PageTransitionExit({ duration: 200 })
-      .translate({ x: 0, y: 0 })
-      .opacity(0)
+    .mode(NavDestinationMode.DIALOG)
+    .hideTitleBar(true)
+    .onBackPressed(() => {
+      hilog.info(0x0000, TAG, "Page onBackPressed===");
+      RouterModule.pop();
+      return true
+    })
+    .onShown(() => {
+      this.onPageShow()
+    })
+    .onHidden(() => {
+      this.onPageHide()
+    })
+    .onReady((ctx: NavDestinationContext) => {
+      try {
+        this.params = ctx.pathInfo.param as RouterOptions;
+        this.flutterEntry = new FlutterBoostEntry(getContext(this), this.params);
+        this.flutterEntry.aboutToAppear();
+        this.flutterView = this.flutterEntry.getFlutterView();
+        hilog.info(0x0000, TAG, "onReady===");
+      } catch (e) {
+        hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
+      }
+    })
   }
 }

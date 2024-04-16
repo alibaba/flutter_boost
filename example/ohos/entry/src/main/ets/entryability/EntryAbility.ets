@@ -31,35 +31,29 @@ import {
   FlutterBoost,
   FlutterBoostDelegate,
   FlutterBoostRouteOptions,
-  FlutterBoostAbility,
-  FlutterBoostSetupOptions,
   FlutterBoostSetupOptionsBuilder
 } from '@ohos/flutter_boost';
 import FlutterManager from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterManager';
 
-import router from '@ohos.router';
+import { RouterModule, RouterOptions } from '../router/RouterModule';
+import { RouterNameConstants } from '../constants/RouterConstants';
 
+const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
-  // 打开原生
+  // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions) {
-    router.pushUrl({ url: 'pages/NativePage' })
+    RouterModule.push(RouterNameConstants.NATIVE_PAGE)
   }
 
-  // 打开flutter
+  // 打开flutter页面
   pushFlutterRoute(options: FlutterBoostRouteOptions) {
-    let pageName: string = 'pages/FlutterUIPage'
-    if (options.isOpaque() == false) {
-      pageName = 'pages/FlutterUITransparentPage'
+    let routerName: string = RouterNameConstants.FLUTTER_PAGE
+    if (!options.isOpaque()) {
+      routerName = RouterNameConstants.FLUTTER_DIALOG
     }
 
-    router.pushUrl({
-      url: pageName, params: {
-        uri: options.getPageName(),
-        params: options.getArguments(),
-      }
-    }).then(() => {
-      console.info('Succeeded in jumping to the second page.')
-    })
+    RouterModule.push(routerName, new RouterOptions(options.getPageName(),
+      options.getArguments()));
   }
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
@@ -68,12 +62,12 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
   onDestroy(): void {
     FlutterManager.getInstance().popUIAbility(this)
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onDestroy');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onDestroy');
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // Main window is created, set main page for this ability
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageCreate');
     FlutterManager.getInstance().pushWindowStage(this, windowStage)
 
     const optionsBuilder: FlutterBoostSetupOptionsBuilder = new FlutterBoostSetupOptionsBuilder()
@@ -81,21 +75,21 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
       .setDartEntrypointArgs(['I am from ohos!', '--for-test'])
 
     FlutterBoost.getInstance().setup(this, this.context, (engine) => {
-      hilog.info(0x0000, 'testTag', '%{public}s', '引擎初始化成功');
+      hilog.info(0x0000, TAG, '%{public}s', '引擎初始化成功');
 
       // register plugins
       GeneratedPluginRegistrant.registerWith(engine)
 
       windowStage.loadContent('pages/EntryPage', (err, data) => {
         if (err.code) {
-          hilog.error(0x0000, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
+          hilog.error(0x0000, TAG, 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
           return;
         }
-        hilog.info(0x0000, 'testTag', 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
+        hilog.info(0x0000, TAG, 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
       });
 
     }, optionsBuilder.build())
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onCreate');
 
 
   }
@@ -103,16 +97,16 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
   onWindowStageDestroy(): void {
     FlutterManager.getInstance().popWindowStage(this)
     // Main window is destroyed, release UI related resources
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageDestroy');
   }
 
   onForeground(): void {
     // Ability has brought to foreground
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onForeground');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onForeground');
   }
 
   onBackground(): void {
     // Ability has back to background
-    hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onBackground');
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onBackground');
   }
 }

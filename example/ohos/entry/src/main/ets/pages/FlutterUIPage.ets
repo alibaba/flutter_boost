@@ -22,24 +22,19 @@
  * THE SOFTWARE.
  */
 
-import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
-import router from '@ohos.router';
-import { FlutterBoost, FlutterBoostEntry } from '@ohos/flutter_boost';
+import { FlutterBoostEntry } from '@ohos/flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
+import { RouterModule, RouterOptions } from '../router/RouterModule';
 
-const TAG: string = "xlog-FlutterUI";
-
-@Entry
+const TAG: string = "FlutterUIPage";
 @Component
-struct FlutterUIPage {
+export struct FlutterUIPage {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView?: FlutterView;
+  private params: RouterOptions | null = null;
 
   aboutToAppear() {
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), router.getParams());
-    this.flutterEntry.aboutToAppear();
-    this.flutterView = this.flutterEntry.getFlutterView();
     hilog.info(0x0000, TAG, "Page aboutToAppear===");
   }
 
@@ -60,73 +55,42 @@ struct FlutterUIPage {
 
   onBackPress(): boolean | void {
     hilog.info(0x0000, TAG, "Page onBackPress===");
-    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    this.flutterEntry?.onBackPress();
     return true;
   }
 
   build() {
-    Stack() {
+    NavDestination() {
       FlutterPage({ viewId: this.flutterView?.getId() })
     }
-  }
-
-  pageTransition() {
-    PageTransitionEnter({ duration: 300 })
-      .slide(SlideEffect.Right)
-
-    PageTransitionExit({ duration: 300 })
-      .translate({ x: 0, y: 0 })
-      .opacity(0)
-  }
-}
-
-@Component
-export struct FlutterUIComponent {
-  @Prop uri: string;
-  @Prop params: Record<string, Object>;
-
-  private flutterEntry: FlutterBoostEntry | null = null;
-  private flutterView?: FlutterView;
-  private effect: object =
-    TransitionEffect.OPACITY
-      .combine(TransitionEffect.move(TransitionEdge.END)).animation({curve: Curves.springMotion()});
-
-  aboutToAppear() {
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), {
-      uri: this.uri,
-      params: this.params,
-    });
-    this.flutterEntry.aboutToAppear();
-    this.flutterView = this.flutterEntry.getFlutterView();
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
-  }
-
-  aboutToDisappear() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToDisappear===', this.uri);
-    this.flutterEntry?.aboutToDisappear()
-  }
-
-  onPageShow() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageShow===', this.uri);
-    this.flutterEntry?.onPageShow()
-  }
-
-  onPageHide() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageHide===', this.uri);
-    this.flutterEntry?.onPageHide()
-  }
-
-  build() {
-    Stack() {
-      FlutterPage({ viewId: this.flutterView?.getId() })
-    }
-    .onVisibleAreaChange([0.0, 1.0], (isVisible: boolean, currentRatio: number) => {
-      if (isVisible) {
-        this.onPageShow();
-      } else {
-        this.onPageHide();
+    .hideTitleBar(true)
+    .onBackPressed(() => {
+      hilog.info(0x0000, TAG, "Page onBackPressed===");
+      RouterModule.pop();
+      return true;
+    })
+    .onAppear(() => {
+      hilog.info(0x0000, TAG, "onAppear===");
+    })
+    .onDisAppear(() => {
+      hilog.info(0x0000, TAG, "onDisAppear===");
+    })
+    .onShown(() => {
+      this.onPageShow()
+    })
+    .onHidden(() => {
+      this.onPageHide()
+    })
+    .onReady((ctx: NavDestinationContext) => {
+      try {
+        this.params = ctx.pathInfo.param as RouterOptions;
+        this.flutterEntry = new FlutterBoostEntry(getContext(this), this.params);
+        this.flutterEntry.aboutToAppear();
+        this.flutterView = this.flutterEntry.getFlutterView();
+        hilog.info(0x0000, TAG, "onReady===");
+      } catch (e) {
+        hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
       }
     })
-    .transition(this.effect)
   }
 }

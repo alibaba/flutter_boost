@@ -1,8 +1,5 @@
 {
   "src": [
-    "pages/EntryPage",
-    "pages/FlutterUIPage",
-    "pages/FlutterUITransparentPage",
-    "pages/NativePage"
+    "pages/EntryPage"
   ]
 }

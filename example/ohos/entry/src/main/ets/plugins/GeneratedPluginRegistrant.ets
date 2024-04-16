@@ -2,7 +2,9 @@ import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/Flut
 import Log from '@ohos/flutter_ohos/src/main/ets/util/Log';
 import FlutterBoostPlugin from '@ohos/flutter_boost'
 import ImagePickerPlugin from '@ohos/image_picker_ohos'
+import PathProviderPlugin from '@ohos/path_provider_ohos'
 import VideoPlayerPlugin from '@ohos/video_player_ohos'
+import WebViewFlutterPlugin from '@ohos/webview_flutter_ohos'
 
 /**
  * Generated file. Do not edit.
@@ -18,7 +20,9 @@ export class GeneratedPluginRegistrant {
     try {
       flutterEngine.getPlugins()?.add(new FlutterBoostPlugin());
       flutterEngine.getPlugins()?.add(new ImagePickerPlugin());
+      flutterEngine.getPlugins()?.add(new PathProviderPlugin());
       flutterEngine.getPlugins()?.add(new VideoPlayerPlugin());
+      flutterEngine.getPlugins()?.add(new WebViewFlutterPlugin());
     } catch (e) {
       Log.e(
         TAG,
