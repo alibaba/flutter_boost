@@ -21,19 +21,42 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import hilog from '@ohos.hilog';
+import { RouterModule } from '../router/RouterModule';
 
-@Entry
+const TAG: string = "xlog-NativePage";
+
 @Component
-struct NativePage {
+export struct NativePage {
   build() {
-    Row() {
-      Column() {
-        Text("ArkUI")
-          .fontSize(50)
-          .fontWeight(FontWeight.Bold)
+    NavDestination() {
+      Row() {
+        Column() {
+          Text("ArkUI")
+            .fontSize(50)
+            .fontWeight(FontWeight.Bold)
+        }
+        .width('100%')
       }
-      .width('100%')
+      .height('100%')
+      .backgroundColor(Color.Red)
     }
-    .height('100%')
+    .onBackPressed(() => {
+      RouterModule.pop();
+      return true
+    })
+    .title('ArkUI')
+    .onAppear(() => {
+      hilog.info(0x0000, TAG, "onAppear===");
+     })
+    .onDisAppear(() => {
+      hilog.info(0x0000, TAG, "onDisAppear===");
+    })
+    .onShown(() => {
+      hilog.info(0x0000, TAG, "onShown===");
+    })
+    .onHidden(() => {
+      hilog.info(0x0000, TAG, "onHidden===");
+     })
   }
 }
