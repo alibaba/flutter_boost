@@ -39,7 +39,7 @@ struct EntryPage {
   @State fontColor: string = '#182431'
   @State selectedFontColor: string = '#007DFF'
   @State currentIndex: number = 0
-  @State routerStack: NavPathStack = new NavPathStack();
+  @State routeStack: NavPathStack = new NavPathStack();
   private controller: TabsController = new TabsController()
 
   @Builder tabBuilder(index: number, name: string) {
@@ -102,16 +102,19 @@ struct EntryPage {
             hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
           }
         })
-    }.justifyContent(FlexAlign.Center).width('100%').height('100%')
+    }
+    .justifyContent(FlexAlign.Center)
+    .width('100%').height('100%')
+    .backgroundColor('#F1F3F5')
   }
 
   aboutToAppear() {
-    RouterModule.setRouterStack(this.routerStack);
+    RouterModule.setRouteStack(this.routeStack);
   }
 
   build() {
     // Navigation关联NavPathStack路由栈
-    Navigation(this.routerStack) {
+    Navigation(this.routeStack) {
       Column() {
         Tabs({ barPosition: BarPosition.Start, controller: this.controller }) {
           // 1. Home
@@ -132,7 +135,10 @@ struct EntryPage {
               Text("ArkUI")
                 .fontSize(50)
                 .fontWeight(FontWeight.Bold)
-            }.justifyContent(FlexAlign.Center).width('100%').height('100%')
+            }
+            .justifyContent(FlexAlign.Center)
+            .backgroundColor('#F1F3F5')
+            .width('100%').height('100%')
           }.tabBar(this.tabBuilder(3, 'ArkUI'))
         }
         .vertical(false)
@@ -142,9 +148,7 @@ struct EntryPage {
         .animationDuration(300)
         .onChange((index: number) => {
           this.currentIndex = index
-        })
-        .width('100%')
-        .height('100%')
+        }).width('100%').height('100%')
       }.width('100%').height('100%')
     }
     .navDestination(this.routerMap) // Navigation关联routerMap路由表

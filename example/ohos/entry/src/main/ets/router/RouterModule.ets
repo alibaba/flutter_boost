@@ -9,25 +9,25 @@ export class RouterOptions {
 }
 
 export class RouterModule {
-    static routerStack: NavPathStack | null = null;
+    static routeStack: NavPathStack | null = null;
 
-    public static setRouterStack(stack: NavPathStack): void {
-        RouterModule.routerStack = stack;
+    public static setRouteStack(stack: NavPathStack): void {
+        RouterModule.routeStack = stack;
     }
 
     public static push(name: string, param?: object): void {
-        if (RouterModule.routerStack != null) {
-            RouterModule.routerStack.pushPath({name: name, param: param});
+        if (RouterModule.routeStack != null) {
+            RouterModule.routeStack.pushPath({name: name, param: param});
         } else {
-            throw new Error('routerStack is null!');
+            throw new Error('routeStack is null!');
         }
     }
 
     public static pop(): void {
-        if (RouterModule.routerStack != null) {
-            RouterModule.routerStack.pop();
+        if (RouterModule.routeStack != null) {
+            RouterModule.routeStack.pop();
         } else {
-            throw new Error('routerStack is null!');
+            throw new Error('routeStack is null!');
         }
     }
 }

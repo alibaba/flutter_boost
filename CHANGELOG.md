@@ -4,6 +4,7 @@
 3. [ohos]非官方认可的联合插件，需要在pubspec中单独指定
 4. [ohos]修复WebView示例代码
 5. [ohos]使用Navigation，解决半透明弹窗不透底的问题
+6. [ohos]修复使用Navigation后页面后退异常的问题
 
 ## 4.5.4
 1. [ohos]支持传入启动参数和dart入口参数
