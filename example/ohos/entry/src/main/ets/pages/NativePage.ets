@@ -22,30 +22,30 @@
  * THE SOFTWARE.
  */
 import hilog from '@ohos.hilog';
-import { RouterModule } from '../router/RouterModule';
 
-const TAG: string = "xlog-NativePage";
+const TAG: string = "NativePage";
 
 @Component
 export struct NativePage {
+  private routeStack: NavPathStack | null = null;
   build() {
     NavDestination() {
-      Row() {
-        Column() {
-          Text("ArkUI")
-            .fontSize(50)
-            .fontWeight(FontWeight.Bold)
-        }
-        .width('100%')
+      Column() {
+        Text("ArkUI")
+          .fontSize(50)
+          .fontWeight(FontWeight.Bold)
       }
+      .justifyContent(FlexAlign.Center)
+      .width('100%')
       .height('100%')
-      .backgroundColor(Color.Red)
+      .backgroundColor('#F1F3F5')
     }
+    .title('ArkUI')
     .onBackPressed(() => {
-      RouterModule.pop();
+      hilog.info(0x0000, TAG, "onBackPressed===");
+      this.routeStack?.pop();
       return true
     })
-    .title('ArkUI')
     .onAppear(() => {
       hilog.info(0x0000, TAG, "onAppear===");
      })
@@ -58,5 +58,13 @@ export struct NativePage {
     .onHidden(() => {
       hilog.info(0x0000, TAG, "onHidden===");
      })
+    .onReady((ctx: NavDestinationContext) => {
+      try {
+        hilog.info(0x0000, TAG, "onReady===");
+        this.routeStack = ctx.pathStack;
+      } catch (e) {
+        hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
+      }
+    })
   }
 }

@@ -25,7 +25,7 @@
 import hilog from '@ohos.hilog';
 import { FlutterBoostEntry } from '@ohos/flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
-import { RouterModule, RouterOptions } from '../router/RouterModule';
+import { RouterOptions } from '../router/RouterModule';
 
 const TAG: string = "FlutterUIPage";
 @Component
@@ -35,28 +35,12 @@ export struct FlutterUIPage {
   private params: RouterOptions | null = null;
 
   aboutToAppear() {
-    hilog.info(0x0000, TAG, "Page aboutToAppear===");
+    hilog.info(0x0000, TAG, "aboutToAppear===");
   }
 
   aboutToDisappear() {
-    hilog.info(0x0000, TAG, "Page aboutToDisappear===");
+    hilog.info(0x0000, TAG, "aboutToDisappear===");
     this.flutterEntry?.aboutToDisappear()
-  }
-
-  onPageShow() {
-    hilog.info(0x0000, TAG, "Page onPageShow===");
-    this.flutterEntry?.onPageShow()
-  }
-
-  onPageHide() {
-    hilog.info(0x0000, TAG, "Page onPageHide===");
-    this.flutterEntry?.onPageHide()
-  }
-
-  onBackPress(): boolean | void {
-    hilog.info(0x0000, TAG, "Page onBackPress===");
-    this.flutterEntry?.onBackPress();
-    return true;
   }
 
   build() {
@@ -65,8 +49,8 @@ export struct FlutterUIPage {
     }
     .hideTitleBar(true)
     .onBackPressed(() => {
-      hilog.info(0x0000, TAG, "Page onBackPressed===");
-      RouterModule.pop();
+      hilog.info(0x0000, TAG, "onBackPressed===");
+      this.flutterEntry?.onBackPress();
       return true;
     })
     .onAppear(() => {
@@ -76,15 +60,17 @@ export struct FlutterUIPage {
       hilog.info(0x0000, TAG, "onDisAppear===");
     })
     .onShown(() => {
-      this.onPageShow()
+      hilog.info(0x0000, TAG, "onShown===");
+      this.flutterEntry?.onPageShow()
     })
     .onHidden(() => {
-      this.onPageHide()
+      hilog.info(0x0000, TAG, "onHidden===");
+      this.flutterEntry?.onPageHide()
     })
     .onReady((ctx: NavDestinationContext) => {
       try {
         this.params = ctx.pathInfo.param as RouterOptions;
-        this.flutterEntry = new FlutterBoostEntry(getContext(this), this.params);
+        this.flutterEntry = new FlutterBoostEntry(getContext(this), this.params, ctx.pathStack);
         this.flutterEntry.aboutToAppear();
         this.flutterView = this.flutterEntry.getFlutterView();
         hilog.info(0x0000, TAG, "onReady===");

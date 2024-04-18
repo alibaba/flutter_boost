@@ -40,13 +40,15 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private stage?: LifecycleStage;
   private thisContext: Context;
   private thisParams: ESObject;
+  private routeStack: NavPathStack | null;
   private isFirstAttached: boolean = true;
 
-  constructor(context: Context, params: ESObject = {}) {
+  constructor(context: Context, params: ESObject = {}, routeStack: NavPathStack | null = null) {
     super(context, params);
 
-    this.thisParams = params;
     this.thisContext = context;
+    this.routeStack = routeStack;
+    this.thisParams = params;
 
     const uniqueId = util.generateRandomUUID(false);
     this.uniqueId = uniqueId;
@@ -91,8 +93,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   finishContainer(result: Record<string, Object>) {
+    Log.d(TAG, "#finishContainer: " + this.getUrl());
     if (this.stage !== LifecycleStage.ON_FINISH) {
-      router.back();
+      this.routeStack ? this.routeStack.pop() : router.back();
       this.stage = LifecycleStage.ON_FINISH;
     } else {
       Log.e(TAG, 'finishContainer can not called twice!');
@@ -211,6 +214,11 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.onContainerDisappeared();
   }
 
+  // Intercept the user's press of the back key.
+  onBackPress() {
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    Log.d(TAG, "#onBackPress: " + this.getUrl());
+  }
   // super method override ===> end
 
 
