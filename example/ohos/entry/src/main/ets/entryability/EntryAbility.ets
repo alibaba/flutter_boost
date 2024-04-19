@@ -57,12 +57,13 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
   }
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
+    hilog.info(0x0000, TAG, '%{public}s', 'Ability onCreate');
     FlutterManager.getInstance().pushUIAbility(this)
   }
 
   onDestroy(): void {
-    FlutterManager.getInstance().popUIAbility(this)
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onDestroy');
+    FlutterManager.getInstance().popUIAbility(this)
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
@@ -89,15 +90,12 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
       });
 
     }, optionsBuilder.build())
-    hilog.info(0x0000, TAG, '%{public}s', 'Ability onCreate');
-
-
   }
 
   onWindowStageDestroy(): void {
-    FlutterManager.getInstance().popWindowStage(this)
     // Main window is destroyed, release UI related resources
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageDestroy');
+    FlutterManager.getInstance().popWindowStage(this)
   }
 
   onForeground(): void {

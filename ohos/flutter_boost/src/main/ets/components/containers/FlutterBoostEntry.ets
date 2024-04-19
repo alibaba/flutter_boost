@@ -40,14 +40,13 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private stage?: LifecycleStage;
   private thisContext: Context;
   private thisParams: ESObject;
-  private routeStack: NavPathStack | null;
+  private routeStack: NavPathStack | null = null;
   private isFirstAttached: boolean = true;
 
-  constructor(context: Context, params: ESObject = {}, routeStack: NavPathStack | null = null) {
+  constructor(context: Context, params: ESObject = {}) {
     super(context, params);
 
     this.thisContext = context;
-    this.routeStack = routeStack;
     this.thisParams = params;
 
     const uniqueId = util.generateRandomUUID(false);
@@ -142,7 +141,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // See https://github.com/flutter/engine/pull/43595 for more details
   EnsureEngineDetachedForTheFirstTime(): void {
     if (this.isFirstAttached) {
-      this.getFlutterView()?.detachFromFlutterEngine();
+      this.getFlutterView().detachFromFlutterEngine();
       this.isFirstAttached = false;
     }
   }
@@ -151,14 +150,15 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 当容器创建完成时
    */
   private onContainerCreated(): void {
+    Log.d(TAG, "#onContainerCreated");
     FlutterBoost.getInstance().getPlugin()?.onContainerCreated(this);
-    Log.d(TAG, "#onContainerCreated: " + this.getUrl());
   }
 
   /**
    * 当容器出现时
    */
   private onContainerAppeared(): void {
+    Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
     // try to detach previous container from the engine.
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded();
@@ -170,45 +170,48 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
       this.attachToEngineIfNeeded();
       this.platformPlugin?.updateSystemUiOverlays();
     });
-    Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
   }
 
   /**
    * 当容器消失时
    */
   private onContainerDisappeared(): void {
-    FlutterBoost.getInstance().getPlugin()?.onContainerDisappeared(this);
     Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
+    FlutterBoost.getInstance().getPlugin()?.onContainerDisappeared(this);
   }
 
   /**
    * 当容器销毁时
    */
   private onContainerDestroy(): void {
+    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
     this.detachFromEngineIfNeeded();
     FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this);
-    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
   }
 
   // super method override ===> start
   async aboutToAppear(): Promise<void> {
+    Log.d(TAG, "#aboutToAppear");
     this.stage = LifecycleStage.ON_ABOUT_TO_APPEAR;
     await super.aboutToAppear();
   }
 
   aboutToDisappear(): void {
+    Log.d(TAG, "#aboutToDisappear: " + this.getUrl());
     super.aboutToDisappear();
     this.stage = LifecycleStage.ON_ABOUT_TO_DISAPPEAR;
     this.onContainerDestroy();
   }
 
   onPageShow(): void { //生命周期
+    Log.d(TAG, "#onPageShow: " + this.getUrl());
     super.onPageShow();
     this.stage = LifecycleStage.ON_SHOW;
     this.onContainerAppeared();
   }
 
   onPageHide(): void { //生命周期
+    Log.d(TAG, "#onPageHide: " + this.getUrl());
     super.onPageHide();
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
@@ -216,10 +219,37 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
   // Intercept the user's press of the back key.
   onBackPress() {
-    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
     Log.d(TAG, "#onBackPress: " + this.getUrl());
+    this.onBackPressed();
   }
   // super method override ===> end
+
+  // 当NavDestination即将构建子组件之前会触发此回调
+  onReady(routeStack: NavPathStack, params: ESObject): void {
+    this.routeStack = routeStack;
+    this.thisParams = params;
+    Log.d(TAG, "#onReady: " + this.getUrl());
+  }
+
+  // 当该NavDestination页面显示时触发此回调
+  onShown(): void {
+    Log.d(TAG, "#onShown: " + this.getUrl());
+    this.onPageShow();
+  }
+
+  // 当该NavDestination页面隐藏时触发此回调
+  onHidden(): void {
+    Log.d(TAG, "#onHidden: " + this.getUrl());
+    this.onPageHide();
+  }
+
+  // 当与Navigation绑定的页面栈中存在内容时，此回调生效。当点击返回键时，触发该回调
+  // 返回值为true时，表示重写返回键逻辑，返回值为false时，表示回退到上一个页面
+  onBackPressed(): boolean {
+    Log.d(TAG, "#onBackPressed: " + this.getUrl());
+    FlutterBoost.getInstance().getPlugin()?.onBackPressed();
+    return true;
+  }
 
 
   // private methods ==> start
@@ -227,6 +257,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 绑定
    */
   private performAttach(): void {
+    Log.d(TAG, "#performAttach: " + this.getUrl());
     // 1.plugin attach
     const exclusiveAppComponent = this.getExclusiveAppComponent();
     if (exclusiveAppComponent) {
@@ -234,18 +265,18 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     }
 
     // 2.Ability attach
-    this.getFlutterView()?.attachToFlutterEngine(this.getFlutterEngine()!);
+    this.getFlutterView().attachToFlutterEngine(this.getFlutterEngine()!);
 
     if (!this.platformPlugin) {
       this.platformPlugin = new PlatformPlugin(this.getFlutterEngine()!.getPlatformChannel()!, this.thisContext);
     }
-    Log.d(TAG, "#performAttach: " + this.getUrl());
   }
 
   /**
    * 解绑
    */
   private performDetach(): void {
+    Log.d(TAG, "#performDetach: " + this.getUrl());
     // Plugins are no longer attached to the activity.
     this.getFlutterEngine()?.getAbilityControlSurface()?.detachFromAbility();
 
@@ -253,8 +284,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.releasePlatformChannel();
 
     // Detach rendering pipeline.
-    this.getFlutterView()?.detachFromFlutterEngine();
-    Log.d(TAG, "#performDetach: " + this.getUrl());
+    this.getFlutterView().detachFromFlutterEngine();
   }
 
   private releasePlatformChannel(): void {

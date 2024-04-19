@@ -129,6 +129,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   onPopRoute(params: CommonParams, completion: () => void) {
     const uniqueId = params.uniqueId
+    Log.i(TAG, "#onPopRoute: " + uniqueId);
     if (uniqueId && uniqueId.length > 0) {
       const container = FlutterContainerManager.getInstance().findContainerById(uniqueId);
       if (container) {
@@ -148,8 +149,8 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onSaveStackToHost(args: StackInfo) {
-    this.dartStack = args;
     Log.i(TAG, "#saveStackToHost: " + this.dartStack);
+    this.dartStack = args;
   }
 
   onSendEventToNative(params: CommonParams) {
@@ -190,6 +191,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   // public method
   public onBackPressed() {
+    Log.i(TAG, "#onBackPressed");
     if (this.channel) {
       this.checkEngineState();
       this.channel.onBackPressed(() => {
@@ -226,6 +228,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
    * 向Flutter侧发送pushRoute事件
    * */
   public pushRoute(uniqueId: string, pageName: string, args: Record<string, Object>, callback: () => void) {
+    Log.i(TAG, "#pushRoute start: " + uniqueId + ", " + pageName);
     if (this.channel) {
       this.checkEngineState();
       let params = new CommonParams()
@@ -233,6 +236,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       params.pageName = pageName
       params.arguments = args
       this.channel.pushRoute(params, () => {
+        Log.i(TAG, "#pushRoute end: " + uniqueId + ", " + pageName);
         if (callback) {
           callback();
         }
@@ -240,13 +244,13 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error('pushRoute fail.this.channel is null')
     }
-    Log.i(TAG, "#pushRoute: " + uniqueId + ", " + pageName);
   }
 
   /*
    * 向Flutter侧发送popRoute事件
    * */
   public popRoute(uniqueId: string, callback: () => void) {
+    Log.i(TAG, "#popRoute: " + uniqueId);
     if (this.channel != null) {
       this.checkEngineState();
       let params = new CommonParams()
@@ -259,14 +263,14 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
     }
-    Log.i(TAG, "#popRoute: " + uniqueId);
   }
 
   // public method
   // 创建 [1/4]
   public onContainerCreated(container: FlutterViewContainer) {
-    Log.i(TAG, "#onContainerCreated: " + container.getUniqueId());
-    FlutterContainerManager.getInstance().addContainer(container.getUniqueId(), container);
+    let uniqueId = container.getUniqueId()
+    Log.i(TAG, "#onContainerCreated: " + uniqueId);
+    FlutterContainerManager.getInstance().addContainer(uniqueId, container);
     if (FlutterContainerManager.getInstance().getContainerSize() == 1) {
       FlutterBoost.getInstance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
     }
@@ -275,6 +279,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 展示 [2/4]
   public onContainerAppeared(container: FlutterViewContainer, callback: () => void) {
     let uniqueId = container.getUniqueId()
+    Log.i(TAG, "## onContainerAppeared: " + uniqueId);
     FlutterContainerManager.getInstance().activateContainer(uniqueId, container)
     // 这里和android对齐。将pushRoute+onContainerShow合并到一起
     this.pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), () => {
@@ -288,6 +293,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 隐藏 [3/4]
   public onContainerDisappeared(container: FlutterViewContainer) {
     let uniqueId = container.getUniqueId()
+    Log.i(TAG, "## onContainerDisappeared: " + uniqueId);
     let args: Record<string, Object>;
     if (container && container.paramsForDisappear) {
       args = container!.paramsForDisappear() ? container!.paramsForDisappear()! : {};
@@ -301,6 +307,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 销毁 [4/4]
   public onContainerDestroyed(container: FlutterViewContainer) {
     let uniqueId = container.getUniqueId()
+    Log.i(TAG, "## onContainerDestroyed: " + uniqueId);
     let args = container.getUrlParams()
     // 1.发送移除消息到dart侧
     this._sendRemoveRoute(uniqueId, args);
@@ -309,6 +316,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   private _sendContainerShow(uniqueId: string) {
+    Log.i(TAG, "## _sendContainerShow: " + uniqueId);
     // 向flutter侧发送onContainerShow消息
     if (this.channel) {
       this.checkEngineState();
@@ -319,10 +327,10 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet! When call _onContainerShow");
     }
-    Log.i(TAG, "## onContainerShow: " + uniqueId);
   }
 
   private _sendContainerHide(uniqueId: string, args: Record<string, Object>) {
+    Log.i(TAG, "## _sendContainerHide: " + uniqueId);
     // 向flutter侧发送onContainerHide消息
     if (this.channel) {
       this.checkEngineState();
@@ -334,10 +342,10 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet! When call _onContainerHide");
     }
-    Log.i(TAG, "## onContainerHide: " + uniqueId);
   }
 
   private _sendRemoveRoute(uniqueId: string, args: Record<string, Object>) {
+    Log.i(TAG, "## _sendRemoveRoute: " + uniqueId);
     // 向flutter侧发送_sendRemoveRoute消息
     if (this.channel) {
       this.checkEngineState();
@@ -349,7 +357,6 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet! When call _removeRoute");
     }
-    Log.i(TAG, "## removeRoute: " + uniqueId);
   }
 
   private checkEngineState() {

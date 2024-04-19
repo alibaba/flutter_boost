@@ -31,11 +31,13 @@ const TAG: string = "FlutterUIPage";
 @Component
 export struct FlutterUIPage {
   private flutterEntry: FlutterBoostEntry | null = null;
-  private flutterView?: FlutterView;
-  private params: RouterOptions | null = null;
+  private flutterView: FlutterView | null = null;
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
+    this.flutterEntry = new FlutterBoostEntry(getContext(this));
+    this.flutterEntry.aboutToAppear();
+    this.flutterView = this.flutterEntry.getFlutterView();
   }
 
   aboutToDisappear() {
@@ -45,13 +47,12 @@ export struct FlutterUIPage {
 
   build() {
     NavDestination() {
-      FlutterPage({ viewId: this.flutterView?.getId() })
+      FlutterPage({ viewId: this.flutterView!.getId() })
     }
     .hideTitleBar(true)
     .onBackPressed(() => {
       hilog.info(0x0000, TAG, "onBackPressed===");
-      this.flutterEntry?.onBackPress();
-      return true;
+      return this.flutterEntry!.onBackPressed();
     })
     .onAppear(() => {
       hilog.info(0x0000, TAG, "onAppear===");
@@ -61,19 +62,17 @@ export struct FlutterUIPage {
     })
     .onShown(() => {
       hilog.info(0x0000, TAG, "onShown===");
-      this.flutterEntry?.onPageShow()
+      this.flutterEntry?.onShown();
     })
     .onHidden(() => {
       hilog.info(0x0000, TAG, "onHidden===");
-      this.flutterEntry?.onPageHide()
+      this.flutterEntry?.onHidden();
     })
     .onReady((ctx: NavDestinationContext) => {
       try {
-        this.params = ctx.pathInfo.param as RouterOptions;
-        this.flutterEntry = new FlutterBoostEntry(getContext(this), this.params, ctx.pathStack);
-        this.flutterEntry.aboutToAppear();
-        this.flutterView = this.flutterEntry.getFlutterView();
         hilog.info(0x0000, TAG, "onReady===");
+        let params = ctx.pathInfo.param as RouterOptions;
+        this.flutterEntry?.onReady(ctx.pathStack, params ?? {});
       } catch (e) {
         hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
       }
