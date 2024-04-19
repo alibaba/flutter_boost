@@ -39,7 +39,7 @@ struct EntryPage {
   @State fontColor: string = '#182431'
   @State selectedFontColor: string = '#007DFF'
   @State currentIndex: number = 0
-  @State routeStack: NavPathStack = new NavPathStack();
+  private routeStack: NavPathStack = new NavPathStack();
   private controller: TabsController = new TabsController()
 
   @Builder tabBuilder(index: number, name: string) {
@@ -153,6 +153,11 @@ struct EntryPage {
     }
     .navDestination(this.routerMap) // Navigation关联routerMap路由表
     .hideTitleBar(true) // important
+    .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
+      hilog.info(0x0000, TAG, 'customNavContentTransition~~');
+      // 执行默认转场动效
+      return undefined;
+    })
   }
 
   onBackPress(): boolean | void {
