@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
-import UIAbility from '@ohos.app.ability.UIAbility';
-import window from '@ohos.window';
-import Want from '@ohos.app.ability.Want';
 import AbilityConstant from '@ohos.app.ability.AbilityConstant';
+import UIAbility from '@ohos.app.ability.UIAbility';
+import Want from '@ohos.app.ability.Want';
+import window from '@ohos.window';
 import hilog from '@ohos.hilog';
 import {
   FlutterBoost,
@@ -33,8 +32,8 @@ import {
   FlutterBoostRouteOptions,
   FlutterBoostSetupOptionsBuilder
 } from '@ohos/flutter_boost';
-import FlutterManager from '@ohos/flutter_ohos/src/main/ets/embedding/ohos/FlutterManager';
-
+import { FlutterManager} from '@ohos/flutter_ohos';
+import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 
@@ -66,8 +65,8 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     FlutterManager.getInstance().popUIAbility(this)
   }
 
+  // Main window is created, set main page for this ability
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    // Main window is created, set main page for this ability
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageCreate');
     FlutterManager.getInstance().pushWindowStage(this, windowStage)
 
@@ -88,23 +87,22 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
         }
         hilog.info(0x0000, TAG, 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
       });
-
     }, optionsBuilder.build())
   }
 
+  // Main window is destroyed, release UI related resources
   onWindowStageDestroy(): void {
-    // Main window is destroyed, release UI related resources
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageDestroy');
     FlutterManager.getInstance().popWindowStage(this)
   }
 
+  // Ability has brought to foreground
   onForeground(): void {
-    // Ability has brought to foreground
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onForeground');
   }
 
+  // Ability has back to background
   onBackground(): void {
-    // Ability has back to background
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onBackground');
   }
 }

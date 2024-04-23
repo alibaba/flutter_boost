@@ -32,12 +32,14 @@ const TAG: string = "FlutterUIDialog";
 export struct FlutterUIDialog {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
+  @Prop xComponentType: XComponentType = XComponentType.SURFACE;
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
     this.flutterEntry = new FlutterBoostEntry(getContext(this));
     this.flutterEntry.aboutToAppear();
-
+    // The |aboutToAppear| method is called first,
+    // followed by the |getFlutterView| method.
     this.flutterView = this.flutterEntry.getFlutterView();
   }
 
@@ -48,7 +50,10 @@ export struct FlutterUIDialog {
 
   build() {
     NavDestination() {
-      FlutterPage({ viewId: this.flutterView!.getId() })
+      FlutterPage({
+        viewId: this.flutterView!.getId(),
+        xComponentType: this.xComponentType
+      })
     }
     .mode(NavDestinationMode.DIALOG)
     .hideTitleBar(true)
