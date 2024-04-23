@@ -109,6 +109,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPushFlutterRoute(params: CommonParams) {
+    Log.i(TAG, "#onPushFlutterRoute: " + params.pageName);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -228,7 +229,8 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
    * 向Flutter侧发送pushRoute事件
    * */
   public pushRoute(uniqueId: string, pageName: string, args: Record<string, Object>, callback: () => void) {
-    Log.i(TAG, "#pushRoute start: " + uniqueId + ", " + pageName);
+    Log.i(TAG, "#pushRoute start: " + pageName);
+    const timestamp = (new Date()).getTime();
     if (this.channel) {
       this.checkEngineState();
       let params = new CommonParams()
@@ -236,7 +238,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       params.pageName = pageName
       params.arguments = args
       this.channel.pushRoute(params, () => {
-        Log.i(TAG, "#pushRoute end: " + uniqueId + ", " + pageName);
+        Log.i(TAG, "#pushRoute end: " + pageName + ", cost: " + ((new Date()).getTime()-timestamp) + "ms.");
         if (callback) {
           callback();
         }

@@ -8,6 +8,7 @@ const TAG: string = "FlutterUIComponent";
 export struct FlutterUIComponent {
   @Prop uri: string;
   @Prop params: Record<string, Object>;
+  @Prop xComponentType: XComponentType = XComponentType.SURFACE;
 
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView?: FlutterView;
@@ -16,13 +17,15 @@ export struct FlutterUIComponent {
       .combine(TransitionEffect.move(TransitionEdge.END)).animation({curve: Curves.springMotion()});
 
   aboutToAppear() {
+    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
     this.flutterEntry = new FlutterBoostEntry(getContext(this), {
       uri: this.uri,
       params: this.params,
     });
     this.flutterEntry.aboutToAppear();
+    // The |aboutToAppear| method is called first,
+    // followed by the |getFlutterView| method.
     this.flutterView = this.flutterEntry.getFlutterView();
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
   }
 
   aboutToDisappear() {
@@ -42,7 +45,10 @@ export struct FlutterUIComponent {
 
   build() {
     Stack() {
-      FlutterPage({ viewId: this.flutterView?.getId() })
+      FlutterPage({
+        viewId: this.flutterView?.getId(),
+        xComponentType: this.xComponentType
+      })
     }
     .onVisibleAreaChange([0.0, 1.0], (isVisible: boolean, currentRatio: number) => {
       if (isVisible) {
