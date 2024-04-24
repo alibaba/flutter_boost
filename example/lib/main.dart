@@ -17,6 +17,7 @@ import 'case/popUntil.dart';
 import 'case/radial_hero_animation.dart';
 import 'case/return_data.dart';
 import 'case/rotation_transition.dart';
+import 'case/safe_area.dart';
 import 'case/selection_screen.dart';
 import 'case/show_dialog_demo.dart';
 import 'case/simple_webview.dart';
@@ -384,7 +385,11 @@ class _MyAppState extends State<MyApp> {
                 uniqueId: uniqueId,
               ));
     },
-
+    'safe_area': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => const SafeAreaPage());
+    },
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
     'flutterRebuildDemo': (settings, uniqueId) {
       return MaterialPageRoute(

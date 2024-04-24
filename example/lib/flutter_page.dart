@@ -250,6 +250,17 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                     margin: const EdgeInsets.all(8.0),
                     color: Colors.yellow,
                     child: const Text(
+                      'SafeArea demo',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () => BoostNavigator.instance
+                    .push("safe_area", withContainer: withContainer)),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: const Text(
                       'MediaQuery demo',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
