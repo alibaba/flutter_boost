@@ -21,10 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import AbilityConstant from '@ohos.app.ability.AbilityConstant';
-import UIAbility from '@ohos.app.ability.UIAbility';
-import Want from '@ohos.app.ability.Want';
-import window from '@ohos.window';
+import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
+import { window } from '@kit.ArkUI';
+import { BusinessError } from '@kit.BasicServicesKit';
 import hilog from '@ohos.hilog';
 import {
   FlutterBoost,
@@ -85,7 +84,20 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
           hilog.error(0x0000, TAG, 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
           return;
         }
+
         hilog.info(0x0000, TAG, 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
+        let windowClass: window.Window = windowStage.getMainWindowSync();
+        windowClass.setWindowLayoutFullScreen(true)
+          .then(() => {
+            console.info('Succeeded in setting the window layout to full-screen mode.');
+          })
+          .catch((err: BusinessError) => {
+            console.error('Failed to set the window layout to full-screen mode. Cause:' + JSON.stringify(err));
+          });
+
+          let avoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
+          let bottomRectHeight = avoidArea.bottomRect.height; // 获取到导航条区域的高度
+          AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
       });
     }, optionsBuilder.build())
   }

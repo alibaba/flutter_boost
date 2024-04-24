@@ -32,7 +32,9 @@ import { RouterModule } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 
 const TAG: string = "EntryPage";
-@Entry
+let storage = LocalStorage.getShared();
+
+@Entry(storage)
 @Component
 struct EntryPage {
   @State message: string = 'FlutterBoost Example';
@@ -41,6 +43,7 @@ struct EntryPage {
   @State currentIndex: number = 0
   private routeStack: NavPathStack = new NavPathStack();
   private controller: TabsController = new TabsController()
+  bottomRectHeight: string = AppStorage.get<number>('bottomRectHeight') + 'px';
 
   @Builder tabBuilder(index: number, name: string) {
     Column() {
@@ -113,10 +116,9 @@ struct EntryPage {
   }
 
   build() {
-    // Navigation关联NavPathStack路由栈
-    Navigation(this.routeStack) {
-      Column() {
-        Tabs({ barPosition: BarPosition.Start, controller: this.controller }) {
+    Column() {
+      Navigation(this.routeStack) { // Navigation关联NavPathStack路由栈
+        Tabs({ barPosition: BarPosition.End, controller: this.controller }) {
           // 1. Home
           TabContent() {
             this.homeContents()
@@ -148,16 +150,18 @@ struct EntryPage {
         .animationDuration(300)
         .onChange((index: number) => {
           this.currentIndex = index
-        }).width('100%').height('100%')
-      }.width('100%').height('100%')
+        })
+      }
+      .navDestination(this.routerMap) // Navigation关联routerMap路由表
+      .hideTitleBar(true) // important
+      .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
+        hilog.info(0x0000, TAG, 'customNavContentTransition~~');
+        // 执行默认转场动效
+        return undefined;
+      })
     }
-    .navDestination(this.routerMap) // Navigation关联routerMap路由表
-    .hideTitleBar(true) // important
-    .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
-      hilog.info(0x0000, TAG, 'customNavContentTransition~~');
-      // 执行默认转场动效
-      return undefined;
-    })
+    .width('100%')
+    .margin({ bottom: this.bottomRectHeight }) // 此处margin与导航条区域高度保持一致
   }
 
   onBackPress(): boolean | void {
