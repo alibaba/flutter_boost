@@ -7,6 +7,7 @@
 6. [ohos]修复使用Navigation后页面后退异常的问题
 7. [ohos]代码重构，便于后续优化
 8. [ohos]默认显式使用surface模式
+9. 添加SafeArea测试案例
 
 ## 4.5.4
 1. [ohos]支持传入启动参数和dart入口参数
