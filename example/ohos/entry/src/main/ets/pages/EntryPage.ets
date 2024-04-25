@@ -154,11 +154,11 @@ struct EntryPage {
       }
       .navDestination(this.routerMap) // Navigation关联routerMap路由表
       .hideTitleBar(true) // important
-      .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
-        hilog.info(0x0000, TAG, 'customNavContentTransition~~');
-        // 执行默认转场动效
-        return undefined;
-      })
+      // .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
+      //   hilog.info(0x0000, TAG, 'customNavContentTransition~~');
+      //   // 执行默认转场动效
+      //   return undefined;
+      // })
     }
     .width('100%')
     .margin({ bottom: this.bottomRectHeight }) // 此处margin与导航条区域高度保持一致
