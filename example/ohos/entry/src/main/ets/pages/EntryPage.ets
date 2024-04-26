@@ -23,7 +23,7 @@
  */
 
 import hilog from '@ohos.hilog';
-import { FlutterBoost } from '@ohos/flutter_boost';
+import { FlutterBoost } from 'flutter_boost';
 import { FlutterUIComponent } from './FlutterUIComponent';
 import { FlutterUIPage } from './FlutterUIPage';
 import { FlutterUIDialog } from './FlutterUIDialog';

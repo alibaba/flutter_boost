@@ -23,7 +23,7 @@
  */
 
 import hilog from '@ohos.hilog';
-import { FlutterBoostEntry } from '@ohos/flutter_boost';
+import { FlutterBoostEntry } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
 import { RouterOptions } from '../router/RouterModule';
 

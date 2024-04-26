@@ -30,7 +30,7 @@ import {
   FlutterBoostDelegate,
   FlutterBoostRouteOptions,
   FlutterBoostSetupOptionsBuilder
-} from '@ohos/flutter_boost';
+} from 'flutter_boost';
 import { FlutterManager} from '@ohos/flutter_ohos';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { RouterModule, RouterOptions } from '../router/RouterModule';
