@@ -9,7 +9,7 @@ import {
   FlutterBoostAbility,
   FlutterBoostSetupOptions,
   FlutterBoostSetupOptionsBuilder
-} from '@ohos/flutter_boost'
+} from 'flutter_boost'
 import common from '@ohos.app.ability.common';
 import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
 import EntryAbility from '../../../main/ets/entryability/EntryAbility';

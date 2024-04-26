@@ -1,5 +1,5 @@
 import { describe, beforeAll, beforeEach, afterEach, afterAll, it, expect } from '@ohos/hypium'
-import { CommonParams } from '@ohos/flutter_boost';
+import { CommonParams } from 'flutter_boost';
 
 export default function CommonParamsTest() {
   describe('fromObject', () => {
