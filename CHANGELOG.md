@@ -10,6 +10,7 @@
 9. 添加SafeArea测试案例
 10. [ohos]设置全屏窗口
 11. [ohos]修复透明弹窗透底异常的问题
+12. [ohos]添加PlatformView测试案例
 
 ## 4.5.4
 1. [ohos]支持传入启动参数和dart入口参数

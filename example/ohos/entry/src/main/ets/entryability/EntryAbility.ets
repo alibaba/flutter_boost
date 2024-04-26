@@ -35,6 +35,7 @@ import { FlutterManager} from '@ohos/flutter_ohos';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
+import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
 
 const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
@@ -76,8 +77,12 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     FlutterBoost.getInstance().setup(this, this.context, (engine) => {
       hilog.info(0x0000, TAG, '%{public}s', '引擎初始化成功');
 
-      // register plugins
+      // Register plugins
       GeneratedPluginRegistrant.registerWith(engine)
+
+      // Register platform views
+      engine.getPlatformViewsController()?.getRegistry()
+        .registerViewFactory('<simple-text-view>', new SimpleTextViewFactory());
 
       windowStage.loadContent('pages/EntryPage', (err, data) => {
         if (err.code) {
