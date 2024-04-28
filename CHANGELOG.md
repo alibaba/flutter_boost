@@ -1,4 +1,6 @@
 ## NEXT
+
+# 4.5.5
 1. [ohos]修复image_pick插件示例
 2. [ohos]简化鸿蒙示例代码
 3. [ohos]非官方认可的联合插件，需要在pubspec中单独指定
