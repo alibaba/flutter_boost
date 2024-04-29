@@ -1,4 +1,5 @@
 ## NEXT
+1. [ohos]接管FlutterView绑定引擎的时机，解决Tab场景显示异常的问题，避免冗余的attach/detach
 
 # 4.5.5
 1. [ohos]修复image_pick插件示例

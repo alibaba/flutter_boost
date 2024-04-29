@@ -41,7 +41,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private thisContext: Context;
   private thisParams: ESObject;
   private routeStack: NavPathStack | null = null;
-  private isFirstAttached: boolean = true;
 
   constructor(context: Context, params: ESObject = {}) {
     super(context, params);
@@ -52,7 +51,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     const uniqueId = util.generateRandomUUID(false);
     this.uniqueId = uniqueId;
     this.isAttached = false;
-    this.isFirstAttached = true;
 
     this.stage = LifecycleStage.ON_CREATE;
     this.onContainerCreated();
@@ -137,13 +135,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     return false;
   }
 
-  // Avoid failure when attaching to engine in tab scenario
-  // See https://github.com/flutter/engine/pull/43595 for more details
-  EnsureEngineDetachedForTheFirstTime(): void {
-    if (this.isFirstAttached) {
-      this.getFlutterView().detachFromFlutterEngine();
-      this.isFirstAttached = false;
-    }
+  attachToEngineAutomatically(): boolean {
+    return false;
   }
 
   /**
@@ -163,7 +156,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded();
 
-    this.EnsureEngineDetachedForTheFirstTime();
     // switch dart router
     FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this, () => {
       // attach XComponent
