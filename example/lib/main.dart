@@ -390,6 +390,7 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           pageBuilder: (_, __, ___) => const SafeAreaPage());
     },
+
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
     'flutterRebuildDemo': (settings, uniqueId) {
       return MaterialPageRoute(

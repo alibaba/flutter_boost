@@ -40,13 +40,15 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private stage?: LifecycleStage;
   private thisContext: Context;
   private thisParams: ESObject;
+  private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
 
-  constructor(context: Context, params: ESObject = {}) {
+  constructor(context: Context, params: ESObject = {}, isDialog: boolean = false) {
     super(context, params);
 
     this.thisContext = context;
     this.thisParams = params;
+    this.isDialogMode = isDialog;
 
     const uniqueId = util.generateRandomUUID(false);
     this.uniqueId = uniqueId;
@@ -104,7 +106,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   isOpaque(): boolean {
-    throw new Error('Method not implemented.');
+    return !this.isDialogMode;
   }
 
   detachFromEngineIfNeeded(): void {
@@ -176,9 +178,17 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 当容器销毁时
    */
   private onContainerDestroy(): void {
-    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
+    Log.d(TAG, "#onContainerDestroy: " + this.getUrl());
     this.detachFromEngineIfNeeded();
     FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this);
+
+    // NavDestinationMode.DIALOG：
+    // 默认透明，进出页面栈不影响下层NavDestination的生命周期，不支持系统转场动画。
+    if (this.isDialogMode) {
+      // try to attach previous container from the engine.
+      const top = FlutterContainerManager.getInstance().getTopContainer();
+      if (top && top != this) top.attachToEngineIfNeeded();
+    }
   }
 
   // super method override ===> start

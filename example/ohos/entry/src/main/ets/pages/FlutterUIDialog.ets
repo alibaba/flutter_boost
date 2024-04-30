@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 
+import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
 import { FlutterBoostEntry } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
@@ -33,10 +34,13 @@ export struct FlutterUIDialog {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
+  private effect: object =
+    TransitionEffect.OPACITY
+      .combine(TransitionEffect.move(TransitionEdge.BOTTOM)).animation({curve: Curves.springMotion()});
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
-    this.flutterEntry = new FlutterBoostEntry(getContext(this));
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), {}, /*isDialog*/true);
     this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
@@ -78,5 +82,6 @@ export struct FlutterUIDialog {
         hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
       }
     })
+    .transition(this.effect)
   }
 }
