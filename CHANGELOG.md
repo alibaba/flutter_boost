@@ -1,4 +1,6 @@
 ## NEXT
+
+# 4.5.6
 1. [ohos]接管FlutterView绑定引擎的时机，解决Tab场景显示异常的问题，避免冗余的attach/detach
 2. [ohos]解决从透明弹窗返回后页面假死的问题
 
