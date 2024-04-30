@@ -1,10 +1,9 @@
-import FlutterEngine from '@ohos/flutter_ohos/src/main/ets/embedding/engine/FlutterEngine';
-import Log from '@ohos/flutter_ohos/src/main/ets/util/Log';
-import FlutterBoostPlugin from '@ohos/flutter_boost'
-import ImagePickerPlugin from '@ohos/image_picker_ohos'
-import PathProviderPlugin from '@ohos/path_provider_ohos'
-import VideoPlayerPlugin from '@ohos/video_player_ohos'
-import WebViewFlutterPlugin from '@ohos/webview_flutter_ohos'
+import { FlutterEngine, Log } from '@ohos/flutter_ohos';
+import FlutterBoostPlugin from 'flutter_boost';
+import ImagePickerPlugin from 'image_picker_ohos';
+import PathProviderPlugin from 'path_provider_ohos';
+import VideoPlayerPlugin from 'video_player_ohos';
+import WebViewFlutterPlugin from 'webview_flutter_ohos';
 
 /**
  * Generated file. Do not edit.

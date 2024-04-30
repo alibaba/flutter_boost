@@ -100,7 +100,8 @@ class _WebViewExampleState extends State<WebViewExample> {
         allowsInlineMediaPlayback: true,
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
       );
-    } if (WebViewPlatform.instance is OhosWebViewPlatform) {
+    }
+    if (WebViewPlatform.instance is OhosWebViewPlatform) {
       params = OhosWebViewControllerCreationParams();
     } else {
       params = const PlatformWebViewControllerCreationParams();

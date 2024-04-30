@@ -148,6 +148,10 @@ export default class FlutterBoostAbility extends FlutterAbility implements Flutt
     throw new Error('Method not implemented.');
   }
 
+  attachToEngineIfNeeded(): void {
+    throw new Error('Method not implemented.');
+  }
+
   detachFromEngineIfNeeded() {
     this.performDetach()
   }

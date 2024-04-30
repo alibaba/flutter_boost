@@ -40,6 +40,8 @@ export interface FlutterViewContainer {
 
   isOpaque(): boolean
 
+  attachToEngineIfNeeded(): void
+
   detachFromEngineIfNeeded(): void
 
   getState(): LifecycleStage
