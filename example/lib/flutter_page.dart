@@ -270,6 +270,17 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                         debugPrint('xlog, mediaquery, Return Value:$value')),
               ),
               InkWell(
+                  child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      margin: const EdgeInsets.all(8.0),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'Clipboard demo',
+                        style: TextStyle(fontSize: 22.0, color: Colors.black),
+                      )),
+                  onTap: () => BoostNavigator.instance
+                      .push("clipboard", withContainer: withContainer)),
+              InkWell(
                 child: Container(
                     padding: const EdgeInsets.all(8.0),
                     margin: const EdgeInsets.all(8.0),
