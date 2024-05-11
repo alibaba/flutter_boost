@@ -1,13 +1,11 @@
 {
   "name": "flutter_boost",
-  "version": "1.0.0",
-  "description": "Please describe the basic information.",
+  "version": "4.5.6",
+  "description": "The next-generation Flutter-Native hybrid solution.",
   "main": "",
   "author": "",
-  "license": "",
+  "license": "MIT",
   "dependencies": {
-  },
-  "devDependencies": {
-    "@ohos/hypium": "1.0.6"
+    "@ohos/flutter_ohos": "file:har/flutter.har",
   }
 }
