@@ -52,7 +52,8 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     }
 
     RouterModule.push(routerName, new RouterOptions(options.getPageName(),
-      options.getArguments()));
+      options.getArguments(),
+      options.getUniqueId()));
   }
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {

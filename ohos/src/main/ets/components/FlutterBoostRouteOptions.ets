@@ -35,7 +35,7 @@ export default class FlutterBoostRouteOptions {
   // 请求码
   private readonly requestCode: number
   // 唯一标识符
-  private readonly uniqueId: string
+  private readonly uniqueId: string | null
   // 是否不透明
   private readonly opaque: boolean
 
@@ -59,7 +59,7 @@ export default class FlutterBoostRouteOptions {
     return this.requestCode;
   }
 
-  public getUniqueId(): string {
+  public getUniqueId(): string | null {
     return this.uniqueId;
   }
 
@@ -72,14 +72,14 @@ export class FlutterBoostRouteOptionsBuilder {
   pageName: string;
   arguments: Record<string, Object>;
   requestCode: number;
-  uniqueId: string;
+  uniqueId: string | null;
   opaque: boolean = true;
 
   constructor() {
     this.pageName = ''
     this.arguments = {}
     this.requestCode = 0
-    this.uniqueId = ''
+    this.uniqueId = null
     this.opaque = false
   }
 

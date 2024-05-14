@@ -121,6 +121,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       if (params.opaque) {
         builder.setOpaque(params.opaque)
       }
+      if (params.uniqueId) {
+        builder.setUniqueId(params.uniqueId)
+      }
       builder.setRequestCode(this.requestCode)
       this.delegate.pushFlutterRoute(builder.build());
     } else {
