@@ -1,10 +1,12 @@
 
 export class RouterOptions {
-    constructor(uri: string, params: object | null) {
+    constructor(uri: string, uniqueId: string, params: object | null) {
         this.uri = uri;
+        this.uniqueId = uniqueId;
         this.params = params;
     }
     uri: string;
+    uniqueId: string;  //业务自定义路由参数中需要包含uniqueId，避免丢失dart侧传过来的uniqueId
     params: object | null = null;
 }
 

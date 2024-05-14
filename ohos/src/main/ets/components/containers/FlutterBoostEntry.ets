@@ -34,7 +34,7 @@ import router from '@ohos.router';
 const TAG: string = "FlutterBoostEntry";
 
 export default class FlutterBoostEntry extends FlutterEntry implements FlutterViewContainer {
-  private uniqueId: string
+  private randomUniqueId: string
   private isAttached: boolean = false
   private platformPlugin?: PlatformPlugin | null
   private stage?: LifecycleStage;
@@ -47,15 +47,18 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     super(context, params);
 
     this.thisContext = context;
+    // 该变量需要是上一个页面传过来的路由参数，但是此时还无效，需要到onReady的时候才能拿到真正有效的路由参数
     this.thisParams = params;
     this.isDialogMode = isDialog;
-
-    const uniqueId = util.generateRandomUUID(false);
-    this.uniqueId = uniqueId;
+    
+    const randomUniqueId = util.generateRandomUUID(false);
+    this.randomUniqueId = randomUniqueId;
     this.isAttached = false;
 
     this.stage = LifecycleStage.ON_CREATE;
-    this.onContainerCreated();
+
+    // 对container的create需要放到onReady里面执行，因为上一个页面执行push操作所传的路由参数需要在onReady后才有效
+    //this.onContainerCreated();
   }
 
   // override FlutterAbilityAndEntryDelegate ======start
@@ -88,7 +91,18 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   getUniqueId(): string {
-    return this.uniqueId!;
+    if(this.thisParams && this.thisParams.uniqueId){
+      let uniqueId:string = this.thisParams.uniqueId as string;
+      let tmpStr:string = '';
+      if(uniqueId === tmpStr){
+         uniqueId = this.randomUniqueId;
+      }
+      const finalUniqueId = uniqueId as string;
+      return finalUniqueId!;
+    }else {
+      const uniqueId = this.randomUniqueId;
+      return uniqueId!;
+    }
   }
 
   finishContainer(result: Record<string, Object>) {
@@ -237,8 +251,11 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // 当NavDestination即将构建子组件之前会触发此回调
   onReady(routeStack: NavPathStack, params: ESObject): void {
     this.routeStack = routeStack;
+    //对此变量进行重新赋值，此次赋值之后该变量就是完全有效的路由参数了
     this.thisParams = params;
     Log.d(TAG, "#onReady: " + this.getUrl());
+    //执行container的create
+    this.onContainerCreated();
   }
 
   // 当该NavDestination页面显示时触发此回调

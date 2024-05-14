@@ -18,8 +18,11 @@ export struct FlutterUIComponent {
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), {
+    this.flutterEntry = new FlutterBoostEntry(getContext(this));
+    //为了兼容FlutterUIPage和FlutterUIDialog的情况，FlutterUIComponent也需要通过FlutterEntry的onReady进行有效路由参数的传递
+    this.flutterEntry?.onReady(null,{
       uri: this.uri,
+      uniqueId: '',
       params: this.params,
     });
     this.flutterEntry.aboutToAppear();

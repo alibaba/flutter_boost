@@ -5,6 +5,7 @@
 2. 更新FlutterBoost版本说明
 3. 添加clipboard示例
 4. [ohos]更新FlutterBoost项目结构
+5. [ohos]鸿蒙页面返回传参支持
 
 # 4.5.6
 1. [ohos]接管FlutterView绑定引擎的时机，解决Tab场景显示异常的问题，避免冗余的attach/detach
