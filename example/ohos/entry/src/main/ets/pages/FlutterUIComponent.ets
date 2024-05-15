@@ -7,7 +7,7 @@ const TAG: string = "FlutterUIComponent";
 @Component
 export struct FlutterUIComponent {
   @Prop uri: string;
-  @Prop params: Record<string, Object>;
+  @Prop params: Record<string, Object> = {};
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
 
   private flutterEntry: FlutterBoostEntry | null = null;
