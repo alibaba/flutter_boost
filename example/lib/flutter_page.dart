@@ -147,9 +147,10 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                       'Open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.blue),
                     )),
-                onTap: () => BoostNavigator.instance.push("native").then(
-                    (value) =>
-                        debugPrint("Return from Native: ${value.toString()}")),
+                onTap: () => BoostNavigator.instance.push("native", arguments: {
+                  "message": "A Message From Dart"
+                }).then((value) =>
+                    debugPrint("Return from Native: ${value.toString()}")),
               ),
               InkWell(
                 child: Container(

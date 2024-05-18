@@ -28,11 +28,17 @@ const TAG: string = "NativePage";
 @Component
 export struct NativePage {
   private routeStack: NavPathStack | null = null;
+  @Prop params: Record<string, Object> = {}; 
+
   build() {
     NavDestination() {
       Column() {
         Text("ArkUI")
           .fontSize(50)
+          .fontWeight(FontWeight.Bold)
+        Text(JSON.stringify(this.params!["message"]))
+          .fontSize(30)
+          .fontColor(Color.Blue)
           .fontWeight(FontWeight.Bold)
       }
       .justifyContent(FlexAlign.Center)

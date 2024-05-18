@@ -34,34 +34,44 @@ import router from '@ohos.router';
 const TAG: string = "FlutterBoostEntry";
 
 export default class FlutterBoostEntry extends FlutterEntry implements FlutterViewContainer {
-  private randomUniqueId: string         //随机uniqueId，每个FlutterboostEntry一个，在构造函数中进行赋值，当dart侧没有确定uniqueId的时候使用
+  private uniqueId: string
   private isAttached: boolean = false
   private platformPlugin?: PlatformPlugin | null
   private stage?: LifecycleStage;
   private thisContext: Context;
-  private thisParams: ESObject;
+  private routerOptions: ESObject;
   private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
 
-  constructor(context: Context, params: ESObject = {}, isDialog: boolean = false) {
-    super(context, params);
+  constructor(context: Context, routerOptions: ESObject = {}, isDialog: boolean = false) {
+    super(context);
 
     this.thisContext = context;
-    // 该变量需要是上一个页面传过来的路由参数，对于非Tab的情况，此时还无效，需要到onReady的时候才能拿到真正有效的路由参数
-    this.thisParams = params;
+
+    this.routerOptions = routerOptions;
     this.isDialogMode = isDialog;
     
-    const randomUniqueId = util.generateRandomUUID(false);
-    this.randomUniqueId = randomUniqueId;
+    if (this.routerOptions && this.routerOptions.uniqueId) {
+      //1、 当路由参数中的uniqueId不为null的时候，说明uniqueId已经由dart侧确定，因此直接获取
+      this.uniqueId = this.routerOptions.uniqueId as string;
+    } else {
+      //2、 当路由参数中的uniqueId为null的时候，说明uniqueId需要由native侧生成，因此随机生成一个uniqueId
+      const uniqueId = util.generateRandomUUID(false);
+      this.uniqueId = uniqueId;
+    }
+
     this.isAttached = false;
 
     this.stage = LifecycleStage.ON_CREATE;
 
-    // 只有对于Tab的情况才需要在这里执行该函数,否则在onReady中在执行
-    if (this.thisParams !== ({} as ESObject)) this.onContainerCreated();
+    this.onContainerCreated();
   }
 
   // override FlutterAbilityAndEntryDelegate ======start
+  shouldAttachEngineToAbility(): boolean {
+    return false;
+  }
+
   getCachedEngineId(): string {
     return FlutterBoost.ENGINE_ID;
   }
@@ -70,9 +80,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
   // override FlutterViewContainer interface ======start
   getUrl(): string {
-    // 1 如果this.thisParams 不为空，而且存在uri值，则取出来
-    if (this.thisParams && this.thisParams.uri) {
-      const uri = this.thisParams.uri as string;
+    // 1 如果this.routerOptions 不为空，而且存在uri值，则取出来
+    if (this.routerOptions && this.routerOptions.uri) {
+      const uri = this.routerOptions.uri as string;
       return uri;
     } else {
       Log.e(TAG, 'Missing uri');
@@ -81,8 +91,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   getUrlParams(): Record<string, Object> {
-    if (this.thisParams && this.thisParams.params) {
-      const params = this.thisParams.params as Record<string, Object>;
+    if (this.routerOptions && this.routerOptions.params) {
+      const params = this.routerOptions.params as Record<string, Object>;
       return params;
     } else {
       Log.e(TAG, 'Missing params')
@@ -91,15 +101,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   getUniqueId(): string {
-    if (this.thisParams && this.thisParams.uniqueId) {
-      //1、 当路由参数中的uniqueId不为null的时候，说明uniqueId已经由dart侧确定，因此直接获取
-      const uniqueId = this.thisParams.uniqueId as string;
-      return uniqueId!;
-    } else {
-      //2、 当路由参数中的uniqueId为null的时候，说明uniqueId需要由native侧生成，因此返回事先生成并保存了的随机uniqueId
-      const uniqueId = this.randomUniqueId;
-      return uniqueId!;
-    }
+    return this.uniqueId!;
   }
 
   finishContainer(result: Record<string, Object>) {
@@ -144,6 +146,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
   // override FlutterViewContainer interface ====== end
 
+  // override FlutterAbilityAndEntryDelegate ======start
   shouldDispatchAppLifecycleState(): boolean {
     return false;
   }
@@ -151,6 +154,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   attachToEngineAutomatically(): boolean {
     return false;
   }
+
+  // override FlutterAbilityAndEntryDelegate ======end
 
   /**
    * 当容器创建完成时
@@ -246,13 +251,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // super method override ===> end
 
   // 对于非Tab的情况，当NavDestination即将构建子组件之前会触发此回调
-  onReady(routeStack: NavPathStack, params: ESObject): void {
+  onReady(routeStack: NavPathStack): void {
     this.routeStack = routeStack;
-    //对此变量进行重新赋值，此次赋值之后该变量就是完全有效的路由参数了
-    this.thisParams = params;
     Log.d(TAG, "#onReady: " + this.getUrl());
-    //执行container的create
-    this.onContainerCreated();
   }
 
   // 当该NavDestination页面显示时触发此回调
