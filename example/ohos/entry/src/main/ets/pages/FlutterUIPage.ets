@@ -33,10 +33,11 @@ export struct FlutterUIPage {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
+  @Prop routerOptions: RouterOptions;
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
-    this.flutterEntry = new FlutterBoostEntry(getContext(this));
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions);
     this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
@@ -77,8 +78,7 @@ export struct FlutterUIPage {
     .onReady((ctx: NavDestinationContext) => {
       try {
         hilog.info(0x0000, TAG, "onReady===");
-        let params = ctx.pathInfo.param as RouterOptions;
-        this.flutterEntry?.onReady(ctx.pathStack, params ?? {});
+        this.flutterEntry?.onReady(ctx.pathStack);
       } catch (e) {
         hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
       }

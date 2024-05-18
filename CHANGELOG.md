@@ -1,6 +1,7 @@
 ## NEXT
 1. [ohos]鸿蒙页面返回传参支持
 2. [ohos]修复Tab场景下log莫名报‘Missing params’的问题
+3. [ohos]重构ets层页面路由参数传递逻辑，支持native页面获取来自上一个native或flutter页面的业务参数
 
 # 4.5.7
 1. [ohos]问题已修复，统一使用回鸿蒙社区的git依赖

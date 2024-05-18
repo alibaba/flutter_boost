@@ -41,7 +41,10 @@ const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
   // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions) {
-    RouterModule.push(RouterNameConstants.NATIVE_PAGE)
+    RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
+      /*"native"*/options.getPageName(),
+      options.getArguments(),
+      /*null*/options.getUniqueId()));
   }
 
   // 打开flutter页面

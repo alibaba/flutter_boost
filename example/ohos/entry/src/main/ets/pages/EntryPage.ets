@@ -28,7 +28,7 @@ import { FlutterUIComponent } from './FlutterUIComponent';
 import { FlutterUIPage } from './FlutterUIPage';
 import { FlutterUIDialog } from './FlutterUIDialog';
 import { NativePage } from './NativePage';
-import { RouterModule } from '../router/RouterModule';
+import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 
 const TAG: string = "EntryPage";
@@ -60,13 +60,13 @@ struct EntryPage {
     }.width('100%')
   }
 
-  @Builder routerMap(builderName: string, param: object) {
+  @Builder routerMap(builderName: string, routerOptions: RouterOptions) {
     if (builderName == RouterNameConstants.FLUTTER_PAGE) {
-      FlutterUIPage()
+      FlutterUIPage({ routerOptions: routerOptions })
     } else if (builderName == RouterNameConstants.FLUTTER_DIALOG) {
-      FlutterUIDialog()
+      FlutterUIDialog({ routerOptions: routerOptions })
     } else {
-      NativePage()
+      NativePage({ params: routerOptions ? routerOptions.params : {} })
     }
   }
 
@@ -91,7 +91,10 @@ struct EntryPage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            RouterModule.push(RouterNameConstants.NATIVE_PAGE);
+            RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
+              "native",
+              { "message": "A Message From Native" },
+              null));
           } catch (err) {
             hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Native页面');
           }
