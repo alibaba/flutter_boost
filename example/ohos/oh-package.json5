@@ -1,4 +1,5 @@
 {
+  "modelVersion": "5.0.0",
   "license": "",
   "devDependencies": {
     "@ohos/hypium": "1.0.6"
