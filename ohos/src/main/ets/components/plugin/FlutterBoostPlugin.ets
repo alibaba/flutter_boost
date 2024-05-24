@@ -52,8 +52,6 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   private channel: FlutterRouterApi | null // 发送到dart
   private engine: FlutterEngine | null
   private delegate: FlutterBoostDelegate | null
-  private requestCode: number = 1000;
-  private pageNames: Map<number, string>
   private dartStack: StackInfo
   private listenersTable: Record<string, EventListener[]> = {};
 
@@ -61,7 +59,6 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     this.engine = null
     this.delegate = null
     this.channel = null
-    this.pageNames = new Map<number, string>()
     this.dartStack = new StackInfo()
   }
 
@@ -90,10 +87,6 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // NativeRouterApi override ==> start
   onPushNativeRoute(params: CommonParams) {
     if (this.delegate) {
-      this.requestCode++;
-      if (this.pageNames && params.pageName) {
-        this.pageNames.set(this.requestCode, params.pageName)
-      }
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
         builder.setPageName(params.pageName)
@@ -101,8 +94,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       if (params.arguments) {
         builder.setArguments(params.arguments)
       }
-      builder.setRequestCode(this.requestCode)
-      this.delegate.pushNativeRoute(builder.build());
+      this.delegate.pushNativeRoute(builder.build(), (pageName: string, result: Record<string, Object>) => {
+        this.onPageResult(pageName, result)
+      });
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
     }
@@ -124,8 +118,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       if (params.uniqueId) {
         builder.setUniqueId(params.uniqueId)
       }
-      builder.setRequestCode(this.requestCode)
-      this.delegate.pushFlutterRoute(builder.build());
+      this.delegate.pushFlutterRoute(builder.build(), (pageName: string, result: Record<string, Object>) => {
+        this.onPageResult(pageName, result)
+      });
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
     }
@@ -369,6 +364,26 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       throw new Error("The engine is not ready for use. " +
         "The message may be drop silently by the engine. " +
         "You should check 'DartExecutor.isExecutingDart()' first!");
+    }
+  }
+
+  private onPageResult(pageName: string, result: Record<string, Object>) {
+    if (this.channel) {
+      this.checkEngineState();
+      let params = new CommonParams();
+      if (pageName) {
+        params.pageName = pageName;
+        if (result) {
+          params.arguments = result;
+        }
+
+        // Get a result back from an page when it ends.
+        this.channel.onNativeResult(params, () => {
+          Log.d(TAG, "#onNativeResult return, pageName=" + pageName + ", " + this);
+        });
+      }
+    } else {
+      throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
     }
   }
 }

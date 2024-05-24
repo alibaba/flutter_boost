@@ -140,7 +140,7 @@ export class FlutterBoost {
    * @param pageName 页面名称
    * @param param 参数
    */
-  public open(pageName: string, param: Record<string, Object>, opaque?: boolean) {
+  public open(pageName: string, param: Record<string, Object>, opaque?: boolean, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
     let options = new FlutterBoostRouteOptionsBuilder()
       .setPageName(pageName)
       .setArguments(param)
@@ -150,7 +150,7 @@ export class FlutterBoost {
     if (plugin) {
       const delegate = plugin.getDelegate() as FlutterBoostDelegate;
       if (delegate) {
-        delegate.pushFlutterRoute(options);
+        delegate.pushFlutterRoute(options, onPageResult);
       } else {
         Log.e(TAG, 'open fail. get delegate fail! Maybe setup function has not been invoked.');
       }

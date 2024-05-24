@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 import hilog from '@ohos.hilog';
+import { FlutterBoostRouteResult } from 'flutter_boost';
 
 const TAG: string = "NativePage";
 
@@ -50,7 +51,7 @@ export struct NativePage {
     .hideTitleBar(true)
     .onBackPressed(() => {
       hilog.info(0x0000, TAG, "onBackPressed===");
-      this.routeStack?.pop();
+      this.routeStack?.pop(new FlutterBoostRouteResult({ "message": "pop from a native page" }));
       return true
     })
     .onAppear(() => {
