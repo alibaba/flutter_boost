@@ -1,3 +1,4 @@
+import { FlutterBoostRouteResult } from 'flutter_boost';
 
 export class RouterOptions {
     constructor(uri: string, params: Record<string, Object>, uniqueId: string | null) {
@@ -17,17 +18,22 @@ export class RouterModule {
         RouterModule.routeStack = stack;
     }
 
-    public static push(name: string, routerOptions?: RouterOptions): void {
+    public static push(name: string, routerOptions?: RouterOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void {
         if (RouterModule.routeStack != null) {
-            RouterModule.routeStack.pushPath({name: name, param: routerOptions});
+            RouterModule.routeStack.pushPath({name: name, param: routerOptions, onPop: (popInfo: PopInfo) => {
+              if (onPageResult) {
+                onPageResult(routerOptions ? routerOptions.uri : "native",
+                    (popInfo && popInfo.result) ? ((popInfo.result as FlutterBoostRouteResult).result) : ({} as Record<string, Object>));
+              }
+            }});
         } else {
             throw new Error('routeStack is null!');
         }
     }
 
-    public static pop(): void {
+    public static pop(result: Record<string, Object> = {}): void {
         if (RouterModule.routeStack != null) {
-            RouterModule.routeStack.pop();
+            RouterModule.routeStack.pop(new FlutterBoostRouteResult(result));
         } else {
             throw new Error('routeStack is null!');
         }

@@ -23,6 +23,7 @@
  */
 
 import hilog from '@ohos.hilog';
+import promptAction from '@ohos.promptAction'
 import { FlutterBoost } from 'flutter_boost';
 import { FlutterUIComponent } from './FlutterUIComponent';
 import { FlutterUIPage } from './FlutterUIPage';
@@ -82,7 +83,9 @@ struct EntryPage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            FlutterBoost.getInstance().open('flutterPage', {})
+            FlutterBoost.getInstance().open('flutterPage', {}, /*opaque*/true, (pageName: string, result: Record<string, Object>) => {
+              this.onPageResult(pageName, result)
+            })
           } catch (err) {
             hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
           }
@@ -94,7 +97,9 @@ struct EntryPage {
             RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
               "native",
               { "message": "A Message From Native" },
-              null));
+              null), (pageName: string, result: Record<string, Object>) => {
+                this.onPageResult(pageName, result)
+              });
           } catch (err) {
             hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Native页面');
           }
@@ -170,5 +175,11 @@ struct EntryPage {
   onBackPress(): boolean | void {
     FlutterBoost.getInstance().getPlugin()?.onBackPressed();
     return true;
+  }
+
+  onPageResult(pageName: string, result: Record<string, Object>) {
+    if (result) {
+      promptAction.showToast({ message: "#onPageResult:" + JSON.stringify(result) });
+    }
   }
 }

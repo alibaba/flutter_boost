@@ -149,8 +149,13 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                     )),
                 onTap: () => BoostNavigator.instance.push("native", arguments: {
                   "message": "A Message From Dart"
-                }).then((value) =>
-                    debugPrint("Return from Native: ${value.toString()}")),
+                }).then((value) {
+                  debugPrint("Return from Native: ${value.toString()}");
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(
+                        SnackBar(content: Text("#onPageResult:" + "$value")));
+                }),
               ),
               InkWell(
                 child: Container(

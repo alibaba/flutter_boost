@@ -1,4 +1,5 @@
 ## NEXT
+1. [ohos]完全支持鸿蒙页面返回参数传递，包括全部四种情况(native返回native、Flutter返回native、native返回Flutter、Flutter返回Flutter)
 
 # 4.5.8
 1. [ohos]鸿蒙页面返回传参支持

@@ -33,6 +33,13 @@ import router from '@ohos.router';
 
 const TAG: string = "FlutterBoostEntry";
 
+export class FlutterBoostRouteResult {
+  constructor(result: Record<string, Object>) {
+    this.result = result;
+  }
+  result: Record<string, Object> = {}
+}
+
 export default class FlutterBoostEntry extends FlutterEntry implements FlutterViewContainer {
   private uniqueId: string
   private isAttached: boolean = false
@@ -107,7 +114,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   finishContainer(result: Record<string, Object>) {
     Log.d(TAG, "#finishContainer: " + this.getUrl());
     if (this.stage !== LifecycleStage.ON_FINISH) {
-      this.routeStack ? this.routeStack.pop() : router.back();
+      this.routeStack ? this.routeStack.pop(new FlutterBoostRouteResult(result)) : router.back();
       this.stage = LifecycleStage.ON_FINISH;
     } else {
       Log.e(TAG, 'finishContainer can not called twice!');

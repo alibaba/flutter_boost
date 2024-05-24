@@ -40,15 +40,15 @@ import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
 const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
   // 打开原生页面
-  pushNativeRoute(options: FlutterBoostRouteOptions) {
+  pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
     RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
       /*"native"*/options.getPageName(),
       options.getArguments(),
-      /*null*/options.getUniqueId()));
+      /*null*/options.getUniqueId()), onPageResult);
   }
 
   // 打开flutter页面
-  pushFlutterRoute(options: FlutterBoostRouteOptions) {
+  pushFlutterRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
     let routerName: string = RouterNameConstants.FLUTTER_PAGE
     if (!options.isOpaque()) {
       routerName = RouterNameConstants.FLUTTER_DIALOG
@@ -56,7 +56,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
     RouterModule.push(routerName, new RouterOptions(options.getPageName(),
       options.getArguments(),
-      options.getUniqueId()));
+      options.getUniqueId()), onPageResult);
   }
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
