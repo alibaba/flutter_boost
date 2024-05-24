@@ -1,5 +1,11 @@
 ## NEXT
+
+## 5.0.2
 1. Adapt to the official engine's App Lifecycle state changes
+2. fix: android add namespace
+3. fix-1962
+4. [Android]fix SystemUiOverlayStyle设置失效
+5. fix-1863
 
 ## 5.0.1
 1. Add `mixin` modifier to avoid breaking user codes
