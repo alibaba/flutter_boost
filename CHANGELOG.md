@@ -2,6 +2,7 @@
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例
 2. [ohos]修复透明弹窗由于被其他全屏page遮盖导致弹窗再现时页面假死等一系列问题，补充和dialog相关场景example demo
 3. [ohos]解决FlutterBoostEntry中onPageHide的调用和onPageShow不对称问题
+4. [ohos]适配最新的PlatformView方案
 
 # 4.5.10
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
