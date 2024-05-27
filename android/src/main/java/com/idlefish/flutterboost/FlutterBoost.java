@@ -18,7 +18,9 @@ import java.util.Map;
 import io.flutter.embedding.android.FlutterEngineProvider;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
@@ -75,7 +77,7 @@ public class FlutterBoost {
             if (engine == null) {
                 // Second, when the engine from option.flutterEngineProvider is null,
                 // we should create a new engine
-                engine = new FlutterEngine(application, options.shellArgs());
+                engine = new FlutterEngine(application, null, null, new FBPlatformViewsController(), options.shellArgs(), true);
             }
 
             // Cache the created FlutterEngine in the FlutterEngineCache.

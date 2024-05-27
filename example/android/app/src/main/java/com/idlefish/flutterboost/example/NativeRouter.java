@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-
 import com.idlefish.flutterboost.example.tab.TabCustomViewActivity;
 import com.idlefish.flutterboost.example.tab.TabMainActivity;
+import com.idlefish.flutterboost.example.tab.TabPlatformViewActivity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +29,8 @@ public class NativeRouter {
     public static final String NATIVE_PAGE_URL = "sample://nativePage";
     public static final String FLUTTER_PAGE_URL = "sample://flutterPage";
     public static final String FLUTTER_FRAGMENT_PAGE_URL = "sample://flutterFragmentPage";
+    public static final String FLUTTER_PLATFORMVIEW_FRAGMENT_PAGE_URL = "sample" +
+            "://flutterPlatformViewFragmentPage";
     public static final String FLUTTER_CUSTOM_VIEW_URL = "sample://FlutterCustomView";
 
     public static boolean openPageByUrl(Context context, String url, Map params) {
@@ -39,27 +41,30 @@ public class NativeRouter {
 
         String path = url.split("\\?")[0];
 
-        Log.i("openPageByUrl",path);
+        Log.i("openPageByUrl", path);
 
         try {
             if (pageName.containsKey(path)) {
-                Intent intent =FlutterActivity.createDefaultIntent(context);
-                if(context instanceof Activity){
-                    Activity activity=(Activity)context;
-                    activity.startActivityForResult(intent,requestCode);
-                }else{
+                Intent intent = FlutterActivity.createDefaultIntent(context);
+                if (context instanceof Activity) {
+                    Activity activity = (Activity) context;
+                    activity.startActivityForResult(intent, requestCode);
+                } else {
                     context.startActivity(intent);
                 }
                 return true;
             } else if (url.startsWith(FLUTTER_FRAGMENT_PAGE_URL)) {
                 context.startActivity(new Intent(context, TabMainActivity.class));
                 return true;
+            } else if (url.startsWith(FLUTTER_PLATFORMVIEW_FRAGMENT_PAGE_URL)) {
+                context.startActivity(new Intent(context, TabPlatformViewActivity.class));
+                return true;
             } else if (url.startsWith(NATIVE_PAGE_URL)) {
                 context.startActivity(new Intent(context, NativePageActivity.class));
                 return true;
             } else if (url.startsWith(FLUTTER_CUSTOM_VIEW_URL)) {
                 context.startActivity(new Intent(context, TabCustomViewActivity.class));
-                return  true;
+                return true;
             }
 
             return false;

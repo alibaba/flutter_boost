@@ -62,6 +62,17 @@
         </activity>
 
         <activity
+            android:name=".tab.TabPlatformViewActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background"/>
+
+        </activity>
+
+        <activity
             android:name=".tab.TabCustomViewActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"

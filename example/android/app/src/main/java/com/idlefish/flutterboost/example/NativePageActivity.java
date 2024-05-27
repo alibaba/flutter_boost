@@ -6,15 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
 
@@ -23,6 +22,8 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
     private TextView mOpenNative;
     private TextView mOpenFlutter;
     private TextView mOpenFlutterFragment;
+
+    private TextView mOpenFlutterPlatformViewFragment;
 
     @Override
     protected void onResume() {
@@ -37,9 +38,13 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
 
         mOpenNative = findViewById(R.id.open_native);
         mOpenFlutter = findViewById(R.id.open_flutter);
+        mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
+        mOpenFlutterPlatformViewFragment = findViewById(R.id.open_flutter_platformview_fragment);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
+        mOpenFlutterFragment.setOnClickListener(this);
+        mOpenFlutterPlatformViewFragment.setOnClickListener(this);
     }
 
     @Override
@@ -61,6 +66,8 @@ public class NativePageActivity extends AppCompatActivity implements View.OnClic
             startActivity(intent);
         } else if (v == mOpenFlutterFragment) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
+        } else if (v == mOpenFlutterPlatformViewFragment) {
+            NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_PLATFORMVIEW_FRAGMENT_PAGE_URL,params);
         }
     }
 
