@@ -2,21 +2,18 @@ package com.idlefish.flutterboost.example;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.idlefish.flutterboost.FlutterBoost;
 import com.idlefish.flutterboost.containers.FlutterBoostActivity;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
-import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
@@ -27,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView mOpenNative;
     private TextView mOpenFlutter;
     private TextView mOpenFlutterFragment;
+    private TextView mOpenFlutterPlatformViewFragment;
     private TextView mOpenCustomViewTab;
 
     @Override
@@ -43,11 +41,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mOpenNative = findViewById(R.id.open_native);
         mOpenFlutter = findViewById(R.id.open_flutter);
         mOpenFlutterFragment = findViewById(R.id.open_flutter_fragment);
+        mOpenFlutterPlatformViewFragment = findViewById(R.id.open_flutter_platformview_fragment);
         mOpenCustomViewTab = findViewById(R.id.open_custom_view_tab);
 
         mOpenNative.setOnClickListener(this);
         mOpenFlutter.setOnClickListener(this);
         mOpenFlutterFragment.setOnClickListener(this);
+        mOpenFlutterPlatformViewFragment.setOnClickListener(this);
         mOpenCustomViewTab.setOnClickListener(this);
     }
 
@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivityForResult(intent, REQUEST_CODE);
         } else if (v == mOpenFlutterFragment) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_FRAGMENT_PAGE_URL,params);
+        } else if (v == mOpenFlutterPlatformViewFragment) {
+            NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_PLATFORMVIEW_FRAGMENT_PAGE_URL,params);
         } else if (v == mOpenCustomViewTab) {
             NativeRouter.openPageByUrl(this, NativeRouter.FLUTTER_CUSTOM_VIEW_URL, params);
         }

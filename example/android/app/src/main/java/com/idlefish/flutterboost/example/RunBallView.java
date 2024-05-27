@@ -28,5 +28,6 @@ class RunBallView implements PlatformView {
 
     @Override
     public void dispose() {
+       view.destroy();
     }
 }
