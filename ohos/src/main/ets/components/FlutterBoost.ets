@@ -51,12 +51,17 @@ export class FlutterBoost {
   private flutterEngine: FlutterEngine | null = null
   private delegate: FlutterBoostDelegate | null = null
   private plugin: FlutterBoostPlugin | null = null
+  private isInBackground: boolean = false;
 
   public static getInstance(): FlutterBoost {
     if (!FlutterBoost.instance) {
       FlutterBoost.instance = new FlutterBoost();
     }
     return FlutterBoost.instance;
+  }
+
+  public isAppInBackground(): boolean {
+    return this.isInBackground;
   }
 
   /**
@@ -204,6 +209,7 @@ export class FlutterBoost {
    * Ability has brought to foreground
    */
   public onBackground() {
+    this.isInBackground = true;
     this.getPlugin()?.onBackground();
   }
 
@@ -212,5 +218,6 @@ export class FlutterBoost {
    */
   public onForeground() {
     this.getPlugin()?.onForeground();
+    this.isInBackground = false;
   }
 }

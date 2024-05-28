@@ -2,6 +2,7 @@
 1. [ohos]完全支持鸿蒙页面返回参数传递，包括全部四种情况(native返回native、Flutter返回native、native返回Flutter、Flutter返回Flutter)
 2. [ohos]添加前后台事件通知逻辑
 3. [ohos]让业务可以控制调试日志的输出
+4. [ohos]解决透明弹窗场景下前后台切换页面假死的问题
 
 # 4.5.8
 1. [ohos]鸿蒙页面返回传参支持

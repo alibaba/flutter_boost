@@ -238,7 +238,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageShow(): void { //生命周期
-    if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
+    let isAppInBackground = FlutterBoost.getInstance().isAppInBackground();
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow, isAppInBackground=" + isAppInBackground + ", " + this.getUrl());
+    if (isAppInBackground) return;
     // Calls super method
     super.onPageShow();
 
@@ -247,7 +249,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
-    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
+    let isAppInBackground = FlutterBoost.getInstance().isAppInBackground();
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide, isAppInBackground= " + isAppInBackground + ", " + this.getUrl());
+    if (isAppInBackground) return;
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
 
