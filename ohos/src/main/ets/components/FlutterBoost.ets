@@ -21,15 +21,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-import FlutterBoostDelegate from './FlutterBoostDelegate';
-import { FlutterBoostSetupOptions } from './FlutterBoostSetupOptions';
-import { FlutterEngine,PlatformViewsController,FlutterEngineCache ,FlutterInjector} from '@ohos/flutter_ohos';//src/main/ets/embedding/engine/FlutterEngine';
-import { DartEntrypoint } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/dart/DartExecutor';
 import common from '@ohos.app.ability.common';
-import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
-import FlutterBoostUtils from './FlutterBoostUtils';
+import {
+  FlutterEngine,
+  FlutterEngineCache,
+  FlutterInjector,
+  PlatformViewsController
+} from '@ohos/flutter_ohos';
+import { DartEntrypoint } from '@ohos/flutter_ohos/src/main/ets/embedding/engine/dart/DartExecutor';
 import CommonParams from './messages/CommonParams';
+import FlutterBoostDelegate from './FlutterBoostDelegate';
+import FlutterBoostUtils from './FlutterBoostUtils';
 import { FlutterBoostRouteOptionsBuilder } from './FlutterBoostRouteOptions';
+import { FlutterBoostSetupOptions } from './FlutterBoostSetupOptions';
+import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
 import Log from './util/Log';
 
 const TAG = "FlutterBoost";
@@ -42,13 +47,10 @@ const TAG = "FlutterBoost";
 export class FlutterBoost {
   private static instance: FlutterBoost;
   public static ENGINE_ID = 'flutter_boost_default_engine'
-  public static APP_LIFECYCLE_CHANGED_KEY = 'app_lifecycle_changed_key'
-  public static LIFECYCLE_STATE = 'lifecycleState'
-  public static FLUTTER_APP_STATE_RESUMED = 0
-  public static FLUTTER_APP_STATE_PAUSED = 2
-  private plugin?: FlutterBoostPlugin | null
-  private flutterEngine?: FlutterEngine | null
-  private delegate?: FlutterBoostDelegate
+
+  private flutterEngine: FlutterEngine | null = null
+  private delegate: FlutterBoostDelegate | null = null
+  private plugin: FlutterBoostPlugin | null = null
 
   public static getInstance(): FlutterBoost {
     if (!FlutterBoost.instance) {
@@ -179,10 +181,10 @@ export class FlutterBoost {
         if (plugin != null) {
           this.plugin = plugin;
         } else {
-          throw new Error('getPlugin fail. can not get the FlutterBoostPlugin instance,')
+          throw new Error('Oops! Failed to get |FlutterBoostPlugin|.')
         }
       } else {
-        throw new Error('getPlugin fail. can not get the engine instance,')
+        Log.e(TAG, 'Oops! Failed to get |FlutterEngine|. Maybe setup function has not been invoked.');
       }
     }
     return this.plugin;
@@ -194,21 +196,20 @@ export class FlutterBoost {
    * @param args 事件的参数
    */
   public sendEventToFlutter(key: string, args: Record<string, Object>) {
-    let params = new CommonParams();
-    params.key = key;
-    params.arguments = args as Record<string, Object>;
-    this.getPlugin()?.getChannel()?.sendEventToFlutter(params, () => {
-    });
+    this.getPlugin()?.sendEventToFlutter(key, args);
   }
 
   /**
-   * 修改Flutter应用生命周期状态
-   * @param state 状态值
+   * Ability has brought to foreground
    */
-  public changeFlutterAppLifecycle(state: Number) {
-    // assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
-    let args: Record<string, Object> = {}
-    args[FlutterBoost.LIFECYCLE_STATE] = state;
-    this.sendEventToFlutter(FlutterBoost.APP_LIFECYCLE_CHANGED_KEY, args);
+  public onBackground() {
+    this.getPlugin()?.onBackground();
+  }
+
+  /**
+   * Ability has back to background
+   */
+  public onForeground() {
+    this.getPlugin()?.onForeground();
   }
 }

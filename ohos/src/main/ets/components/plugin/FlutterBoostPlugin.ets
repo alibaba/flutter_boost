@@ -23,15 +23,16 @@
  */
 
 import {
+  FlutterEngine,
   FlutterPlugin,
-  FlutterPluginBinding
-} from '@ohos/flutter_ohos/src/main/ets/embedding/engine/plugins/FlutterPlugin';
-import { MethodCallHandler, MethodResult } from '@ohos/flutter_ohos/src/main/ets/plugin/common/MethodChannel';
-import MethodCall from '@ohos/flutter_ohos/src/main/ets/plugin/common/MethodCall';
+  FlutterPluginBinding,
+  MethodCall,
+  MethodCallHandler,
+  MethodResult,
+} from '@ohos/flutter_ohos';
+
 import { FlutterViewContainer } from '../containers/FlutterViewContainer';
 import FlutterContainerManager from '../containers/FlutterContainerManager';
-import { FlutterEngine } from '@ohos/flutter_ohos';
-import { FlutterBoost } from '../FlutterBoost';
 import FlutterRouterApi from '../messages/FlutterRouterApi';
 import NativeRouterApi, { NativeRouterApiSetup } from '../messages/NativeRouterApi';
 import FlutterBoostDelegate from '../FlutterBoostDelegate';
@@ -49,6 +50,11 @@ const TAG = 'FlutterBoostPlugin'
  */
 export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, NativeRouterApi {
   public static className = 'FlutterBoostPlugin'
+  public static APP_LIFECYCLE_CHANGED_KEY = 'app_lifecycle_changed_key'
+  public static LIFECYCLE_STATE = 'lifecycleState'
+  public static FLUTTER_APP_STATE_RESUMED = 0
+  public static FLUTTER_APP_STATE_PAUSED = 2
+
   private channel: FlutterRouterApi | null // 发送到dart
   private engine: FlutterEngine | null
   private delegate: FlutterBoostDelegate | null
@@ -272,7 +278,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     Log.i(TAG, "#onContainerCreated: " + uniqueId);
     FlutterContainerManager.getInstance().addContainer(uniqueId, container);
     if (FlutterContainerManager.getInstance().getContainerSize() == 1) {
-      FlutterBoost.getInstance().changeFlutterAppLifecycle(FlutterBoost.FLUTTER_APP_STATE_RESUMED);
+      this.changeFlutterAppLifecycle(FlutterBoostPlugin.FLUTTER_APP_STATE_RESUMED);
     }
   }
 
@@ -313,6 +319,65 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     this._sendRemoveRoute(uniqueId, args);
     // 2.移除FlutterContainerManager中的container
     FlutterContainerManager.getInstance().removeContainer(uniqueId);
+  }
+
+  /**
+   * 修改Flutter应用生命周期状态
+   * @param state 状态值
+   */
+  public changeFlutterAppLifecycle(state: Number) {
+    // assert (state == FLUTTER_APP_STATE_PAUSED || state == FLUTTER_APP_STATE_RESUMED);
+    let args: Record<string, Object> = {}
+    args[FlutterBoostPlugin.LIFECYCLE_STATE] = state;
+    this.sendEventToFlutter(FlutterBoostPlugin.APP_LIFECYCLE_CHANGED_KEY, args);
+  }
+
+  /**
+   * 向Flutter发送事件
+   * @param key 事件的键
+   * @param args 事件的参数
+   */
+  public sendEventToFlutter(key: string, args: Record<string, Object>) {
+    if (this.channel) {
+      let params = new CommonParams();
+      params.key = key;
+      params.arguments = args as Record<string, Object>;
+      this.channel.sendEventToFlutter(params, () => {});
+    } else {
+      throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+    }
+  }
+
+  public onForeground() {
+    Log.d(TAG, "## onForeground start");
+    if (this.channel != null) {
+      this.checkEngineState();
+      let params = new CommonParams()
+      this.channel.onForeground(params, () => {
+        Log.d(TAG, "## onForeground end");
+      });
+
+      // The scheduling frames are resumed when [onForeground] is called.
+      this.changeFlutterAppLifecycle(FlutterBoostPlugin.FLUTTER_APP_STATE_RESUMED);
+    } else {
+      throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+    }
+  }
+
+  public onBackground() {
+    Log.d(TAG, "## onBackground start");
+    if (this.channel != null) {
+      this.checkEngineState();
+      let params = new CommonParams()
+      this.channel.onBackground(params, () => {
+        Log.d(TAG, "## onBackground end");
+      });
+
+      // The scheduling frames are paused when [onBackground] is called.
+      this.changeFlutterAppLifecycle(FlutterBoostPlugin.FLUTTER_APP_STATE_PAUSED);
+    } else {
+      throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
+    }
   }
 
   private _sendContainerShow(uniqueId: string) {
