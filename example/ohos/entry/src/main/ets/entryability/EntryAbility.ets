@@ -120,10 +120,12 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
   // Ability has brought to foreground
   onForeground(): void {
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onForeground');
+    FlutterBoost.getInstance().onForeground();
   }
 
   // Ability has back to background
   onBackground(): void {
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onBackground');
+    FlutterBoost.getInstance().onBackground();
   }
 }
