@@ -31,6 +31,7 @@ export class FlutterBoostSetupOptionsBuilder {
   public shouldOverrideBackForegroundEvent: boolean = false;
   public shellArgs: string[];
   public flutterEngineProvider: FlutterEngineProvider | null;
+  public isDebugLoggingEnabled: boolean = false;
 
   constructor() {
     this.initialRoute = '/'
@@ -39,6 +40,7 @@ export class FlutterBoostSetupOptionsBuilder {
     this.shouldOverrideBackForegroundEvent = false
     this.shellArgs = []
     this.flutterEngineProvider = null
+    this.isDebugLoggingEnabled = false
   }
 
   public setInitialRoute(initialRoute: string): FlutterBoostSetupOptionsBuilder {
@@ -72,6 +74,11 @@ export class FlutterBoostSetupOptionsBuilder {
     return this;
   }
 
+  public setDebugLoggingEnabled(enabled: boolean): FlutterBoostSetupOptionsBuilder {
+    this.isDebugLoggingEnabled = enabled
+    return this;
+  }
+
   public build(): FlutterBoostSetupOptions {
     return new FlutterBoostSetupOptions(this);
   }
@@ -86,6 +93,7 @@ export class FlutterBoostSetupOptions {
   private readonly dartEntrypointArgs: string[];
   private readonly shellArgs: string[];
   private readonly shouldOverrideBackForegroundEvent: boolean;
+  private readonly isLoggingEnabled: boolean;
   private flutterEngineProvider: FlutterEngineProvider | null;
 
   public constructor(builder: FlutterBoostSetupOptionsBuilder) {
@@ -95,6 +103,7 @@ export class FlutterBoostSetupOptions {
     this.shellArgs = builder.shellArgs;
     this.shouldOverrideBackForegroundEvent = builder.shouldOverrideBackForegroundEvent;
     this.flutterEngineProvider = builder.flutterEngineProvider;
+    this.isLoggingEnabled = builder.isDebugLoggingEnabled;
   }
 
   public static createDefault(): FlutterBoostSetupOptions {
@@ -123,6 +132,10 @@ export class FlutterBoostSetupOptions {
 
   public getShouldOverrideBackForegroundEvent(): boolean {
     return this.shouldOverrideBackForegroundEvent;
+  }
+
+  public isDebugLoggingEnabled(): boolean {
+    return this.isLoggingEnabled;
   }
 
   public toString(): string {

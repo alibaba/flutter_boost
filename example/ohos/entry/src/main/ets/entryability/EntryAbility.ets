@@ -29,9 +29,11 @@ import {
   FlutterBoost,
   FlutterBoostDelegate,
   FlutterBoostRouteOptions,
+  FlutterBoostSetupOptions,
   FlutterBoostSetupOptionsBuilder
 } from 'flutter_boost';
 import { FlutterManager} from '@ohos/flutter_ohos';
+import ApplicationInfoLoader from '@ohos/flutter_ohos/src/main/ets/embedding/engine/loader/ApplicationInfoLoader';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
 import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
@@ -39,6 +41,7 @@ import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
 
 const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
+
   // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
     RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
@@ -74,10 +77,14 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onWindowStageCreate');
     FlutterManager.getInstance().pushWindowStage(this, windowStage)
 
-    const optionsBuilder: FlutterBoostSetupOptionsBuilder = new FlutterBoostSetupOptionsBuilder()
+    let applicationInfo = ApplicationInfoLoader.load(this.context);
+    const options: FlutterBoostSetupOptions = new FlutterBoostSetupOptionsBuilder()
       .setShellArgs(['--trace-systrace', '--user-authorization-code=QZvoUptODA+KDgeFUluhheYns7X7CnDu9YRv8YmU0GXQcKLzs4C2WgjblrAIhtkqqGg=='])
       .setDartEntrypointArgs(['I am from ohos!', '--for-test'])
+      .setDebugLoggingEnabled(applicationInfo.isDebugMode)
+      .build()
 
+    hilog.info(0x0000, TAG, 'isDebugMode: %{public}s', options.isDebugLoggingEnabled());
     FlutterBoost.getInstance().setup(this, this.context, (engine) => {
       hilog.info(0x0000, TAG, '%{public}s', '引擎初始化成功');
 
@@ -108,7 +115,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
           let bottomRectHeight = avoidArea.bottomRect.height; // 获取到导航条区域的高度
           AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
       });
-    }, optionsBuilder.build())
+    }, options)
   }
 
   // Main window is destroyed, release UI related resources

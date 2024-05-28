@@ -77,6 +77,7 @@ export class FlutterBoost {
       // 指定默认设置参数（初始路由为/,入口参数main）
       options = FlutterBoostSetupOptions.createDefault();
     }
+    FlutterBoostUtils.setDebugLoggingEnabled(options.isDebugLoggingEnabled());
 
     // 1. 初始化引擎
     let engine: FlutterEngine | null = this.getEngine()

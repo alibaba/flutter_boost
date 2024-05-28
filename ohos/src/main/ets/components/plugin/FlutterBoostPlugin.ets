@@ -42,6 +42,7 @@ import StackInfo from '../messages/StackInfo';
 import { FlutterBoostRouteOptionsBuilder } from '../FlutterBoostRouteOptions';
 import EventListener from '../util/EventListener';
 import ListenerRemover from '../util/ListenerRemover';
+import FlutterBoostUtils from '../FlutterBoostUtils';
 
 const TAG = 'FlutterBoostPlugin'
 
@@ -66,6 +67,10 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     this.delegate = null
     this.channel = null
     this.dartStack = new StackInfo()
+  }
+
+  private isTraceEnabled(): boolean {
+    return FlutterBoostUtils.isDebugLoggingEnabled();
   }
 
   onMethodCall(call: MethodCall, result: MethodResult) {
@@ -109,7 +114,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPushFlutterRoute(params: CommonParams) {
-    Log.i(TAG, "#onPushFlutterRoute: " + params.pageName);
+    if (this.isTraceEnabled()) Log.i(TAG, "#onPushFlutterRoute: " + params.pageName);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -134,7 +139,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   onPopRoute(params: CommonParams, completion: () => void) {
     const uniqueId = params.uniqueId
-    Log.i(TAG, "#onPopRoute: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "#onPopRoute: " + uniqueId);
     if (uniqueId && uniqueId.length > 0) {
       const container = FlutterContainerManager.getInstance().findContainerById(uniqueId);
       if (container) {
@@ -149,12 +154,12 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onGetStackFromHost(): StackInfo {
-    Log.i(TAG, "#getStackFromHost: " + this.dartStack)
+    if (this.isTraceEnabled()) Log.i(TAG, "#getStackFromHost: " + this.dartStack)
     return this.dartStack
   }
 
   onSaveStackToHost(args: StackInfo) {
-    Log.i(TAG, "#saveStackToHost: " + this.dartStack);
+    if (this.isTraceEnabled()) Log.i(TAG, "#saveStackToHost: " + this.dartStack);
     this.dartStack = args;
   }
 
@@ -196,7 +201,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   // public method
   public onBackPressed() {
-    Log.i(TAG, "#onBackPressed");
+    if (this.isTraceEnabled()) Log.i(TAG, "#onBackPressed");
     if (this.channel) {
       this.checkEngineState();
       this.channel.onBackPressed(() => {
@@ -233,7 +238,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
    * 向Flutter侧发送pushRoute事件
    * */
   public pushRoute(uniqueId: string, pageName: string, args: Record<string, Object>, callback: () => void) {
-    Log.i(TAG, "#pushRoute start: " + pageName);
+    if (this.isTraceEnabled()) Log.i(TAG, "#pushRoute start: " + pageName);
     const timestamp = (new Date()).getTime();
     if (this.channel) {
       this.checkEngineState();
@@ -242,7 +247,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       params.pageName = pageName
       params.arguments = args
       this.channel.pushRoute(params, () => {
-        Log.i(TAG, "#pushRoute end: " + pageName + ", cost: " + ((new Date()).getTime()-timestamp) + "ms.");
+        if (this.isTraceEnabled()) Log.i(TAG, "#pushRoute end: " + pageName + ", cost: " + ((new Date()).getTime()-timestamp) + "ms.");
         if (callback) {
           callback();
         }
@@ -256,7 +261,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
    * 向Flutter侧发送popRoute事件
    * */
   public popRoute(uniqueId: string, callback: () => void) {
-    Log.i(TAG, "#popRoute: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "#popRoute: " + uniqueId);
     if (this.channel != null) {
       this.checkEngineState();
       let params = new CommonParams()
@@ -275,7 +280,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 创建 [1/4]
   public onContainerCreated(container: FlutterViewContainer) {
     let uniqueId = container.getUniqueId()
-    Log.i(TAG, "#onContainerCreated: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "#onContainerCreated: " + uniqueId);
     FlutterContainerManager.getInstance().addContainer(uniqueId, container);
     if (FlutterContainerManager.getInstance().getContainerSize() == 1) {
       this.changeFlutterAppLifecycle(FlutterBoostPlugin.FLUTTER_APP_STATE_RESUMED);
@@ -285,7 +290,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 展示 [2/4]
   public onContainerAppeared(container: FlutterViewContainer, callback: () => void) {
     let uniqueId = container.getUniqueId()
-    Log.i(TAG, "## onContainerAppeared: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## onContainerAppeared: " + uniqueId);
     FlutterContainerManager.getInstance().activateContainer(uniqueId, container)
     // 这里和android对齐。将pushRoute+onContainerShow合并到一起
     this.pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), () => {
@@ -299,7 +304,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 隐藏 [3/4]
   public onContainerDisappeared(container: FlutterViewContainer) {
     let uniqueId = container.getUniqueId()
-    Log.i(TAG, "## onContainerDisappeared: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## onContainerDisappeared: " + uniqueId);
     let args: Record<string, Object>;
     if (container && container.paramsForDisappear) {
       args = container!.paramsForDisappear() ? container!.paramsForDisappear()! : {};
@@ -313,7 +318,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   // 销毁 [4/4]
   public onContainerDestroyed(container: FlutterViewContainer) {
     let uniqueId = container.getUniqueId()
-    Log.i(TAG, "## onContainerDestroyed: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## onContainerDestroyed: " + uniqueId);
     let args = container.getUrlParams()
     // 1.发送移除消息到dart侧
     this._sendRemoveRoute(uniqueId, args);
@@ -349,12 +354,12 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   public onForeground() {
-    Log.d(TAG, "## onForeground start");
+    if (this.isTraceEnabled()) Log.d(TAG, "## onForeground start");
     if (this.channel != null) {
       this.checkEngineState();
       let params = new CommonParams()
       this.channel.onForeground(params, () => {
-        Log.d(TAG, "## onForeground end");
+        if (this.isTraceEnabled()) Log.d(TAG, "## onForeground end");
       });
 
       // The scheduling frames are resumed when [onForeground] is called.
@@ -365,12 +370,12 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   public onBackground() {
-    Log.d(TAG, "## onBackground start");
+    if (this.isTraceEnabled()) Log.d(TAG, "## onBackground start");
     if (this.channel != null) {
       this.checkEngineState();
       let params = new CommonParams()
       this.channel.onBackground(params, () => {
-        Log.d(TAG, "## onBackground end");
+        if (this.isTraceEnabled()) Log.d(TAG, "## onBackground end");
       });
 
       // The scheduling frames are paused when [onBackground] is called.
@@ -381,7 +386,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   private _sendContainerShow(uniqueId: string) {
-    Log.i(TAG, "## _sendContainerShow: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## _sendContainerShow: " + uniqueId);
     // 向flutter侧发送onContainerShow消息
     if (this.channel) {
       this.checkEngineState();
@@ -395,7 +400,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   private _sendContainerHide(uniqueId: string, args: Record<string, Object>) {
-    Log.i(TAG, "## _sendContainerHide: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## _sendContainerHide: " + uniqueId);
     // 向flutter侧发送onContainerHide消息
     if (this.channel) {
       this.checkEngineState();
@@ -410,7 +415,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   private _sendRemoveRoute(uniqueId: string, args: Record<string, Object>) {
-    Log.i(TAG, "## _sendRemoveRoute: " + uniqueId);
+    if (this.isTraceEnabled()) Log.i(TAG, "## _sendRemoveRoute: " + uniqueId);
     // 向flutter侧发送_sendRemoveRoute消息
     if (this.channel) {
       this.checkEngineState();
@@ -444,7 +449,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
         // Get a result back from an page when it ends.
         this.channel.onNativeResult(params, () => {
-          Log.d(TAG, "#onNativeResult return, pageName=" + pageName + ", " + this);
+          if (this.isTraceEnabled()) Log.d(TAG, "#onNativeResult return, pageName=" + pageName + ", " + this);
         });
       }
     } else {

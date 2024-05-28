@@ -21,8 +21,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+import FlutterBoostUtils from '../FlutterBoostUtils';
 import FlutterBoostAbility from './FlutterBoostAbility';
 import { FlutterViewContainer } from './FlutterViewContainer';
+import Log from '../util/Log'
+
+const TAG = 'FlutterContainerManager'
 
 /**
  * FlutterContainerManager 类是用于管理 FlutterBoost 容器的类。
@@ -39,9 +43,13 @@ export default class FlutterContainerManager{
   private allContainers: Map<string, FlutterViewContainer> = new Map();
   private activeContainers: FlutterViewContainer[] = [];
 
+  private isTraceEnabled(): boolean {
+    return FlutterBoostUtils.isDebugLoggingEnabled();
+  }
+
   public addContainer(uniqueId: string, container: FlutterViewContainer): void {
     this.allContainers.set(uniqueId, container);
-    // if (FlutterContainerManager.DEBUG) console.log(`${FlutterContainerManager.TAG} #addContainer: ${this.toString()}`);
+    if (this.isTraceEnabled()) Log.i(TAG, "#addContainer: " + this.toString());
   }
 
   public activateContainer(uniqueId: string | null, container: FlutterViewContainer | null): void {
@@ -53,7 +61,7 @@ export default class FlutterContainerManager{
       this.activeContainers.splice(index, 1);
     }
     this.activeContainers.push(container);
-    // if (FlutterContainerManager.DEBUG) console.log(`${FlutterContainerManager.TAG} #activateContainer: ${this.toString()}`);
+    if (this.isTraceEnabled()) Log.i(TAG, "#activateContainer: " + this.toString());
   }
 
   public removeContainer(uniqueId: string | null): void {
@@ -66,7 +74,7 @@ export default class FlutterContainerManager{
         this.activeContainers.splice(index, 1);
       }
     }
-    // if (FlutterContainerManager.DEBUG) console.log(`${FlutterContainerManager.TAG} #removeContainer: ${this.toString()}`);
+    if (this.isTraceEnabled()) Log.i(TAG, "#removeContainer: " + this.toString());
   }
 
   public findContainerById(uniqueId: string): FlutterViewContainer | null {
@@ -78,6 +86,7 @@ export default class FlutterContainerManager{
   }
 
   public getTopContainer(): FlutterViewContainer | null {
+    if (this.isTraceEnabled()) Log.i(TAG, "#getTopContainer: " + this.toString());
     if (this.activeContainers.length > 0) {
       return this.activeContainers[this.activeContainers.length - 1];
     }

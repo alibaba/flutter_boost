@@ -30,6 +30,7 @@ import Log from '../util/Log';
 import { FlutterBoost } from '../FlutterBoost';
 import FlutterContainerManager from './FlutterContainerManager';
 import router from '@ohos.router';
+import FlutterBoostUtils from '../FlutterBoostUtils';
 
 const TAG: string = "FlutterBoostEntry";
 
@@ -57,7 +58,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
     this.routerOptions = routerOptions;
     this.isDialogMode = isDialog;
-    
+
     if (this.routerOptions && this.routerOptions.uniqueId) {
       //1、 当路由参数中的uniqueId不为null的时候，说明uniqueId已经由dart侧确定，因此直接获取
       this.uniqueId = this.routerOptions.uniqueId as string;
@@ -72,6 +73,10 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.stage = LifecycleStage.ON_CREATE;
 
     this.onContainerCreated();
+  }
+
+  private isTraceEnabled(): boolean {
+    return FlutterBoostUtils.isDebugLoggingEnabled();
   }
 
   // override FlutterAbilityAndEntryDelegate ======start
@@ -112,7 +117,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   finishContainer(result: Record<string, Object>) {
-    Log.d(TAG, "#finishContainer: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#finishContainer: " + this.getUrl());
     if (this.stage !== LifecycleStage.ON_FINISH) {
       this.routeStack ? this.routeStack.pop(new FlutterBoostRouteResult(result)) : router.back();
       this.stage = LifecycleStage.ON_FINISH;
@@ -176,7 +181,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 当容器出现时
    */
   private onContainerAppeared(): void {
-    Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
     // try to detach previous container from the engine.
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded();
@@ -193,7 +198,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 当容器消失时
    */
   private onContainerDisappeared(): void {
-    Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onContainerDisappeared: " + this.getUrl());
     FlutterBoost.getInstance().getPlugin()?.onContainerDisappeared(this);
   }
 
@@ -201,7 +206,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 当容器销毁时
    */
   private onContainerDestroy(): void {
-    Log.d(TAG, "#onContainerDestroy: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onContainerDestroy: " + this.getUrl());
     this.detachFromEngineIfNeeded();
     FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this);
 
@@ -216,7 +221,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
   // super method override ===> start
   async aboutToAppear(): Promise<void> {
-    Log.d(TAG, "#aboutToAppear");
+    if (this.isTraceEnabled()) Log.d(TAG, "#aboutToAppear");
     // Calls super method
     await super.aboutToAppear();
 
@@ -224,7 +229,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   aboutToDisappear(): void {
-    Log.d(TAG, "#aboutToDisappear: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#aboutToDisappear: " + this.getUrl());
     this.stage = LifecycleStage.ON_ABOUT_TO_DISAPPEAR;
     this.onContainerDestroy();
 
@@ -233,7 +238,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageShow(): void { //生命周期
-    Log.d(TAG, "#onPageShow: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
     // Calls super method
     super.onPageShow();
 
@@ -242,7 +247,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
-    Log.d(TAG, "#onPageHide: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
 
@@ -252,7 +257,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
 
   // Intercept the user's press of the back key.
   onBackPress() {
-    Log.d(TAG, "#onBackPress: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onBackPress: " + this.getUrl());
     this.onBackPressed();
   }
   // super method override ===> end
@@ -260,25 +265,25 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // 对于非Tab的情况，当NavDestination即将构建子组件之前会触发此回调
   onReady(routeStack: NavPathStack): void {
     this.routeStack = routeStack;
-    Log.d(TAG, "#onReady: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onReady: " + this.getUrl());
   }
 
   // 当该NavDestination页面显示时触发此回调
   onShown(): void {
-    Log.d(TAG, "#onShown: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onShown: " + this.getUrl());
     this.onPageShow();
   }
 
   // 当该NavDestination页面隐藏时触发此回调
   onHidden(): void {
-    Log.d(TAG, "#onHidden: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onHidden: " + this.getUrl());
     this.onPageHide();
   }
 
   // 当与Navigation绑定的页面栈中存在内容时，此回调生效。当点击返回键时，触发该回调
   // 返回值为true时，表示重写返回键逻辑，返回值为false时，表示回退到上一个页面
   onBackPressed(): boolean {
-    Log.d(TAG, "#onBackPressed: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#onBackPressed: " + this.getUrl());
     FlutterBoost.getInstance().getPlugin()?.onBackPressed();
     return true;
   }
@@ -289,7 +294,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 绑定
    */
   private performAttach(): void {
-    Log.d(TAG, "#performAttach: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#performAttach: " + this.getUrl());
     // 1.plugin attach
     const exclusiveAppComponent = this.getExclusiveAppComponent();
     if (exclusiveAppComponent) {
@@ -308,7 +313,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    * 解绑
    */
   private performDetach(): void {
-    Log.d(TAG, "#performDetach: " + this.getUrl());
+    if (this.isTraceEnabled()) Log.d(TAG, "#performDetach: " + this.getUrl());
     // Plugins are no longer attached to the activity.
     this.getFlutterEngine()?.getAbilityControlSurface()?.detachFromAbility();
 

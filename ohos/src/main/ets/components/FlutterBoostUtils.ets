@@ -26,6 +26,17 @@ import { FlutterEngine } from '@ohos/flutter_ohos';
 import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
 
 export default class FlutterBoostUtils {
+  // Control whether the internal debugging logs are turned on.
+  private static sEnableDebugLogging: boolean = false;
+
+  public static setDebugLoggingEnabled(enabled: boolean) {
+    FlutterBoostUtils.sEnableDebugLogging = enabled;
+  }
+
+  public static isDebugLoggingEnabled(): boolean {
+    return FlutterBoostUtils.sEnableDebugLogging;
+  }
+
   public static getPlugin(engine: FlutterEngine): FlutterBoostPlugin | null {
     if (engine) {
       const plugins = engine.getPlugins()
