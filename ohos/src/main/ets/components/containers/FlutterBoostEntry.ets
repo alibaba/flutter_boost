@@ -31,6 +31,7 @@ import { FlutterBoost } from '../FlutterBoost';
 import FlutterContainerManager from './FlutterContainerManager';
 import router from '@ohos.router';
 import FlutterBoostUtils from '../FlutterBoostUtils';
+import FlutterBoostEntryAbility from './FlutterBoostEntryAbility';
 
 const TAG: string = "FlutterBoostEntry";
 
@@ -271,6 +272,12 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // 当该NavDestination页面显示时触发此回调
   onShown(): void {
     if (this.isTraceEnabled()) Log.d(TAG, "#onShown: " + this.getUrl());
+    if (FlutterBoostEntryAbility.ON_BACKGROUND) {
+      const topContainer: FlutterViewContainer | null = FlutterContainerManager.getInstance().getTopContainer();
+      if (topContainer === null || (this as FlutterViewContainer) === topContainer) {
+        FlutterBoostEntryAbility.ON_BACKGROUND = false;
+      } else return;
+    }
     this.onPageShow();
   }
 

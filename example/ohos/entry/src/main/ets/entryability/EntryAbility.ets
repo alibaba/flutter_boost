@@ -30,7 +30,8 @@ import {
   FlutterBoostDelegate,
   FlutterBoostRouteOptions,
   FlutterBoostSetupOptions,
-  FlutterBoostSetupOptionsBuilder
+  FlutterBoostSetupOptionsBuilder,
+  FlutterBoostEntryAbility
 } from 'flutter_boost';
 import { FlutterManager} from '@ohos/flutter_ohos';
 import ApplicationInfoLoader from '@ohos/flutter_ohos/src/main/ets/embedding/engine/loader/ApplicationInfoLoader';
@@ -40,7 +41,7 @@ import { RouterNameConstants } from '../constants/RouterConstants';
 import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
 
 const TAG: string = "EntryAbility";
-export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
+export default class EntryAbility extends FlutterBoostEntryAbility implements FlutterBoostDelegate {
 
   // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
@@ -126,12 +127,14 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
   // Ability has brought to foreground
   onForeground(): void {
+    super.onForeground();
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onForeground');
     FlutterBoost.getInstance().onForeground();
   }
 
   // Ability has back to background
   onBackground(): void {
+    super.onBackground();
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onBackground');
     FlutterBoost.getInstance().onBackground();
   }

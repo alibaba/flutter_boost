@@ -37,6 +37,7 @@ import FlutterBoostAbility from './src/main/ets/components/containers/FlutterBoo
 import FlutterBoostEntry, {
   FlutterBoostRouteResult
 } from './src/main/ets/components/containers/FlutterBoostEntry';
+import FlutterBoostEntryAbility from './src/main/ets/components/containers/FlutterBoostEntryAbility';
 import { FlutterBoostPage } from './src/main/ets/components/containers/FlutterBoostPage';
 import CommonParams from './src/main/ets/components/messages/CommonParams';
 
@@ -51,6 +52,7 @@ export {
   FlutterBoostRouteOptionsBuilder,
   FlutterBoostRouteResult,
   FlutterBoostEntry,
+  FlutterBoostEntryAbility,
   FlutterBoostPage,
 }
 
