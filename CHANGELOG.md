@@ -1,5 +1,6 @@
 ## NEXT
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
+2. [ohos]修复flutter页面在pop到后台再切换回前台后无法重复pop的问题
 
 # 4.5.9
 1. [ohos]完全支持鸿蒙页面返回参数传递，包括全部四种情况(native返回native、Flutter返回native、native返回Flutter、Flutter返回Flutter)

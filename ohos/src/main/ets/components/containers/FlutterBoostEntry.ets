@@ -249,9 +249,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
-    let isAppInBackground = FlutterBoost.getInstance().isAppInBackground();
-    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide, isAppInBackground= " + isAppInBackground + ", " + this.getUrl());
-    if (isAppInBackground) return;
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
 
