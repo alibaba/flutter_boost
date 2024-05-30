@@ -1,4 +1,5 @@
 ## NEXT
+1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
 
 ## 5.0.2
 1. Adapt to the official engine's App Lifecycle state changes

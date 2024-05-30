@@ -15,6 +15,12 @@ class AssetImageRoute extends StatefulWidget {
 class _AssetImageRouteState extends State<AssetImageRoute> {
   late Image image1;
   late Image image2;
+  late Image sample_hdr;
+  late Image sample_heic;
+  late Image sample_heif;
+  late Image sample_tiff;
+  late Image sample_wbmp;
+  late Image sample_webp;
   static const int seconds = 3;
   bool isTimerFinished = false;
   Timer? timer;
@@ -45,6 +51,12 @@ class _AssetImageRouteState extends State<AssetImageRoute> {
     }
     image1 = Image.asset("images/picture1.jpg");
     image2 = Image.asset("images/picture2.jpg");
+    sample_hdr = Image.asset("images/sample_hdr.hdr");
+    sample_heic = Image.asset("images/sample_heic.heic");
+    sample_heif = Image.asset("images/sample_heif.heif");
+    sample_tiff = Image.asset("images/sample_tiff.tiff");
+    sample_wbmp = Image.asset("images/sample_wbmp.wbmp");
+    sample_webp = Image.asset("images/sample_webp.webp");
     if (kDebugMode) {
       print('#initState, $this');
     }
@@ -118,6 +130,51 @@ class _AssetImageRouteState extends State<AssetImageRoute> {
                               },
                               child: const Text('Go back!'),
                             ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('HDR')),
+                            Expanded(flex: 5, child: sample_hdr)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('HEIC')),
+                            Expanded(flex: 5, child: sample_heic)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('HEIF')),
+                            Expanded(flex: 5, child: sample_heif)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('TIFF')),
+                            Expanded(flex: 5, child: sample_tiff)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('WBMP')),
+                            Expanded(flex: 5, child: sample_wbmp)
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Expanded(flex: 1, child: const Text('WEBP')),
+                            Expanded(flex: 5, child: sample_webp)
                           ],
                         ),
                       ],
