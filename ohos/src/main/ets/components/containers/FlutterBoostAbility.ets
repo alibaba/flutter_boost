@@ -140,7 +140,7 @@ export default class FlutterBoostAbility extends FlutterAbility implements Flutt
     this.context.terminateSelf();
   }
 
-  isPausing(): boolean {
+  isPopping(): boolean {
     throw new Error('Method not implemented.');
   }
 

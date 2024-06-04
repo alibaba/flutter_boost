@@ -93,15 +93,6 @@ export default class FlutterContainerManager{
     return null;
   }
 
-  public getTopActivityContainer(): FlutterViewContainer | null {
-    for (let i = this.activeContainers.length - 1; i >= 0; i--) {
-      const container = this.activeContainers[i];
-      if ( container instanceof FlutterBoostAbility ) {
-        return container;
-      }
-    }
-    return null;
-  }
 
   public isTopContainer(uniqueId: string): boolean {
     const top = this.getTopContainer();

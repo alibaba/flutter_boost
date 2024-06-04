@@ -36,7 +36,7 @@ export interface FlutterViewContainer {
 
   finishContainer(result: Record<string, Object>): void
 
-  isPausing(): boolean
+  isPopping(): boolean
 
   isOpaque(): boolean
 

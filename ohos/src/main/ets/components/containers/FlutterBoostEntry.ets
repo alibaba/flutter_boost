@@ -50,6 +50,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private routerOptions: ESObject;
   private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
+  private isStackPopping: boolean = false
 
   constructor(context: Context, routerOptions: ESObject = {}, isDialog: boolean = false) {
     super(context);
@@ -79,6 +80,16 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     return FlutterBoostUtils.isDebugLoggingEnabled();
   }
 
+  // 是否是当前栈顶页面（已打开）
+  private isTopContainer(): boolean {
+    return FlutterContainerManager.getInstance().getTopContainer() == this;
+  }
+
+  // 是否是历史栈中已经打开的页面
+  private isActiveContainer(): boolean {
+    return FlutterContainerManager.getInstance().isActiveContainer(this);
+  }
+
   // override FlutterAbilityAndEntryDelegate ======start
   shouldAttachEngineToAbility(): boolean {
     return false;
@@ -87,7 +98,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   getCachedEngineId(): string {
     return FlutterBoost.ENGINE_ID;
   }
-
   // override FlutterAbilityAndEntryDelegate ======end
 
   // override FlutterViewContainer interface ======start
@@ -121,13 +131,14 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     if (this.stage !== LifecycleStage.ON_FINISH) {
       this.routeStack ? this.routeStack.pop(new FlutterBoostRouteResult(result)) : router.back();
       this.stage = LifecycleStage.ON_FINISH;
+      this.isStackPopping = true;
     } else {
       Log.e(TAG, 'finishContainer can not called twice!');
     }
   }
 
-  isPausing(): boolean {
-    throw new Error('Method not implemented.');
+  isPopping(): boolean {
+    return this.isStackPopping;
   }
 
   isOpaque(): boolean {
@@ -155,7 +166,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   paramsForDisappear?(): Record<string, Object> {
     return {};
   }
-
   // override FlutterViewContainer interface ====== end
 
   // override FlutterAbilityAndEntryDelegate ======start
@@ -166,7 +176,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   attachToEngineAutomatically(): boolean {
     return false;
   }
-
   // override FlutterAbilityAndEntryDelegate ======end
 
   /**
@@ -238,9 +247,14 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageShow(): void { //生命周期
-    let isAppInBackground = FlutterBoost.getInstance().isAppInBackground();
-    if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow, isAppInBackground=" + isAppInBackground + ", " + this.getUrl());
-    if (isAppInBackground) return;
+    // 在栈顶页面是透明弹窗的场景下，应用切换到后台，或者当前透明弹窗页面被Native页面遮挡时，
+    // 不切换引擎和路由
+    const top = FlutterContainerManager.getInstance().getTopContainer()
+    if (this.isActiveContainer() && !this.isTopContainer() && !top!.isPopping()
+      || this.isTopContainer() && !this.isOpaque()) {
+      return;
+    }
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
     // Calls super method
     super.onPageShow();
 
@@ -249,9 +263,13 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
-    let isAppInBackground = FlutterBoost.getInstance().isAppInBackground();
-    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide, isAppInBackground= " + isAppInBackground + ", " + this.getUrl());
-    if (isAppInBackground) return;
+    // 在栈顶页面是透明弹窗的场景下，应用切换到后台，或者当前透明弹窗页面被Native页面遮挡时，
+    // 不切换引擎和路由
+    if (this.isActiveContainer() && !this.isTopContainer()
+      || this.isTopContainer() && !this.isOpaque()) {
+      return;
+    }
+    if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
 
