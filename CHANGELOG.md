@@ -3,7 +3,7 @@
 
 # 4.5.10
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
-2. [ohos]解决透明弹窗页面切后台或被Native页面覆盖后出现的假死问题
+2. [ohos]修复透明弹窗由于被其他全屏page遮盖导致弹窗再现时页面假死等一系列问题，补充和dialog相关场景example demo
 
 # 4.5.9
 1. [ohos]完全支持鸿蒙页面返回参数传递，包括全部四种情况(native返回native、Flutter返回native、native返回Flutter、Flutter返回Flutter)
