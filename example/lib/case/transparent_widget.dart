@@ -45,32 +45,66 @@ class TransparentWidgetState extends State<TransparentWidget> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          InkWell(
-                            child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.all(8.0),
-                                color: Colors.yellow,
-                                child: const Text(
-                                  'Go Back',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                )),
-                            onTap: () => Navigator.of(context).pop(),
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: Colors.yellow,
+                                    child: const Text(
+                                      'Go Back',
+                                      style: TextStyle(
+                                          fontSize: 18.0, color: Colors.black),
+                                    )),
+                                onTap: () => Navigator.of(context).pop(),
+                              ),
+                              InkWell(
+                                child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: Colors.yellow,
+                                    child: const Text(
+                                      'Open New Dialog',
+                                      style: TextStyle(
+                                          fontSize: 18.0, color: Colors.black),
+                                    )),
+                                onTap: () => BoostNavigator.instance.push(
+                                    "transparentWidget",
+                                    withContainer: true,
+                                    opaque: false),
+                              ),
+                            ],
                           ),
-                          InkWell(
-                            child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                margin: const EdgeInsets.all(8.0),
-                                color: Colors.yellow,
-                                child: const Text(
-                                  'Open New Dialog',
-                                  style: TextStyle(
-                                      fontSize: 22.0, color: Colors.black),
-                                )),
-                            onTap: () => BoostNavigator.instance.push(
-                                "transparentWidget",
-                                withContainer: true,
-                                opaque: false),
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: Colors.yellow,
+                                    child: const Text(
+                                      'Open Native Page',
+                                      style: TextStyle(
+                                          fontSize: 18.0, color: Colors.black),
+                                    )),
+                                onTap: () =>
+                                    BoostNavigator.instance.push("native"),
+                              ),
+                              InkWell(
+                                child: Container(
+                                    padding: const EdgeInsets.all(8.0),
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: Colors.yellow,
+                                    child: const Text(
+                                      'Open Flutter Page',
+                                      style: TextStyle(
+                                          fontSize: 18.0, color: Colors.black),
+                                    )),
+                                onTap: () => BoostNavigator.instance
+                                    .push("flutterPage", withContainer: true),
+                              ),
+                            ],
                           ),
                         ]),
                   ),

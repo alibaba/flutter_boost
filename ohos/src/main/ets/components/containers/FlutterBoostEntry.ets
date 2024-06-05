@@ -247,14 +247,16 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageShow(): void { //生命周期
-    // 在栈顶页面是透明弹窗的场景下，应用切换到后台，或者当前透明弹窗页面被Native页面遮挡时，
-    // 不切换引擎和路由
-    const top = FlutterContainerManager.getInstance().getTopContainer()
-    if (this.isActiveContainer() && !this.isTopContainer() && !top!.isPopping()
-      || this.isTopContainer() && !this.isOpaque()) {
-      return;
-    }
+    //进入onPageShow有四种情况: 1、打开新页面 2、从别的页面pop返回 3、tab场景下从别的tab跳转 4、从后台切回前台
+    //topContainerOfThis指的是曾经从当前container打开或者跳转的container
+    //对于第1种情况，topContainerOfThis为null；
+    //对于第2种情况，topContainerOfThis是dialog，或者由于在执行当前页面的onPageShow时，topContainerOfThis还没有destroy，所以能够准确获取到；
+    //对于第3种情况，和第2种情况类似，只是topContainerOfThis后续不会被destroy，并且从实际业务出发，topContainerOfThis不会是dialog；
+    //对于第4种情况，topContainerOfThis为null或者是dialog。
+    const topContainerOfThis = FlutterContainerManager.getInstance().getTopContainerOfThis(this);
+    if (topContainerOfThis && !topContainerOfThis.isOpaque()) return;
     if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
+
     // Calls super method
     super.onPageShow();
 
@@ -263,12 +265,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
-    // 在栈顶页面是透明弹窗的场景下，应用切换到后台，或者当前透明弹窗页面被Native页面遮挡时，
-    // 不切换引擎和路由
-    if (this.isActiveContainer() && !this.isTopContainer()
-      || this.isTopContainer() && !this.isOpaque()) {
-      return;
-    }
     if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();

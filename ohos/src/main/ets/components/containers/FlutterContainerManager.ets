@@ -94,6 +94,14 @@ export default class FlutterContainerManager{
   }
 
 
+  public getTopContainerOfThis(container: FlutterViewContainer): FlutterViewContainer | null {
+    const index = this.activeContainers.indexOf(container);
+    if (index !== -1 && index + 1 < this.activeContainers.length) {
+      return this.activeContainers[index + 1];
+    }
+    return null;
+  }
+
   public isTopContainer(uniqueId: string): boolean {
     const top = this.getTopContainer();
     return top !== null && top.getUniqueId() === uniqueId;
