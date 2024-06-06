@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DetailsPage extends StatelessWidget {
   const DetailsPage({Key? key}) : super(key: key);
@@ -47,8 +48,22 @@ class DetailsPage extends StatelessWidget {
                             color: Colors.green,
                           ),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
+                            ..onTap = () async {
+                              await SystemChrome.setPreferredOrientations(
+                                  [DeviceOrientation.portraitUp]);
                               Navigator.pop(context);
+                            },
+                        ),
+                        TextSpan(
+                          text: '\t[LandscapeLeft]',
+                          style: const TextStyle(
+                            fontSize: 20.0,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              SystemChrome.setPreferredOrientations(
+                                  [DeviceOrientation.landscapeLeft]);
                             },
                         ),
                       ],

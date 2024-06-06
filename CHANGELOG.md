@@ -1,4 +1,5 @@
 ## NEXT
+1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例
 
 # 4.5.10
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
