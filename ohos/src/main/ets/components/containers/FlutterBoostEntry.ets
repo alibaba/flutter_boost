@@ -247,14 +247,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageShow(): void { //生命周期
-    //进入onPageShow有四种情况: 1、打开新页面 2、从别的页面pop返回 3、tab场景下从别的tab跳转 4、从后台切回前台
-    //topContainerOfThis指的是曾经从当前container打开或者跳转的container
-    //对于第1种情况，topContainerOfThis为null；
-    //对于第2种情况，topContainerOfThis是dialog，或者由于在执行当前页面的onPageShow时，topContainerOfThis还没有destroy，所以能够准确获取到；
-    //对于第3种情况，和第2种情况类似，只是topContainerOfThis后续不会被destroy，并且从实际业务出发，topContainerOfThis不会是dialog；
-    //对于第4种情况，topContainerOfThis为null或者是dialog。
-    const topContainerOfThis = FlutterContainerManager.getInstance().getTopContainerOfThis(this);
-    if (topContainerOfThis && !topContainerOfThis.isOpaque()) return;
+    if (this.isUnderDialogPage()) return;
     if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
 
     // Calls super method
@@ -265,6 +258,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   onPageHide(): void { //生命周期
+    if (this.isUnderDialogPage()) return;
     if (this.isTraceEnabled()) Log.d(TAG, "#onPageHide: " + this.getUrl());
     this.stage = LifecycleStage.ON_HIDE;
     this.onContainerDisappeared();
@@ -347,5 +341,18 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
       this.platformPlugin.destroy();
       this.platformPlugin = null;
     }
+  }
+
+  private isUnderDialogPage(): boolean {
+    //进入onPageShow有四种情况: 1、打开新页面 2、从别的页面pop返回 3、tab场景下从别的tab跳转 4、从后台切回前台
+    //topContainerOfThis指的是曾经从当前container打开或者跳转的container
+    //对于第1种情况，topContainerOfThis为null；
+    //对于第2种情况，topContainerOfThis是dialog，或者由于在执行当前页面的onPageShow时，topContainerOfThis还没有destroy，所以能够准确获取到；
+    //对于第3种情况，和第2种情况类似，只是topContainerOfThis后续不会被destroy，并且从实际业务出发，topContainerOfThis不会是dialog；
+    //对于第4种情况，topContainerOfThis为null或者是dialog。
+    //onPageHide情况和opPageShow对称
+    const topContainerOfThis = FlutterContainerManager.getInstance().getTopContainerOfThis(this);
+    if (topContainerOfThis && !topContainerOfThis.isOpaque()) return true;
+    else return false;
   }
 }
