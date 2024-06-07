@@ -317,7 +317,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.getFlutterView().attachToFlutterEngine(this.getFlutterEngine()!);
 
     if (!this.platformPlugin) {
-      this.platformPlugin = new PlatformPlugin(this.getFlutterEngine()!.getPlatformChannel()!, this.thisContext);
+      this.platformPlugin = this.providePlatformPlugin(this.getFlutterEngine()!);
+      this.platformPlugin?.initWindow();
     }
   }
 
