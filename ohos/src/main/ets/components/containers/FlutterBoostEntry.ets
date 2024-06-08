@@ -307,19 +307,17 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    */
   private performAttach(): void {
     if (this.isTraceEnabled()) Log.d(TAG, "#performAttach: " + this.getUrl());
-    // 1.plugin attach
+    // 1. plugin attach
     const exclusiveAppComponent = this.getExclusiveAppComponent();
     if (exclusiveAppComponent) {
       this.getFlutterEngine()?.getAbilityControlSurface()?.attachToAbility(exclusiveAppComponent);
     }
 
-    // 2.Ability attach
+    // 2. Ability attach
     this.getFlutterView().attachToFlutterEngine(this.getFlutterEngine()!);
 
-    if (!this.platformPlugin) {
-      this.platformPlugin = this.providePlatformPlugin(this.getFlutterEngine()!);
-      this.platformPlugin?.initWindow();
-    }
+    // Create |PlatformPlugin|
+    this.createPlatformPlugin();
   }
 
   /**
@@ -331,13 +329,21 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.getFlutterEngine()?.getAbilityControlSurface()?.detachFromAbility();
 
     // Release Flutter's control of UI such as system chrome.
-    this.releasePlatformChannel();
+    this.releasePlatformPlugin();
 
     // Detach rendering pipeline.
     this.getFlutterView().detachFromFlutterEngine();
   }
 
-  private releasePlatformChannel(): void {
+  private createPlatformPlugin(): void {
+    if (!this.platformPlugin) {
+      this.platformPlugin = this.providePlatformPlugin(this.getFlutterEngine()!);
+      this.platformPlugin?.initWindow();
+      this.platformPlugin?.setUIAbilityContext(this.getAbility().context);
+    }
+  }
+
+  private releasePlatformPlugin(): void {
     if (this.platformPlugin) {
       this.platformPlugin.destroy();
       this.platformPlugin = null;
