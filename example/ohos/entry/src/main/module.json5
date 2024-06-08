@@ -36,6 +36,16 @@
       {
         "name": "ohos.permission.INTERNET"
       },
+      {
+        "name": "ohos.permission.READ_PASTEBOARD",
+        "reason": "$string:clipboard_reason",
+        "usedScene": {
+          "abilities": [
+            "FormAbility"
+          ],
+          "when":"inuse"
+        }
+      }
     ]
   }
 }

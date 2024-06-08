@@ -19,6 +19,10 @@
     {
       "name": "tab_title_flutter",
       "value": "flutter"
+    },
+    {
+      "name": "clipboard_reason",
+      "value": "获取剪贴板内容"
     }
   ]
 }
