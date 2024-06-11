@@ -5,6 +5,7 @@
 4. [ohos]适配最新的PlatformView方案
 5. [ohos]解决横竖屏不生效的问题
 6. [ohos]解决因权限问题从系统剪贴板获取数据失败的问题
+7. [ohos]解决透明弹窗返回时底下flutter页面闪烁的问题
 
 # 4.5.10
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
