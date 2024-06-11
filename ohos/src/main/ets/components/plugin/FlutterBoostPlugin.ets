@@ -316,12 +316,16 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   // 销毁 [4/4]
-  public onContainerDestroyed(container: FlutterViewContainer) {
+  public onContainerDestroyed(container: FlutterViewContainer, callback?: () => void) {
     let uniqueId = container.getUniqueId()
     if (this.isTraceEnabled()) Log.i(TAG, "## onContainerDestroyed: " + uniqueId);
     let args = container.getUrlParams()
     // 1.发送移除消息到dart侧
-    this._sendRemoveRoute(uniqueId, args);
+    this._sendRemoveRoute(uniqueId, args, () => {
+      if (callback) {
+        callback()
+      }
+    });
     // 2.移除FlutterContainerManager中的container
     FlutterContainerManager.getInstance().removeContainer(uniqueId);
   }
@@ -414,7 +418,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     }
   }
 
-  private _sendRemoveRoute(uniqueId: string, args: Record<string, Object>) {
+  private _sendRemoveRoute(uniqueId: string, args: Record<string, Object>, callback: () => void) {
     if (this.isTraceEnabled()) Log.i(TAG, "## _sendRemoveRoute: " + uniqueId);
     // 向flutter侧发送_sendRemoveRoute消息
     if (this.channel) {
@@ -423,6 +427,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       params.uniqueId = uniqueId
       params.arguments = args
       this.channel.removeRoute(params, () => {
+        if (callback) {
+          callback()
+        }
       });
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet! When call _removeRoute");

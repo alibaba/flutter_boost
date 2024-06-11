@@ -217,15 +217,15 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private onContainerDestroy(): void {
     if (this.isTraceEnabled()) Log.d(TAG, "#onContainerDestroy: " + this.getUrl());
     this.detachFromEngineIfNeeded();
-    FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this);
-
-    // NavDestinationMode.DIALOG：
-    // 默认透明，进出页面栈不影响下层NavDestination的生命周期，不支持系统转场动画。
-    if (this.isDialogMode) {
-      // try to attach previous container from the engine.
-      const top = FlutterContainerManager.getInstance().getTopContainer();
-      if (top && top != this) top.attachToEngineIfNeeded();
-    }
+    FlutterBoost.getInstance().getPlugin()?.onContainerDestroyed(this, () => {
+      // NavDestinationMode.DIALOG：
+      // 默认透明，进出页面栈不影响下层NavDestination的生命周期，不支持系统转场动画。
+      if (this.isDialogMode) {
+        // try to attach previous container from the engine.
+        const top = FlutterContainerManager.getInstance().getTopContainer();
+        if (top && top != this) top.attachToEngineIfNeeded();
+      }
+    });
   }
 
   // super method override ===> start
