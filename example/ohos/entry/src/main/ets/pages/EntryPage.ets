@@ -160,6 +160,7 @@ struct EntryPage {
           this.currentIndex = index
         })
       }
+      .mode(NavigationMode.Stack)
       .navDestination(this.routerMap) // Navigation关联routerMap路由表
       .hideTitleBar(true) // important
       // .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {

@@ -1,4 +1,5 @@
 ## NEXT
+1. [ohos]解决应用切换横屏时自动分屏的问题
 
 ## 4.5.11
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例
