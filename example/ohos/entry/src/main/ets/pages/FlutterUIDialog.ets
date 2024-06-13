@@ -38,6 +38,7 @@ export struct FlutterUIDialog {
   private effect: object =
     TransitionEffect.OPACITY
       .combine(TransitionEffect.move(TransitionEdge.BOTTOM)).animation({curve: Curves.springMotion()});
+  @State enableAnimation: boolean = true;
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
@@ -73,6 +74,7 @@ export struct FlutterUIDialog {
     .onHidden(() => {
       hilog.info(0x0000, TAG, "onHidden===");
       this.flutterEntry?.onHidden();
+      this.enableAnimation = false;
     })
     .onReady((ctx: NavDestinationContext) => {
       try {
@@ -82,6 +84,6 @@ export struct FlutterUIDialog {
         hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);
       }
     })
-    .transition(this.effect)
+    .transition(this.enableAnimation ? this.effect : null)
   }
 }
