@@ -1,4 +1,5 @@
 ## NEXT
+2. [ohos]解决dialog透明弹窗从全屏页面返回时重新执行进入动画的问题
 
 ## 4.5.11
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例
