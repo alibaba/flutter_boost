@@ -1,13 +1,12 @@
 import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
-import { FlutterBoostEntry } from 'flutter_boost';
+import { FlutterBoostEntry, FlutterBoostRouteOptions } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
 
 const TAG: string = "FlutterUIComponent";
 @Component
 export struct FlutterUIComponent {
-  @Prop uri: string;
-  @Prop params: Record<string, Object> = {};
+  @Prop routerOptions: FlutterBoostRouteOptions;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
 
   private flutterEntry: FlutterBoostEntry | null = null;
@@ -17,11 +16,8 @@ export struct FlutterUIComponent {
       .combine(TransitionEffect.move(TransitionEdge.END)).animation({curve: Curves.springMotion()});
 
   aboutToAppear() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), {
-      uri: this.uri,
-      params: this.params,
-    });
+    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.routerOptions!.getPageName());
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions);
     this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
@@ -29,17 +25,17 @@ export struct FlutterUIComponent {
   }
 
   aboutToDisappear() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToDisappear===', this.uri);
+    hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToDisappear===', this.routerOptions!.getPageName());
     this.flutterEntry?.aboutToDisappear()
   }
 
   onPageShow() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageShow===', this.uri);
+    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageShow===', this.routerOptions!.getPageName());
     this.flutterEntry?.onPageShow()
   }
 
   onPageHide() {
-    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageHide===', this.uri);
+    hilog.info(0x0000, TAG, 'Component(#%{public}s) onPageHide===', this.routerOptions!.getPageName());
     this.flutterEntry?.onPageHide()
   }
 

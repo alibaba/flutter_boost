@@ -24,12 +24,15 @@
 
 import hilog from '@ohos.hilog';
 import promptAction from '@ohos.promptAction'
-import { FlutterBoost } from 'flutter_boost';
+import { 
+  FlutterBoost,
+  FlutterBoostRouteOptions,
+  FlutterBoostRouteOptionsBuilder } from 'flutter_boost';
 import { FlutterUIComponent } from './FlutterUIComponent';
 import { FlutterUIPage } from './FlutterUIPage';
 import { FlutterUIDialog } from './FlutterUIDialog';
 import { NativePage } from './NativePage';
-import { RouterModule, RouterOptions } from '../router/RouterModule';
+import { RouterModule } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 
 const TAG: string = "EntryPage";
@@ -61,13 +64,15 @@ struct EntryPage {
     }.width('100%')
   }
 
-  @Builder routerMap(builderName: string, routerOptions: RouterOptions) {
+  @Builder routerMap(builderName: string, options: ESObject) {
     if (builderName == RouterNameConstants.FLUTTER_PAGE) {
-      FlutterUIPage({ routerOptions: routerOptions })
+      FlutterUIPage({ routerOptions: (options as FlutterBoostRouteOptions) })
     } else if (builderName == RouterNameConstants.FLUTTER_DIALOG) {
-      FlutterUIDialog({ routerOptions: routerOptions })
+      FlutterUIDialog({ routerOptions: (options as FlutterBoostRouteOptions) })
     } else {
-      NativePage({ params: routerOptions ? routerOptions.params : {} })
+      //无论是从dart侧打开native页面还是从native侧打开native页面，都需要在此对builderName（也就是pageName）再次进行分支判断然后选择相应的native页面，
+      //由于example中只有一个额外的native页面，所以在此不过多展开示范
+      NativePage({ params: options ? (options as Record<string, Object>) : {} })
     }
   }
 
@@ -94,10 +99,9 @@ struct EntryPage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
-              "native",
+            RouterModule.push(RouterNameConstants.NATIVE_PAGE,
               { "message": "A Message From Native" },
-              null), (pageName: string, result: Record<string, Object>) => {
+              (pageName: string, result: Record<string, Object>) => {
                 this.onPageResult(pageName, result)
               });
           } catch (err) {
@@ -133,11 +137,15 @@ struct EntryPage {
           }.tabBar(this.tabBuilder(0, 'Home'))
           // 2. Index
           TabContent() {
-            FlutterUIComponent({ uri: 'flutterPage' })
+            FlutterUIComponent({ routerOptions: new FlutterBoostRouteOptionsBuilder()    //请勿在此对uniqueId进行赋值
+              .setPageName('flutterPage')
+              .build() })
           }.tabBar(this.tabBuilder(1, 'Index'))
           // 3. MediaQuery
           TabContent() {
-            FlutterUIComponent({ uri: 'mediaquery' })
+            FlutterUIComponent({ routerOptions: new FlutterBoostRouteOptionsBuilder()    //请勿在此对uniqueId进行赋值
+              .setPageName('mediaquery')
+              .build() })
           }.tabBar(this.tabBuilder(2, 'MediaQuery'))
           // 4. ArkUI
           TabContent() {

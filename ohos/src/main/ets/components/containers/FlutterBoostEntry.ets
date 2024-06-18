@@ -31,15 +31,9 @@ import { FlutterBoost } from '../FlutterBoost';
 import FlutterContainerManager from './FlutterContainerManager';
 import router from '@ohos.router';
 import FlutterBoostUtils from '../FlutterBoostUtils';
+import FlutterBoostRouteOptions from '../FlutterBoostRouteOptions';
 
 const TAG: string = "FlutterBoostEntry";
-
-export class FlutterBoostRouteResult {
-  constructor(result: Record<string, Object>) {
-    this.result = result;
-  }
-  result: Record<string, Object> = {}
-}
 
 export default class FlutterBoostEntry extends FlutterEntry implements FlutterViewContainer {
   private uniqueId: string
@@ -47,12 +41,12 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private platformPlugin?: PlatformPlugin | null
   private stage?: LifecycleStage;
   private thisContext: Context;
-  private routerOptions: ESObject;
+  private routerOptions: FlutterBoostRouteOptions;
   private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
   private isStackPopping: boolean = false
 
-  constructor(context: Context, routerOptions: ESObject = {}, isDialog: boolean = false) {
+  constructor(context: Context, routerOptions: FlutterBoostRouteOptions, isDialog: boolean = false) {
     super(context);
 
     this.thisContext = context;
@@ -60,9 +54,9 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     this.routerOptions = routerOptions;
     this.isDialogMode = isDialog;
 
-    if (this.routerOptions && this.routerOptions.uniqueId) {
+    if (this.routerOptions && this.routerOptions.getUniqueId()) {
       //1、 当路由参数中的uniqueId不为null的时候，说明uniqueId已经由dart侧确定，因此直接获取
-      this.uniqueId = this.routerOptions.uniqueId as string;
+      this.uniqueId = this.routerOptions.getUniqueId() as string;
     } else {
       //2、 当路由参数中的uniqueId为null的时候，说明uniqueId需要由native侧生成，因此随机生成一个uniqueId
       const uniqueId = util.generateRandomUUID(false);
@@ -103,8 +97,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   // override FlutterViewContainer interface ======start
   getUrl(): string {
     // 1 如果this.routerOptions 不为空，而且存在uri值，则取出来
-    if (this.routerOptions && this.routerOptions.uri) {
-      const uri = this.routerOptions.uri as string;
+    if (this.routerOptions && this.routerOptions.getPageName()) {
+      const uri = this.routerOptions.getPageName() as string;
       return uri;
     } else {
       Log.e(TAG, 'Missing uri');
@@ -113,8 +107,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   }
 
   getUrlParams(): Record<string, Object> {
-    if (this.routerOptions && this.routerOptions.params) {
-      const params = this.routerOptions.params as Record<string, Object>;
+    if (this.routerOptions && this.routerOptions.getArguments()) {
+      const params = this.routerOptions.getArguments() as Record<string, Object>;
       return params;
     } else {
       Log.e(TAG, 'Missing params')
@@ -129,7 +123,7 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   finishContainer(result: Record<string, Object>) {
     if (this.isTraceEnabled()) Log.d(TAG, "#finishContainer: " + this.getUrl());
     if (this.stage !== LifecycleStage.ON_FINISH) {
-      this.routeStack ? this.routeStack.pop(new FlutterBoostRouteResult(result)) : router.back();
+      this.routeStack ? this.routeStack.pop(result) : router.back();
       this.stage = LifecycleStage.ON_FINISH;
       this.isStackPopping = true;
     } else {
