@@ -35,7 +35,7 @@ import {
 import { FlutterManager} from '@ohos/flutter_ohos';
 import ApplicationInfoLoader from '@ohos/flutter_ohos/src/main/ets/embedding/engine/loader/ApplicationInfoLoader';
 import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant';
-import { RouterModule, RouterOptions } from '../router/RouterModule';
+import { RouterModule } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
 
@@ -44,10 +44,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
   // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
-    RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
-      /*"native"*/options.getPageName(),
-      options.getArguments(),
-      /*null*/options.getUniqueId()), onPageResult);
+    RouterModule.push(options.getPageName(), options.getArguments(), onPageResult);
   }
 
   // 打开flutter页面
@@ -57,9 +54,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
       routerName = RouterNameConstants.FLUTTER_DIALOG
     }
 
-    RouterModule.push(routerName, new RouterOptions(options.getPageName(),
-      options.getArguments(),
-      options.getUniqueId()), onPageResult);
+    RouterModule.push(routerName, options, onPageResult);
   }
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {

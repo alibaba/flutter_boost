@@ -23,9 +23,8 @@
  */
 
 import hilog from '@ohos.hilog';
-import { FlutterBoostEntry } from 'flutter_boost';
+import { FlutterBoostEntry, FlutterBoostRouteOptions } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
-import { RouterOptions } from '../router/RouterModule';
 
 const TAG: string = "FlutterUIPage";
 @Component
@@ -33,7 +32,7 @@ export struct FlutterUIPage {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
-  @Prop routerOptions: RouterOptions;
+  @Prop routerOptions: FlutterBoostRouteOptions;
 
   aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
