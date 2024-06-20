@@ -57,6 +57,11 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
     RouterModule.push(routerName, options, onPageResult);
   }
 
+  // 关闭flutter页面
+  popRoute(options: FlutterBoostRouteOptions): boolean {
+    return false;
+  }
+
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onCreate');
     FlutterManager.getInstance().pushUIAbility(this)

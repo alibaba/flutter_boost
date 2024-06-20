@@ -31,13 +31,19 @@ const TAG: string = "FlutterUIPage";
 export struct FlutterUIPage {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
+  private routeStack: NavPathStack | null = null;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
   @Prop routerOptions: FlutterBoostRouteOptions;
 
-  aboutToAppear() {
+  onPopCallback(result: Record<string, Object>): void {
+    hilog.info(0x0000, TAG, "onPopCallback===");
+    this.routeStack?.pop(result);
+  }
+
+  async aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions);
-    this.flutterEntry.aboutToAppear();
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions, false, this.onPopCallback);
+    await this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
     this.flutterView = this.flutterEntry.getFlutterView();
@@ -77,6 +83,7 @@ export struct FlutterUIPage {
     .onReady((ctx: NavDestinationContext) => {
       try {
         hilog.info(0x0000, TAG, "onReady===");
+        this.routeStack = ctx.pathStack;
         this.flutterEntry?.onReady(ctx.pathStack);
       } catch (e) {
         hilog.error(0x0000, TAG, `onReady catch exception: ${JSON.stringify(e)}`);

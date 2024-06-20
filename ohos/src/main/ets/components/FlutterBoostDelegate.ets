@@ -29,5 +29,5 @@ import FlutterBoostRouteOptions from './FlutterBoostRouteOptions';
 export default interface FlutterBoostDelegate {
   pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void;
   pushFlutterRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void;
-  //TODO:是不是得加一个pop？
+  popRoute(options: FlutterBoostRouteOptions): boolean;
 }

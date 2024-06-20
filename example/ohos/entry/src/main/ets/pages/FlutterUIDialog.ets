@@ -39,10 +39,10 @@ export struct FlutterUIDialog {
       .combine(TransitionEffect.move(TransitionEdge.BOTTOM)).animation({curve: Curves.springMotion()});
   @State enableAnimation: boolean = true;
 
-  aboutToAppear() {
+  async aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
     this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions, /*isDialog*/true);
-    this.flutterEntry.aboutToAppear();
+    await this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
     this.flutterView = this.flutterEntry.getFlutterView();

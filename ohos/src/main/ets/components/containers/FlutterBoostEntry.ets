@@ -45,14 +45,16 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
   private isStackPopping: boolean = false
+  private onPopCallback?: (result: Record<string, Object>) => void;
 
-  constructor(context: Context, routerOptions: FlutterBoostRouteOptions, isDialog: boolean = false) {
+  constructor(context: Context, routerOptions: FlutterBoostRouteOptions, isDialog?: boolean, onPop?: (result: Record<string, Object>) => void) {
     super(context);
 
     this.thisContext = context;
 
     this.routerOptions = routerOptions;
-    this.isDialogMode = isDialog;
+    this.isDialogMode = isDialog ?? false;
+    this.onPopCallback = onPop;
 
     if (this.routerOptions && this.routerOptions.getUniqueId()) {
       //1、 当路由参数中的uniqueId不为null的时候，说明uniqueId已经由dart侧确定，因此直接获取
@@ -123,9 +125,13 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   finishContainer(result: Record<string, Object>) {
     if (this.isTraceEnabled()) Log.d(TAG, "#finishContainer: " + this.getUrl());
     if (this.stage !== LifecycleStage.ON_FINISH) {
-      this.routeStack ? this.routeStack.pop(result) : router.back();
-      this.stage = LifecycleStage.ON_FINISH;
+      if (this.onPopCallback) {
+        this.onPopCallback(result);
+      } else {
+        this.routeStack ? this.routeStack.pop(result) : router.back();
+      }
       this.isStackPopping = true;
+      this.stage = LifecycleStage.ON_FINISH;
     } else {
       Log.e(TAG, 'finishContainer can not called twice!');
     }

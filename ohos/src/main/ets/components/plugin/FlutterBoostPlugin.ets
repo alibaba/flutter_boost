@@ -39,7 +39,7 @@ import FlutterBoostDelegate from '../FlutterBoostDelegate';
 import CommonParams from '../messages/CommonParams';
 import Log from '../util/Log'
 import StackInfo from '../messages/StackInfo';
-import { FlutterBoostRouteOptionsBuilder } from '../FlutterBoostRouteOptions';
+import FlutterBoostRouteOptions, { FlutterBoostRouteOptionsBuilder } from '../FlutterBoostRouteOptions';
 import EventListener from '../util/EventListener';
 import ListenerRemover from '../util/ListenerRemover';
 import FlutterBoostUtils from '../FlutterBoostUtils';
@@ -97,6 +97,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   // NativeRouterApi override ==> start
   onPushNativeRoute(params: CommonParams) {
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPushNativeRoute: ${JSON.stringify(params)}`);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -114,7 +115,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPushFlutterRoute(params: CommonParams) {
-    if (this.isTraceEnabled()) Log.i(TAG, "#onPushFlutterRoute: " + params.pageName);
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPushFlutterRoute: ${JSON.stringify(params)}`);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -136,18 +137,32 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPopRoute(params: CommonParams, completion: () => void) {
-    const uniqueId = params.uniqueId
-    if (this.isTraceEnabled()) Log.i(TAG, "#onPopRoute: " + uniqueId);
-    if (uniqueId && uniqueId.length > 0) {
-      const container = FlutterContainerManager.getInstance().findContainerById(uniqueId);
-      if (container) {
-        container.finishContainer(params.arguments ? params.arguments : {})
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPopRoute: ${JSON.stringify(params)}`);
+    if (this.delegate) {
+      const options: FlutterBoostRouteOptions = new FlutterBoostRouteOptionsBuilder()
+                                                  .setPageName(params.pageName ?? '')
+                                                  .setUniqueId(params.uniqueId!)
+                                                  .setArguments(params.arguments ?? {})
+                                                  .build();
+      let isHandled: boolean = this.delegate.popRoute(options);
+      if (isHandled) {
         completion();
       } else {
-        throw new Error("Oops!! Can not find the page. uniqueId:" + uniqueId);
+        const uniqueId = params.uniqueId;
+        if (uniqueId) {
+          const container = FlutterContainerManager.getInstance().findContainerById(uniqueId);
+          if (container) {
+            container.finishContainer(params.arguments ? params.arguments : {})
+            completion();
+          } else {
+            throw new Error("Oops!! Can not find the page. uniqueId:" + uniqueId);
+          }
+        } else {
+          throw new Error(`Oops!! The unique id is invalid: ${uniqueId}`);
+        }
       }
     } else {
-      throw new Error("Oops!! The unique id is undefined!");
+      throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
     }
   }
 

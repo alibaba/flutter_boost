@@ -15,10 +15,12 @@ export struct FlutterUIComponent {
     TransitionEffect.OPACITY
       .combine(TransitionEffect.move(TransitionEdge.END)).animation({curve: Curves.springMotion()});
 
-  aboutToAppear() {
+  async aboutToAppear() {
     hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.routerOptions!.getPageName());
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions);
-    this.flutterEntry.aboutToAppear();
+    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions, false, () => {
+      // Do nothing: The top-level tab page does not respond to the back gesture.
+    });
+    await this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
     this.flutterView = this.flutterEntry.getFlutterView();
