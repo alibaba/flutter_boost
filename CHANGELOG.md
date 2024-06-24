@@ -2,8 +2,9 @@
 1. [ohos]解决应用切换横屏时自动分屏的问题
 2. [ohos]解决dialog透明弹窗从全屏页面返回时重新执行进入动画的问题
 3. [ohos,dart]native侧取消业务自定义实现RouterOptions，优化页面返回传参接口易用性，修复native页面返回flutter页面时传参可能失败的问题
-4. [ohos] 允许业务自己实现页面出栈逻辑
+4. [ohos]允许业务自己实现页面出栈逻辑
 5. [dart]优化PlatformView示例代码
+6. [dart]增加隐藏platformview的示例代码
 
 ## 4.5.11
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例

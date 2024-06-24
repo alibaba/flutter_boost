@@ -13,6 +13,7 @@ class NativeViewExampleState extends State<NativeViewExample> {
   // '<color-rectangle>', '<runball-surface>', '<simple-text-view>'
   final String viewType = '<simple-text-view>';
   bool hybridCompositionMode = false;
+  bool hidePlatformView = false;
   double opacity = 1.0;
   double radius = 30;
   double scale = 0.75;
@@ -62,14 +63,15 @@ class NativeViewExampleState extends State<NativeViewExample> {
                               .headlineMedium!
                               .copyWith(color: Colors.white)),
                     ),
-                    MutatorNativeView(
-                      viewType: viewType,
-                      isHCMode: hybridCompositionMode,
-                      angle: -math.pi / 180 * angle,
-                      opacity: opacity,
-                      radius: radius,
-                      scale: scale,
-                    ),
+                    if (!hidePlatformView)
+                      MutatorNativeView(
+                        viewType: viewType,
+                        isHCMode: hybridCompositionMode,
+                        angle: -math.pi / 180 * angle,
+                        opacity: opacity,
+                        radius: radius,
+                        scale: scale,
+                      ),
                     Container(
                       constraints: BoxConstraints.expand(
                         height: Theme.of(context)
@@ -95,6 +97,19 @@ class NativeViewExampleState extends State<NativeViewExample> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Row(children: [
+                          const Text("Hide platformview"),
+                          Switch(
+                            value: hidePlatformView,
+                            onChanged: (value) {
+                              setState(() {
+                                hidePlatformView = value;
+                              });
+                            },
+                            activeTrackColor: Colors.lightGreenAccent,
+                            activeColor: Colors.green,
+                          ),
+                        ]),
                         Row(
                           children: [
                             Text('Opacity'),
