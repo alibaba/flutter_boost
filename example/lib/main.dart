@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
+import 'package:flutter_boost_example/case/image_format_demo.dart';
 
 import 'case/asset_image_route.dart';
 import 'case/bottom_navigation_bar_demo.dart';
@@ -394,6 +395,10 @@ class _MyAppState extends State<MyApp> {
     'clipboard': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ClipboardExample());
+    },
+    'image_format_demo': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ImageFormatDemo());
     },
 
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题

@@ -5,6 +5,7 @@
 4. [ohos]允许业务自己实现页面出栈逻辑
 5. [dart]优化PlatformView示例代码
 6. [dart]增加隐藏platformview的示例代码
+7. [dart]补充完善图片格式测试案例
 
 ## 4.5.11
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例
