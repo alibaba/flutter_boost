@@ -24,8 +24,9 @@
 
 import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
-import { FlutterBoostEntry, FlutterBoostRouteOptions } from 'flutter_boost';
+import { FlutterBoostEntry } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
+import { RouterOptions } from '../router/RouterModule';
 
 const TAG: string = "FlutterUIDialog";
 @Component
@@ -33,7 +34,7 @@ export struct FlutterUIDialog {
   private flutterEntry: FlutterBoostEntry | null = null;
   private flutterView: FlutterView | null = null;
   @Prop xComponentType: XComponentType = XComponentType.SURFACE;
-  @Prop routerOptions: FlutterBoostRouteOptions; 
+  @Prop routerOptions: RouterOptions; 
   private effect: object =
     TransitionEffect.OPACITY
       .combine(TransitionEffect.move(TransitionEdge.BOTTOM)).animation({curve: Curves.springMotion()});

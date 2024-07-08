@@ -22,11 +22,12 @@
  * THE SOFTWARE.
  */
 import hilog from '@ohos.hilog';
+import { FlutterBoostRouteResult } from 'flutter_boost';
 
 import promptAction from '@ohos.promptAction'
-import { FlutterBoost, FlutterBoostRouteOptionsBuilder } from 'flutter_boost';
+import { FlutterBoost } from 'flutter_boost';
 import { FlutterUIComponent } from './FlutterUIComponent';
-import { RouterModule } from '../router/RouterModule';
+import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 
 const TAG: string = "NativePage";
@@ -86,9 +87,10 @@ export struct NativePage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            RouterModule.push(RouterNameConstants.NATIVE_PAGE,
+            RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
+              "native",
               { "message": "A Message From Native" },
-              (pageName: string, result: Record<string, Object>) => {
+              null), (pageName: string, result: Record<string, Object>) => {
                 this.onPageResult(pageName, result)
               });
           } catch (err) {
@@ -119,15 +121,11 @@ export struct NativePage {
         }.tabBar(this.tabBuilder(0, 'Home'))
         // 2. Index
         TabContent() {
-          FlutterUIComponent({ routerOptions: new FlutterBoostRouteOptionsBuilder()    //请勿在此对uniqueId进行赋值
-            .setPageName('flutterPage')
-            .build() })
+          FlutterUIComponent({ uri: 'flutterPage' })
         }.tabBar(this.tabBuilder(1, 'Index'))
         // 3. MediaQuery
         TabContent() {
-          FlutterUIComponent({ routerOptions: new FlutterBoostRouteOptionsBuilder()    //请勿在此对uniqueId进行赋值
-            .setPageName('mediaquery')
-            .build() })
+          FlutterUIComponent({ uri: 'mediaquery' })
         }.tabBar(this.tabBuilder(2, 'MediaQuery'))
         // 4. ArkUI
         TabContent() {
@@ -153,7 +151,7 @@ export struct NativePage {
     .hideTitleBar(true)
     .onBackPressed(() => {
       hilog.info(0x0000, TAG, "onBackPressed===");
-      RouterModule.pop({ "message": "pop from a native page" });
+      this.routeStack?.pop(new FlutterBoostRouteResult({ "message": "pop from a native page" }));
       return true
     })
     .onAppear(() => {

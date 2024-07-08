@@ -130,7 +130,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       if (params.uniqueId) {
         builder.setUniqueId(params.uniqueId)
       }
-      this.delegate.pushFlutterRoute(builder.build());
+      this.delegate.pushFlutterRoute(builder.build(), (pageName: string, result: Record<string, Object>) => {
+        this.onPageResult(pageName, result)
+      });
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
     }

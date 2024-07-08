@@ -1,4 +1,15 @@
-import { FlutterBoostRouteOptions } from 'flutter_boost';
+import { FlutterBoostRouteResult } from 'flutter_boost';
+
+export class RouterOptions {
+    constructor(uri: string, params: Record<string, Object>, uniqueId: string | null) {
+        this.uri = uri;
+        this.params = params;
+        this.uniqueId = uniqueId;
+    }
+    uri: string;
+    params: Record<string, Object>;
+    uniqueId: string | null = null;  //业务自定义路由参数中需要包含uniqueId，避免丢失dart侧传过来的uniqueId
+}
 
 export class RouterModule {
     static routeStack: NavPathStack | null = null;
@@ -7,13 +18,12 @@ export class RouterModule {
         RouterModule.routeStack = stack;
     }
 
-    public static push(name: string, options: ESObject = {}, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void {
+    public static push(name: string, routerOptions?: RouterOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void {
         if (RouterModule.routeStack != null) {
-            RouterModule.routeStack.pushPath({name: name, param: options, onPop: (popInfo: PopInfo) => {
+            RouterModule.routeStack.pushPath({name: name, param: routerOptions, onPop: (popInfo: PopInfo) => {
               if (onPageResult) {
-                //如果前一页面是flutter页面，请务必将popInfo.result的类型转换成Record<string, Object> ！！！
-                onPageResult((options instanceof FlutterBoostRouteOptions) ? (options as FlutterBoostRouteOptions).getPageName() : name,
-                    (popInfo && popInfo.result) ? (popInfo.result as Record<string, Object>) : ({} as Record<string, Object>));
+                onPageResult(routerOptions ? routerOptions.uri : "native",
+                    (popInfo && popInfo.result) ? ((popInfo.result as FlutterBoostRouteResult).result) : ({} as Record<string, Object>));
               }
             }});
         } else {
@@ -23,7 +33,7 @@ export class RouterModule {
 
     public static pop(result: Record<string, Object> = {}): void {
         if (RouterModule.routeStack != null) {
-            RouterModule.routeStack.pop(result);
+            RouterModule.routeStack.pop(new FlutterBoostRouteResult(result));
         } else {
             throw new Error('routeStack is null!');
         }
