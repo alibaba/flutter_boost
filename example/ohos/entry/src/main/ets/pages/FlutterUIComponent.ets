@@ -19,6 +19,7 @@ export struct FlutterUIComponent {
   async aboutToAppear() {
     hilog.info(0x0000, TAG, 'Component(#%{public}s) aboutToAppear===', this.uri);
     this.flutterEntry = new FlutterBoostEntry(getContext(this),
+                          //！！！这里的uri、params这两个属性的名字必须跟example中的保持一致 ！！！
                           { uri: this.uri, params: this.params },
                           false,
                           () => {

@@ -22,7 +22,6 @@
  * THE SOFTWARE.
  */
 import hilog from '@ohos.hilog';
-import { FlutterBoostRouteResult } from 'flutter_boost';
 
 import promptAction from '@ohos.promptAction'
 import { FlutterBoost } from 'flutter_boost';
@@ -87,10 +86,8 @@ export struct NativePage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
-              "native",
-              { "message": "A Message From Native" },
-              null), (pageName: string, result: Record<string, Object>) => {
+            RouterModule.push(RouterNameConstants.NATIVE_PAGE, { "message": "A Message From Native" }, 
+              (pageName: string, result: Record<string, Object>) => {
                 this.onPageResult(pageName, result)
               });
           } catch (err) {
@@ -151,7 +148,7 @@ export struct NativePage {
     .hideTitleBar(true)
     .onBackPressed(() => {
       hilog.info(0x0000, TAG, "onBackPressed===");
-      this.routeStack?.pop(new FlutterBoostRouteResult({ "message": "pop from a native page" }));
+      RouterModule.pop({ "message": "pop from a native page" });
       return true
     })
     .onAppear(() => {

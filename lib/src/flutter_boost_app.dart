@@ -84,6 +84,12 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   late VoidCallback _lifecycleStateListenerRemover;
 
+  /// A list of native page's 'Key' who are opened by dart side
+  final List<String> _nativePageKeys = <String>[];
+
+  /// To get the last one in the _nativePageKeys list
+  String get _topNativePage => _nativePageKeys.last;
+
   @override
   void initState() {
     assert(
@@ -609,13 +615,16 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     final initiatorPage = topContainer?.topPage.pageInfo.uniqueId;
     final key = '$initiatorPage#$pageName';
     _pendingResult[key] = completer;
+    _nativePageKeys.add(key);
     Logger.log('pendNativeResult, key:$key, size:${_pendingResult.length}');
     return completer.future;
   }
 
+  /// In boost's native side, should avoid calling this method when an outer_route's flutter page
+  /// pops back to previous outer_route's flutter page.
   void onNativeResult(CommonParams params) {
-    final initiatorPage = topContainer?.topPage.pageInfo.uniqueId;
-    final key = '$initiatorPage#${params.pageName}';
+    final key = _topNativePage;
+    _nativePageKeys.remove(key);
     if (_pendingResult.containsKey(key)) {
       _pendingResult[key]!.complete(params.arguments);
       _pendingResult.remove(key);
