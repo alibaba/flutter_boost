@@ -34,13 +34,6 @@ import FlutterBoostUtils from '../FlutterBoostUtils';
 
 const TAG: string = "FlutterBoostEntry";
 
-export class FlutterBoostRouteResult {
-  constructor(result: Record<string, Object>) {
-    this.result = result;
-  }
-  result: Record<string, Object> = {}
-}
-
 export default class FlutterBoostEntry extends FlutterEntry implements FlutterViewContainer {
   private uniqueId: string
   private isAttached: boolean = false

@@ -61,13 +61,15 @@ struct EntryPage {
     }.width('100%')
   }
 
-  @Builder routerMap(builderName: string, routerOptions: RouterOptions) {
+  @Builder routerMap(builderName: string, options: RouterOptions | Record<string, Object>) {
     if (builderName == RouterNameConstants.FLUTTER_PAGE) {
-      FlutterUIPage({ routerOptions: routerOptions })
+      FlutterUIPage({ routerOptions: (options as RouterOptions) })
     } else if (builderName == RouterNameConstants.FLUTTER_DIALOG) {
-      FlutterUIDialog({ routerOptions: routerOptions })
+      FlutterUIDialog({ routerOptions: (options as RouterOptions) })
     } else {
-      NativePage({ params: routerOptions ? routerOptions.params : {} })
+      //无论是从dart侧打开native页面还是从native侧打开native页面，都需要在此对builderName（也就是pageName）再次进行分支判断然后选择相应的native页面，
+      //由于example中只有一个额外的native页面，所以在此不过多展开示范
+      NativePage({ params: (options as Record<string, Object>) })
     }
   }
 
@@ -94,10 +96,8 @@ struct EntryPage {
         .margin({ bottom: 20 })
         .onClick(() => {
           try {
-            RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
-              "native",
-              { "message": "A Message From Native" },
-              null), (pageName: string, result: Record<string, Object>) => {
+            RouterModule.push(RouterNameConstants.NATIVE_PAGE, { "message": "A Message From Native" }, 
+              (pageName: string, result: Record<string, Object>) => {
                 this.onPageResult(pageName, result)
               });
           } catch (err) {

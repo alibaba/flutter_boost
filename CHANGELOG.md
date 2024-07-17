@@ -8,6 +8,7 @@
 7. [dart]补充完善图片格式测试案例
 8. Revert: "[ohos,dart]native侧取消业务自定义实现RouterOptions，优化页面返回传参接口易用性..."
 9. [ohos]修复连续打开同一个弹窗再回退时页面卡死的问题
+10. [ohos,dart]优化页面返回传参接口易用性，修复native页面返回flutter页面时传参可能失败的问题
 
 ## 4.5.11
 1. [dart]添加`SystemChrome.setPreferredOrientations`测试案例

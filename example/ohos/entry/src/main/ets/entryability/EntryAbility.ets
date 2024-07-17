@@ -44,10 +44,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
   // 打开原生页面
   pushNativeRoute(options: FlutterBoostRouteOptions, onPageResult?: (pageName: string, result: Record<string, Object>) => void) {
-    RouterModule.push(RouterNameConstants.NATIVE_PAGE, new RouterOptions(
-      /*"native"*/options.getPageName(),
-      options.getArguments(),
-      /*null*/options.getUniqueId()), onPageResult);
+    RouterModule.push(options.getPageName(), options.getArguments(), onPageResult);
   }
 
   // 打开flutter页面
