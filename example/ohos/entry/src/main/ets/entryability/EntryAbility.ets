@@ -61,6 +61,7 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
 
   // 关闭flutter页面
   popRoute(options: FlutterBoostRouteOptions): boolean {
+    //自定义popRoute处理逻辑,如果不想走默认处理逻辑返回true进行拦截
     return false;
   }
 

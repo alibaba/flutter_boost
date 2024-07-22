@@ -6,6 +6,11 @@
 </p>
 
 # Release Note
+
+## [ohos] New Platform
+flutter_boost has been fully adapted for the ohos platform. Please refer to item 10 of the following document to understand the related conventions before integrating：
+<a href="Frequently Asked Question.md">FAQ</a>
+
 ## 4.6.1
 
 PS：Null-safety is already supported.

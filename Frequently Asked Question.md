@@ -94,3 +94,18 @@ VC设置横屏依赖于NavigationController或者rootVC。可以通过一下方�
 
 ### 9. FlutterBoost for flutter1.12出现和surface相关的crash。可以参考这个issue：https://github.com/flutter/flutter/issues/52455
 可能flutter engine的bug引起
+
+### 10. FlutterBoost接入ohos端的一些关键性约定以及常见疑问解答（如仍有疑问，请仔细阅读example示例代码）
+1. FlutterBoostEntry的构造函数的第二个参数是一个routerOptions，boost内部并没有对其类型做强制要求（any），并允许业务方自定义routerOptions的实现，但是需要满足一些约定：
+```
+非Tab场景：务必保证uri: string、params: Record<string, Object>、uniqueId: string | null，这三个属性的存在，并且不允许对这三个属性的名称进行修改
+Tab场景：务必保证uri: string、params: Record<string, Object>，这两个属性的存在，并且不允许对这两个属性的名称进行修改，不允许在此传递uniqueId
+```
+2. Log输出遇到‘Missing uri’或者‘Missing params’如何解决？
+答：按照第1条的约定，正确传递routerOptions。
+3. 如果需要使用boost的能力来实现页面返回传参的话，需要利用到NavPathStack的pushPath方法的onPop参数，对于数据需要返回给flutter页面的情况，请务必将popInfo.result的类型转换成Record<string, Object>，详情见example示例。
+4. FlutterBoostEntry的构造函数的第四个参数是一个onPop回调函数，它允许调用者以page为粒度来控制每个页面的退出逻辑。对于该回调函数的接管，需要满足以下约定：
+```
+Tab场景：如果你不希望一个tab在dart侧调用pop的时候整个应用都退出，请务必接管该回调函数，并且在接管逻辑中不要对路由进行pop调用
+非Tab场景：你可以不接管该回调函数，但是如果选择接管，在接管逻辑中请务必对路由进行pop调用
+```
