@@ -5,6 +5,10 @@
 
 # Release Note
 
+## 鸿蒙新平台
+flutter_boost已完全适配ohos鸿蒙端，接入之前请阅读以下文档第10条了解相关约定：
+<a href="Frequently Asked Question.md">FAQ</a>
+
 ## 4.6.1
 
 PS：主线已支持空安全(null-safety)
