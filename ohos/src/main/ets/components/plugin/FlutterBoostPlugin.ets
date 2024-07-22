@@ -97,7 +97,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
 
   // NativeRouterApi override ==> start
   onPushNativeRoute(params: CommonParams) {
-    if (this.isTraceEnabled()) Log.i(TAG, `#onPushNativeRoute: ${JSON.stringify(params)}`);
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPushNativeRoute: ${JSON.stringify(params, this.bigIntReplacer)}`);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -115,7 +115,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPushFlutterRoute(params: CommonParams) {
-    if (this.isTraceEnabled()) Log.i(TAG, `#onPushFlutterRoute: ${JSON.stringify(params)}`);
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPushFlutterRoute: ${JSON.stringify(params, this.bigIntReplacer)}`);
     if (this.delegate) {
       const builder = new FlutterBoostRouteOptionsBuilder()
       if (params.pageName) {
@@ -137,7 +137,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   onPopRoute(params: CommonParams, completion: () => void) {
-    if (this.isTraceEnabled()) Log.i(TAG, `#onPopRoute: ${JSON.stringify(params)}`);
+    if (this.isTraceEnabled()) Log.i(TAG, `#onPopRoute: ${JSON.stringify(params, this.bigIntReplacer)}`);
     if (this.delegate) {
       const options: FlutterBoostRouteOptions = new FlutterBoostRouteOptionsBuilder()
                                                   .setPageName(params.pageName ?? '')
@@ -475,5 +475,12 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* have attached to engine yet!");
     }
+  }
+
+  private bigIntReplacer(key: string, value: Object): Object {
+    if (typeof value === 'bigint') {
+      return value.toString();
+    }
+    return value;
   }
 }
