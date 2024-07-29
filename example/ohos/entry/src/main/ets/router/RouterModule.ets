@@ -1,3 +1,5 @@
+import { RouterNameConstants } from '../constants/RouterConstants';
+import { FlutterBoostUtils } from 'flutter_boost';
 
 export class RouterOptions {
     constructor(uri: string, params: Record<string, Object>, uniqueId: string | null) {
@@ -16,6 +18,35 @@ export class RouterModule {
 
     public static setRouteStack(stack: NavPathStack): void {
         RouterModule.routeStack = stack;
+        RouterModule.routeStack.setInterception({
+            willShow: (from: NavDestinationContext | "navBar", to: NavDestinationContext | "navBar",
+                operation: NavigationOperation, animated: boolean) => {
+                let target: NavDestinationContext;
+                let params: Record<string, Object>;
+                if (operation === NavigationOperation.POP) {
+                    target = from as NavDestinationContext;
+                    if (target.pathInfo.name !== RouterNameConstants.FLUTTER_PAGE) return;
+                    params = (target.pathInfo.param as RouterOptions).params;
+                    if (params['OHFB_routerOptionsOfPageB'] && params['OHFB_routerOptionsOfPageB'] instanceof RouterOptions) {
+                        target.pathStack!.pushPath({name: target.pathInfo.name, param: params['OHFB_routerOptionsOfPageB'] as RouterOptions});
+                    }
+                } else if (operation === NavigationOperation.PUSH) {
+                    target = to as NavDestinationContext;
+                    if (target.pathInfo.name !== RouterNameConstants.FLUTTER_PAGE) return;
+                    params = (target.pathInfo.param as RouterOptions).params;
+                    if (params['FB_hopRouteEnabled']) {
+                        let nameOfPageC: string = params['FB_hopRoutePageC']! as string;
+                        let argsOfPageC: Record<string, Object> = (params['FB_hopRouteArgsOfPageC'] ?? {}) as Record<string, Object>;
+                        let routerOptionsOfPageB:RouterOptions = target.pathInfo.param as RouterOptions;
+                        let map:Map<string, Object> = FlutterBoostUtils.recordToMap(routerOptionsOfPageB.params);
+                        map.delete('FB_hopRouteArgsOfPageC');  //将B的路由参数中的pageC的args删除，避免循环包含
+                        routerOptionsOfPageB.params = FlutterBoostUtils.mapToRecord(map);
+                        argsOfPageC['OHFB_routerOptionsOfPageB'] = routerOptionsOfPageB;
+                        target.pathStack!.replacePath({name: target.pathInfo.name, param: new RouterOptions(nameOfPageC, argsOfPageC, null)});
+                    }
+                }
+            }
+        })
     }
 
     public static push(name: string, options: RouterOptions | Record<string, Object> = {}, onPageResult?: (pageName: string, result: Record<string, Object>) => void): void {

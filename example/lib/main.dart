@@ -28,6 +28,7 @@ import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';
 import 'case/webview_flutter_demo.dart';
 import 'case/willpop.dart';
+import 'case/hop_route_demo.dart';
 import 'flutter_page.dart';
 import 'simple_page_widgets.dart';
 import 'tab/simple_widget.dart';
@@ -431,6 +432,25 @@ class _MyAppState extends State<MyApp> {
               builder: (_) => const FlutterRebuildPageB(),
             );
           });
+    },
+
+    'hopRoutePageA': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => HopRoutePageA());
+    },
+    'hopRoutePageB': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => HopRoutePageB(
+                params: settings.arguments as Map<dynamic, dynamic>?,
+              ));
+    },
+    'hopRoutePageC': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings,
+          pageBuilder: (_, __, ___) => HopRoutePageC(
+                params: settings.arguments as Map<dynamic, dynamic>?,
+              ));
     },
   };
 

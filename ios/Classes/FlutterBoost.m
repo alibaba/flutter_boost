@@ -27,6 +27,7 @@
 #import "FlutterBoost.h"
 #import "FlutterBoostPlugin.h"
 #import "Options.h"
+#import "FBFlutterViewContainer.h"
 
 @interface FlutterBoost ()
 @property (nonatomic, strong) FlutterEngine* engine;
@@ -164,6 +165,18 @@
 
 - (void)open:(FlutterBoostRouteOptions* )options{
   [self.plugin.delegate pushFlutterRoute:options];
+}
+
+- (void)hopRouteIfNeeded:(NSMutableArray *)viewControllers options:(FlutterBoostRouteOptions* )options {
+  if([options.arguments[@"FB_hopRouteEnabled"] boolValue]){
+      NSString *nameOfPageC = options.arguments[@"FB_hopRoutePageC"];
+      NSDictionary *argsOfPageC = options.arguments[@"FB_hopRouteArgsOfPageC"];
+      if(nameOfPageC){
+          FBFlutterViewContainer *vc2 = [[FBFlutterViewContainer alloc] init];
+          [vc2 setName:nameOfPageC uniqueId:nil params:argsOfPageC opaque:true];
+          [viewControllers addObject:vc2];
+      }
+  }
 }
 
 - (void)close:(NSString *)uniqueId {
