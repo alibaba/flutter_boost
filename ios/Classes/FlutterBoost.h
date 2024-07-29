@@ -80,6 +80,9 @@
 /// @param options 配置参数
 - (void)open:(FlutterBoostRouteOptions* )options;
 
+///  判断是否需要执行路由跳跃，并执行相应操作
+- (void)hopRouteIfNeeded:(NSMutableArray *)viewControllers options:(FlutterBoostRouteOptions* )options;
+
 
 /// 将原生页面的数据回传到flutter侧的页面的的方法
 /// @param pageName 这个页面在路由表中的名字，和flutter侧BoostNavigator.push(name)中的name一样
