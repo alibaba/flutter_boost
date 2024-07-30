@@ -9,7 +9,7 @@
 flutter_boost已完全适配ohos鸿蒙端，接入之前请阅读以下文档第10条了解相关约定：
 <a href="Frequently Asked Question.md">FAQ</a>
 
-## 4.6.1
+## 4.6.2
 
 PS：主线已支持空安全(null-safety)
 
@@ -39,7 +39,7 @@ PS：主线已支持空安全(null-safety)
 flutter_boost:
     git:
         url: 'https://github.com/alibaba/flutter_boost.git'
-        ref: '4.6.1'
+        ref: '4.6.2'
 ```
 
 # 版本说明

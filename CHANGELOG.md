@@ -1,4 +1,6 @@
 ## NEXT
+
+## 4.6.2
 1. 更新README以及FAQ
 2. [ohos]修复日志无法序列化处理BigInt的问题
 3. 支持ACB跳跃路由业务场景
