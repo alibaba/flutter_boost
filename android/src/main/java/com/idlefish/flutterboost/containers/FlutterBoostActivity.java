@@ -48,7 +48,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     protected PlatformPlugin platformPlugin;
     private LifecycleStage stage;
     private boolean isAttached = false;
-    private boolean enableToShow = true;
 
     private boolean isDebugLoggingEnabled() {
         return FlutterBoostUtils.isDebugLoggingEnabled();
@@ -74,25 +73,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
         flutterView = FlutterBoostUtils.findFlutterView(getWindow().getDecorView());
         flutterView.detachFromFlutterEngine(); // Avoid failure when attaching to engine in |onResume|.
         FlutterBoost.instance().getPlugin().onContainerCreated(this);
-        Map<String, Object> params = getUrlParams();
-        if (params != null) {
-            if (params.get("FB_hopRouteEnabled") != null && (boolean)params.get("FB_hopRouteEnabled")) {
-                String nameOfPageC = (String)params.get("FB_hopRoutePageC");
-                Map<String, Object> argsOfPageC = null;
-                if (params.get("FB_hopRouteArgsOfPageC") instanceof HashMap) {
-                    argsOfPageC = (HashMap<String, Object>)params.get("FB_hopRouteArgsOfPageC");
-                }
-                if (nameOfPageC != null) {
-                    Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
-                        .destroyEngineWithActivity(false)
-                        .url(nameOfPageC)
-                        .urlParams(argsOfPageC != null ? argsOfPageC : new HashMap<>())
-                        .build(this);
-                    this.enableToShow = false;
-                    startActivity(intent);
-                }
-            }
-        }
     }
 
     @Override
@@ -113,21 +93,12 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     // This method is called right before the activity's onPause() callback.
     public void onUserLeaveHint() {
         super.onUserLeaveHint();
-        if (!this.enableToShow) return;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onUserLeaveHint: " + this);
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        this.enableToShow = true;
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onRestart: " + this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!this.enableToShow) return;
         stage = LifecycleStage.ON_START;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onStart: " + this);
     }
@@ -135,7 +106,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onStop() {
         super.onStop();
-        if (!this.enableToShow) return;
         stage = LifecycleStage.ON_STOP;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onStop: " + this);
     }
@@ -143,7 +113,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public void onResume() {
         super.onResume();
-        if (!this.enableToShow) return;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onResume: " + this + ", isOpaque=" + isOpaque());
         final FlutterContainerManager containerManager = FlutterContainerManager.instance();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
@@ -184,7 +153,6 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     protected void onPause() {
         super.onPause();
-        if (!this.enableToShow) return;
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onPause: " + this + ", isOpaque=" + isOpaque());
         FlutterViewContainer top = FlutterContainerManager.instance().getTopActivityContainer();
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {

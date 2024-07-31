@@ -152,20 +152,6 @@ class BoostNavigator {
   ///
   /// This is a legacy API for backwards compatibility.
   int pageSize() => appState!.pageSize();
-
-  /// 打开一个target page，并且附带一个hidden page在其下方，两个page都需要是外部路由的全屏flutter页面
-  void pushWithHiddenPage(String nameOfTargetPage, String nameOfHiddenPage,
-      {Map<String, dynamic>? argumentsOfTargetPage,
-      Map<String, dynamic>? argumentsOfHiddenPage}) {
-    Map<String, dynamic> paramsOfHiddenPage =
-        (argumentsOfHiddenPage ?? <String, dynamic>{});
-    paramsOfHiddenPage['FB_hopRouteEnabled'] = true;
-    paramsOfHiddenPage['FB_hopRoutePageC'] = nameOfTargetPage;
-    paramsOfHiddenPage['FB_hopRouteArgsOfPageC'] =
-        (argumentsOfTargetPage ?? <String, dynamic>{});
-    BoostNavigator.instance.push(nameOfHiddenPage,
-        arguments: paramsOfHiddenPage, withContainer: true);
-  }
 }
 
 /// The PageInfo use in FlutterBoost ,it is not a public api
