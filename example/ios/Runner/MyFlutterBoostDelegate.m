@@ -45,11 +45,7 @@
             options.completion(YES);
         }];
     }else{
-        NSMutableArray *viewControllers = [[self.navigationController viewControllers] mutableCopy];
-        [viewControllers addObject:vc];
-        //  判断是否需要执行hopRoute，请务必在已经将vc加入viewControllers之后再触发hopRoute
-        [[FlutterBoost instance] hopRouteIfNeeded:viewControllers options:options];
-        [self.navigationController setViewControllers:[viewControllers copy] animated:animated];
+        [self.navigationController pushViewController:vc animated:animated];
         options.completion(YES);
     }
 }
