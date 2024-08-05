@@ -307,8 +307,10 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
     FlutterContainerManager.getInstance().activateContainer(uniqueId, container)
     // 这里和android对齐。将pushRoute+onContainerShow合并到一起
     this.pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), () => {
-      if (callback) {
-        callback();
+      if (FlutterContainerManager.getInstance().isTopContainer(uniqueId)) {
+          if (callback) {
+            callback();
+          }
       }
     })
     this._sendContainerShow(uniqueId);
