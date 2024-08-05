@@ -190,8 +190,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
    */
   private onContainerAppeared(): void {
     if (this.isTraceEnabled()) Log.d(TAG, "#onContainerAppeared: " + this.getUrl());
-    //这行代码放在detach之前，是为了保证attach到engine的container都能准确被detach掉
-    FlutterContainerManager.getInstance().topContainerWaitForAttachToEngine = this;
     // try to detach previous container from the engine.
     const top = FlutterContainerManager.getInstance().getTopContainer()
     if (top && top != this) top.detachFromEngineIfNeeded();
@@ -199,11 +197,8 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     // switch dart router
     FlutterBoost.getInstance().getPlugin()?.onContainerAppeared(this, () => {
       // attach XComponent
-      if (FlutterContainerManager.getInstance().topContainerWaitForAttachToEngine && FlutterContainerManager.getInstance().topContainerWaitForAttachToEngine == this) {
-        this.attachToEngineIfNeeded();
-        this.platformPlugin?.updateSystemUiOverlays();
-        FlutterContainerManager.getInstance().topContainerWaitForAttachToEngine = null;
-      }
+      this.attachToEngineIfNeeded();
+      this.platformPlugin?.updateSystemUiOverlays();
     });
   }
 

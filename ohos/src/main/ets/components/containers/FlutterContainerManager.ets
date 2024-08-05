@@ -42,7 +42,6 @@ export default class FlutterContainerManager{
 
   private allContainers: Map<string, FlutterViewContainer> = new Map();
   private activeContainers: FlutterViewContainer[] = [];
-  public topContainerWaitForAttachToEngine: FlutterViewContainer | null = null;
 
   private isTraceEnabled(): boolean {
     return FlutterBoostUtils.isDebugLoggingEnabled();
