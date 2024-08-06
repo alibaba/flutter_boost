@@ -757,10 +757,10 @@ class _FlutterBoostAppMountedWidgetState
     extends State<FlutterBoostAppMountedWidget> {
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     FlutterBoostAppState? state =
-        context.findAncestorStateOfType<FlutterBoostAppState>();
+    context.findAncestorStateOfType<FlutterBoostAppState>();
     if (state != null) {
       state.onMounted(widget.initial);
     }
