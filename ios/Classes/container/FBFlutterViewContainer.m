@@ -263,6 +263,8 @@ _Pragma("clang diagnostic pop")
 
 - (void)surfaceUpdated:(BOOL)appeared {
   if (self.engine && self.engine.viewController == self) {
+    if (appeared && ![self.enableSurfaceUpdatedYes boolValue]) return; 
+    else if (appeared) self.enableSurfaceUpdatedYes = [NSNumber numberWithBool:NO];
     [super surfaceUpdated:appeared];
   }
 }
@@ -280,6 +282,7 @@ _Pragma("clang diagnostic pop")
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+  self.enableSurfaceUpdatedYes = [NSNumber numberWithBool:YES];
   [FB_PLUGIN containerWillAppear:self];
 
   // For new page we should attach flutter view in view will appear

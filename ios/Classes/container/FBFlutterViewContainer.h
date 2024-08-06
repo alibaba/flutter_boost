@@ -30,6 +30,7 @@
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic, strong) NSNumber *disablePopGesture;
 @property (nonatomic, strong) NSNumber *enableLeftPanBackGesture;
+@property (nonatomic, strong) NSNumber *enableSurfaceUpdatedYes;
 
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
