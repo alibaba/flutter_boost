@@ -84,6 +84,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   late VoidCallback _lifecycleStateListenerRemover;
 
+  late BoostContainer _initialContainer;
+
   @override
   void initState() {
     assert(
@@ -94,11 +96,13 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
     _boostFlutterRouterApi = BoostFlutterRouterApi(this);
 
     /// create the container matching the initial route
-    final BoostContainer initialContainer =
+    _initialContainer =
         _createContainer(PageInfo(pageName: widget.initialRoute));
-    _containers.add(initialContainer);
+    _containers.add(_initialContainer);
     super.initState();
+  }
 
+  void onMounted(BoostContainer initial) {
     // Make sure that the widget in the tree that matches [overlayKey]
     // is already mounted, or [refreshOnPush] will fail.
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -108,7 +112,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         return true;
       }());
 
-      refreshOnPush(initialContainer);
+      refreshOnPush(initial);
       _boostFlutterRouterApi.isEnvReady = true;
       _addAppLifecycleStateEventListener();
       BoostOperationQueue.instance.runPendingOperations();
@@ -148,23 +152,26 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.appBuilder(WillPopScope(
-        onWillPop: () async {
-          final canPop = topContainer!.navigator!.canPop();
-          if (canPop) {
-            topContainer!.navigator!.pop();
-            return true;
-          }
-          return false;
-        },
-        child: Listener(
-            onPointerDown: _handlePointerDown,
-            onPointerUp: _handlePointerUpOrCancel,
-            onPointerCancel: _handlePointerUpOrCancel,
-            child: Overlay(
-              key: overlayKey,
-              initialEntries: const <OverlayEntry>[],
-            ))));
+    return widget.appBuilder(FlutterBoostAppMountedWidget(
+      initial: _initialContainer,
+      child: WillPopScope(
+          onWillPop: () async {
+            final canPop = topContainer!.navigator!.canPop();
+            if (canPop) {
+              topContainer!.navigator!.pop();
+              return true;
+            }
+            return false;
+          },
+          child: Listener(
+              onPointerDown: _handlePointerDown,
+              onPointerUp: _handlePointerUpOrCancel,
+              onPointerCancel: _handlePointerUpOrCancel,
+              child: Overlay(
+                key: overlayKey,
+                initialEntries: const <OverlayEntry>[],
+              ))),
+    ));
   }
 
   void _handlePointerDown(PointerDownEvent event) {
@@ -453,10 +460,8 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       }
 
       if (targetContainer.topPage != targetPage) {
-        Future<void>.delayed(
-            const Duration(milliseconds: 50),
-            () => targetContainer?.navigator
-                ?.popUntil(_withPage(targetPage!)));
+        Future<void>.delayed(const Duration(milliseconds: 50),
+            () => targetContainer?.navigator?.popUntil(_withPage(targetPage!)));
       }
     } else {
       topContainer?.navigator?.popUntil(_withPage(targetPage!));
@@ -465,8 +470,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
   RoutePredicate _withPage(BoostPage targetPage) {
     return (Route<dynamic> route) {
-      return !route.willHandlePopInternally
-          && route == targetPage.route;
+      return !route.willHandlePopInternally && route == targetPage.route;
     };
   }
 
@@ -734,6 +738,40 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
   }
 }
 
+class FlutterBoostAppMountedWidget extends StatefulWidget {
+  final Widget child;
+  final BoostContainer initial;
+
+  const FlutterBoostAppMountedWidget({
+    super.key,
+    required this.child,
+    required this.initial,
+  });
+
+  @override
+  State<FlutterBoostAppMountedWidget> createState() =>
+      _FlutterBoostAppMountedWidgetState();
+}
+
+class _FlutterBoostAppMountedWidgetState
+    extends State<FlutterBoostAppMountedWidget> {
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterBoostAppState? state =
+    context.findAncestorStateOfType<FlutterBoostAppState>();
+    if (state != null) {
+      state.onMounted(widget.initial);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+}
+
 // ignore: must_be_immutable
 class BoostPage<T> extends Page<T> {
   BoostPage._({LocalKey? key, required this.pageInfo})
@@ -744,6 +782,7 @@ class BoostPage<T> extends Page<T> {
     assert(_route != null,
         "Oops! Route name is not registered: '${pageInfo.pageName}'.");
   }
+
   final PageInfo pageInfo;
 
   factory BoostPage.create(PageInfo pageInfo) {
