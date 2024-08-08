@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+import { common } from '@kit.AbilityKit';
 import hilog from '@ohos.hilog';
 import { FlutterBoostEntry } from 'flutter_boost';
 import { FlutterPage, FlutterView } from '@ohos/flutter_ohos';
@@ -43,7 +43,8 @@ export struct FlutterUIPage {
 
   async aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions, false, this.onPopCallback);
+    let context = getContext(this) as common.UIAbilityContext;
+    this.flutterEntry = new FlutterBoostEntry(context, this.routerOptions, false, this.onPopCallback);
     await this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
