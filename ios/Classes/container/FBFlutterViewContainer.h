@@ -26,10 +26,17 @@
 #import <Flutter/Flutter.h>
 #import "FBFlutterContainer.h"
 
+typedef NS_ENUM(NSInteger, FBAppearState) {
+    FBWaitForSurfaceUpdatedYes,
+    FBAlreadySurfaceUpdatedYes,
+    FBDoneAppear
+};
+
 @interface FBFlutterViewContainer : FlutterViewController<FBFlutterContainer>
 @property (nonatomic,copy,readwrite) NSString *name;
 @property (nonatomic, strong) NSNumber *disablePopGesture;
 @property (nonatomic, strong) NSNumber *enableLeftPanBackGesture;
+@property (nonatomic) FBAppearState currentFBAppearState;
 
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
