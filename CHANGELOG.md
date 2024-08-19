@@ -2,6 +2,7 @@
 1. Revert "支持ACB跳跃路由业务场景" Reason: 经讨论，认为夸克业务中的该场景可以直接在业务侧实现，不需要改动boost内部，为了尽量减少对boost内部逻辑的干扰，决定回滚该提交
 2. [ohos]简化实现'修复连续打开同一个弹窗再回退时页面卡死的问题'
 3. [ios]修复打开一个新的container时会执行多次surfaceUpdated的问题
+4. Revert "[ios]修复打开一个新的container时会执行多次surfaceUpdated的问题" Reason: 该修改存在bad case，需要换一种实现方式
 
 ## 4.6.2
 1. 更新README以及FAQ
