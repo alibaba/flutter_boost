@@ -175,6 +175,7 @@ _Pragma("clang diagnostic pop")
 
 - (void)_setup {
   self.uniqueId = [[NSUUID UUID] UUIDString];
+  self.currentFBAppearState = FBDoneAppear;
 }
 
 - (void)didMoveToParentViewController:(UIViewController *)parent {
@@ -263,9 +264,9 @@ _Pragma("clang diagnostic pop")
 
 - (void)surfaceUpdated:(BOOL)appeared {
   if (self.engine && self.engine.viewController == self) {
-    if (appeared && ![self.enableSurfaceUpdatedYes boolValue]) return; 
-    else if (appeared) self.enableSurfaceUpdatedYes = [NSNumber numberWithBool:NO];
+    if (appeared && self.currentFBAppearState == FBAlreadySurfaceUpdatedYes) return; 
     [super surfaceUpdated:appeared];
+    if (appeared && self.currentFBAppearState == FBWaitForSurfaceUpdatedYes) self.currentFBAppearState = FBAlreadySurfaceUpdatedYes;
   }
 }
 
@@ -282,7 +283,7 @@ _Pragma("clang diagnostic pop")
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  self.enableSurfaceUpdatedYes = [NSNumber numberWithBool:YES];
+  self.currentFBAppearState = FBWaitForSurfaceUpdatedYes;
   [FB_PLUGIN containerWillAppear:self];
 
   // For new page we should attach flutter view in view will appear
@@ -312,6 +313,7 @@ _Pragma("clang diagnostic pop")
     self.navigationController.interactivePopGestureRecognizer.enabled = ![self.disablePopGesture boolValue];
   }
   [FB_PLUGIN containerAppeared:self];
+  self.currentFBAppearState = FBDoneAppear;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
