@@ -38,6 +38,14 @@ dependencies:
       url: "https://gitee.com/openharmony-sig/flutter_packages.git"
       path: "packages/webview_flutter/webview_flutter"
 
+dependency_overrides:
+  extended_image: ^7.0.2
+  path_provider:
+    git:
+      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
+      path: "packages/path_provider/path_provider"
+      ref: "d3f6d21"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

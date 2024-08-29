@@ -28,6 +28,7 @@ import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';
 import 'case/webview_flutter_demo.dart';
 import 'case/willpop.dart';
+import 'case/extended_image_demo.dart';
 import 'flutter_page.dart';
 import 'simple_page_widgets.dart';
 import 'tab/simple_widget.dart';
@@ -264,6 +265,10 @@ class _MyAppState extends State<MyApp> {
     'popUntilView': (settings, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => PopUntilRoute());
+    },
+    'extendedImageDemo': (settings, uniqueId) {
+      return PageRouteBuilder<dynamic>(
+          settings: settings, pageBuilder: (_, __, ___) => ExtendedImageDemo());
     },
 
     ///可以在native层通过 getContainerParams 来传递参数
