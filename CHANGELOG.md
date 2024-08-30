@@ -1,4 +1,6 @@
 ## NEXT
+
+## 4.6.4
 1. [dart]新增demo验证extended_image插件的图片左右滑动切换、缩放等手势操作是否有效
 2. [ohos]对外提供接口用于业务侧判断当前flutterEntry是否处于topContainer
 
