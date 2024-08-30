@@ -35,6 +35,8 @@ import FlutterBoostUtils from './FlutterBoostUtils';
 import { FlutterBoostRouteOptionsBuilder } from './FlutterBoostRouteOptions';
 import { FlutterBoostSetupOptions } from './FlutterBoostSetupOptions';
 import { FlutterBoostPlugin } from './plugin/FlutterBoostPlugin';
+import FlutterContainerManager from './containers/FlutterContainerManager';
+import { FlutterViewContainer } from './containers/FlutterViewContainer';
 import Log from './util/Log';
 
 const TAG = "FlutterBoost";
@@ -219,5 +221,9 @@ export class FlutterBoost {
   public onForeground() {
     this.getPlugin()?.onForeground();
     this.isInBackground = false;
+  }
+
+  public isTopContainer(container: FlutterViewContainer): boolean {
+    return FlutterContainerManager.getInstance().getTopContainer() == container;
   }
 }
