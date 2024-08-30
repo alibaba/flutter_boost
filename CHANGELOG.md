@@ -1,5 +1,6 @@
 ## NEXT
 1. [dart]新增demo验证extended_image插件的图片左右滑动切换、缩放等手势操作是否有效
+2. [ohos]对外提供接口用于业务侧判断当前flutterEntry是否处于topContainer
 
 ## 4.6.3
 1. Revert "支持ACB跳跃路由业务场景" Reason: 经讨论，认为夸克业务中的该场景可以直接在业务侧实现，不需要改动boost内部，为了尽量减少对boost内部逻辑的干扰，决定回滚该提交
