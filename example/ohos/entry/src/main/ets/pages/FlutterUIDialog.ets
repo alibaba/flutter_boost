@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+import { common } from '@kit.AbilityKit';
 import Curves from '@ohos.curves'
 import hilog from '@ohos.hilog';
 import { FlutterBoostEntry } from 'flutter_boost';
@@ -42,7 +42,8 @@ export struct FlutterUIDialog {
 
   async aboutToAppear() {
     hilog.info(0x0000, TAG, "aboutToAppear===");
-    this.flutterEntry = new FlutterBoostEntry(getContext(this), this.routerOptions, /*isDialog*/true);
+    let context = getContext(this) as common.UIAbilityContext;
+    this.flutterEntry = new FlutterBoostEntry(context, this.routerOptions, /*isDialog*/true);
     await this.flutterEntry.aboutToAppear();
     // The |aboutToAppear| method is called first,
     // followed by the |getFlutterView| method.
