@@ -82,6 +82,17 @@ export struct NativePage {
             hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
           }
         })
+      Button('打开pop Uitil页面')
+        .margin({ bottom: 20 })
+        .onClick(() => {
+          try {
+            FlutterBoost.getInstance().open('popUntilView', {}, /*opaque*/true, (pageName: string, result: Record<string, Object>) => {
+              this.onPageResult(pageName, result)
+            })
+          } catch (err) {
+            hilog.info(0x0000, TAG, '%{public}s', 'Failed to 打开Flutter页面');
+          }
+        })
       Button('打开Native页面')
         .margin({ bottom: 20 })
         .onClick(() => {
