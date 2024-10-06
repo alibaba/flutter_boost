@@ -453,6 +453,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         final params = CommonParams()
           ..pageName = container.pageInfo.pageName
           ..uniqueId = container.pageInfo.uniqueId
+          ..popNativePageUntilAppearFlutterPage=true
           ..arguments = {"animated": false};
         await nativeRouterApi.popRoute(params);
       }

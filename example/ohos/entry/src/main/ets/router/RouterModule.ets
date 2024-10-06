@@ -1,3 +1,5 @@
+import { RouterNameConstants } from "../constants/RouterConstants";
+import hilog from "@ohos.hilog";
 
 export class RouterOptions {
     constructor(uri: string, params: Record<string, Object>, uniqueId: string | null) {
@@ -39,4 +41,32 @@ export class RouterModule {
             throw new Error('routeStack is null!');
         }
     }
+    public static popNativePageUntilAppearFlutterPage(result: Record<string, Object> = {}): boolean {
+        if (RouterModule.routeStack != null) {
+            let array :Array<string> = RouterModule.routeStack.getAllPathName();
+            let targetIndex = -1;
+            for(let index = array.length-1;index>=0;index--){
+                if(array[index]==RouterNameConstants.FLUTTER_PAGE){
+                    targetIndex =index;
+                    break;
+                }
+            }
+
+          if(targetIndex!=-1){
+              RouterModule.routeStack.popToIndex(targetIndex);//popToName(RouterNameConstants.FLUTTER_PAGE,true);
+              array  = RouterModule.routeStack.getAllPathName();
+              hilog.info(0x0000, "zb", 'zb.........'+array.toString());
+              return true;
+          }else{
+              array  = RouterModule.routeStack.getAllPathName();
+              hilog.info(0x0000, "zb", 'zb.........'+array.toString());
+              return false;
+          }
+            // array  = RouterModule.routeStack.getAllPathName();
+            // hilog.info(0x0000, "zb", 'zb.........'+array.toString());
+        } else {
+            throw new Error('routeStack is null!');
+        }
+    }
+
 }

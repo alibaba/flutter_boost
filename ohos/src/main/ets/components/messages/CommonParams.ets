@@ -22,13 +22,14 @@
  * THE SOFTWARE.
  */
 import FlutterBoostUtils from '../FlutterBoostUtils'
-
+// bool? popNativePageUntilAppearFlutterPage;
 /**
  *  Flutter/Native互相发消息参数
  */
 export default class CommonParams {
   public pageName?: string
   public uniqueId?: string
+  public popNativePageUntilAppearFlutterPage?: boolean
   public arguments?: Record<string, Object>
   public opaque?: boolean
   public key?: string
@@ -38,6 +39,15 @@ export default class CommonParams {
 
     if (this.pageName && this.pageName!.length > 0) {
       toMapResult.set('pageName', this.pageName);
+    }
+
+    if (this.uniqueId && this.uniqueId!.length > 0) {
+      toMapResult.set('uniqueId', this.uniqueId);
+    }
+    // pigeonMap['PNPUAFP'] = popNativePageUntilAppearFlutterPage;
+
+    if (this.popNativePageUntilAppearFlutterPage!=null) {
+      toMapResult.set('PNPUAFP', this.popNativePageUntilAppearFlutterPage);
     }
 
     if (this.uniqueId && this.uniqueId!.length > 0) {
@@ -73,6 +83,13 @@ export default class CommonParams {
       if (uniqueId) {
         fromMapResult.uniqueId = String(uniqueId)
       }
+      // if (this.popNativePageUntilAppearFlutterPage!=null) {
+      //   toMapResult.set('PNPUAFP', this.popNativePageUntilAppearFlutterPage);
+      // }
+      let popNativePageUntilAppearFlutterPage = map.get('PNPUAFP');
+      if (popNativePageUntilAppearFlutterPage!=undefined) {
+        fromMapResult.popNativePageUntilAppearFlutterPage = popNativePageUntilAppearFlutterPage as boolean
+      }
 
       let args = map.get("arguments")
       if (args) {
@@ -104,6 +121,11 @@ export default class CommonParams {
       let uniqueId = record["uniqueId"]
       if (uniqueId) {
         fromMapResult.uniqueId = String(uniqueId)
+      }
+
+      let popNativePageUntilAppearFlutterPage = record['PNPUAFP']??record["popNativePageUntilAppearFlutterPage"];
+      if (popNativePageUntilAppearFlutterPage!=undefined) {
+        fromMapResult.popNativePageUntilAppearFlutterPage = popNativePageUntilAppearFlutterPage as boolean
       }
 
       let args = record["arguments"]

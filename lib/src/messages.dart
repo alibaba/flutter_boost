@@ -17,12 +17,15 @@ class CommonParams {
     this.pageName,
     this.uniqueId,
     this.arguments,
+    this.popNativePageUntilAppearFlutterPage=false
   });
 
   bool? opaque;
   String? key;
   String? pageName;
   String? uniqueId;
+  ///continuePopUntilAppearFlutterPage
+  bool? popNativePageUntilAppearFlutterPage;
   Map<String?, Object?>? arguments;
 
   Object encode() {
@@ -31,7 +34,7 @@ class CommonParams {
     pigeonMap['key'] = key;
     pigeonMap['pageName'] = pageName;
     pigeonMap['uniqueId'] = uniqueId;
-    pigeonMap['arguments'] = arguments;
+    pigeonMap['PNPUAFP'] = popNativePageUntilAppearFlutterPage;
     return pigeonMap;
   }
 
@@ -42,6 +45,7 @@ class CommonParams {
       key: pigeonMap['key'] as String?,
       pageName: pigeonMap['pageName'] as String?,
       uniqueId: pigeonMap['uniqueId'] as String?,
+      popNativePageUntilAppearFlutterPage: pigeonMap['PUAFP'] as bool?,
       arguments: (pigeonMap['arguments'] as Map<Object?, Object?>?)?.cast<String?, Object?>(),
     );
   }

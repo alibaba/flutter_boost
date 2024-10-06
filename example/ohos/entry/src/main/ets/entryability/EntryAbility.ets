@@ -38,6 +38,7 @@ import { GeneratedPluginRegistrant } from '../plugins/GeneratedPluginRegistrant'
 import { RouterModule, RouterOptions } from '../router/RouterModule';
 import { RouterNameConstants } from '../constants/RouterConstants';
 import { SimpleTextViewFactory } from '../platform_view/SimpleTextViewFactory';
+import FlutterContainerManager from 'flutter_boost/src/main/ets/components/containers/FlutterContainerManager';
 
 const TAG: string = "EntryAbility";
 export default class EntryAbility extends UIAbility implements FlutterBoostDelegate {
@@ -62,8 +63,28 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
   // 关闭flutter页面
   popRoute(options: FlutterBoostRouteOptions): boolean {
     //自定义popRoute处理逻辑,如果不想走默认处理逻辑返回true进行拦截
-    return false;
+    let uniqueId: string | null = options.getUniqueId();
+    if (uniqueId) {
+      const container = FlutterContainerManager.getInstance().findContainerById(uniqueId);
+      if (container) {
+        container.finishContainer(options.getArguments() ? options.getArguments() : {})
+      } else {
+        throw new Error("Oops!! Can not find the page. uniqueId:" + uniqueId);
+      }
+
+      let isPopUntilAppearFlutterPage: boolean= options.getPopUntilAppearFlutterPage()
+
+      if(isPopUntilAppearFlutterPage==true){
+         RouterModule.popNativePageUntilAppearFlutterPage(options.getArguments() ? options.getArguments() : {});
+      }
+
+    } else {
+      throw new Error(`Oops!! The unique id is invalid: ${uniqueId}`);
+    }
+    return true;
   }
+  //
+  // popNativePageUntilAppearFlutterPage(options: FlutterBoostRouteOptions): boolean;
 
   async onCreate(want: Want, launchParam: AbilityConstant.LaunchParam) {
     hilog.info(0x0000, TAG, '%{public}s', 'Ability onCreate');

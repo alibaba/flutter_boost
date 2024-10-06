@@ -37,11 +37,14 @@ export default class FlutterBoostRouteOptions {
   // 是否不透明
   private readonly opaque: boolean
 
+  private popNativePageUntilAppearFlutterPage: boolean
+
   constructor(builder: FlutterBoostRouteOptionsBuilder) {
     this.pageName = builder.pageName;
     this.arguments = builder.arguments;
     this.uniqueId = builder.uniqueId;
     this.opaque = builder.opaque;
+    this.popNativePageUntilAppearFlutterPage = builder.popNativePageUntilAppearFlutterPage??false;
   }
 
   public getPageName(): string {
@@ -56,6 +59,10 @@ export default class FlutterBoostRouteOptions {
     return this.uniqueId;
   }
 
+  public getPopUntilAppearFlutterPage(): boolean {
+    return this.popNativePageUntilAppearFlutterPage;
+  }
+
   public isOpaque(): boolean {
     return this.opaque;
   }
@@ -66,12 +73,13 @@ export class FlutterBoostRouteOptionsBuilder {
   arguments: Record<string, Object>;
   uniqueId: string | null;
   opaque: boolean = true;
-
+  public popNativePageUntilAppearFlutterPage: boolean = false;
   constructor() {
     this.pageName = ''
     this.arguments = {}
     this.uniqueId = null
     this.opaque = false
+    this.popNativePageUntilAppearFlutterPage = false
   }
 
   public setPageName(pageName: string): FlutterBoostRouteOptionsBuilder {
@@ -91,6 +99,11 @@ export class FlutterBoostRouteOptionsBuilder {
 
   public setOpaque(opaque: boolean): FlutterBoostRouteOptionsBuilder {
     this.opaque = opaque;
+    return this;
+  }
+
+  public setPopUntilAppearFlutterPage(popNativePageUntilAppearFlutterPage: boolean): FlutterBoostRouteOptionsBuilder {
+    this.popNativePageUntilAppearFlutterPage = popNativePageUntilAppearFlutterPage;
     return this;
   }
 
