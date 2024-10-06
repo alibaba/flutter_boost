@@ -59,7 +59,7 @@ export default class FlutterBoostRouteOptions {
     return this.uniqueId;
   }
 
-  public getPopUntilAppearFlutterPage(): boolean {
+  public getPopNativePageUntilAppearFlutterPage(): boolean {
     return this.popNativePageUntilAppearFlutterPage;
   }
 
@@ -102,7 +102,7 @@ export class FlutterBoostRouteOptionsBuilder {
     return this;
   }
 
-  public setPopUntilAppearFlutterPage(popNativePageUntilAppearFlutterPage: boolean): FlutterBoostRouteOptionsBuilder {
+  public setPopNativePageUntilAppearFlutterPage(popNativePageUntilAppearFlutterPage: boolean): FlutterBoostRouteOptionsBuilder {
     this.popNativePageUntilAppearFlutterPage = popNativePageUntilAppearFlutterPage;
     return this;
   }

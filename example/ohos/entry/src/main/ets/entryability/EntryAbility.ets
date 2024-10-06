@@ -72,9 +72,9 @@ export default class EntryAbility extends UIAbility implements FlutterBoostDeleg
         throw new Error("Oops!! Can not find the page. uniqueId:" + uniqueId);
       }
 
-      let isPopUntilAppearFlutterPage: boolean= options.getPopUntilAppearFlutterPage()
+      let isPopNativePageUntilAppearFlutterPage: boolean= options.getPopNativePageUntilAppearFlutterPage()
 
-      if(isPopUntilAppearFlutterPage==true){
+      if(isPopNativePageUntilAppearFlutterPage==true){
          RouterModule.popNativePageUntilAppearFlutterPage(options.getArguments() ? options.getArguments() : {});
       }
 

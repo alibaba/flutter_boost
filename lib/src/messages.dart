@@ -24,7 +24,7 @@ class CommonParams {
   String? key;
   String? pageName;
   String? uniqueId;
-  ///continuePopUntilAppearFlutterPage
+  ///continuePopNativePageUntilAppearFlutterPage
   bool? popNativePageUntilAppearFlutterPage;
   Map<String?, Object?>? arguments;
 

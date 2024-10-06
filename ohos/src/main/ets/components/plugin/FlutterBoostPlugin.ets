@@ -142,7 +142,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       const options: FlutterBoostRouteOptions = new FlutterBoostRouteOptionsBuilder()
                                                   .setPageName(params.pageName ?? '')
                                                   .setUniqueId(params.uniqueId!)
-        .setPopUntilAppearFlutterPage(params.popNativePageUntilAppearFlutterPage??false)
+        .setPopNativePageUntilAppearFlutterPage(params.popNativePageUntilAppearFlutterPage??false)
                                                   .setArguments(params.arguments ?? {})
                                                   .build();
       let isHandled: boolean = this.delegate.popRoute(options);
@@ -163,7 +163,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
         }
       }
 
-      // let isPopUntilAppearFlutterPageHandled: boolean = this.delegate?.popNativePageUntilAppearFlutterPage(options);
+      // let isPopNativePageUntilAppearFlutterPageHandled: boolean = this.delegate?.popNativePageUntilAppearFlutterPage(options);
 
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
