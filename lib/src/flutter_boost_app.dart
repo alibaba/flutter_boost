@@ -459,7 +459,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
                 ?.popUntil(_withPage(targetPage!)));
       }
     } else {
-      topContainer?.navigator?.popUntil(_withPage(targetPage!));
+      if (targetPage != null) {
+        topContainer?.navigator?.popUntil(_withPage(targetPage));
+      } else {
+        Logger.error('can\'t find route=$route, uniqueId=$uniqueId on popUntil');
+      }
     }
   }
 
