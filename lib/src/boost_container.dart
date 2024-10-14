@@ -15,7 +15,7 @@ import 'flutter_boost_app.dart';
 /// Each of which has a bunch of pages in the [NavigatorExt]
 class BoostContainer extends ChangeNotifier {
   BoostContainer({this.key, required this.pageInfo}) {
-    _pages.add(BoostPage.create(pageInfo));
+    _pages.add(BoostPage.create(pageInfo: pageInfo, isContainerPage: true));
   }
 
   static BoostContainer? of(BuildContext context) {

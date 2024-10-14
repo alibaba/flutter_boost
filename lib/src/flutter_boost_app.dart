@@ -333,7 +333,7 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
         arguments: arguments,
         withContainer: false);
     assert(topContainer != null);
-    var result = topContainer!.addPage(BoostPage.create(pageInfo));
+    var result = topContainer!.addPage(BoostPage.create(pageInfo: pageInfo));
     _pushFinish(pageName, uniqueId: uniqueId, arguments: arguments);
     return result!.then((value) => value as T);
   }
@@ -737,18 +737,20 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
 
 // ignore: must_be_immutable
 class BoostPage<T> extends Page<T> {
-  BoostPage._({LocalKey? key, required this.pageInfo})
+  BoostPage._({LocalKey? key, required this.pageInfo, this.isContainerPage = false})
       : super(
             key: key, name: pageInfo.pageName, arguments: pageInfo.arguments) {
-    _route = BoostNavigator.instance.routeFactory(this, pageInfo.uniqueId)
+    _route = BoostNavigator.instance.routeFactory(this, isContainerPage, pageInfo.uniqueId)
         as Route<T>?;
     assert(_route != null,
         "Oops! Route name is not registered: '${pageInfo.pageName}'.");
   }
   final PageInfo pageInfo;
 
-  factory BoostPage.create(PageInfo pageInfo) {
-    return BoostPage._(key: UniqueKey(), pageInfo: pageInfo);
+  final bool isContainerPage;
+
+  factory BoostPage.create({required PageInfo pageInfo, bool isContainerPage = false}) {
+    return BoostPage._(key: UniqueKey(), pageInfo: pageInfo, isContainerPage: isContainerPage);
   }
 
   Route<T>? _route;

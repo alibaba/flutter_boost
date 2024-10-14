@@ -11,12 +11,12 @@ import 'container_overlay.dart';
 import 'flutter_boost_app.dart';
 
 typedef FlutterBoostRouteFactory = Route<dynamic>? Function(
-    RouteSettings settings, String? uniqueId);
+    RouteSettings settings, bool isContainerPage, String? uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
     FlutterBoostRouteFactory routeFactory) {
-  return (settings, uniqueId) {
-    var route = routeFactory(settings, uniqueId);
+  return (settings, isContainerPage, uniqueId) {
+    var route = routeFactory(settings, isContainerPage, uniqueId);
     if (route == null && settings.name == '/') {
       route = PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
@@ -59,8 +59,8 @@ class BoostNavigator {
   ///
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
-  bool isFlutterPage(String name) =>
-      routeFactory(RouteSettings(name: name), null) != null;
+  bool isFlutterPage(String name, bool isContainerPage) =>
+      routeFactory(RouteSettings(name: name), isContainerPage, null) != null;
 
   /// Push the page with the given [name] onto the hybrid stack.
   /// [arguments] is the param you want to pass in next page
@@ -75,7 +75,7 @@ class BoostNavigator {
       bool opaque = true}) {
     assert(
         appState != null, 'Please check if the engine has been initialized!');
-    bool isFlutter = isFlutterPage(name);
+    bool isFlutter = isFlutterPage(name, withContainer);
     if (isFlutter && withContainer) {
       // 1. open flutter page with container
       // Intercepted in BoostFlutterRouterApi.pushRoute

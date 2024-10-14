@@ -1,4 +1,5 @@
 ## NEXT
+1. [dart]支持业务侧获取当前flutter页面是否是外部路由flutter页面
 
 ## 4.6.4
 1. [dart]新增demo验证extended_image插件的图片左右滑动切换、缩放等手势操作是否有效

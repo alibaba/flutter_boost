@@ -497,6 +497,20 @@ class _FlutterIndexRouteState extends State<FlutterIndexRoute>
                       .push('extendedImageDemo', withContainer: withContainer);
                 },
               ),
+              InkWell(
+                child: Container(
+                    padding: const EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
+                    color: Colors.yellow,
+                    child: const Text(
+                      'cupertino page route demo',
+                      style: TextStyle(fontSize: 22.0, color: Colors.black),
+                    )),
+                onTap: () {
+                  BoostNavigator.instance
+                      .push('cupertino_page_route_demo', withContainer: withContainer);
+                },
+              ),
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_boost/flutter_boost.dart';
 import 'package:flutter_boost_example/case/image_format_demo.dart';
@@ -29,6 +30,7 @@ import 'case/transparent_widget.dart';
 import 'case/webview_flutter_demo.dart';
 import 'case/willpop.dart';
 import 'case/extended_image_demo.dart';
+import 'case/cupertino_page_route_demo.dart';
 import 'flutter_page.dart';
 import 'simple_page_widgets.dart';
 import 'tab/simple_widget.dart';
@@ -151,12 +153,12 @@ class _MyAppState extends State<MyApp> {
     //   return PageRouteBuilder<dynamic>(
     //       settings: settings, pageBuilder: (_, __, ___) => Container());
     // },
-    'embedded': (settings, uniqueId) {
+    'embedded': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => EmbeddedFirstRouteWidget());
     },
-    'presentFlutterPage': (settings, uniqueId) {
+    'presentFlutterPage': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FlutterIndexRoute(
@@ -164,18 +166,18 @@ class _MyAppState extends State<MyApp> {
                 uniqueId: uniqueId,
               ));
     },
-    'imagepick': (settings, uniqueId) {
+    'imagepick': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => const ImagePickerPage(title: "xxx"));
     },
-    'imageCache': (settings, uniqueId) {
+    'imageCache': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) =>
               const ImageCacheRoute(title: "ImageCache Example"));
     },
-    'assetImageRoute': (settings, uniqueId) {
+    'assetImageRoute': (settings, isContainerPage, uniqueId) {
       Map<String, dynamic>? args = settings.arguments as Map<String, dynamic>?;
       bool? precache = args?['precache'];
       return PageRouteBuilder<dynamic>(
@@ -183,18 +185,18 @@ class _MyAppState extends State<MyApp> {
           pageBuilder: (_, __, ___) =>
               AssetImageRoute(precache: precache ?? false));
     },
-    'interceptor': (settings, uniqueId) {
+    'interceptor': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) =>
               const ImagePickerPage(title: "interceptor"));
     },
-    'firstFirst': (settings, uniqueId) {
+    'firstFirst': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => FirstFirstRouteWidget());
     },
-    'willPop': (settings, uniqueId) {
+    'willPop': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => const WillPopRoute(),
@@ -216,25 +218,25 @@ class _MyAppState extends State<MyApp> {
         },
       );
     },
-    'counter': (settings, uniqueId) {
+    'counter': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) =>
               const CounterPage(title: "Counter Demo"));
     },
-    'dualScreen': (settings, uniqueId) {
+    'dualScreen': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => const DualScreen());
     },
-    'hero_animation': (settings, uniqueId) {
+    'hero_animation': (settings, isContainerPage, uniqueId) {
       return MaterialPageRoute(
           settings: settings, builder: (_) => const HeroAnimation());
     },
-    'returnData': (settings, uniqueId) {
+    'returnData': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ReturnDataWidget());
     },
-    'transparentWidget': (settings, uniqueId) {
+    'transparentWidget': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           barrierColor: Colors.black12,
           transitionDuration: const Duration(),
@@ -243,36 +245,36 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           pageBuilder: (_, __, ___) => TransparentWidget());
     },
-    'radialExpansion': (settings, uniqueId) {
+    'radialExpansion': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => RadialExpansionDemo());
     },
-    'selectionScreen': (settings, uniqueId) {
+    'selectionScreen': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => SelectionScreen());
     },
-    'secondStateful': (settings, uniqueId) {
+    'secondStateful': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SecondStatefulRouteWidget());
     },
-    'platformView': (settings, uniqueId) {
+    'platformView': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => PlatformRouteWidget());
     },
-    'popUntilView': (settings, uniqueId) {
+    'popUntilView': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => PopUntilRoute());
     },
-    'extendedImageDemo': (settings, uniqueId) {
+    'extendedImageDemo': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ExtendedImageDemo());
     },
 
     ///可以在native层通过 getContainerParams 来传递参数
-    'flutterPage': (settings, uniqueId) {
+    'flutterPage': (settings, isContainerPage, uniqueId) {
       debugPrint('flutterPage settings:$settings, uniqueId:$uniqueId');
       return PageRouteBuilder<dynamic>(
         settings: settings,
@@ -298,11 +300,11 @@ class _MyAppState extends State<MyApp> {
         // },
       );
     },
-    'showDialog': (settings, uniqueId) {
+    'showDialog': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ShowDialogDemo());
     },
-    'tab_friend': (settings, uniqueId) {
+    'tab_friend': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
@@ -310,7 +312,7 @@ class _MyAppState extends State<MyApp> {
               settings.arguments as Map<dynamic, dynamic>?,
               "This is a flutter fragment"));
     },
-    'tab_message': (settings, uniqueId) {
+    'tab_message': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
@@ -318,7 +320,7 @@ class _MyAppState extends State<MyApp> {
               settings.arguments as Map<dynamic, dynamic>?,
               "This is a flutter fragment"));
     },
-    'tab_flutter1': (settings, uniqueId) {
+    'tab_flutter1': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
@@ -326,7 +328,7 @@ class _MyAppState extends State<MyApp> {
               settings.arguments as Map<dynamic, dynamic>?,
               "This is a custom FlutterView"));
     },
-    'tab_flutter2': (settings, uniqueId) {
+    'tab_flutter2': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => SimpleWidget(
@@ -335,45 +337,45 @@ class _MyAppState extends State<MyApp> {
               "This is a custom FlutterView"));
     },
 
-    'f2f_first': (settings, uniqueId) {
+    'f2f_first': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => F2FFirstPage());
     },
-    'f2f_second': (settings, uniqueId) {
+    'f2f_second': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => F2FSecondPage());
     },
-    'webview': (settings, uniqueId) {
+    'webview': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => WebViewExample());
     },
-    'platformview/listview': (settings, uniqueId) {
+    'platformview/listview': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => PlatformViewPerf());
     },
-    'platformview/animation': (settings, uniqueId) {
+    'platformview/animation': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => NativeViewExample());
     },
-    'platformview/simplewebview': (settings, uniqueId) {
+    'platformview/simplewebview': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => SimpleWebView());
     },
-    'state_restoration': (settings, uniqueId) {
+    'state_restoration': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => StateRestorationDemo());
     },
-    'rotation_transition': (settings, uniqueId) {
+    'rotation_transition': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => RotationTranDemo());
     },
-    'bottom_navigation': (settings, uniqueId) {
+    'bottom_navigation': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => const BottomNavigationPage());
     },
-    'system_ui_overlay_style': (settings, uniqueId) {
+    'system_ui_overlay_style': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) {
@@ -384,7 +386,7 @@ class _MyAppState extends State<MyApp> {
             return SystemUiOverlayStyleDemo(isDark: isDark);
           });
     },
-    'mediaquery': (settings, uniqueId) {
+    'mediaquery': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => MediaQueryRouteWidget(
@@ -392,22 +394,35 @@ class _MyAppState extends State<MyApp> {
                 uniqueId: uniqueId,
               ));
     },
-    'safe_area': (settings, uniqueId) {
+    'safe_area': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings,
           pageBuilder: (_, __, ___) => const SafeAreaPage());
     },
-    'clipboard': (settings, uniqueId) {
+    'clipboard': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ClipboardExample());
     },
-    'image_format_demo': (settings, uniqueId) {
+    'image_format_demo': (settings, isContainerPage, uniqueId) {
       return PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => ImageFormatDemo());
     },
 
+    ///isContainerPage的值和BoostNavigator.instance.push()该页面时的withContainer值相同
+    'cupertino_page_route_demo':(settings, isContainerPage, uniqueId) {
+      if (isContainerPage) {
+        Logger.log('current page is a container page');
+        return PageRouteBuilder<dynamic>(
+            settings: settings, pageBuilder: (_, __, ___) => CupertinoPageRouteDemo());
+      }else {
+        Logger.log('current page is not a container page');
+        return CupertinoPageRoute<dynamic>(
+            settings: settings, builder: (BuildContext context) => CupertinoPageRouteDemo());
+      }
+    },
+
     ///使用 BoostCacheWidget包裹你的页面时，可以解决push pageA->pageB->pageC 过程中，pageA，pageB 会多次 rebuild 的问题
-    'flutterRebuildDemo': (settings, uniqueId) {
+    'flutterRebuildDemo': (settings, isContainerPage, uniqueId) {
       return MaterialPageRoute(
           settings: settings,
           builder: (ctx) {
@@ -417,7 +432,7 @@ class _MyAppState extends State<MyApp> {
             );
           });
     },
-    'flutterRebuildPageA': (settings, uniqueId) {
+    'flutterRebuildPageA': (settings, isContainerPage, uniqueId) {
       return MaterialPageRoute(
           settings: settings,
           builder: (ctx) {
@@ -427,7 +442,7 @@ class _MyAppState extends State<MyApp> {
             );
           });
     },
-    'flutterRebuildPageB': (settings, uniqueId) {
+    'flutterRebuildPageB': (settings, isContainerPage, uniqueId) {
       return MaterialPageRoute(
           settings: settings,
           builder: (ctx) {
@@ -439,12 +454,12 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
+  Route<dynamic>? routeFactory(RouteSettings settings, bool isContainerPage, String? uniqueId) {
     FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;
     }
-    return func(settings, uniqueId);
+    return func(settings, isContainerPage, uniqueId);
   }
 
   @override
