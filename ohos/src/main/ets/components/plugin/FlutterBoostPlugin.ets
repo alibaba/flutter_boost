@@ -142,6 +142,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
       const options: FlutterBoostRouteOptions = new FlutterBoostRouteOptionsBuilder()
                                                   .setPageName(params.pageName ?? '')
                                                   .setUniqueId(params.uniqueId!)
+        .setPopNativePageUntilAppearFlutterPage(params.popNativePageUntilAppearFlutterPage??false)
                                                   .setArguments(params.arguments ?? {})
                                                   .build();
       let isHandled: boolean = this.delegate.popRoute(options);
@@ -161,6 +162,9 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
           throw new Error(`Oops!! The unique id is invalid: ${uniqueId}`);
         }
       }
+
+      // let isPopNativePageUntilAppearFlutterPageHandled: boolean = this.delegate?.popNativePageUntilAppearFlutterPage(options);
+
     } else {
       throw new Error("FlutterBoostPlugin might *NOT* set delegate!");
     }

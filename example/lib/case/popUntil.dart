@@ -53,6 +53,19 @@ class PopUntilRouteState extends State<PopUntilRoute> {
                         .push("popUntilView", withContainer: false);
                   },
                   child: const Text('push without container ')),
+              TextButton(
+                  onPressed: () {
+                    BoostNavigator.instance
+                        .push("openNativeVeiw", withContainer: false);
+                  },
+                  child: const Text('open native veiw ')),
+              TextButton(
+                  onPressed: () {
+                    BoostNavigator.instance
+                        .push("flutterPage", withContainer: false);
+                  },
+                  child: const Text('open flutterPage'))
+
             ],
           )),
         ));

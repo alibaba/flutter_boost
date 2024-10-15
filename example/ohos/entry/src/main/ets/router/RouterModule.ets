@@ -1,3 +1,5 @@
+import { RouterNameConstants } from "../constants/RouterConstants";
+import hilog from "@ohos.hilog";
 
 export class RouterOptions {
     constructor(uri: string, params: Record<string, Object>, uniqueId: string | null) {
@@ -39,4 +41,46 @@ export class RouterModule {
             throw new Error('routeStack is null!');
         }
     }
+
+
+    public static getFlutterRouterListName(): Array<string> {
+
+         return[RouterNameConstants.FLUTTER_DIALOG,RouterNameConstants.FLUTTER_PAGE];
+    }
+
+    // isFlutterPage(){
+    //
+    // }
+
+
+    public static popNativePageUntilAppearFlutterPage(result: Record<string, Object> = {}): boolean {
+
+        if (RouterModule.routeStack != null) {
+            let allPathName :Array<string> = RouterModule.routeStack.getAllPathName();
+            let flutterRouterArray :Array<string> = RouterModule.getFlutterRouterListName();
+            let targetIndex = -1;
+            for(let index = allPathName.length-1;index>=0;index--){
+                if(flutterRouterArray.includes(allPathName[index])){
+                    targetIndex =index;
+                    break;
+                }
+            }
+
+          if(targetIndex!=-1){
+              RouterModule.routeStack.popToIndex(targetIndex);//popToName(RouterNameConstants.FLUTTER_PAGE,true);
+              allPathName  = RouterModule.routeStack.getAllPathName();
+              hilog.info(0x0000, "zb", 'zb.........'+allPathName.toString());
+              return true;
+          }else{
+              allPathName  = RouterModule.routeStack.getAllPathName();
+              hilog.info(0x0000, "zb", 'zb.........'+allPathName.toString());
+              return false;
+          }
+            // array  = RouterModule.routeStack.getAllPathName();
+            // hilog.info(0x0000, "zb", 'zb.........'+array.toString());
+        } else {
+            throw new Error('routeStack is null!');
+        }
+    }
+
 }
