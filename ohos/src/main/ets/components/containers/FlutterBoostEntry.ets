@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
+import { common } from '@kit.AbilityKit';
 import { FlutterEntry, PlatformPlugin, } from '@ohos/flutter_ohos';
 import { FlutterViewContainer } from './FlutterViewContainer';
 import { LifecycleStage } from './Lifecycle';
@@ -39,14 +39,14 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
   private isAttached: boolean = false
   private platformPlugin?: PlatformPlugin | null
   private stage?: LifecycleStage;
-  private thisContext: Context;
+  private thisContext: common.UIAbilityContext;
   private routerOptions: ESObject;
   private isDialogMode: boolean;
   private routeStack: NavPathStack | null = null;
   private isStackPopping: boolean = false
   private onPopCallback?: (result: Record<string, Object>) => void;
 
-  constructor(context: Context, routerOptions: ESObject, isDialog?: boolean, onPop?: (result: Record<string, Object>) => void) {
+  constructor(context: common.UIAbilityContext, routerOptions: ESObject, isDialog?: boolean, onPop?: (result: Record<string, Object>) => void) {
     super(context);
 
     this.thisContext = context;
@@ -338,7 +338,6 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     if (!this.platformPlugin) {
       this.platformPlugin = this.providePlatformPlugin(this.getFlutterEngine()!);
       this.platformPlugin?.initWindow();
-      this.platformPlugin?.setUIAbilityContext(this.getAbility().context);
     }
   }
 
