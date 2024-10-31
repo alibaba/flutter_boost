@@ -117,6 +117,7 @@ class BoostNavigator {
   Future<void> popUntil({String? route, String? uniqueId}) async {
     assert(
         appState != null, 'Please check if the engine has been initialized!');
+    assert(route != null || uniqueId != null, 'Please specify either "route" or "uniqueId"!');
     return appState!.popUntil(route: route, uniqueId: uniqueId);
   }
 
