@@ -145,6 +145,17 @@ export class FlutterBoost {
     });
   }
 
+  public async unsetFlutterBoost() {
+    this.plugin?.setDelegate(null);
+    this.plugin = null;
+    this.delegate = null;
+
+    FlutterEngineCache.getInstance().remove(FlutterBoost.ENGINE_ID);
+    // 暂时不调用，会crash
+    // this.flutterEngine?.destroy();
+    this.flutterEngine = null;
+  }
+
   /**
    * 打开页面
    * @param pageName 页面名称

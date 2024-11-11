@@ -203,7 +203,7 @@ export class FlutterBoostPlugin implements FlutterPlugin, MethodCallHandler, Nat
   }
 
   // public method
-  public setDelegate(delegate: FlutterBoostDelegate) {
+  public setDelegate(delegate: FlutterBoostDelegate | null) {
     this.delegate = delegate;
   }
 
