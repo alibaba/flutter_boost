@@ -94,7 +94,14 @@ class _SimpleWidgetState extends State<SimpleWidget>
                       'open native page',
                       style: TextStyle(fontSize: 22.0, color: Colors.black),
                     )),
-                onTap: () => BoostNavigator.instance.push("native"),
+                onTap: () => BoostNavigator.instance.push("native").then(
+                        (value)  {
+                          if (mounted) {
+                            ScaffoldMessenger.of(context)
+                              ..removeCurrentSnackBar()
+                              ..showSnackBar(SnackBar(content: Text("$value")));
+                          }
+                        }),
               ),
               InkWell(
                 child: Container(

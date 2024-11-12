@@ -167,8 +167,6 @@ implementation project(':flutter_boost')
 <meta-data android:name="flutterEmbedding"
            android:value="2">
 </meta-data>
-
-
 ```
 
 然后点击右上角的sync同步一下，就会开始一些下载和同步的进程，等待完成
@@ -181,23 +179,41 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         FlutterBoost.instance().setup(this, new FlutterBoostDelegate() {
+
+            private void startActivityForResult(Intent intent, int requestCode) {
+                FlutterViewContainer topContainer = FlutterBoost.instance().getTopContainer();
+                if (topContainer instanceof FlutterFragment) {
+                    //如果是从FlutterBoostFragment唤起的新页面，只有使用FlutterFragment进行start，才能收到result
+                    ((FlutterFragment) topContainer).startActivityForResult(intent, requestCode);
+                } else if (topContainer instanceof FlutterActivity) {
+                    ((FlutterActivity) topContainer).startActivityForResult(intent, requestCode);
+                } else {
+                    FlutterBoost.instance().currentActivity().startActivityForResult(intent,
+                    requestCode);
+                }
+            }
+
             @Override
             public void pushNativeRoute(FlutterBoostRouteOptions options) {
                 //这里根据options.pageName来判断你想跳转哪个页面，这里简单给一个
-                Intent intent = new Intent(FlutterBoost.instance().currentActivity(), YourTargetAcitvity.class);
-                FlutterBoost.instance().currentActivity().startActivityForResult(intent, options.requestCode());
+                //TODO 这里的currentActivity在FlutterBoost延迟初始化+第一个页面是FlutterBoostFragment时，可能存在NPE，
+                //TODO 建议使用自己管理的堆栈的顶层Activity
+                Context context = FlutterBoost.instance().currentActivity();
+                Intent intent = new Intent(context, YourTargetAcitvity.class);
+                startActivityForResult(intent, options.requestCode());
             }
 
             @Override
             public void pushFlutterRoute(FlutterBoostRouteOptions options) {
+                Context context = FlutterBoost.instance().currentActivity();
                 Intent intent = new FlutterBoostActivity.CachedEngineIntentBuilder(FlutterBoostActivity.class)
                         .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
                         .destroyEngineWithActivity(false)
                         .uniqueId(options.uniqueId())
                         .url(options.pageName())
                         .urlParams(options.arguments())
-                        .build(FlutterBoost.instance().currentActivity());
-                FlutterBoost.instance().currentActivity().startActivity(intent);
+                        .build(context);
+                startActivityForResult(intent, options.requestCode();
             }
         }, engine -> {
         });
@@ -325,21 +341,3 @@ FlutterBoost.instance().setup(application, delegate: delegate) { engine in
 ```
 
 到此为止，所有的前置内容均已完成
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
