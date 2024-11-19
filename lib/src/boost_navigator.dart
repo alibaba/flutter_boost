@@ -14,14 +14,18 @@ typedef FlutterBoostRouteFactory = Route<dynamic>? Function(
     RouteSettings settings, String? uniqueId);
 
 FlutterBoostRouteFactory routeFactoryWrapper(
-    FlutterBoostRouteFactory routeFactory) {
+    FlutterBoostRouteFactory? routeFactory) {
   return (settings, uniqueId) {
-    var route = routeFactory(settings, uniqueId);
+    Route<dynamic>? route;
+    if (routeFactory != null) {
+      route = routeFactory(settings, uniqueId);
+    }
     if (route == null && settings.name == '/') {
       route = PageRouteBuilder<dynamic>(
           settings: settings, pageBuilder: (_, __, ___) => Container());
     }
-    return route;
+    assert(route != null, 'unable to build route(${settings.name})');
+    return route!;
   };
 }
 
@@ -36,13 +40,37 @@ class BoostNavigator {
   /// The boost data center
   FlutterBoostAppState? appState;
 
-  /// The route table in flutter_boost
-  late FlutterBoostRouteFactory _routeFactory;
+  Map<String, FlutterBoostRouteFactory>? _routeMap;
 
-  set routeFactory(FlutterBoostRouteFactory routeFactory) =>
+  set routerMap(Map<String, FlutterBoostRouteFactory> map) {
+    _routeMap = map;
+    //add '/' root-route if _routeMap doesn't contain.
+    if (!_routeMap!.containsKey('/')) {
+      _routeMap!['/'] = (settings, uniqueId) {
+        return PageRouteBuilder<dynamic>(
+            settings: settings, pageBuilder: (_, __, ___) => Container());
+      };
+    }
+  }
+
+  /// The route table in flutter_boost
+  FlutterBoostRouteFactory? _routeFactory;
+
+  @Deprecated(('Use `routerMap` instead'))
+  set routeFactory(FlutterBoostRouteFactory? routeFactory) =>
       _routeFactory = routeFactoryWrapper(routeFactory);
 
-  FlutterBoostRouteFactory get routeFactory => _routeFactory;
+  FlutterBoostRouteFactory? get routeFactory => _routeFactory;
+
+  Route<dynamic>? buildRoute(RouteSettings settings, String? uniqueId) {
+    if (_routeMap != null && _routeMap!.isNotEmpty) {
+      var factory = _routeMap![settings.name];
+      if (factory != null) {
+        return factory(settings, uniqueId);
+      }
+    }
+    return routeFactory!(settings, uniqueId);
+  }
 
   /// Use BoostNavigator.instance instead
   @Deprecated('Use `instance` instead.')
@@ -59,8 +87,12 @@ class BoostNavigator {
   ///
   /// If the name of route can be found in route table then return true,
   /// otherwise return false.
-  bool isFlutterPage(String name) =>
-      routeFactory(RouteSettings(name: name), null) != null;
+  bool isFlutterPage(String name) {
+    if (_routeMap != null && _routeMap!.isNotEmpty) {
+      return _routeMap!.containsKey(name);
+    }
+    return routeFactory!(RouteSettings(name: name), null) != null;
+  }
 
   /// Push the page with the given [name] onto the hybrid stack.
   /// [arguments] is the param you want to pass in next page

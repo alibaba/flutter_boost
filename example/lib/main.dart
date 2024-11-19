@@ -427,14 +427,6 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic>? routeFactory(RouteSettings settings, String? uniqueId) {
-    FlutterBoostRouteFactory? func = routerMap[settings.name!];
-    if (func == null) {
-      return null;
-    }
-    return func(settings, uniqueId);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -442,7 +434,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterBoostApp(routeFactory,
+    return FlutterBoostApp.routeMap(routerMap,
         // 如果自定了appBuilder，需要将传入的参数添加到widget层次结构中去，
         // 否则会导致FluttBoost初始化失败。
         appBuilder: (child) => MaterialApp(

@@ -23,6 +23,23 @@ import 'messages.dart';
 typedef FlutterBoostAppBuilder = Widget Function(Widget home);
 
 class FlutterBoostApp extends StatefulWidget {
+
+  FlutterBoostApp.routeMap(
+        Map<String, FlutterBoostRouteFactory> routerMap, {
+        Key? key,
+        FlutterBoostAppBuilder? appBuilder,
+        String? initialRoute,
+
+        ///interceptors is to intercept push operation now
+        List<BoostInterceptor>? interceptors,
+      })  : appBuilder = appBuilder ?? _defaultAppBuilder,
+        interceptors = interceptors ?? <BoostInterceptor>[],
+        initialRoute = initialRoute ?? '/',
+        super(key: key) {
+    BoostNavigator.instance.routerMap = routerMap;
+  }
+
+  @Deprecated('Use [FlutterBoostApp.routeMap] instead.')
   FlutterBoostApp(
     FlutterBoostRouteFactory routeFactory, {
     Key? key,
@@ -743,7 +760,7 @@ class BoostPage<T> extends Page<T> {
   BoostPage._({LocalKey? key, required this.pageInfo})
       : super(
             key: key, name: pageInfo.pageName, arguments: pageInfo.arguments) {
-    _route = BoostNavigator.instance.routeFactory(this, pageInfo.uniqueId)
+    _route = BoostNavigator.instance.buildRoute(this, pageInfo.uniqueId)
         as Route<T>?;
     assert(_route != null,
         "Oops! Route name is not registered: '${pageInfo.pageName}'.");
