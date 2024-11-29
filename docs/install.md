@@ -34,7 +34,7 @@ import 'package:flutter_boost/flutter_boost.dart';
 void main() {
   ///这里的CustomFlutterBinding调用务必不可缺少，用于控制Boost状态的resume和pause
   CustomFlutterBinding();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 
@@ -42,8 +42,10 @@ void main() {
 class CustomFlutterBinding extends WidgetsFlutterBinding with BoostFlutterBinding {}
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -59,18 +61,21 @@ class _MyAppState extends State<MyApp> {
   /// 如果用MaterialPageRoute的话同理
 
   Map<String, FlutterBoostRouteFactory> routerMap = {
-    'mainPage': (RouteSettings settings, String uniqueId) {
+    'mainPage': (RouteSettings settings, bool isContainerPage, String? uniqueId) {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
-            Map<String, Object> map = settings.arguments as Map<String, Object> ;
-            String data = map['data'] as String;
+            Map<String, dynamic> map = settings.arguments as Map<String, dynamic>;
+            Object? data;
+            if (map.containsKey('data')) {
+              data = map['data'];
+            }
             return MainPage(
               data: data,
             );
           });
     },
-    'simplePage': (settings, uniqueId) {
+    'simplePage': (settings, isContainerPage, uniqueId) {
       return CupertinoPageRoute(
           settings: settings,
           builder: (_) {
@@ -83,9 +88,13 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic> routeFactory(RouteSettings settings, String uniqueId) {
-    FlutterBoostRouteFactory func = routerMap[settings.name] as FlutterBoostRouteFactory;
-    return func(settings, uniqueId);
+  Route<dynamic>? routeFactory(RouteSettings settings, bool isContainerPage, String? uniqueId) {
+    var key = settings.name;
+    if (!routerMap.containsKey(key)) {
+      key = 'mainPage'; // 如果不在路由表中，就默认跳转到mainPage
+    }
+    FlutterBoostRouteFactory func = routerMap[key] as FlutterBoostRouteFactory;
+    return func(settings, isContainerPage, uniqueId);
   }
 
   Widget appBuilder(Widget home) {
@@ -110,7 +119,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MainPage extends StatelessWidget {
-  const MainPage({Object data});
+  const MainPage({super.key, Object? data});
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -120,11 +129,11 @@ class MainPage extends StatelessWidget {
 }
 
 class SimplePage extends StatelessWidget {
-  const SimplePage({Object data});
+  const SimplePage({super.key, Object? data});
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body:  Center(child: Text('SimplePage')),
+      body: Center(child: Text('SimplePage')),
     );
   }
 }
