@@ -68,9 +68,20 @@ class PageVisibilityBinding {
 
   /// Unregisters the given observer.
   void removeObserver(PageVisibilityObserver observer) {
+    final routesToRemove = <Route<dynamic>>[];
+
     for (final route in _listeners.keys) {
       final observers = _listeners[route];
       observers?.remove(observer);
+
+      if (observers?.isEmpty ?? false) {
+        routesToRemove.add(route);
+      }
+    }
+
+    for (final route in routesToRemove) {
+      _listeners.remove(route);
+      Logger.log('page_visibility, #cleanupEmptyRoute, $route');
     }
     Logger.log('page_visibility, #removeObserver, $observer');
   }
