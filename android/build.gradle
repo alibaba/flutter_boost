@@ -22,6 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    namespace "com.idlefish.flutterboost"
     compileSdkVersion 31
     buildToolsVersion '30.0.2'
     defaultConfig {
