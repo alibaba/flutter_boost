@@ -41,6 +41,7 @@ typedef void (^FBVoidCallback)(void);
 - (void)containerDisappeared:(id<FBFlutterContainer>)container;
 - (void)containerDestroyed:(id<FBFlutterContainer>)container;
 - (void)onBackSwipe;
+- (void)removeContainerWhenDealloc:(id<FBFlutterContainer>)container;
 
 - (FBVoidCallback)addEventListener:(FBEventListener)listener forName:(NSString *)key;
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine ;

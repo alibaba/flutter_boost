@@ -85,10 +85,13 @@
   [self.flutterApi removeRouteParam:params
                          completion:^(NSError * e) {
                          }];
-  [self.containerManager removeContainerByUniqueId:vc.uniqueIDString];
-  if (self.containerManager.containerSize == 0) {
-    [FBLifecycle pause];
-  }
+}
+
+- (void)removeContainerWhenDealloc:(id<FBFlutterContainer>)container {
+    [self.containerManager removeContainerByUniqueId:container.uniqueIDString];
+    if (self.containerManager.containerSize == 0) {
+      [FBLifecycle pause];
+    }
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>  *)registrar {
