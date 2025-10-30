@@ -204,6 +204,7 @@ _Pragma("clang diagnostic pop")
   if (self.removeEventCallback != nil) {
     self.removeEventCallback();
   }
+  [FB_PLUGIN removeContainerWhenDealloc:self];
   [NSNotificationCenter.defaultCenter removeObserver:self];
   _leftEdgeGesture.delegate = nil;
 }
