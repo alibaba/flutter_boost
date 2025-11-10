@@ -12,6 +12,12 @@ dependencies:
   flutter:
     sdk: flutter
   collection: ^1.16.0
+  flutter_boost_platform_interface:
+    path: flutter_boost_platform_interface
+  flutter_boost_android:
+    path: flutter_boost_android
+  flutter_boost_ios:
+    path: flutter_boost_ios
 
 dev_dependencies:
   flutter_lints: ^2.0.1
@@ -23,7 +29,6 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.idlefish.flutterboost
-        pluginClass: FlutterBoostPlugin
+        default_package: flutter_boost_android
       ios:
-        pluginClass: FlutterBoostPlugin
+        default_package: flutter_boost_ios
