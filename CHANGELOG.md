@@ -1,5 +1,12 @@
 ## NEXT
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
+2. [Architecture] 迁移到联邦插件架构 (Federated Plugin Architecture)
+   - 创建 `flutter_boost_platform_interface` 包定义平台接口
+   - 创建 `flutter_boost_android` 包实现 Android 平台
+   - 创建 `flutter_boost_ios` 包实现 iOS 平台
+   - 提高代码模块化和可维护性
+   - 保持完全向后兼容
+   - 详见 [迁移指南](FEDERATED_PLUGIN_MIGRATION.md)
 
 ## 5.0.2
 1. Adapt to the official engine's App Lifecycle state changes

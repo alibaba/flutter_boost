@@ -9,13 +9,13 @@
 
 PS：主线已支持空安全(null-safety)
 
-
 - 1.flutter sdk升级不需要升级boost
 - 2.简化架构
 - 3.简化接口
 - 4.双端接口设计统一
 - 5.解决了top issue
 - 6.android不需要区分androidx 和support
+- 7.采用联邦插件架构，提高可维护性和模块化 ([迁移指南](FEDERATED_PLUGIN_MIGRATION.md))
 
 # FlutterBoost
 
@@ -49,6 +49,10 @@ flutter_boost:
 - [基本的路由API](https://github.com/alibaba/flutter_boost/blob/master/docs/routeAPI.md)
 - [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md)
 - [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/master/docs/event.md)
+
+# 架构文档
+- [联邦插件架构说明](ARCHITECTURE.md)
+- [联邦插件迁移指南](FEDERATED_PLUGIN_MIGRATION.md)
 
 # 建设文档
 - [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md)
