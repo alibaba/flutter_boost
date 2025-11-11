@@ -16,11 +16,21 @@ import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 import java.util.List;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host {
+  
+  @NonNull
+  @Override
+  public OnBackInvokedDispatcher getBackCallbackState() {
+    // Return the activity's back callback state
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+      return mActivty.getOnBackInvokedDispatcher();
+    }
+    return null;
+  }
   protected static final String ARG_DART_ENTRYPOINT = "dart_entrypoint";
   protected static final String ARG_INITIAL_ROUTE = "initial_route";
   protected static final String ARG_APP_BUNDLE_PATH = "app_bundle_path";
@@ -150,7 +160,12 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @NonNull
   public String getAppBundlePath() {
-    return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterMain.findAppBundlePath());
+    String bundlePath = getArguments().getString(ARG_APP_BUNDLE_PATH, null);
+    if (bundlePath == null) {
+      FlutterLoader loader = FlutterLoader.getInstance();
+      bundlePath = loader.findAppBundlePath();
+    }
+    return bundlePath;
   }
 
   @Nullable
