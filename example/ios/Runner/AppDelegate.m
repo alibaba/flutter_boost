@@ -12,7 +12,7 @@
 #import "NativeViewController.h"
 #import "MyFlutterBoostDelegate.h"
 
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost_ios/FlutterBoost.h>
 
 @interface AppDelegate ()
 

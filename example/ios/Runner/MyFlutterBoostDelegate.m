@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "MyFlutterBoostDelegate.h"
 #import "UIViewControllerDemo.h"
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost_ios/FlutterBoost.h>
 
 @implementation MyFlutterBoostDelegate
 
