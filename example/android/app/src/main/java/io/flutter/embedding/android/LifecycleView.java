@@ -19,16 +19,16 @@ import android.window.OnBackInvokedDispatcher;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.embedding.engine.loader.FlutterLoader;
+import io.flutter.FlutterInjector;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.plugin.sensitivecontent.SensitiveContentPlugin;
 import java.util.List;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host {
   
   @Nullable
   @Override
-  public Object getBackCallbackState() {
-    // Return the activity's back callback state
+  public OnBackInvokedDispatcher getBackCallbackState() {
+    // Return the activity's back callback state  
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
       return mActivty.getOnBackInvokedDispatcher();
     }
@@ -37,21 +37,8 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @Nullable
   @Override
-  public SensitiveContentPlugin provideSensitiveContentPlugin(Activity activity, FlutterEngine engine) {
-    // No sensitive content plugin needed for this implementation
-    return null;
-  }
-
-  @Nullable
-  @Override
-  public SensitiveContentPlugin provideSensitiveContentPlugin(@NonNull Activity activity, @NonNull FlutterEngine flutterEngine) {
-    // Return null to use the default sensitive content plugin
-    return null;
-  }
-
-  @Nullable
-  @Override
-  public SensitiveContentPlugin provideSensitiveContentPlugin(@NonNull Activity activity, @NonNull FlutterEngine flutterEngine) {
+  public Object provideSensitiveContentPlugin(@NonNull Activity activity, @NonNull FlutterEngine flutterEngine) {
+    // Return null - no sensitive content plugin needed
     return null;
   }
   protected static final String ARG_DART_ENTRYPOINT = "dart_entrypoint";
@@ -185,9 +172,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   public String getAppBundlePath() {
     String bundlePath = getArguments().getString(ARG_APP_BUNDLE_PATH, null);
     if (bundlePath == null) {
-      FlutterLoader loader = new FlutterLoader(mActivty.getApplicationContext());
-      loader.startInitialization();
-      loader.ensureInitializationComplete(mActivty.getApplicationContext(), null);
+      FlutterLoader loader = FlutterInjector.instance().flutterLoader();
       bundlePath = loader.findAppBundlePath();
     }
     return bundlePath;
