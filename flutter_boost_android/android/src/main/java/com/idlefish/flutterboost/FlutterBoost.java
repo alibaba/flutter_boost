@@ -21,7 +21,6 @@ import io.flutter.embedding.engine.FlutterEngineCache;
 import io.flutter.embedding.engine.FlutterJNI;
 import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.loader.FlutterLoader;
-import io.flutter.view.FlutterMain;
 
 public class FlutterBoost {
     public static final String ENGINE_ID = "flutter_boost_default_engine";
@@ -87,8 +86,9 @@ public class FlutterBoost {
         if (!engine.getDartExecutor().isExecutingDart()) {
             // Pre-warm the cached FlutterEngine.
             engine.getNavigationChannel().setInitialRoute(options.initialRoute());
-            engine.getDartExecutor().executeDartEntrypoint(new DartExecutor.DartEntrypoint(
-                    FlutterMain.findAppBundlePath(), options.dartEntrypoint()), options.dartEntrypointArgs());
+            engine.getDartExecutor().executeDartEntrypoint(
+                    DartExecutor.DartEntrypoint.createDefault(),
+                    options.dartEntrypointArgs());
         }
         if (callback != null) callback.onStart(engine);
 
