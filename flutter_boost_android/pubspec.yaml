@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_boost_platform_interface: ^1.0.0
+  flutter_boost_platform_interface:
+    path: ../flutter_boost_platform_interface
 
 dev_dependencies:
   flutter_test:
