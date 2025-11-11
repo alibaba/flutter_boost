@@ -15,14 +15,15 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
   bool usingHybridComposition = false;
   final url = 'https://flutter.dev';
   final String viewType = '<simple-text-view>';
+  late final WebViewController _controller;
 
   @override
   void initState() {
     super.initState();
-    if (usingHybridComposition) {
-      // Enable hybrid composition.
-      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
-    }
+    // Initialize WebViewController for webview_flutter 4.0+
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..loadRequest(Uri.parse(url));
   }
 
   @override
@@ -119,7 +120,7 @@ class PlatformViewPerfState extends State<PlatformViewPerf> {
                     ),
                     SizedBox(
                       height: 100,
-                      child: WebView(initialUrl: url),
+                      child: WebViewWidget(controller: _controller),
                     ),
                   ],
                 ),
