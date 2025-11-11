@@ -101,15 +101,12 @@ public class TabPlatformViewActivity extends FragmentActivity implements View.On
     @Override
     public void onClick(View view) {
         resetImages();
-        switch (view.getId()) {
-            case R.id.platform1Tab:
-                setSelect(0);
-                break;
-            case R.id.platform2Tab:
-                setSelect(1);
-                break;
+        int id = view.getId();
+        if (R.id.platform1Tab == id) {
+            setSelect(0);
+        } else if (R.id.platform2Tab == id) {
+            setSelect(1);
         }
-
     }
 
     //全部图片设为暗色
