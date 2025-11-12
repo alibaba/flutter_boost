@@ -8,7 +8,7 @@
 
 #import "UIViewControllerDemo.h"
 #import <Flutter/Flutter.h>
-#import <flutter_boost/FlutterBoost.h>
+#import <flutter_boost_ios/FlutterBoost.h>
 
 
 @interface UIViewControllerDemo ()

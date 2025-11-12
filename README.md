@@ -16,6 +16,7 @@ PS：Null-safety is already supported.
 - 4. Unified design of double-end interface
 - 5. Solved the Top Issue
 - 6. Android does not need to distinguish between AndroidX and Support
+- 7. Migrated to federated plugin architecture for better maintainability ([Migration Guide](FEDERATED_PLUGIN_MIGRATION.md))
 # FlutterBoost
 A next-generation Flutter-Native hybrid solution. FlutterBoost is a Flutter plugin which enables hybrid integration of Flutter for your existing native apps with minimum efforts. The philosophy of FlutterBoost is to use Flutter as easy as using a WebView. Managing Native pages and Flutter pages at the same time is non-trivial in an existing App. FlutterBoost takes care of page resolution for you. The only thing you need to care about is the name of the page(usually could be an URL). 
 <a name="bf647454"></a>
@@ -49,16 +50,20 @@ flutter_boost:
 # Boost  Integration
 
 
-# 使用文档
+# Documentation
 
-- [集成详细步骤](https://github.com/alibaba/flutter_boost/blob/master/docs/install.md)
-- [基本的路由API](https://github.com/alibaba/flutter_boost/blob/master/docs/routeAPI.md)
-- [页面生命周期监测相关API](https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md)
-- [自定义发送跨端事件API](https://github.com/alibaba/flutter_boost/blob/master/docs/event.md)
+- [Integration Guide](https://github.com/alibaba/flutter_boost/blob/master/docs/install.md)
+- [Basic Route API](https://github.com/alibaba/flutter_boost/blob/master/docs/routeAPI.md)
+- [Page Lifecycle API](https://github.com/alibaba/flutter_boost/blob/master/docs/lifecycle.md)
+- [Custom Event API](https://github.com/alibaba/flutter_boost/blob/master/docs/event.md)
 
-# 建设文档
-- [如何向我们提issue](https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md)
-- [如何向我们提PR](https://github.com/alibaba/flutter_boost/blob/master/docs/pr.md)
+# Architecture Documentation
+- [Federated Plugin Architecture](ARCHITECTURE.md)
+- [Federated Plugin Migration Guide](FEDERATED_PLUGIN_MIGRATION.md)
+
+# Contributing
+- [How to Submit Issues](https://github.com/alibaba/flutter_boost/blob/master/docs/issue.md)
+- [How to Submit PRs](https://github.com/alibaba/flutter_boost/blob/master/docs/pr.md)
 
 
 # FAQ

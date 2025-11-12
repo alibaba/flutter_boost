@@ -1,0 +1,56 @@
+group 'com.idlefish.flutterboost'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.idlefish.flutterboost'
+    }
+    compileSdkVersion 31
+    buildToolsVersion '30.0.2'
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 31
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compileOnly 'com.google.android.material:material:1.0.0'
+    compileOnly 'com.alibaba:fastjson:1.2.41'
+
+}
+
+ext {
+    groupId = 'com.taobao.fleamarket'
+    artifactId = "FlutterBoost"
+}
+

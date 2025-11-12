@@ -6,10 +6,10 @@
 
 #import "GeneratedPluginRegistrant.h"
 
-#if __has_include(<flutter_boost/FlutterBoostPlugin.h>)
-#import <flutter_boost/FlutterBoostPlugin.h>
+#if __has_include(<flutter_boost_ios/FlutterBoostPlugin.h>)
+#import <flutter_boost_ios/FlutterBoostPlugin.h>
 #else
-@import flutter_boost;
+@import flutter_boost_ios;
 #endif
 
 #if __has_include(<image_picker_ios/FLTImagePickerPlugin.h>)

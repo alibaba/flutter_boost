@@ -16,8 +16,9 @@ import com.idlefish.flutterboost.FlutterBoostUtils;
 
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.loader.FlutterLoader;
+import io.flutter.FlutterInjector;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 import java.util.List;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host {
@@ -42,6 +43,10 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     mActivty = context;
   }
 
+  public io.flutter.plugin.view.SensitiveContentPlugin provideSensitiveContentPlugin(Activity activity, FlutterEngine flutterEngine) {
+    return null;
+  }
+  public boolean getBackCallbackState() { return false; }
   public boolean shouldDispatchAppLifecycleState() { return true; }
   public void updateSystemUiOverlays() {}
   public String getDartEntrypointLibraryUri() { return null; }
@@ -150,7 +155,12 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @NonNull
   public String getAppBundlePath() {
-    return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterMain.findAppBundlePath());
+    String bundlePath = getArguments().getString(ARG_APP_BUNDLE_PATH, null);
+    if (bundlePath == null) {
+      FlutterLoader loader = FlutterInjector.instance().flutterLoader();
+      bundlePath = loader.findAppBundlePath();
+    }
+    return bundlePath;
   }
 
   @Nullable
