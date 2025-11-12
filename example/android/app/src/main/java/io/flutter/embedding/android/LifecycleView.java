@@ -43,6 +43,10 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     mActivty = context;
   }
 
+  public io.flutter.plugin.view.SensitiveContentPlugin provideSensitiveContentPlugin(Activity activity, FlutterEngine flutterEngine) {
+    return null;
+  }
+  public boolean getBackCallbackState() { return false; }
   public boolean shouldDispatchAppLifecycleState() { return true; }
   public void updateSystemUiOverlays() {}
   public String getDartEntrypointLibraryUri() { return null; }
