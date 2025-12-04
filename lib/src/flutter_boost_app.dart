@@ -133,11 +133,11 @@ class FlutterBoostAppState extends State<FlutterBoostApp> {
       //and 2 is paused
 
       final int? index = arguments["lifecycleState"];
-
-      if (index == AppLifecycleState.resumed.index) {
+      // 直接匹配原生发过来的生命周期状态，避免转换为 Flutter 的生命周期状态导致不适配高版本Flutter SDK
+      if (index == 0) {
         BoostFlutterBinding.instance!
             .changeAppLifecycleState(AppLifecycleState.resumed);
-      } else if (index == AppLifecycleState.paused.index) {
+      } else if (index == 2) {
         BoostFlutterBinding.instance!
             .changeAppLifecycleState(AppLifecycleState.paused);
       }
