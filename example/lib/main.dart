@@ -7,7 +7,9 @@ import 'case/asset_image_route.dart';
 import 'case/bottom_navigation_bar_demo.dart';
 import 'case/clipboard_example.dart';
 import 'case/counter_demo.dart';
+import 'case/cupertino_page_route_demo.dart';
 import 'case/dual_screen.dart';
+import 'case/extended_image_demo.dart';
 import 'case/flutter_rebuild_demo.dart';
 import 'case/flutter_to_flutter_sample.dart';
 import 'case/hero_animation.dart';
@@ -29,8 +31,6 @@ import 'case/system_ui_overlay_style.dart';
 import 'case/transparent_widget.dart';
 import 'case/webview_flutter_demo.dart';
 import 'case/willpop.dart';
-import 'case/extended_image_demo.dart';
-import 'case/cupertino_page_route_demo.dart';
 import 'flutter_page.dart';
 import 'simple_page_widgets.dart';
 import 'tab/simple_widget.dart';
@@ -409,15 +409,17 @@ class _MyAppState extends State<MyApp> {
     },
 
     ///isContainerPage的值和BoostNavigator.instance.push()该页面时的withContainer值相同
-    'cupertino_page_route_demo':(settings, isContainerPage, uniqueId) {
+    'cupertino_page_route_demo': (settings, isContainerPage, uniqueId) {
       if (isContainerPage) {
         Logger.log('current page is a container page');
         return PageRouteBuilder<dynamic>(
-            settings: settings, pageBuilder: (_, __, ___) => CupertinoPageRouteDemo());
-      }else {
+            settings: settings,
+            pageBuilder: (_, __, ___) => CupertinoPageRouteDemo());
+      } else {
         Logger.log('current page is not a container page');
         return CupertinoPageRoute<dynamic>(
-            settings: settings, builder: (BuildContext context) => CupertinoPageRouteDemo());
+            settings: settings,
+            builder: (BuildContext context) => CupertinoPageRouteDemo());
       }
     },
 
@@ -454,7 +456,8 @@ class _MyAppState extends State<MyApp> {
     },
   };
 
-  Route<dynamic>? routeFactory(RouteSettings settings, bool isContainerPage, String? uniqueId) {
+  Route<dynamic>? routeFactory(
+      RouteSettings settings, bool isContainerPage, String? uniqueId) {
     FlutterBoostRouteFactory? func = routerMap[settings.name!];
     if (func == null) {
       return null;

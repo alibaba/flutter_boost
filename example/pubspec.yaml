@@ -33,13 +33,10 @@ dependencies:
     git:
       url: "https://gitee.com/openharmony-sig/flutter_packages.git"
       path: "packages/video_player/video_player"
-  webview_flutter:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/webview_flutter/webview_flutter"
+  webview_flutter: ^4.0.0  # 使用标准版本
 
 dependency_overrides:
-  extended_image: ^7.0.2
+  extended_image: ^8.0.0  # 从 7.0.2 升级到 8.0.0 以兼容 Flutter 3.38
   path_provider:
     git:
       url: "https://gitee.com/openharmony-sig/flutter_packages.git"

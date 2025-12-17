@@ -30,6 +30,9 @@ import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.renderer.FlutterRenderer;
 import io.flutter.embedding.engine.systemchannels.PlatformChannel;
 import io.flutter.plugin.platform.PlatformPlugin;
+import io.flutter.plugin.view.SensitiveContentPlugin;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.ACTIVITY_RESULT_KEY;
 import static com.idlefish.flutterboost.containers.FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE;
@@ -279,6 +282,15 @@ public class FlutterBoostActivity extends FlutterActivity implements FlutterView
     @Override
     public PlatformPlugin providePlatformPlugin(Activity activity, FlutterEngine flutterEngine) {
         // We takeover |PlatformPlugin| here.
+        return null;
+    }
+
+    // lijizhi: 重写 provideSensitiveContentPlugin 方法以避免 InstantiationError
+    // 在新版本 Flutter 中，如果不重写此方法，默认实现会尝试实例化 SensitiveContentPlugin 导致崩溃
+    @Override
+    @Nullable
+    public SensitiveContentPlugin provideSensitiveContentPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+        // 返回 null 表示不使用敏感内容处理功能
         return null;
     }
 

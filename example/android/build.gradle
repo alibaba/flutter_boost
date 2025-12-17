@@ -1,18 +1,131 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.0'
+        mavenCentral()
     }
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+    }
+    
+    // 为 Flutter 插件设置 namespace
+    afterEvaluate { project ->
+        // 检查项目是否应用了 Android 库插件
+        if (project.plugins.hasPlugin('com.android.library')) {
+            try {
+                // 如果 namespace 未设置，则设置它
+                if (!project.android.hasProperty('namespace') || project.android.namespace == null) {
+                    // 根据常见的 Flutter 插件命名规范设置 namespace
+                    def namespaceMap = [
+                        'dual_screen': 'io.flutter.plugins.dualscreen'
+                    ]
+                    
+                    def namespace = namespaceMap[project.name]
+                    if (namespace) {
+                        project.android.namespace = namespace
+                    } else {
+                        // 尝试从 AndroidManifest.xml 读取
+                        def manifestFile = project.file("src/main/AndroidManifest.xml")
+                        if (!manifestFile.exists()) {
+                            manifestFile = project.file("AndroidManifest.xml")
+                        }
+                        
+                        if (manifestFile.exists()) {
+                            try {
+                                def manifest = new XmlParser().parse(manifestFile)
+                                def packageName = manifest.@package
+                                if (packageName) {
+                                    project.android.namespace = packageName
+                                }
+                            } catch (Exception e) {
+                                // 如果解析失败，使用默认命名空间
+                                def pluginName = project.name.replace('_', '')
+                                project.android.namespace = "io.flutter.plugins.${pluginName}"
+                            }
+                        }
+                    }
+                }
+                
+                // lijizhi: 修复 dual_screen 插件的 AndroidManifest.xml package 属性问题
+                // 在 manifest 处理之前移除 package 属性，因为新版本 Gradle 不支持在源文件中使用
+                if (project.name == 'dual_screen') {
+                    def manifestFile = project.file("src/main/AndroidManifest.xml")
+                    if (!manifestFile.exists()) {
+                        manifestFile = project.file("AndroidManifest.xml")
+                    }
+                    
+                    if (manifestFile.exists()) {
+                        // 直接修改 manifest 文件，移除 package 属性
+                        try {
+                            def content = manifestFile.text
+                            if (content.contains('package=')) {
+                                // 使用正则表达式移除 package="..." 属性
+                                content = content.replaceAll(/package\s*=\s*"[^"]*"/, '')
+                                manifestFile.text = content
+                                println "已移除 ${manifestFile.path} 中的 package 属性"
+                            }
+                        } catch (Exception e) {
+                            println "警告: 无法移除 ${manifestFile.path} 中的 package 属性: ${e.message}"
+                        }
+                        
+                        // 创建一个任务确保在 manifest 处理之前执行
+                        def removePackageTask = project.tasks.register("removePackageFromManifest") {
+                            doFirst {
+                                try {
+                                    def fileContent = manifestFile.text
+                                    if (fileContent.contains('package=')) {
+                                        fileContent = fileContent.replaceAll(/package\s*=\s*"[^"]*"/, '')
+                                        manifestFile.text = fileContent
+                                    }
+                                } catch (Exception ex) {
+                                    // 忽略错误，因为可能已经被修改过了
+                                }
+                            }
+                        }
+                        
+                        // 让所有 manifest 处理任务依赖于移除 package 的任务
+                        project.tasks.matching { 
+                            it.name.startsWith('process') && it.name.contains('Manifest') 
+                        }.configureEach { task ->
+                            task.dependsOn removePackageTask
+                        }
+                    }
+                }
+                
+                // lijizhi: 修复 Kotlin JVM target 兼容性问题
+                // 为所有使用 Kotlin 的 Android 库项目设置兼容的 JVM target
+                try {
+                    // 检查是否应用了 Kotlin 插件（支持多种插件 ID）
+                    def hasKotlinPlugin = project.plugins.hasPlugin('org.jetbrains.kotlin.android') ||
+                                         project.plugins.hasPlugin('kotlin-android') ||
+                                         project.plugins.hasPlugin('org.jetbrains.kotlin.jvm')
+                    
+                    if (hasKotlinPlugin) {
+                        // 设置 Java 编译选项
+                        if (project.android.hasProperty('compileOptions')) {
+                            project.android.compileOptions {
+                                sourceCompatibility JavaVersion.VERSION_1_8
+                                targetCompatibility JavaVersion.VERSION_1_8
+                            }
+                        }
+                        
+                        // 配置 Kotlin 编译选项
+                        project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                            kotlinOptions {
+                                jvmTarget = "1.8"
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // 忽略 Kotlin 配置错误
+                }
+            } catch (Exception e) {
+                // 忽略配置错误，某些项目可能没有 android 扩展
+            }
+        }
     }
 }
 
@@ -24,6 +137,7 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+
+tasks.register("clean", Delete) {
+    delete rootProject.layout.buildDirectory
 }

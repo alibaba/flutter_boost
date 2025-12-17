@@ -47,3 +47,6 @@ ohos/.clangd
 ohos/.clang-format
 ohos/.clang-tidy
 ohos**/.test
+
+# FVM Version Cache
+.fvm/

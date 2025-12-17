@@ -17,7 +17,8 @@ import com.idlefish.flutterboost.FlutterBoostUtils;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs;
+import io.flutter.plugin.view.SensitiveContentPlugin;
 import java.util.List;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host {
@@ -150,7 +151,8 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @NonNull
   public String getAppBundlePath() {
-    return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterMain.findAppBundlePath());
+    // lijizhi: FlutterMain 已被移除，使用 null 作为默认值，FlutterEngine 会自动处理
+    return getArguments().getString(ARG_APP_BUNDLE_PATH, null);
   }
 
   @Nullable
@@ -173,9 +175,27 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
     return TransparencyMode.valueOf(transparencyModeName);
   }
 
+  // lijizhi: SplashScreen 在新版本 Flutter 中已被移除，此方法不再需要
+  // @Nullable
+  // public SplashScreen provideSplashScreen() {
+  //   return null;
+  // }
+  
+  // lijizhi: 添加缺失的方法以适配新版本 Flutter API
+  public boolean attachToEngineAutomatically() {
+    return false;
+  }
+  
+  // lijizhi: 添加缺失的 getBackCallbackState 方法
+  // 返回类型是 boolean，表示是否应该处理返回按钮回调
+  public boolean getBackCallbackState() {
+    return false; // 返回 false 表示使用系统默认的返回按钮行为
+  }
+  
+  // lijizhi: 添加缺失的 provideSensitiveContentPlugin 方法
   @Nullable
-  public SplashScreen provideSplashScreen() {
-    return null;
+  public SensitiveContentPlugin provideSensitiveContentPlugin(@NonNull Activity activity, @NonNull FlutterEngine flutterEngine) {
+    return null; // 返回 null 表示不使用敏感内容插件
   }
 
   @Nullable
