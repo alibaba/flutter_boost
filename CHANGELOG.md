@@ -1,5 +1,10 @@
 ## NEXT
 1. [dart]添加HDR/HEIC/HEIF/TIFF/WBMP/WEBP等图片格式的测试案例
+2. **[架构] 将 flutter_boost 迁移为联邦插件架构**
+   - 新增 `flutter_boost_platform_interface` 包（平台接口层）
+   - 新增 `flutter_boost_android` 包（Android 平台实现）
+   - 新增 `flutter_boost_ios` 包（iOS 平台实现）
+   - 详细迁移记录请参阅 `FEDERATED_PLUGIN_MIGRATION.md`
 
 ## 5.0.2
 1. Adapt to the official engine's App Lifecycle state changes
