@@ -4,6 +4,10 @@
 
 library flutter_boost;
 
+// Export platform interface messages
+export 'package:flutter_boost_platform_interface/flutter_boost_platform_interface.dart'
+    show CommonParams, StackInfo, FlutterContainer, FlutterPage;
+
 export 'src/boost_channel.dart';
 export 'src/boost_container.dart';
 export 'src/boost_flutter_binding.dart';

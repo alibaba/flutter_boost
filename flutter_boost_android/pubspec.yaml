@@ -1,0 +1,31 @@
+# Copyright (c) 2019 Alibaba Group. All rights reserved.
+# Use of this source code is governed by a MIT license that can be
+# found in the LICENSE file.
+
+name: flutter_boost_android
+description: Android implementation of the flutter_boost plugin.
+version: 5.0.2
+homepage: https://github.com/alibaba/flutter_boost
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_boost_platform_interface:
+    path: ../flutter_boost_platform_interface
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.1
+
+flutter:
+  plugin:
+    implements: flutter_boost
+    platforms:
+      android:
+        package: com.idlefish.flutterboost
+        pluginClass: FlutterBoostPlugin
