@@ -284,6 +284,23 @@ flutter_boost/
 
 ---
 
+## 安全修复
+
+### 修复 fastjson 安全漏洞
+
+**文件**: `android/build.gradle`, `flutter_boost_android/android/build.gradle`
+
+**修改内容**:
+- 将 `com.alibaba:fastjson` 版本从 `1.2.41` 升级到 `1.2.83`
+
+**原因**: 
+- 版本 1.2.41 存在多个已知安全漏洞：
+  - 不安全的反序列化漏洞 (CVE-2022-25845 等)
+  - 从不受信任的控制范围包含功能的漏洞
+- 版本 1.2.83 已修复这些漏洞
+
+---
+
 ## 验证清单
 
 - [x] 平台接口包结构正确
