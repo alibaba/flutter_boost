@@ -4,26 +4,26 @@ version '1.0-SNAPSHOT'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:8.1.0'
     }
 }
 
-rootProject.allprojects {
+allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
 apply plugin: 'com.android.library'
 
 android {
+    namespace 'com.idlefish.flutterboost'
     compileSdkVersion 31
-    buildToolsVersion '30.0.2'
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 31

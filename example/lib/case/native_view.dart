@@ -62,13 +62,6 @@ class NativeView extends StatelessWidget {
           creationParams: creationParams,
           creationParamsCodec: const StandardMessageCodec(),
         );
-      case TargetPlatform.ohos:
-        return OhosView(
-          viewType: viewType,
-          layoutDirection: TextDirection.ltr,
-          creationParams: creationParams,
-          creationParamsCodec: const StandardMessageCodec(),
-        );
       default:
         throw UnsupportedError('Unsupported platform view');
     }

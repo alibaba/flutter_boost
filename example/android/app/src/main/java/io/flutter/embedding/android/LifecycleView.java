@@ -14,10 +14,11 @@ import androidx.lifecycle.LifecycleRegistry;
 
 import com.idlefish.flutterboost.FlutterBoostUtils;
 
+import io.flutter.FlutterInjector;
 import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugin.view.SensitiveContentPlugin;
 import io.flutter.embedding.engine.FlutterShellArgs;
 import io.flutter.plugin.platform.PlatformPlugin;
-import io.flutter.view.FlutterMain;
 import java.util.List;
 
 public class LifecycleView extends FrameLayout implements LifecycleOwner, FlutterActivityAndFragmentDelegate.Host {
@@ -43,6 +44,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
   }
 
   public boolean shouldDispatchAppLifecycleState() { return true; }
+  public boolean attachToEngineAutomatically() { return false; }
   public void updateSystemUiOverlays() {}
   public String getDartEntrypointLibraryUri() { return null; }
   public ExclusiveAppComponent<Activity> getExclusiveAppComponent() { return mDelegate; }
@@ -150,7 +152,7 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   @NonNull
   public String getAppBundlePath() {
-    return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterMain.findAppBundlePath());
+    return getArguments().getString(ARG_APP_BUNDLE_PATH, FlutterInjector.instance().flutterLoader().findAppBundlePath());
   }
 
   @Nullable
@@ -171,11 +173,6 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
         getArguments()
             .getString(ARG_FLUTTERVIEW_TRANSPARENCY_MODE, TransparencyMode.transparent.name());
     return TransparencyMode.valueOf(transparencyModeName);
-  }
-
-  @Nullable
-  public SplashScreen provideSplashScreen() {
-    return null;
   }
 
   @Nullable
@@ -217,5 +214,15 @@ public class LifecycleView extends FrameLayout implements LifecycleOwner, Flutte
 
   public void onFlutterUiNoLongerDisplayed() {
     // Hook for subclasses.
+  }
+
+  @Nullable
+  public SensitiveContentPlugin provideSensitiveContentPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+    return null;
+  }
+
+  @Override
+  public boolean getBackCallbackState() {
+    return false;
   }
 }

@@ -20,31 +20,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.5
   dual_screen: ^1.0.3
-  image_picker:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/image_picker/image_picker"
+  image_picker: ^1.0.0
   mime: ^1.0.4
-  path_provider:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/path_provider/path_provider"
-  video_player:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/video_player/video_player"
-  webview_flutter:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/webview_flutter/webview_flutter"
+  path_provider: ^2.0.0
+  video_player: ^2.0.0
+  webview_flutter: ^4.0.0
 
 dependency_overrides:
-  extended_image: ^7.0.2
-  path_provider:
-    git:
-      url: "https://gitee.com/openharmony-sig/flutter_packages.git"
-      path: "packages/path_provider/path_provider"
-      ref: "d3f6d21"
+  extended_image: ^8.0.0
 
 dev_dependencies:
   flutter_test:
@@ -54,7 +37,7 @@ dev_dependencies:
     path: ../
 
 # For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
+# following page: https://www.dartlang.org/tools/pub
 
 # The following section is specific to Flutter.
 flutter:

@@ -102,25 +102,19 @@ public class TabCustomViewActivity extends AppCompatActivity implements BottomNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        switch (id) {
-            case R.id.navigation_flutter1:
-            case R.id.navigation_flutter2: {
-                if (lastId == R.id.navigation_native) {
-                    mTabView.setVisibility(View.GONE);
-                } else {
-                    mTabs.get(lastId).setVisibility(View.GONE);
-                }
-
-                FlutterBoostView selectedTab = mTabs.get(id);
-                selectedTab.setVisibility(View.VISIBLE);
-                break;
+        if (id == R.id.navigation_flutter1 || id == R.id.navigation_flutter2) {
+            if (lastId == R.id.navigation_native) {
+                mTabView.setVisibility(View.GONE);
+            } else {
+                mTabs.get(lastId).setVisibility(View.GONE);
             }
-            case R.id.navigation_native:{
-                mTabView.setVisibility(View.VISIBLE);
-                if (lastId != R.id.navigation_native) {
-                    mTabs.get(lastId).setVisibility(View.GONE);
-                }
-                break;
+
+            FlutterBoostView selectedTab = mTabs.get(id);
+            selectedTab.setVisibility(View.VISIBLE);
+        } else if (id == R.id.navigation_native) {
+            mTabView.setVisibility(View.VISIBLE);
+            if (lastId != R.id.navigation_native) {
+                mTabs.get(lastId).setVisibility(View.GONE);
             }
         }
         lastId = id;
