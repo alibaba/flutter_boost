@@ -1,6 +1,6 @@
-# new_flutter_boost_example
+# flutter_boost_example
 
-Demonstrates how to use the new_flutter_boost plugin.
+Demonstrates how to use the flutter_boost plugin.
 
 ## Getting Started
 

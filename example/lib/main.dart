@@ -6,7 +6,6 @@ import 'case/asset_image_route.dart';
 import 'case/bottom_navigation_bar_demo.dart';
 import 'case/clipboard_example.dart';
 import 'case/counter_demo.dart';
-import 'case/dual_screen.dart';
 import 'case/flutter_rebuild_demo.dart';
 import 'case/flutter_to_flutter_sample.dart';
 import 'case/hero_animation.dart';
@@ -221,10 +220,6 @@ class _MyAppState extends State<MyApp> {
           settings: settings,
           pageBuilder: (_, __, ___) =>
               const CounterPage(title: "Counter Demo"));
-    },
-    'dualScreen': (settings, uniqueId) {
-      return PageRouteBuilder<dynamic>(
-          settings: settings, pageBuilder: (_, __, ___) => const DualScreen());
     },
     'hero_animation': (settings, uniqueId) {
       return MaterialPageRoute(
