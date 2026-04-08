@@ -41,6 +41,7 @@ typedef NS_ENUM(NSInteger, FBAppearState) {
 - (instancetype)init;
 - (void)surfaceUpdated:(BOOL)appeared;
 - (void)updateViewportMetrics;
+- (void)updateViewportMetricsIfNeeded;
 - (void)detachFlutterEngineIfNeeded;
 - (void)notifyWillDealloc;
 @end

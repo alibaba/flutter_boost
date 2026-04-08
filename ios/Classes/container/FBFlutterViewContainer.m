@@ -49,7 +49,7 @@ _Pragma("clang diagnostic pop")
 - (void)bridge_viewDidDisappear:(BOOL)animated;
 - (void)bridge_viewWillAppear:(BOOL)animated;
 - (void)surfaceUpdated:(BOOL)appeared;
-- (void)updateViewportMetrics;
+- (void)updateViewportMetricsIfNeeded;
 @end
 
 #pragma clang diagnostic push
@@ -272,7 +272,13 @@ _Pragma("clang diagnostic pop")
 
 - (void)updateViewportMetrics {
   if (self.engine && self.engine.viewController == self) {
-    [super updateViewportMetrics];
+    [super updateViewportMetricsIfNeeded];
+  }
+}
+
+- (void)updateViewportMetricsIfNeeded {
+  if (self.engine && self.engine.viewController == self) {
+    [super updateViewportMetricsIfNeeded];
   }
 }
 
