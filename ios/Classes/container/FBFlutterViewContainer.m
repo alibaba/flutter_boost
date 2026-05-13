@@ -246,6 +246,12 @@ _Pragma("clang diagnostic pop")
 - (void)attatchFlutterEngine {
   if (ENGINE.viewController != self){
     ENGINE.viewController = self;
+    // Owner swap triggers PlatformViewIOS::SetOwnerViewController which tears
+    // down the shell surface (NotifyDestroyed). The previously cached
+    // FBAlreadySurfaceUpdatedYes state is now stale; reset it so the next
+    // surfaceUpdated:YES actually reaches super (and notifyViewCreated)
+    // instead of being optimized away by the FBAppearState early-return.
+    self.currentFBAppearState = FBWaitForSurfaceUpdatedYes;
   }
 }
 
