@@ -215,8 +215,7 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         }
     }
 
-    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments,
-                          final FlutterRouterApi.Reply<Void> callback) {
+    public void pushRoute(String uniqueId, String pageName, Map<String, Object> arguments) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#pushRoute start: " + pageName + ", " + uniqueId + ", " + this);
         if (channel != null) {
             checkEngineState();
@@ -224,12 +223,8 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
             params.setUniqueId(uniqueId);
             params.setPageName(pageName);
             params.setArguments(arguments);
-            channel.pushRoute(params, reply -> {
-                if (isDebugLoggingEnabled()) Log.d(TAG, "#pushRoute end: " + pageName + ", " + uniqueId);
-                if (callback != null) {
-                    callback.reply(null);
-                }
-            });
+            channel.pushRoute(params);
+            if (isDebugLoggingEnabled()) Log.d(TAG, "#pushRoute end: " + pageName + ", " + uniqueId);
         } else {
             throw new RuntimeException("FlutterBoostPlugin might *NOT* have attached to engine yet!");
         }
@@ -349,17 +344,11 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
         }
     }
 
-    public void onContainerAppeared(FlutterViewContainer container, Runnable onPushRouteComplete) {
+    public void onEngineAttached(FlutterViewContainer container) {
         String uniqueId = container.getUniqueId();
-        if (isDebugLoggingEnabled()) Log.d(TAG, "#onContainerAppeared: " + uniqueId + ", " + this);
+        if (isDebugLoggingEnabled()) Log.d(TAG, "#onEngineAttached: " + uniqueId + ", " + this);
         FlutterContainerManager.instance().activateContainer(uniqueId, container);
-        pushRoute(uniqueId, container.getUrl(), container.getUrlParams(), reply -> {
-            if (FlutterContainerManager.instance().isTopContainer(uniqueId)) {
-                if (onPushRouteComplete != null) {
-                    onPushRouteComplete.run();
-                }
-            }
-        });
+        pushRoute(uniqueId, container.getUrl(), container.getUrlParams());
         //onContainerDisappeared并非异步触发，为了匹配对应，onContainerShow也不做异步
         onContainerShow(uniqueId);
     }

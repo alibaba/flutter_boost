@@ -129,9 +129,8 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
             onCreate();
         }
         super.onResume();
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            flutterView().attachToFlutterEngine(getFlutterEngine());
-        });
+        flutterView().attachToFlutterEngine(getFlutterEngine());
+        FlutterBoost.instance().getPlugin().onEngineAttached(this);
     }
 
     @Override
@@ -166,9 +165,8 @@ public class FlutterBoostView extends LifecycleView implements FlutterViewContai
         }
 
         if (getVisibility() == View.VISIBLE) {
-            FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-                flutterView().attachToFlutterEngine(getFlutterEngine());
-            });
+            flutterView().attachToFlutterEngine(getFlutterEngine());
+            FlutterBoost.instance().getPlugin().onEngineAttached(this);
         } else if (getVisibility() == View.GONE) {
             FlutterBoost.instance().getPlugin().onContainerDisappeared(this);
             flutterView().detachFromFlutterEngine();

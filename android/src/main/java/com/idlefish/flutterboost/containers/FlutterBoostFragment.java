@@ -326,12 +326,10 @@ public class FlutterBoostFragment extends FlutterFragment implements FlutterView
         FlutterViewContainer top = FlutterContainerManager.instance().getTopContainer();
         if (top != null && top != this) top.detachFromEngineIfNeeded();
 
-        FlutterBoost.instance().getPlugin().onContainerAppeared(this, () -> {
-            // attach new container to the engine.
-            attachToEngineIfNeeded();
-            textureHooker.onFlutterTextureViewRestoreState();
-            onComplete.run();
-        });
+        attachToEngineIfNeeded();
+        textureHooker.onFlutterTextureViewRestoreState();
+        onComplete.run();
+        FlutterBoost.instance().getPlugin().onEngineAttached(this);
     }
 
     protected void didFragmentHide() {

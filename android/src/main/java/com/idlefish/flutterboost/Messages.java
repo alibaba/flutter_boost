@@ -513,6 +513,17 @@ public class Messages {
       return FlutterRouterApiCodec.INSTANCE;
     }
 
+    private void invokeDart(int method, Object message) {
+      ByteBuffer encoded = directBuffer(getCodec().encodeMessage(message));
+      flutterEngine.invokeNativeFastMessageToDart(
+          FLUTTER_BOOST_BRIDGE_NAME,
+          FAST_MESSAGE_KIND_REQUEST,
+          method,
+          encoded,
+          bufferLength(encoded),
+          0);
+    }
+
     private void invokeDart(int method, Object message, Reply<Void> callback) {
       long replyId = nextReplyId.getAndDecrement();
       if (callback != null) {
@@ -536,8 +547,8 @@ public class Messages {
       callback.reply(null);
     }
 
-    public void pushRoute(CommonParams paramArg, Reply<Void> callback) {
-      invokeDart(METHOD_PUSH_ROUTE, new ArrayList<Object>(Arrays.asList(paramArg)), callback);
+    public void pushRoute(CommonParams paramArg) {
+      invokeDart(METHOD_PUSH_ROUTE, new ArrayList<Object>(Arrays.asList(paramArg)));
     }
     public void popRoute(CommonParams paramArg, Reply<Void> callback) {
       invokeDart(METHOD_POP_ROUTE, new ArrayList<Object>(Arrays.asList(paramArg)), callback);

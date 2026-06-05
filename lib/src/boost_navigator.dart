@@ -78,7 +78,7 @@ class BoostNavigator {
     bool isFlutter = isFlutterPage(name);
     if (isFlutter && withContainer) {
       // 1. open flutter page with container
-      // Intercepted in BoostFlutterRouterApi.pushRoute
+      // Native attaches the engine first, then invokes Dart to create it.
       return appState!.pushWithResult(name,
           arguments: arguments, withContainer: withContainer, opaque: opaque);
     } else {

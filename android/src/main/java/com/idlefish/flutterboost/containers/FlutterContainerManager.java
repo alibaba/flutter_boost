@@ -39,7 +39,7 @@ public class FlutterContainerManager {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#addContainer: " + uniqueId + ", " + this);
     }
 
-    // onContainerAppeared
+    // onEngineAttached
     public void activateContainer(String uniqueId, FlutterViewContainer container) {
         if (uniqueId == null || container == null) return;
         assert(allContainers.containsKey(uniqueId));

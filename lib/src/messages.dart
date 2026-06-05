@@ -411,7 +411,7 @@ abstract class FlutterRouterApi {
             final CommonParams? arg_param = (args[0] as CommonParams?);
             assert(arg_param != null, 'Argument for com.idlefish.flutterboost.direct.FlutterRouterApi.pushRoute was null, expected non-null CommonParams.');
             api.pushRoute(arg_param!);
-            break;
+            return;
           case _methodPopRoute:
             assert(message != null, 'Argument for com.idlefish.flutterboost.direct.FlutterRouterApi.popRoute was null.');
             final List<Object?> args = (message as List<Object?>?)!;
