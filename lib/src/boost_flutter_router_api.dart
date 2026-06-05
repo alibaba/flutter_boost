@@ -5,8 +5,8 @@
 import 'boost_operation_queue.dart';
 import 'flutter_boost_app.dart';
 import 'messages.dart';
+import 'package:flutter/scheduler.dart';
 
-/// The MessageChannel counterpart on the Dart side.
 class BoostFlutterRouterApi extends FlutterRouterApi {
   factory BoostFlutterRouterApi(FlutterBoostAppState appState) {
     if (_instance == null) {
@@ -21,7 +21,7 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   final FlutterBoostAppState appState;
   static BoostFlutterRouterApi? _instance;
 
-  /// Whether the dart env is ready to receive messages from host.
+  /// Whether the dart env is ready to receive direct calls from host.
   bool isEnvReady = false;
 
   @override
@@ -80,9 +80,12 @@ class BoostFlutterRouterApi extends FlutterRouterApi {
   }
 
   @override
-  void onBackPressed() => appState.pop(onBackPressed: true);
+  Future<void> onBackPressed() async {
+    await appState.pop(onBackPressed: true);
+    SchedulerBinding.instance.scheduleFrame();
+  }
 
-  ///When native send msg to flutter,this method will be called
+  /// Called when native invokes Flutter through the direct bridge.
   @override
   void sendEventToFlutter(CommonParams param) {
     _addInOperationQueueOrExcute(() {

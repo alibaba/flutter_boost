@@ -59,15 +59,16 @@ public class FlutterBoostPlugin implements FlutterPlugin, NativeRouterApi, Activ
     @Override
     public void onAttachedToEngine(FlutterPluginBinding binding) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onAttachedToEngine: " + this);
-        NativeRouterApi.setup(binding.getBinaryMessenger(), this);
         engine = binding.getFlutterEngine();
-        channel = new FlutterRouterApi(binding.getBinaryMessenger());
+        NativeRouterApi.setup(this);
+        channel = new FlutterRouterApi(engine);
         pageNames = new SparseArray<String>();
     }
 
     @Override
     public void onDetachedFromEngine(FlutterPluginBinding binding) {
         if (isDebugLoggingEnabled()) Log.d(TAG, "#onDetachedFromEngine: " + this);
+        NativeRouterApi.setup(null);
         engine = null;
         channel = null;
     }
