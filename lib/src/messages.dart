@@ -250,10 +250,7 @@ class _NativeRouterApiCodec extends StandardMessageCodec {
 }
 
 class NativeRouterApi {
-  /// Constructor for [NativeRouterApi].  The [binaryMessenger] named argument is
-  /// kept for source compatibility; FlutterBoost routes through the native fast
-  /// bridge in this engine.
-  NativeRouterApi({BinaryMessenger? binaryMessenger});
+  NativeRouterApi();
 
   static const MessageCodec<Object?> codec = _NativeRouterApiCodec();
 
@@ -390,7 +387,7 @@ abstract class FlutterRouterApi {
   void onContainerHide(CommonParams param);
   void sendEventToFlutter(CommonParams param);
   Future<void> onBackPressed();
-  static void setup(FlutterRouterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(FlutterRouterApi? api) {
     if (api == null) {
       ui.NativeFastMessageBridge.setMessageHandler(_flutterBoostBridgeName, null);
       return;

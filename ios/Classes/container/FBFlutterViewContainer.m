@@ -296,11 +296,11 @@ _Pragma("clang diagnostic pop")
 
 - (void)viewWillAppear:(BOOL)animated {
   self.currentFBAppearState = FBWaitForSurfaceUpdatedYes;
-  [FB_PLUGIN containerWillAppear:self];
 
   // For new page we should attach flutter view in view will appear
   // for better performance.
   [self attatchFlutterEngine];
+  [FB_PLUGIN containerWillAppear:self];
 
   [super bridge_viewWillAppear:animated];
   [self.view setNeedsLayout];//TODO:通过param来设定
@@ -346,4 +346,3 @@ _Pragma("clang diagnostic pop")
   return YES;
 }
 @end
-

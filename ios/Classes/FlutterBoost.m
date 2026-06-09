@@ -170,7 +170,7 @@
   FBCommonParams* params = [[FBCommonParams alloc] init];
   params.uniqueId=uniqueId;
   [self.plugin.flutterApi popRouteParam:params
-                             completion:^(NSError* error) {
+                             completion:^{
                              }];
 }
 
@@ -181,7 +181,7 @@
   params.arguments = arguments;
 
   [self.plugin.flutterApi onNativeResultParam:params
-                                   completion:^(NSError * error) {
+                                   completion:^{
                                    }];
 }
 
@@ -189,14 +189,14 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
   FBCommonParams* params = [[FBCommonParams alloc] init];
   [ self.plugin.flutterApi onBackgroundParam:params
-                                  completion:^(NSError * error) {
+                                  completion:^{
                                   }];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
   FBCommonParams* params = [[FBCommonParams alloc] init];
   [self.plugin.flutterApi onForegroundParam:params
-                                 completion:^(NSError * error) {
+                                 completion:^{
                                  }];
 }
 
@@ -211,7 +211,7 @@
   params.key = key;
   params.arguments = arguments;
   [self.plugin.flutterApi sendEventToFlutterParam:params
-                                       completion:^(NSError * error) {
+                                       completion:^{
                                        }];
 }
 

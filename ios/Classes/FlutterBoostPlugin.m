@@ -49,9 +49,7 @@
   params.uniqueId = vc.uniqueId;
   params.opaque = [[NSNumber alloc] initWithBool:vc.opaque];
 
-  [self.flutterApi pushRouteParam:params
-                       completion:^(NSError * e) {
-                       }];
+  [self.flutterApi pushRouteParam:params];
   [self.containerManager activeContainer:vc
                              forUniqueId:vc.uniqueIDString];
 }
@@ -60,7 +58,7 @@
   FBCommonParams* params = [[FBCommonParams alloc] init];
   params.uniqueId = vc.uniqueId;
   [self.flutterApi onContainerShowParam:params
-                             completion:^(NSError * e) {
+                             completion:^{
                              }];
 }
 
@@ -68,12 +66,12 @@
   FBCommonParams* params = [[FBCommonParams alloc] init];
   params.uniqueId = vc.uniqueId;
   [self.flutterApi onContainerHideParam:params
-                             completion:^(NSError * e) {
+                             completion:^{
                              }];
 }
 
 - (void)onBackSwipe {
-  [self.flutterApi onBackPressedWithCompletion: ^(NSError * e) {
+  [self.flutterApi onBackPressedWithCompletion: ^{
   }];
 }
 
@@ -83,7 +81,7 @@
   params.arguments = vc.params;
   params.uniqueId = vc.uniqueId;
   [self.flutterApi removeRouteParam:params
-                         completion:^(NSError * e) {
+                         completion:^{
                          }];
   [self.containerManager removeContainerByUniqueId:vc.uniqueIDString];
   if (self.containerManager.containerSize == 0) {
@@ -92,9 +90,9 @@
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>  *)registrar {
-  FlutterBoostPlugin* plugin = [[FlutterBoostPlugin alloc] initWithMessenger:(registrar.messenger)];
+  FlutterBoostPlugin* plugin = [[FlutterBoostPlugin alloc] init];
   [registrar publish:plugin];
-  FBNativeRouterApiSetup(registrar.messenger, plugin);
+  FBNativeRouterApiSetup(plugin);
 }
 
 + (FlutterBoostPlugin* )getPlugin:(FlutterEngine*)engine{
@@ -106,23 +104,21 @@
   return nil;
 }
 
-- (instancetype)initWithMessenger:(id<FlutterBinaryMessenger>)messenger {
+- (instancetype)init {
   self = [super init];
   if (self) {
-    _flutterApi = [[FBFlutterRouterApi alloc] initWithBinaryMessenger:messenger];
+    _flutterApi = [[FBFlutterRouterApi alloc] initWithFlutterEngine:[FlutterBoost instance].engine];
     _containerManager= [FBFlutterContainerManager new];
     _listenersTable = [[NSMutableDictionary alloc] init];
   }
   return self;
 }
 
-- (void)pushNativeRouteParam:(FBCommonParams*)input
-                       error:(FlutterError *_Nullable *_Nonnull)error {
+- (void)pushNativeRouteParam:(FBCommonParams*)input {
   [self.delegate pushNativeRoute:input.pageName arguments:input.arguments];
 }
 
-- (void)pushFlutterRouteParam:(FBCommonParams*)input
-                        error:(FlutterError *_Nullable *_Nonnull)error {
+- (void)pushFlutterRouteParam:(FBCommonParams*)input {
   FlutterBoostRouteOptions* options = [[FlutterBoostRouteOptions alloc]init];
   options.pageName = input.pageName;
   options.uniqueId = input.uniqueId;
@@ -157,21 +153,19 @@
   }
 }
 
-- (nullable FBStackInfo *)getStackFromHostWithError:(FlutterError *_Nullable *_Nonnull)error {
+- (nullable FBStackInfo *)getStackFromHost {
   if (self.stackInfo == nil) {
     return [[FBStackInfo alloc] init];
   }
   return self.stackInfo;
 }
 
-- (void)saveStackToHostStack:(FBStackInfo *)stack
-                       error:(FlutterError *_Nullable *_Nonnull)error {
+- (void)saveStackToHostStack:(FBStackInfo *)stack {
   self.stackInfo = stack;
 }
 
 // flutter端将会调用此方法给native发送信息,所以这里将是接收事件的逻辑
-- (void)sendEventToNativeParams:(FBCommonParams *)params
-                          error:(FlutterError *_Nullable *_Nonnull)error {
+- (void)sendEventToNativeParams:(FBCommonParams *)params {
   NSString* key = params.key;
   NSDictionary* args = params.arguments;
 
