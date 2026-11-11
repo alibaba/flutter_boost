@@ -250,6 +250,12 @@ export default class FlutterBoostEntry extends FlutterEntry implements FlutterVi
     if (this.isTraceEnabled()) Log.d(TAG, "#onPageShow: " + this.getUrl());
 
     // Calls super method
+    // Ignore a show callback for a hidden container while another container is active.
+    const top = FlutterContainerManager.getInstance().getTopContainer();
+    if (top && top != this && this.stage == LifecycleStage.ON_HIDE && !top.isPopping()) {
+      return;
+    }
+
     super.onPageShow();
 
     this.stage = LifecycleStage.ON_SHOW;
